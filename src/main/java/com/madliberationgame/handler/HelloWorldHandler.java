@@ -1,9 +1,9 @@
-package com.aws.codestar.projecttemplates.handler;
+package com.madliberationgame.handler;
 
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
 
-import com.aws.codestar.projecttemplates.GatewayResponse;
+import com.madliberationgame.GatewayResponse;
 import org.json.JSONObject;
 
 import java.util.HashMap;

@@ -11,22 +11,7 @@
 </h1>
 </body>
 
-<script>
-var xhttp = new XMLHttpRequest();
-console.log(xhttp);
-xhttp.open('GET', 'https://294csan61i.execute-api.us-east-1.amazonaws.com/Prod/', true);
-console.log(xhttp);
-xhttp.send();
-console.log(xhttp);
-
-var urlParams = new URLSearchParams(window.location.search);
-console.log(urlParams.has('post')); // true
-console.log(urlParams.get('action')); // "edit"
-console.log(urlParams.getAll('action')); // ["edit"]
-console.log(urlParams.toString()); // "?post=1234&action=edit"
-console.log(urlParams.append('active', '1')); // "?post=1234&action=edit&active=1"
-
-var x
-</script>
+<script src="https://madliberationgame.com/utils.js"></script>
+<script src="https://madliberationgame.com/pick-script.js"></script>
 
 </html>

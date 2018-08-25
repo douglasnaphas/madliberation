@@ -1,0 +1,1 @@
+console.log(getUrlParameter('auth-code'));

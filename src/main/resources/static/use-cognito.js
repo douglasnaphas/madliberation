@@ -4,6 +4,7 @@ var poolData = {
     ClientId : '6ktt0mtpks03r8sfticc3h1o6'
 };
 var userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
+console.log(poolData);
 var cognitoUser = userPool.getCurrentUser();
 
 console.log("cognitoUser: " + cognitoUser);

@@ -10,6 +10,16 @@ var authData = {
 //        Storage: '<TODO the storage object>' // OPTIONAL e.g. new CookieStorage(), to use the specified storage provided
 };
 var auth = new AmazonCognitoIdentity.CognitoAuth(authData);
+console.log("auth: " + auth);
+auth.userhandler = {
+	onSuccess: function(result) {
+		console.log("Sign in success");
+//		showSignedIn(result);
+	},
+	onFailure: function(err) {
+		console.log("Sign in error: " + err);
+	}
+};
 var curUrl = window.location.href;
 var parsedResponse = auth.parseCognitoWebResponse(curUrl);
-console.log(parsedResponse);
+console.log("parsedResponse: " + parsedResponse);

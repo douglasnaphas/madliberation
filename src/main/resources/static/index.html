@@ -1,39 +1,50 @@
 <!DOCTYPE html>
 <html>
-<head>
+  <head>
     <meta charset="UTF-8">
     <title>Mad Liberation</title>
-</head>
-
-<body>
-<h1>
-    Welcome to Mad Liberation
-</h1>
-<p>
-    I wish you would <a href="https://madliberationfederated.auth.us-east-1.amazoncognito.com/login?response_type=token&client_id=6ktt0mtpks03r8sfticc3h1o6&redirect_uri=https://madliberationgame.com/pick-script.html">log in</a>.
-</p>
-</body>
-
-<script>
-var xhttp = new XMLHttpRequest();
-console.log(xhttp);
-xhttp.open('GET', 'https://294csan61i.execute-api.us-east-1.amazonaws.com/Prod/', true);
-console.log(xhttp);
-xhttp.send();
-console.log(xhttp);
-
-var urlParams = new URLSearchParams(window.location.search);
-console.log(urlParams.has('post')); // true
-console.log(urlParams.get('action')); // "edit"
-console.log(urlParams.getAll('action')); // ["edit"]
-console.log(urlParams.toString()); // "?post=1234&action=edit"
-console.log(urlParams.append('active', '1')); // "?post=1234&action=edit&active=1"
-
-var x;
-</script>
-
-<script src="amazon-cognito-identity.min.js"></script>
-<script src="aws-sdk-2.6.10.js"></script>
-<script src="use-cognito.js"></script>
-
+    <link rel="import" href="includes.html">
+  </head>
+  <body>
+      <div class="text-center bg-primary text-white">
+        <h1 class="display-3">Welcome to Mad Liberation</h1>
+      </div>
+      <br>
+      <br>
+      <div class="row">
+        <div class="col"></div>
+        <div class="col" style="text-align: center;">
+          <a href="https://madliberationfederated.auth.us-east-1.amazoncognito.com/login?response_type=token&client_id=6ktt0mtpks03r8sfticc3h1o6&redirect_uri=https://madliberationgame.com/index.html"><button type="button" class="btn btn-success btn-xlarge">Log in</button></a>
+        </div>
+        <div class="col"></div>
+      </div>
+      <br>
+      <div class="row">
+        <div class="col"></div>
+        <div class="col"><h1 class="display-4 text-center">to</h1></div>
+        <div class="col"></div>
+      </div>
+      <br>
+      <div class="row">
+        <div class="col"></div>
+        <div class="col" style="text-align: center;">
+          <button type="button" class="btn btn-primary btn-xlarge btn-block" disabled>Start a Seder</button>
+        </div>
+        <div class="col"></div>
+      </div>
+      <br>
+      <div class="row">
+        <div class="col"></div>
+        <div class="col"><h1 class="display-4 text-center">or</h1></div>
+        <div class="col"></div>
+      </div>
+      <br>
+      <div class="row">
+        <div class="col"></div>
+        <div class="col" style="text-align: center;">
+          <button type="button" class="btn btn-primary btn-xlarge btn-block" disabled>Join a Seder</button>
+        </div>
+        <div class="col"></div>
+      </div> 
+  </body>
 </html>

@@ -6,7 +6,7 @@ phases:
       # Upgrade AWS CLI to the latest version
       - pip install --upgrade awscli
       - yum update -y
-      - yum -y install nodejs
+      - yum -y install nodejs --enablerepo=epel
   pre_build:
     commands:
       - type node

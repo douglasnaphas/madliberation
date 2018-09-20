@@ -8,6 +8,11 @@ phases:
   pre_build:
     commands:
       - echo Test started on `date`
+      - echo "looking for node"
+      - type node
+      - echo "looking for npm"
+      - type npm
+      - echo "done looking for npm"
       - mvn clean compile test
   build:
     commands:
@@ -20,7 +25,6 @@ phases:
       - aws s3 sync --content-type "text/html" --exclude "*" --include "*.html" --delete static/ s3://madliberationgame.com/
       - aws s3 sync --content-type "text/css" --exclude "*" --include "*.css" --delete static/ s3://madliberationgame.com/
       - aws s3 sync --content-type "text/javascript" --exclude "*" --include "*.js" --delete static/ s3://madliberationgame.com/
-        # TODO: CSS should have a stylesheet type
 artifacts:
   files:
     - template-export.yml

@@ -5,7 +5,8 @@ phases:
     commands:
       # Upgrade AWS CLI to the latest version
       - pip install --upgrade awscli
-      - yum install node
+      - yum update -y
+      - yum -y install nodejs
   pre_build:
     commands:
       - type node

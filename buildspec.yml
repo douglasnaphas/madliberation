@@ -9,6 +9,7 @@ phases:
     commands:
       - echo "PATH:"
       - echo "${PATH}"
+      - type yum
       - mvn clean compile test
   build:
     commands:

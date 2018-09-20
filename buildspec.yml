@@ -5,8 +5,7 @@ phases:
     commands:
       # Upgrade AWS CLI to the latest version
       - pip install --upgrade awscli
-      - apt-get update -y
-      - apt-get install -y node
+      - sudo yum install node
   pre_build:
     commands:
       - echo Test started on `date`

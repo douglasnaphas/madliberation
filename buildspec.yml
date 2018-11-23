@@ -6,11 +6,8 @@ phases:
       # Upgrade AWS CLI to the latest version
       - pip install --upgrade awscli
       - yum update -y
-      - yum -y install nodejs --enablerepo=epel
   pre_build:
     commands:
-      - type node
-      - type npm
       - mvn clean compile test
   build:
     commands:
@@ -20,9 +17,6 @@ phases:
       - unzip madliberation-1.0.jar
       - rm -rf target tst src buildspec.yml pom.xml madliberation-1.0.jar
       - aws cloudformation package --template template.yml --s3-bucket $S3_BUCKET --output-template template-export.yml
-      - aws s3 sync --content-type "text/html" --exclude "*" --include "*.html" --delete static/ s3://madliberationgame.com/
-      - aws s3 sync --content-type "text/css" --exclude "*" --include "*.css" --delete static/ s3://madliberationgame.com/
-      - aws s3 sync --content-type "text/javascript" --exclude "*" --include "*.js" --delete static/ s3://madliberationgame.com/
 artifacts:
   files:
     - template-export.yml

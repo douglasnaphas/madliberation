@@ -18,7 +18,9 @@ diff:	bootstrap
 deploy:	bootstrap
 	npx cdk deploy --require-approval never
 
-install:
+install: |
+	npm install
+	cd mljsapi
 	npm install
 
 build:

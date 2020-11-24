@@ -20,8 +20,7 @@ deploy:	bootstrap
 
 install: |
 	npm install
-	cd mljsapi
-	npm install
+	cd mljsapi && echo "1..." && npm install && echo "2..." && ls node_modules && echo "3..." && pwd
 
 build:
 	npm run build

@@ -22,8 +22,8 @@
     "say-var1": "echo MY_VAR1: ${MY_VAR1:-default-var1}"
   },
   "devDependencies": {
-    "aws-cdk": "1.74.0",
-    "@aws-cdk/assert": "1.74.0",
+    "aws-cdk": "1.75.0",
+    "@aws-cdk/assert": "1.75.0",
     "@types/jest": "^26.0.10",
     "@types/node": "10.17.27",
     "jest": "^26.4.2",
@@ -32,11 +32,11 @@
     "typescript": "~3.9.7"
   },
   "dependencies": {
-    "@aws-cdk/aws-apigateway": "1.74.0",
-    "@aws-cdk/aws-lambda": "1.74.0",
-    "@aws-cdk/aws-sns": "1.74.0",
-    "@aws-cdk/aws-sns-subscriptions": "1.74.0",
-    "@aws-cdk/aws-sqs": "1.74.0",
-    "@aws-cdk/core": "1.74.0"
+    "@aws-cdk/aws-apigateway": "1.75.0",
+    "@aws-cdk/aws-lambda": "1.75.0",
+    "@aws-cdk/aws-sns": "1.75.0",
+    "@aws-cdk/aws-sns-subscriptions": "1.75.0",
+    "@aws-cdk/aws-sqs": "1.75.0",
+    "@aws-cdk/core": "1.75.0"
   }
 }

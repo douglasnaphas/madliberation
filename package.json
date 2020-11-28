@@ -4,11 +4,22 @@
   "bin": {
     "madliberation": "bin/madliberation.js"
   },
+  "config": {
+    "template": "template.yml",
+    "port": "3535",
+    "defaultPort": "3535",
+    "host": "localhost"
+  },
   "scripts": {
     "build": "tsc",
     "watch": "tsc -w",
     "test": "jest",
-    "cdk": "cdk"
+    "cdk": "cdk",
+    "synth": "cdk --profile=doug synth --no-staging > $npm_package_config_template",
+    "say_user": "echo $npm_config_user",
+    "say_template": "echo $npm_package_config_template",
+    "run": "cdk --profile=doug synth --no-staging > $npm_package_config_template && sam local start-api --template $npm_package_config_template --port $npm_package_config_port --host $npm_package_config_host",
+    "say-var1": "echo MY_VAR1: ${MY_VAR1:-default-var1}"
   },
   "devDependencies": {
     "aws-cdk": "1.74.0",

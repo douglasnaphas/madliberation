@@ -1,3 +1,6 @@
 [submodule "mljsapi"]
 	path = mljsapi
 	url = git@github.com:douglasnaphas/mljsapi.git
+[submodule "madliberationjs"]
+	path = madliberationjs
+	url = git@github.com:douglasnaphas/madliberationjs.git

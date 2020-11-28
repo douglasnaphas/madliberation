@@ -17,7 +17,7 @@ export class MadliberationStack extends cdk.Stack {
 
     topic.addSubscription(new subs.SqsSubscription(queue));
 
-    const fn = new lambda.Function(this, "HitCounterHandler", {
+    const fn = new lambda.Function(this, "MLJSAPIHandler", {
       runtime: lambda.Runtime.NODEJS_10_X,
       handler: "index.handler",
       code: lambda.Code.fromAsset("mljsapi"),

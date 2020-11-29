@@ -4,6 +4,7 @@ import * as sqs from "@aws-cdk/aws-sqs";
 import * as cdk from "@aws-cdk/core";
 import * as lambda from "@aws-cdk/aws-lambda";
 import * as apigw from "@aws-cdk/aws-apigateway";
+import * as s3 from "@aws-cdk/aws-s3";
 
 export class MadliberationStack extends cdk.Stack {
   constructor(scope: cdk.App, id: string, props?: cdk.StackProps) {
@@ -30,5 +31,7 @@ export class MadliberationStack extends cdk.Stack {
     const lambdaApi = new apigw.LambdaRestApi(this, "Endpoint", {
       handler: fn,
     });
+
+    const frontendBucket = new s3.Bucket(this, "MadLiberationFrontendBucket");
   }
 }

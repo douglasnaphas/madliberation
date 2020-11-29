@@ -19,7 +19,8 @@
     "say_user": "echo $npm_config_user",
     "say_template": "echo $npm_package_config_template",
     "run": "cdk --profile=doug synth --no-staging > $npm_package_config_template && sam local start-api --template $npm_package_config_template --port $npm_package_config_port --host $npm_package_config_host",
-    "say-var1": "echo MY_VAR1: ${MY_VAR1:-default-var1}"
+    "say-var1": "echo MY_VAR1: ${MY_VAR1:-default-var1}",
+    "simulate-port": "echo the port will be ${THE_PORT:-$npm_package_config_defaultPort}"
   },
   "devDependencies": {
     "aws-cdk": "1.75.0",

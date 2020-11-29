@@ -32,11 +32,6 @@ jobs:
       - name: Install
         run: |
           make install
-          ls
-          echo "ls mljsapi..."
-          ls mljsapi
-          echo "ls mljsapi/node_modules"
-          ls mljsapi/node_modules
 
       - name: Build
         run: |

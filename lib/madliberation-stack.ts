@@ -5,10 +5,16 @@ import * as cdk from "@aws-cdk/core";
 import * as lambda from "@aws-cdk/aws-lambda";
 import * as apigw from "@aws-cdk/aws-apigateway";
 import * as s3 from "@aws-cdk/aws-s3";
+import * as cloudfront from "@aws-cdk/aws-cloudfront";
+import * as origins from "@aws-cdk/aws-cloudfront-origins";
 
 export class MadliberationStack extends cdk.Stack {
   constructor(scope: cdk.App, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
+
+    const frontendBucketName = this.node.tryGetContext(
+      "frontendBucketName"
+    ) as string;
 
     const queue = new sqs.Queue(this, "MadliberationQueue", {
       visibilityTimeout: cdk.Duration.seconds(300),
@@ -32,6 +38,11 @@ export class MadliberationStack extends cdk.Stack {
       handler: fn,
     });
 
-    const frontendBucket = new s3.Bucket(this, "MadLiberationFrontendBucket");
+    const frontendBucket = new s3.Bucket(this, "FrontendBucket", {
+      bucketName: frontendBucketName,
+    });
+    new cloudfront.Distribution(this, "Distro", {
+      defaultBehavior: { origin: new origins.S3Origin(frontendBucket) },
+    });
   }
 }

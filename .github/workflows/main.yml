@@ -50,13 +50,13 @@ jobs:
           ls
           make tests
 
-      - name: Deploy to lab
+      - name: Deploy AWS resources
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.LAB_AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.LAB_AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: "us-east-1"
         run: |
-          make deploy
+          make deploy-infra
 
       - name: Deploy to the frontend bucket
         env:

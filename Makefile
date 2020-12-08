@@ -15,12 +15,20 @@ bootstrap:	aws-prereqs
 diff:	bootstrap
 	npx cdk diff
 
-deploy:	bootstrap
+deploy-infra:	bootstrap
 	npx cdk deploy --require-approval never
 
-install: |
+deploy-frontend:
+	bash scripts/deploy-frontend.sh
+
+install:
 	npm install
+
+install-backend:
 	cd mljsapi && npm install
+
+install-frontend:
+	cd madliberationjs && npm install
 
 build:
 	npm run build

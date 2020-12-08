@@ -33,6 +33,14 @@ jobs:
         run: |
           make install
 
+      - name: Install frontend
+        run: |
+          make install-frontend
+
+      - name: Install backend
+        run: |
+          make install-backend
+
       - name: Build
         run: |
           make build
@@ -42,10 +50,18 @@ jobs:
           ls
           make tests
 
-      - name: Deploy to prod
+      - name: Deploy to lab
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.LAB_AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.LAB_AWS_SECRET_ACCESS_KEY }}
-          AWS_DEFAULT_REGION: ${{ secrets.LAB_AWS_DEFAULT_REGION }}
+          AWS_DEFAULT_REGION: "us-east-1"
         run: |
           make deploy
+
+      - name: Deploy to the frontend bucket
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.LAB_AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.LAB_AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: "us-east-1"
+        run: |
+          make deploy-frontend

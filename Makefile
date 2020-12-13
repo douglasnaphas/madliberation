@@ -33,5 +33,8 @@ install-frontend:
 build:
 	npm run build
 
+build-frontend:
+	cd madliberationjs && npm run-script build
+
 tests:
 	npm test

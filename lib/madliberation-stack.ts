@@ -41,8 +41,14 @@ export class MadliberationStack extends cdk.Stack {
     const frontendBucket = new s3.Bucket(this, "FrontendBucket", {
       bucketName: frontendBucketName,
     });
-    new cloudfront.Distribution(this, "Distro", {
+    const distro = new cloudfront.Distribution(this, "Distro", {
       defaultBehavior: { origin: new origins.S3Origin(frontendBucket) },
+    });
+    new cdk.CfnOutput(this, "DistributionDomainName", {
+      value: distro.distributionDomainName,
+    });
+    new cdk.CfnOutput(this, "DomainName", {
+      value: distro.domainName,
     });
   }
 }

@@ -2,8 +2,7 @@
 
 deploy-to-bucket() {
   BUCKET=$1
-  cd madliberation
-  npm run-script build
+  cd madliberationjs
   aws s3 sync --content-type "text/html" --exclude "*" --include "*.html" --delete build/ s3://${BUCKET}/
   aws s3 sync --content-type "text/css" --exclude "*" --include "*.css" --include "*.css.map" --delete build/ s3://${BUCKET}/
   aws s3 sync --content-type "text/javascript" --exclude "*" --include "*.js" --include "*.js.map" --delete build/ s3://${BUCKET}/

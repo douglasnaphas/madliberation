@@ -63,7 +63,7 @@ export class MadliberationStack extends cdk.Stack {
       value: lambdaApi.url,
     });
     new cdk.CfnOutput(this, "lambdaApi_url_transformed", {
-      value: lambdaApi.url.replace(/https:\/\//, "").replace(/\/prod\//, ""),
+      value: lambdaApi.url.replace(/https:\/\/|\/prod\//g, ""),
     });
   }
 }

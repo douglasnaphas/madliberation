@@ -23,8 +23,8 @@
     "simulate-port": "echo the port will be ${THE_PORT:-$npm_package_config_defaultPort}"
   },
   "devDependencies": {
-    "aws-cdk": "1.75.0",
-    "@aws-cdk/assert": "1.75.0",
+    "aws-cdk": "1.78.0",
+    "@aws-cdk/assert": "1.78.0",
     "@types/jest": "^26.0.10",
     "@types/node": "10.17.27",
     "jest": "^26.4.2",
@@ -33,13 +33,13 @@
     "typescript": "~3.9.7"
   },
   "dependencies": {
-    "@aws-cdk/aws-apigateway": "1.75.0",
-    "@aws-cdk/aws-cloudfront": "^1.75.0",
-    "@aws-cdk/aws-cloudfront-origins": "^1.75.0",
-    "@aws-cdk/aws-lambda": "1.75.0",
-    "@aws-cdk/aws-sns": "1.75.0",
-    "@aws-cdk/aws-sns-subscriptions": "1.75.0",
-    "@aws-cdk/aws-sqs": "1.75.0",
-    "@aws-cdk/core": "1.75.0"
+    "@aws-cdk/aws-apigateway": "1.78.0",
+    "@aws-cdk/aws-cloudfront": "^1.78.0",
+    "@aws-cdk/aws-cloudfront-origins": "1.78.0",
+    "@aws-cdk/aws-lambda": "1.78.0",
+    "@aws-cdk/aws-sns": "1.78.0",
+    "@aws-cdk/aws-sns-subscriptions": "1.78.0",
+    "@aws-cdk/aws-sqs": "1.78.0",
+    "@aws-cdk/core": "1.78.0"
   }
 }

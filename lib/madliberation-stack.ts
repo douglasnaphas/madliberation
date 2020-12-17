@@ -44,14 +44,14 @@ export class MadliberationStack extends cdk.Stack {
     const distro = new cloudfront.Distribution(this, "Distro", {
       defaultBehavior: { origin: new origins.S3Origin(frontendBucket) },
       defaultRootObject: "index.html",
-      additionalBehaviors: {
-        "/prod/*": {
-          origin: new origins.HttpOrigin(
-            lambdaApi.url.replace(/^https:\/\./, "").replace(/\/prod\/$/, ""),
-            { protocolPolicy: cloudfront.OriginProtocolPolicy.HTTPS_ONLY }
-          ),
-        },
-      },
+      // additionalBehaviors: {
+      //   "/prod/*": {
+      //     origin: new origins.HttpOrigin(
+      //       lambdaApi.url.replace(/^https:\/\./, "").replace(/\/prod\/$/, ""),
+      //       { protocolPolicy: cloudfront.OriginProtocolPolicy.HTTPS_ONLY }
+      //     ),
+      //   },
+      // },
     });
     new cdk.CfnOutput(this, "DistributionDomainName", {
       value: distro.distributionDomainName,
@@ -61,6 +61,9 @@ export class MadliberationStack extends cdk.Stack {
     });
     new cdk.CfnOutput(this, "lambdaApi_url", {
       value: lambdaApi.url,
+    });
+    new cdk.CfnOutput(this, "lambdaApi_url_transformed", {
+      value: lambdaApi.url.replace(/^https:\/\./, "").replace(/\/prod\/$/, ""),
     });
   }
 }

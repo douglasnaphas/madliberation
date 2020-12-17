@@ -60,11 +60,8 @@ export class MadliberationStack extends cdk.Stack {
     new cdk.CfnOutput(this, "DomainName", {
       value: distro.domainName,
     });
-    new cdk.CfnOutput(this, "lambdaApi_domainName", {
-      value: lambdaApi.domainName?.toString() || "unknown???",
-    });
-    new cdk.CfnOutput(this, "lambdaApi_domainName_domainName", {
-      value: lambdaApi.domainName?.domainName.toString() || "unknown???",
+    new cdk.CfnOutput(this, "lambdaApi_url", {
+      value: lambdaApi.url,
     });
   }
 }

@@ -44,14 +44,14 @@ export class MadliberationStack extends cdk.Stack {
     const distro = new cloudfront.Distribution(this, "Distro", {
       defaultBehavior: { origin: new origins.S3Origin(frontendBucket) },
       defaultRootObject: "index.html",
-      additionalBehaviors: {
-        "/prod/*": {
-          origin: new origins.HttpOrigin(
-            lambdaApi.url.replace(/^https:\/\//, "").replace(/\/prod\//, ""),
-            { protocolPolicy: cloudfront.OriginProtocolPolicy.HTTPS_ONLY }
-          ),
-        },
-      },
+      // additionalBehaviors: {
+      //   "/prod/*": {
+      //     origin: new origins.HttpOrigin(
+      //       lambdaApi.url.replace(/^https:\/\//, "").replace(/\/prod\//, ""),
+      //       { protocolPolicy: cloudfront.OriginProtocolPolicy.HTTPS_ONLY }
+      //     ),
+      //   },
+      // },
     });
     new cdk.CfnOutput(this, "DistributionDomainName", {
       value: distro.distributionDomainName,

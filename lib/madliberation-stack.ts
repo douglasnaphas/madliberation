@@ -41,17 +41,22 @@ export class MadliberationStack extends cdk.Stack {
     const frontendBucket = new s3.Bucket(this, "FrontendBucket", {
       bucketName: frontendBucketName,
     });
+    const lambdaApiUrlConstructed =
+      lambdaApi.restApiId +
+      ".execute-api." +
+      this.region +
+      "." +
+      this.urlSuffix;
     const distro = new cloudfront.Distribution(this, "Distro", {
       defaultBehavior: { origin: new origins.S3Origin(frontendBucket) },
       defaultRootObject: "index.html",
-      // additionalBehaviors: {
-      //   "/prod/*": {
-      //     origin: new origins.HttpOrigin(
-      //       lambdaApi.url.replace(/^https:\/\//, "").replace(/\/prod\//, ""),
-      //       { protocolPolicy: cloudfront.OriginProtocolPolicy.HTTPS_ONLY }
-      //     ),
-      //   },
-      // },
+      additionalBehaviors: {
+        "/prod/*": {
+          origin: new origins.HttpOrigin(lambdaApiUrlConstructed, {
+            protocolPolicy: cloudfront.OriginProtocolPolicy.HTTPS_ONLY,
+          }),
+        },
+      },
     });
     new cdk.CfnOutput(this, "DistributionDomainName", {
       value: distro.distributionDomainName,
@@ -66,12 +71,7 @@ export class MadliberationStack extends cdk.Stack {
       value: lambdaApi.url.replace(/https:\/\/|\/prod\//g, ""),
     });
     new cdk.CfnOutput(this, "lambdaApi_url_constructed", {
-      value:
-        lambdaApi.restApiId +
-        ".execute-api." +
-        this.region +
-        "." +
-        this.urlSuffix,
+      value: lambdaApiUrlConstructed,
     });
   }
 }

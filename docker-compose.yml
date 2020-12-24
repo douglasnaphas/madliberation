@@ -1,6 +1,16 @@
 version: "3"
 
 services:
+  frontend:
+    image: node:12.20.0-buster-slim
+    volumes:
+      - ./madliberationjs:/app
+    expose:
+      - "3800"
+    environment:
+      - PORT=3800
+    working_dir: /app
+    command: ["npm", "start"]
   mljsapi:
     build: ./mljsapi
     ports:

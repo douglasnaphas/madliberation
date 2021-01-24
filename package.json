@@ -4,27 +4,15 @@
   "bin": {
     "madliberation": "bin/madliberation.js"
   },
-  "config": {
-    "template": "template.yml",
-    "port": "3535",
-    "defaultPort": "3535",
-    "host": "localhost"
-  },
   "scripts": {
     "build": "tsc",
     "watch": "tsc -w",
     "test": "jest",
-    "cdk": "cdk",
-    "synth": "cdk --profile=doug synth --no-staging > $npm_package_config_template",
-    "say_user": "echo $npm_config_user",
-    "say_template": "echo $npm_package_config_template",
-    "run": "cdk --profile=doug synth --no-staging > $npm_package_config_template && sam local start-api --template $npm_package_config_template --port $npm_package_config_port --host $npm_package_config_host",
-    "say-var1": "echo MY_VAR1: ${MY_VAR1:-default-var1}",
-    "simulate-port": "echo the port will be ${THE_PORT:-$npm_package_config_defaultPort}"
+    "cdk": "cdk"
   },
   "devDependencies": {
-    "aws-cdk": "1.78.0",
-    "@aws-cdk/assert": "1.78.0",
+    "aws-cdk": "1.86.0",
+    "@aws-cdk/assert": "1.86.0",
     "@types/jest": "^26.0.10",
     "@types/node": "10.17.27",
     "jest": "^26.4.2",
@@ -33,13 +21,12 @@
     "typescript": "~3.9.7"
   },
   "dependencies": {
-    "@aws-cdk/aws-apigateway": "1.78.0",
-    "@aws-cdk/aws-cloudfront": "^1.78.0",
-    "@aws-cdk/aws-cloudfront-origins": "1.78.0",
-    "@aws-cdk/aws-lambda": "1.78.0",
-    "@aws-cdk/aws-sns": "1.78.0",
-    "@aws-cdk/aws-sns-subscriptions": "1.78.0",
-    "@aws-cdk/aws-sqs": "1.78.0",
-    "@aws-cdk/core": "1.78.0"
+    "@aws-cdk/aws-apigateway": "1.86.0",
+    "@aws-cdk/aws-cloudfront": "^1.86.0",
+    "@aws-cdk/aws-cloudfront-origins": "1.86.0",
+    "@aws-cdk/aws-lambda": "1.86.0",
+    "@aws-cdk/aws-ssm": "^1.86.0",
+    "@aws-cdk/core": "1.86.0",
+    "@cdk-turnkey/stackname": "^1.1.0"
   }
 }

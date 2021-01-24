@@ -3,7 +3,7 @@ TEMPLATE_YML=template.yml
 watch:
 	npm run watch
 
-synth:	aws-prereqs
+synth:	aws-prereqs # remove this and the related npm script
 	npx cdk synth --no-staging > $(TEMPLATE_YML)
 
 aws-prereqs:

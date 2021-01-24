@@ -1,28 +1,15 @@
-import * as sns from "@aws-cdk/aws-sns";
-import * as subs from "@aws-cdk/aws-sns-subscriptions";
-import * as sqs from "@aws-cdk/aws-sqs";
 import * as cdk from "@aws-cdk/core";
 import * as lambda from "@aws-cdk/aws-lambda";
 import * as apigw from "@aws-cdk/aws-apigateway";
 import * as s3 from "@aws-cdk/aws-s3";
 import * as cloudfront from "@aws-cdk/aws-cloudfront";
 import * as origins from "@aws-cdk/aws-cloudfront-origins";
+import * as ssm from "@aws-cdk/aws-ssm";
+const stackname = require("@cdk-turnkey/stackname");
 
 export class MadliberationStack extends cdk.Stack {
   constructor(scope: cdk.App, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
-
-    const frontendBucketName = this.node.tryGetContext(
-      "frontendBucketName"
-    ) as string;
-
-    const queue = new sqs.Queue(this, "MadliberationQueue", {
-      visibilityTimeout: cdk.Duration.seconds(300),
-    });
-
-    const topic = new sns.Topic(this, "MadliberationTopic");
-
-    topic.addSubscription(new subs.SqsSubscription(queue));
 
     const fn = new lambda.Function(this, "MLJSAPIHandler", {
       runtime: lambda.Runtime.NODEJS_10_X,
@@ -38,9 +25,18 @@ export class MadliberationStack extends cdk.Stack {
       handler: fn,
     });
 
-    const frontendBucket = new s3.Bucket(this, "FrontendBucket", {
-      bucketName: frontendBucketName,
-    });
+    const frontendBucket = new s3.Bucket(this, "FrontendBucket");
+    const frontendBucketNameParam = new ssm.StringParameter(
+      this,
+      "FrontendBucketNameParam",
+      {
+        description: "The name of the bucket where front-end assets go",
+        parameterName: stackname("FrontendBucketName"),
+        stringValue: frontendBucket.bucketName,
+        tier: ssm.ParameterTier.STANDARD,
+        type: ssm.ParameterType.STRING,
+      }
+    );
     const lambdaApiUrlConstructed =
       lambdaApi.restApiId +
       ".execute-api." +
@@ -72,6 +68,9 @@ export class MadliberationStack extends cdk.Stack {
     });
     new cdk.CfnOutput(this, "lambdaApi_url_constructed", {
       value: lambdaApiUrlConstructed,
+    });
+    new cdk.CfnOutput(this, "FrontendBucketName", {
+      value: frontendBucket.bucketName,
     });
   }
 }

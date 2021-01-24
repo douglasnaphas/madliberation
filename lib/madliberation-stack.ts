@@ -72,5 +72,8 @@ export class MadliberationStack extends cdk.Stack {
     new cdk.CfnOutput(this, "FrontendBucketName", {
       value: frontendBucket.bucketName,
     });
+    new cdk.CfnOutput(this, "FrontendBucketNameParamName", {
+      value: frontendBucketNameParam.parameterName,
+    });
   }
 }

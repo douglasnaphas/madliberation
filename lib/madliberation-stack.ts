@@ -11,10 +11,10 @@ export class MadliberationStack extends cdk.Stack {
   constructor(scope: cdk.App, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 
-    const fn = new lambda.Function(this, "MLJSAPIHandler", {
+    const fn = new lambda.Function(this, "BackendHandler", {
       runtime: lambda.Runtime.NODEJS_10_X,
       handler: "index.handler",
-      code: lambda.Code.fromAsset("mljsapi"),
+      code: lambda.Code.fromAsset("backend"),
       environment: {
         NODE_ENV: "development",
       },

@@ -32,38 +32,41 @@ jobs:
           npm install
 
       - name: Install frontend
+        working-directory: frontend
         run: |
-          make install-frontend
+          npm install
 
       - name: Install backend
+        working-directory: backend
         run: |
-          make install-backend
+          npm install
 
       - name: Build
         run: |
-          make build
+          npm run build
 
       - name: Build frontend
+        working-directory: frontend
         run: |
-          make build-frontend
+          npm run build
 
       - name: Test
         run: |
-          ls
-          make tests
+          npm test
 
-      - name: Deploy AWS resources
+      - name: Deploy AWS resources to test account
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.LAB_AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.LAB_AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: "us-east-1"
         run: |
-          make deploy-infra
+          npx cdk bootstrap
+          npx cdk deploy --require-approval never
 
-      - name: Deploy to the frontend bucket
+      - name: Deploy to the frontend bucket (test account)
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.LAB_AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.LAB_AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: "us-east-1"
         run: |
-          make deploy-frontend
+          bash scripts/deploy-frontend.sh

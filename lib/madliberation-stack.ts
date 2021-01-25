@@ -12,7 +12,7 @@ export class MadliberationStack extends cdk.Stack {
   constructor(scope: cdk.App, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 
-    const SedersTable = new dynamodb.Table(this, "SedersTable", {
+    const sedersTable = new dynamodb.Table(this, "SedersTable", {
       partitionKey: { name: "room_code", type: dynamodb.AttributeType.STRING },
       sortKey: { name: "lib_id", type: dynamodb.AttributeType.STRING },
       billingMode: dynamodb.BillingMode.PAY_PER_REQUEST,
@@ -24,7 +24,8 @@ export class MadliberationStack extends cdk.Stack {
       handler: "index.handler",
       code: lambda.Code.fromAsset("backend"),
       environment: {
-        NODE_ENV: "development",
+        NODE_ENV: "production",
+        TABLE_NAME: sedersTable.tableName,
       },
       timeout: cdk.Duration.seconds(20),
     });

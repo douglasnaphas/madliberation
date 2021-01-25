@@ -21,9 +21,6 @@ deploy-infra:	bootstrap
 deploy-frontend:
 	bash scripts/deploy-frontend.sh
 
-install:
-	npm install
-
 install-backend:
 	cd mljsapi && npm install
 

@@ -5,11 +5,19 @@ import * as s3 from "@aws-cdk/aws-s3";
 import * as cloudfront from "@aws-cdk/aws-cloudfront";
 import * as origins from "@aws-cdk/aws-cloudfront-origins";
 import * as ssm from "@aws-cdk/aws-ssm";
+import * as dynamodb from "@aws-cdk/aws-dynamodb";
 const stackname = require("@cdk-turnkey/stackname");
 
 export class MadliberationStack extends cdk.Stack {
   constructor(scope: cdk.App, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
+
+    const SedersTable = new dynamodb.Table(this, "SedersTable", {
+      partitionKey: { name: "room_code", type: dynamodb.AttributeType.STRING },
+      sortKey: { name: "lib_id", type: dynamodb.AttributeType.STRING },
+      billingMode: dynamodb.BillingMode.PAY_PER_REQUEST,
+      removalPolicy: cdk.RemovalPolicy.DESTROY,
+    });
 
     const fn = new lambda.Function(this, "BackendHandler", {
       runtime: lambda.Runtime.NODEJS_10_X,

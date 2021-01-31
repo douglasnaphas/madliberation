@@ -54,6 +54,12 @@ jobs:
         run: |
           npm test
 
+      - name: Say region
+        env:
+          AWS_DEFAULT_REGION: ${{ secrets.DEV_AWS_DEFAULT_REGION }}
+        run: |
+          echo ${AWS_DEFAULT_REGION} | sed 's/-/+/g'
+
       - name: Deploy AWS resources to dev account
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.DEV_AWS_ACCESS_KEY_ID }}

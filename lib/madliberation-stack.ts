@@ -92,5 +92,11 @@ export class MadliberationStack extends cdk.Stack {
     new cdk.CfnOutput(this, "FrontendBucketNameParamName", {
       value: frontendBucketNameParam.parameterName,
     });
+    // this is so GitHub Actions will display it when default regaion for the
+    // CI user is a GitHub Actions Secret
+    const mangledRegion = this.region.toUpperCase().replace(/-/, "+");
+    new cdk.CfnOutput(this, "Region", {
+      value: mangledRegion,
+    });
   }
 }

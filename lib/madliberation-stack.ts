@@ -35,6 +35,10 @@ export class MadliberationStack extends cdk.Stack {
     });
 
     const frontendBucket = new s3.Bucket(this, "FrontendBucket");
+
+    // This is so a script can find the bucket and deploy to it.
+    // I can't wrap up the artifact at cdk-deploy time, because the CDK Level-3
+    // construct for doing so is still (last I checked) experimental
     const frontendBucketNameParam = new ssm.StringParameter(
       this,
       "FrontendBucketNameParam",
@@ -46,6 +50,7 @@ export class MadliberationStack extends cdk.Stack {
         type: ssm.ParameterType.STRING,
       }
     );
+
     const lambdaApiUrlConstructed =
       lambdaApi.restApiId +
       ".execute-api." +

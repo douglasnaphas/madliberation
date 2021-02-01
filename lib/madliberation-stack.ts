@@ -68,6 +68,8 @@ export class MadliberationStack extends cdk.Stack {
           origin: new origins.HttpOrigin(lambdaApiUrlConstructed, {
             protocolPolicy: cloudfront.OriginProtocolPolicy.HTTPS_ONLY,
           }),
+          viewerProtocolPolicy:
+            cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
         },
       },
     });

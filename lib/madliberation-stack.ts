@@ -61,6 +61,7 @@ export class MadliberationStack extends cdk.Stack {
       defaultBehavior: {
         origin: new origins.S3Origin(frontendBucket),
         viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
+        cachePolicy: cloudfront.CachePolicy.CACHING_DISABLED,
       },
       defaultRootObject: "index.html",
       additionalBehaviors: {
@@ -70,6 +71,8 @@ export class MadliberationStack extends cdk.Stack {
           }),
           viewerProtocolPolicy:
             cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
+          cachePolicy: cloudfront.CachePolicy.CACHING_DISABLED,
+          originRequestPolicy: cloudfront.OriginRequestPolicy.ALL_VIEWER,
         },
       },
     });

@@ -15,4 +15,4 @@ then
   echo "failing"
   exit 1
 fi
-npx ../itest
+npx ../itest --site ${URL}

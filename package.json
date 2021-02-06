@@ -12,8 +12,8 @@
     "diff": "npx cdk diff"
   },
   "devDependencies": {
-    "aws-cdk": "1.86.0",
-    "@aws-cdk/assert": "1.86.0",
+    "aws-cdk": "1.88.0",
+    "@aws-cdk/assert": "1.88.0",
     "@types/jest": "^26.0.10",
     "@types/node": "10.17.27",
     "jest": "^26.4.2",
@@ -22,13 +22,13 @@
     "typescript": "~3.9.7"
   },
   "dependencies": {
-    "@aws-cdk/aws-apigateway": "1.86.0",
-    "@aws-cdk/aws-cloudfront": "^1.86.0",
-    "@aws-cdk/aws-cloudfront-origins": "1.86.0",
-    "@aws-cdk/aws-dynamodb": "^1.86.0",
-    "@aws-cdk/aws-lambda": "1.86.0",
-    "@aws-cdk/aws-ssm": "^1.86.0",
-    "@aws-cdk/core": "1.86.0",
+    "@aws-cdk/aws-apigateway": "1.88.0",
+    "@aws-cdk/aws-cloudfront": "^1.88.0",
+    "@aws-cdk/aws-cloudfront-origins": "1.88.0",
+    "@aws-cdk/aws-dynamodb": "^1.88.0",
+    "@aws-cdk/aws-lambda": "1.88.0",
+    "@aws-cdk/aws-ssm": "^1.88.0",
+    "@aws-cdk/core": "1.88.0",
     "@cdk-turnkey/stackname": "^1.1.0"
   }
 }

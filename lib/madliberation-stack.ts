@@ -58,6 +58,9 @@ export class MadliberationStack extends cdk.Stack {
       "." +
       this.urlSuffix;
     const distro = new cloudfront.Distribution(this, "Distro", {
+      logBucket: new s3.Bucket(this, "DistroLoggingBucket"),
+      logFilePrefix: "distribution-access-logs/",
+      logIncludesCookies: true,
       defaultBehavior: {
         origin: new origins.S3Origin(frontendBucket),
         viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,

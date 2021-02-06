@@ -75,6 +75,10 @@ export class MadliberationStack extends cdk.Stack {
           viewerProtocolPolicy:
             cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
           cachePolicy: cloudfront.CachePolicy.CACHING_DISABLED,
+          originRequestPolicy: new cloudfront.OriginRequestPolicy(
+            this,
+            "BackendORP"
+          ),
           // originRequestPolicy: cloudfront.OriginRequestPolicy.ALL_VIEWER,
         },
       },

@@ -80,6 +80,7 @@ export class MadliberationStack extends cdk.Stack {
             "BackendORP",
             {
               cookieBehavior: cloudfront.OriginRequestCookieBehavior.all(),
+              queryStringBehavior: cloudfront.OriginRequestQueryStringBehavior.all(),
             }
           ),
           // originRequestPolicy: cloudfront.OriginRequestPolicy.ALL_VIEWER,

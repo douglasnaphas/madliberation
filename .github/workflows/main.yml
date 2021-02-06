@@ -80,6 +80,20 @@ jobs:
         run: |
           bash scripts/deploy-frontend.sh
 
+      - name: Install itest
+        working-directory: itest
+        run: |
+          npm install
+
+      - name: Run integration tests, test account
+        working-directory: scripts
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.TEST_AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.TEST_AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: ${{ secrets.TEST_AWS_DEFAULT_REGION }}
+        run: |
+          bash itest.sh
+
       - name: Identify prod account and region
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.PROD_AWS_ACCESS_KEY_ID }}
@@ -105,3 +119,12 @@ jobs:
           AWS_DEFAULT_REGION: ${{ secrets.PROD_AWS_DEFAULT_REGION }}
         run: |
           bash scripts/deploy-frontend.sh
+
+      - name: Run integration tests, prod account
+        working-directory: scripts
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.PROD_AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.PROD_AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: ${{ secrets.PROD_AWS_DEFAULT_REGION }}
+        run: |
+          bash itest.sh

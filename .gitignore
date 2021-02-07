@@ -11,3 +11,5 @@ cdk.out
 .parcel-cache
 
 /*template*.yml
+
+.DS_Store

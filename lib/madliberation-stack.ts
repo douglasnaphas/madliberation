@@ -23,6 +23,7 @@ export class MadliberationStack extends cdk.Stack {
       runtime: lambda.Runtime.NODEJS_10_X,
       handler: "index.handler",
       code: lambda.Code.fromAsset("backend"),
+      memorySize: 3000,
       environment: {
         NODE_ENV: "production",
         TABLE_NAME: sedersTable.tableName,

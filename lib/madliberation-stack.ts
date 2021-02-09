@@ -108,7 +108,7 @@ export class MadliberationStack extends cdk.Stack {
         scopes: [cognito.OAuthScope.EMAIL],
         flows: {
           authorizationCodeGrant: true,
-          clientCredentials: true,
+          clientCredentials: false,
           implicitCodeGrant: false,
         },
       },

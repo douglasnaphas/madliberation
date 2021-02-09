@@ -123,11 +123,11 @@ export class MadliberationStack extends cdk.Stack {
       .slice(0, 20);
     const domainPrefix = stacknameHash + this.account;
 
-    // userPool.addDomain("UserPoolDomain", {
-    //   cognitoDomain: {
-    //     domainPrefix: domainPrefix,
-    //   },
-    // });
+    userPool.addDomain("UserPoolDomain", {
+      cognitoDomain: {
+        domainPrefix: domainPrefix,
+      },
+    });
 
     new cdk.CfnOutput(this, "DistributionDomainName", {
       value: distro.distributionDomainName,

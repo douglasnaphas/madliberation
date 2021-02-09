@@ -8,6 +8,7 @@ import * as ssm from "@aws-cdk/aws-ssm";
 import * as dynamodb from "@aws-cdk/aws-dynamodb";
 import * as cognito from "@aws-cdk/aws-cognito";
 const stackname = require("@cdk-turnkey/stackname");
+const crypto = require("crypto");
 
 export class MadliberationStack extends cdk.Stack {
   constructor(scope: cdk.App, id: string, props?: cdk.StackProps) {
@@ -114,11 +115,17 @@ export class MadliberationStack extends cdk.Stack {
       },
     });
 
+    const stacknameHash = crypto
+      .createHash("sha256")
+      .update(stackname(`udp`))
+      .digest("hex")
+      .toLowerCase()
+      .slice(0, 20);
+    const domainPrefix = stacknameHash + this.account;
+
     userPool.addDomain("UserPoolDomain", {
       cognitoDomain: {
-        domainPrefix: stackname(
-          `udp-${this.account.slice(0, 6)}`
-        ).toLowerCase(),
+        domainPrefix: domainPrefix,
       },
     });
 

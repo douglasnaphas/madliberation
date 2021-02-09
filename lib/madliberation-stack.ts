@@ -6,6 +6,7 @@ import * as cloudfront from "@aws-cdk/aws-cloudfront";
 import * as origins from "@aws-cdk/aws-cloudfront-origins";
 import * as ssm from "@aws-cdk/aws-ssm";
 import * as dynamodb from "@aws-cdk/aws-dynamodb";
+import * as cognito from "@aws-cdk/aws-cognito";
 const stackname = require("@cdk-turnkey/stackname");
 
 export class MadliberationStack extends cdk.Stack {
@@ -88,6 +89,36 @@ export class MadliberationStack extends cdk.Stack {
         },
       },
     });
+
+    const userPool = new cognito.UserPool(this, "UserPool", {
+      selfSignUpEnabled: true,
+      userVerification: {
+        emailSubject: "Mad Liberation: verify your new account",
+        emailStyle: cognito.VerificationEmailStyle.LINK,
+      },
+      signInAliases: { username: true, email: true, phone: true },
+      autoVerify: { email: true, phone: true },
+      mfa: cognito.Mfa.OPTIONAL,
+      accountRecovery: cognito.AccountRecovery.EMAIL_AND_PHONE_WITHOUT_MFA,
+    });
+    userPool.addClient("UserPoolClient", {
+      generateSecret: true,
+      oAuth: {
+        callbackUrls: ["https://" + distro.domainName + "/prod/get-cookies"],
+        scopes: [cognito.OAuthScope.EMAIL],
+        flows: {
+          authorizationCodeGrant: true,
+          clientCredentials: true,
+          implicitCodeGrant: false,
+        },
+      },
+    });
+    userPool.addDomain("UserPoolDomain", {
+      cognitoDomain: {
+        domainPrefix: stackname("upd").toLowerCase(),
+      },
+    });
+
     new cdk.CfnOutput(this, "DistributionDomainName", {
       value: distro.distributionDomainName,
     });

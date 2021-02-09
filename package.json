@@ -25,6 +25,7 @@
     "@aws-cdk/aws-apigateway": "1.88.0",
     "@aws-cdk/aws-cloudfront": "^1.88.0",
     "@aws-cdk/aws-cloudfront-origins": "1.88.0",
+    "@aws-cdk/aws-cognito": "^1.88.0",
     "@aws-cdk/aws-dynamodb": "^1.88.0",
     "@aws-cdk/aws-lambda": "1.88.0",
     "@aws-cdk/aws-ssm": "^1.88.0",

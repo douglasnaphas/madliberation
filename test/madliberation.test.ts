@@ -7,6 +7,9 @@ beforeEach(() => {
   jest.resetModules();
   process.env = { ...OLD_ENV };
 });
+afterAll(() => {
+  process.env = { ...OLD_ENV };
+});
 test("can instantiate stack", () => {
   const app = new cdk.App();
   process.env.GITHUB_REPOSITORY = "douglasnaphas/madliberation";

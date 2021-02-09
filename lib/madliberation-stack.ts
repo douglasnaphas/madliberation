@@ -113,9 +113,12 @@ export class MadliberationStack extends cdk.Stack {
         },
       },
     });
+
     userPool.addDomain("UserPoolDomain", {
       cognitoDomain: {
-        domainPrefix: userPool.userPoolId,
+        domainPrefix: stackname(
+          `udp-${this.account.slice(0, 6)}`
+        ).toLowerCase(),
       },
     });
 

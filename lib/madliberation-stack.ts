@@ -21,6 +21,13 @@ export class MadliberationStack extends cdk.Stack {
       removalPolicy: cdk.RemovalPolicy.DESTROY,
     });
 
+    // This has to happen before the backend handler, because the Lambda needs
+    // the bucket name as an env var.
+    const clientSecretBucket = new s3.Bucket(this, "BackendSecretBucket", {
+      blockPublicAccess: s3.BlockPublicAccess.BLOCK_ALL,
+      versioned: true,
+    });
+
     const fn = new lambda.Function(this, "BackendHandler", {
       runtime: lambda.Runtime.NODEJS_10_X,
       handler: "index.handler",
@@ -29,9 +36,12 @@ export class MadliberationStack extends cdk.Stack {
       environment: {
         NODE_ENV: "production",
         TABLE_NAME: sedersTable.tableName,
+        CLIENT_SECRET_BUCKET_NAME: clientSecretBucket.bucketName,
       },
       timeout: cdk.Duration.seconds(20),
     });
+
+    clientSecretBucket.grantRead(fn);
 
     const lambdaApi = new apigw.LambdaRestApi(this, "Endpoint", {
       handler: fn,
@@ -102,7 +112,7 @@ export class MadliberationStack extends cdk.Stack {
       mfa: cognito.Mfa.OPTIONAL,
       accountRecovery: cognito.AccountRecovery.EMAIL_AND_PHONE_WITHOUT_MFA,
     });
-    userPool.addClient("UserPoolClient", {
+    const userPoolClient = userPool.addClient("UserPoolClient", {
       generateSecret: true,
       oAuth: {
         callbackUrls: ["https://" + distro.domainName + "/prod/get-cookies"],
@@ -149,6 +159,12 @@ export class MadliberationStack extends cdk.Stack {
     });
     new cdk.CfnOutput(this, "FrontendBucketNameParamName", {
       value: frontendBucketNameParam.parameterName,
+    });
+    new cdk.CfnOutput(this, "UserPoolId", {
+      value: userPool.userPoolId,
+    });
+    new cdk.CfnOutput(this, "UserPoolClientId", {
+      value: userPoolClient.userPoolClientId,
     });
   }
 }

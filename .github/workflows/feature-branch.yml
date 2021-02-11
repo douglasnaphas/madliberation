@@ -80,6 +80,14 @@ jobs:
         run: |
           bash scripts/deploy-frontend.sh
 
+      - name: Save the user pool client secret to S3
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.DEV_AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.DEV_AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: ${{ secrets.DEV_AWS_DEFAULT_REGION }}
+        run: |
+          bash scripts/save-client-secret.sh
+
       - name: Install itest
         working-directory: itest
         run: |

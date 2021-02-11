@@ -166,5 +166,8 @@ export class MadliberationStack extends cdk.Stack {
     new cdk.CfnOutput(this, "UserPoolClientId", {
       value: userPoolClient.userPoolClientId,
     });
+    new cdk.CfnOutput(this, "ClientSecretBucketName", {
+      value: clientSecretBucket.bucketName,
+    });
   }
 }

@@ -12,12 +12,10 @@ USER_POOL_CLIENT_ID=$(aws cloudformation describe-stacks --stack-name ${STACKNAM
   '.Stacks[0].Outputs | map(select(.OutputKey | test("^UserPoolClientId$")))[0] | .OutputValue' | \
   tr -d '"' \
 )
-# saving client name for now, to make sure Actions doesn't reveal the secret
-# while I figure out the commands
 CLIENT_SECRET=$(aws cognito-idp describe-user-pool-client \
   --user-pool-id ${USER_POOL_ID} \
   --client-id ${USER_POOL_CLIENT_ID} | \
-  jq '.UserPoolClient.ClientName' | \
+  jq '.UserPoolClient.ClientSecret' | \
   tr -d '"' \
 )
 CLIENT_SECRET_FILE=cognito-client-secret.txt

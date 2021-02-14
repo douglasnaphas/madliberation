@@ -28,25 +28,6 @@ export class MadliberationStack extends cdk.Stack {
       versioned: true,
     });
 
-    const fn = new lambda.Function(this, "BackendHandler", {
-      runtime: lambda.Runtime.NODEJS_10_X,
-      handler: "index.handler",
-      code: lambda.Code.fromAsset("backend"),
-      memorySize: 3000,
-      environment: {
-        NODE_ENV: "production",
-        TABLE_NAME: sedersTable.tableName,
-        CLIENT_SECRET_BUCKET_NAME: clientSecretBucket.bucketName,
-      },
-      timeout: cdk.Duration.seconds(20),
-    });
-
-    clientSecretBucket.grantRead(fn);
-
-    const lambdaApi = new apigw.LambdaRestApi(this, "Endpoint", {
-      handler: fn,
-    });
-
     const frontendBucket = new s3.Bucket(this, "FrontendBucket");
 
     // This is so a script can find the bucket and deploy to it.
@@ -64,12 +45,6 @@ export class MadliberationStack extends cdk.Stack {
       }
     );
 
-    const lambdaApiUrlConstructed =
-      lambdaApi.restApiId +
-      ".execute-api." +
-      this.region +
-      "." +
-      this.urlSuffix;
     const distro = new cloudfront.Distribution(this, "Distro", {
       logBucket: new s3.Bucket(this, "DistroLoggingBucket"),
       logFilePrefix: "distribution-access-logs/",
@@ -80,25 +55,6 @@ export class MadliberationStack extends cdk.Stack {
         cachePolicy: cloudfront.CachePolicy.CACHING_DISABLED,
       },
       defaultRootObject: "index.html",
-      additionalBehaviors: {
-        "/prod/*": {
-          origin: new origins.HttpOrigin(lambdaApiUrlConstructed, {
-            protocolPolicy: cloudfront.OriginProtocolPolicy.HTTPS_ONLY,
-          }),
-          viewerProtocolPolicy:
-            cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
-          cachePolicy: cloudfront.CachePolicy.CACHING_DISABLED,
-          originRequestPolicy: new cloudfront.OriginRequestPolicy(
-            this,
-            "BackendORP",
-            {
-              cookieBehavior: cloudfront.OriginRequestCookieBehavior.all(),
-              queryStringBehavior: cloudfront.OriginRequestQueryStringBehavior.all(),
-            }
-          ),
-          // originRequestPolicy: cloudfront.OriginRequestPolicy.ALL_VIEWER,
-        },
-      },
     });
 
     const userPool = new cognito.UserPool(this, "UserPool", {
@@ -133,11 +89,70 @@ export class MadliberationStack extends cdk.Stack {
       .slice(0, 20);
     const domainPrefix = stacknameHash + this.account;
 
-    userPool.addDomain("UserPoolDomain", {
+    const userPoolDomain = userPool.addDomain("UserPoolDomain", {
       cognitoDomain: {
         domainPrefix: domainPrefix,
       },
     });
+
+    const fn = new lambda.Function(this, "BackendHandler", {
+      runtime: lambda.Runtime.NODEJS_10_X,
+      handler: "index.handler",
+      code: lambda.Code.fromAsset("backend"),
+      memorySize: 3000,
+      environment: {
+        NODE_ENV: "production",
+        TABLE_NAME: sedersTable.tableName,
+        CLIENT_SECRET_BUCKET_NAME: clientSecretBucket.bucketName,
+        USER_POOL_CLIENT_ID: userPoolClient.userPoolClientId,
+        USER_POOL_ID: userPool.userPoolId,
+        USER_POOL_DOMAIN: userPoolDomain.domainName,
+        REDIRECT_URI: "https://" + distro.domainName + "/prod/get-cookies",
+        IDP_URL:
+          "https://" +
+          userPoolDomain.domainName +
+          ".auth." +
+          this.region +
+          ".amazoncognito.com/login?response_type=code&client_id=" +
+          userPoolClient.userPoolClientId +
+          "&redirect_uri=" +
+          "https://" +
+          distro.domainName +
+          "/prod/get-cookies",
+      },
+      timeout: cdk.Duration.seconds(20),
+    });
+
+    clientSecretBucket.grantRead(fn);
+
+    const lambdaApi = new apigw.LambdaRestApi(this, "Endpoint", {
+      handler: fn,
+    });
+
+    const lambdaApiUrlConstructed =
+      lambdaApi.restApiId +
+      ".execute-api." +
+      this.region +
+      "." +
+      this.urlSuffix;
+    distro.addBehavior(
+      "/prod/*",
+      new origins.HttpOrigin(lambdaApiUrlConstructed, {
+        protocolPolicy: cloudfront.OriginProtocolPolicy.HTTPS_ONLY,
+      }),
+      {
+        viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
+        cachePolicy: cloudfront.CachePolicy.CACHING_DISABLED,
+        originRequestPolicy: new cloudfront.OriginRequestPolicy(
+          this,
+          "BackendORP",
+          {
+            cookieBehavior: cloudfront.OriginRequestCookieBehavior.all(),
+            queryStringBehavior: cloudfront.OriginRequestQueryStringBehavior.all(),
+          }
+        ),
+      }
+    );
 
     new cdk.CfnOutput(this, "DistributionDomainName", {
       value: distro.distributionDomainName,

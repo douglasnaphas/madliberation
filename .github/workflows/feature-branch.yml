@@ -48,7 +48,7 @@ jobs:
       - name: Build frontend
         working-directory: frontend
         run: |
-          npm run ci-build
+          npm run build
 
       - name: Test
         run: |
@@ -80,7 +80,7 @@ jobs:
         run: |
           bash scripts/deploy-frontend.sh
 
-      - name: Save the user pool client secret to S3
+      - name: Save the user pool client secret to S3 (dev account)
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.DEV_AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.DEV_AWS_SECRET_ACCESS_KEY }}
@@ -93,7 +93,7 @@ jobs:
         run: |
           npm install
 
-      - name: Run integration tests
+      - name: Run integration tests (dev account)
         working-directory: scripts
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.DEV_AWS_ACCESS_KEY_ID }}

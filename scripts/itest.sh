@@ -7,11 +7,11 @@ APP_URL=https://$(aws cloudformation describe-stacks \
   tr -d \")
 
 # Backend smoke test
-API_CANARY_URL=${APP_URL}/prod/public-endpoint
-CANARY_OUTPUT=$(curl ${API_CANARY_URL} | jq '.Output')
+BACKEND_CANARY_URL=${APP_URL}/prod/public-endpoint
+CANARY_OUTPUT=$(curl ${BACKEND_CANARY_URL} | jq '.Output')
 if [[ "${CANARY_OUTPUT}" != "\"this endpoint is public\"" ]]
 then
-  echo "expected output from ${API_CANARY_URL} to be \"this endpoint is public\""
+  echo "expected output from ${BACKEND_CANARY_URL} to be \"this endpoint is public\""
   echo "got:"
   echo "${CANARY_OUTPUT}"
   echo "failing"

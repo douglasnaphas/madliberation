@@ -91,6 +91,7 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.TEST_AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.TEST_AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: ${{ secrets.TEST_AWS_DEFAULT_REGION }}
+          AWS_REGION: ${{ secrets.TEST_AWS_DEFAULT_REGION }}
         run: |
           bash itest.sh
 
@@ -126,5 +127,6 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.PROD_AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.PROD_AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: ${{ secrets.PROD_AWS_DEFAULT_REGION }}
+          AWS_REGION: ${{ secrets.PROD_AWS_DEFAULT_REGION }}
         run: |
           bash itest.sh

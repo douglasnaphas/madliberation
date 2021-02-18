@@ -36,4 +36,8 @@ USER_POOL_DOMAIN=$(aws cognito-idp describe-user-pool \
   tr -d \")
 REDIRECT_URI=${APP_URL}/prod/get-cookies
 IDP_URL="https://${USER_POOL_DOMAIN}.auth.${AWS_DEFAULT_REGION}.amazoncognito.com/login?response_type=code&client_id=${USER_POOL_CLIENT_ID}&redirect_uri=${REDIRECT_URI}"
-npx ../itest --site ${APP_URL} --idp-url "${IDP_URL}"
+npx ../itest \
+  --site ${APP_URL} \
+  --idp-url "${IDP_URL}" \
+  --user-pool-id ${USER_POOL_ID}
+  

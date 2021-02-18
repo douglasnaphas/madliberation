@@ -67,6 +67,12 @@ export class MadliberationStack extends cdk.Stack {
       autoVerify: { email: true, phone: true },
       mfa: cognito.Mfa.OPTIONAL,
       accountRecovery: cognito.AccountRecovery.EMAIL_AND_PHONE_WITHOUT_MFA,
+      passwordPolicy: {
+        requireDigits: false,
+        requireLowercase: false,
+        requireSymbols: false,
+        requireUppercase: false,
+      },
     });
     const userPoolClient = userPool.addClient("UserPoolClient", {
       generateSecret: true,

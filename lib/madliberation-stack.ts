@@ -113,7 +113,7 @@ export class MadliberationStack extends cdk.Stack {
         TABLE_NAME: sedersTable.tableName,
         CLIENT_SECRET_BUCKET_NAME: clientSecretBucket.bucketName,
         JWKS_URL:
-          "https://cognito-idp. " +
+          "https://cognito-idp." +
           this.region +
           ".amazonaws.com/" +
           userPool.userPoolId +

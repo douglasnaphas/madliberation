@@ -10,6 +10,7 @@ import * as cognito from "@aws-cdk/aws-cognito";
 import { UserPool } from "@aws-cdk/aws-cognito";
 const stackname = require("@cdk-turnkey/stackname");
 const crypto = require("crypto");
+import { Effect, PolicyStatement } from "@aws-cdk/aws-iam";
 
 export class MadliberationStack extends cdk.Stack {
   constructor(scope: cdk.App, id: string, props?: cdk.StackProps) {
@@ -136,6 +137,16 @@ export class MadliberationStack extends cdk.Stack {
       },
       timeout: cdk.Duration.seconds(20),
     });
+
+    fn.addToRolePolicy(
+      new PolicyStatement({
+        effect: Effect.ALLOW,
+        actions: ["cognito-idp:DescribeUserPoolClient"],
+        resources: [
+          `arn:aws:cognito-idp:${userPool.stack.region}:${userPool.stack.account}:userpool/${userPool.userPoolId}`,
+        ],
+      })
+    );
 
     clientSecretBucket.grantRead(fn);
 

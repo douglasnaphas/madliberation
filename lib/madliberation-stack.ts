@@ -7,6 +7,7 @@ import * as origins from "@aws-cdk/aws-cloudfront-origins";
 import * as ssm from "@aws-cdk/aws-ssm";
 import * as dynamodb from "@aws-cdk/aws-dynamodb";
 import * as cognito from "@aws-cdk/aws-cognito";
+import { UserPool } from "@aws-cdk/aws-cognito";
 const stackname = require("@cdk-turnkey/stackname");
 const crypto = require("crypto");
 
@@ -110,10 +111,17 @@ export class MadliberationStack extends cdk.Stack {
         NODE_ENV: "production",
         TABLE_NAME: sedersTable.tableName,
         CLIENT_SECRET_BUCKET_NAME: clientSecretBucket.bucketName,
+        JWKS_URL:
+          "https://cognito-idp. " +
+          this.region +
+          ".amazonaws.com/" +
+          userPool.userPoolId +
+          "/.well-known/jwks.json",
         USER_POOL_CLIENT_ID: userPoolClient.userPoolClientId,
         USER_POOL_ID: userPool.userPoolId,
         USER_POOL_DOMAIN: userPoolDomain.domainName,
         REDIRECT_URI: "https://" + distro.domainName + "/prod/get-cookies",
+        REGION: this.region,
         IDP_URL:
           "https://" +
           userPoolDomain.domainName +

@@ -65,15 +65,25 @@ export class MadliberationStack extends cdk.Stack {
         emailSubject: "Mad Liberation: verify your new account",
         emailStyle: cognito.VerificationEmailStyle.LINK,
       },
-      signInAliases: { username: true, email: true, phone: true },
-      autoVerify: { email: true, phone: true },
+      signInAliases: { username: true, email: true, phone: false },
+      autoVerify: { email: true, phone: false },
       mfa: cognito.Mfa.OPTIONAL,
-      accountRecovery: cognito.AccountRecovery.EMAIL_AND_PHONE_WITHOUT_MFA,
+      accountRecovery: cognito.AccountRecovery.EMAIL_ONLY,
       passwordPolicy: {
         requireDigits: false,
         requireLowercase: false,
         requireSymbols: false,
         requireUppercase: false,
+      },
+      standardAttributes: {
+        email: {
+          required: true,
+          mutable: false,
+        },
+        nickname: {
+          required: true,
+          mutable: true,
+        },
       },
     });
     const userPoolClient = userPool.addClient("UserPoolClient", {

@@ -82,7 +82,7 @@ export class MadliberationStack extends cdk.Stack {
         },
         nickname: {
           required: true,
-          mutable: true,
+          mutable: false,
         },
       },
     });

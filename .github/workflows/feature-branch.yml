@@ -41,6 +41,11 @@ jobs:
         run: |
           npm install
 
+      - name: Test backend
+        working-directory: backend
+        run: |
+          npm test
+
       - name: Build
         run: |
           npm run build
@@ -49,6 +54,11 @@ jobs:
         working-directory: frontend
         run: |
           npm run build
+
+      - name: Test frontend
+        working-directory: frontend
+        run: |
+          npm test
 
       - name: Test
         run: |

@@ -7,7 +7,6 @@ import * as origins from "@aws-cdk/aws-cloudfront-origins";
 import * as ssm from "@aws-cdk/aws-ssm";
 import * as dynamodb from "@aws-cdk/aws-dynamodb";
 import * as cognito from "@aws-cdk/aws-cognito";
-import { UserPool } from "@aws-cdk/aws-cognito";
 const stackname = require("@cdk-turnkey/stackname");
 const crypto = require("crypto");
 import { Effect, PolicyStatement } from "@aws-cdk/aws-iam";
@@ -65,7 +64,7 @@ export class MadliberationStack extends cdk.Stack {
         emailSubject: "Mad Liberation: verify your new account",
         emailStyle: cognito.VerificationEmailStyle.LINK,
       },
-      signInAliases: { username: true, email: true, phone: false },
+      signInAliases: { username: false, email: true, phone: false },
       autoVerify: { email: true, phone: false },
       mfa: cognito.Mfa.OPTIONAL,
       accountRecovery: cognito.AccountRecovery.EMAIL_ONLY,
@@ -86,17 +85,30 @@ export class MadliberationStack extends cdk.Stack {
         },
       },
     });
+    const clientWriteAttributes = new cognito.ClientAttributes().withStandardAttributes(
+      { nickname: true, email: true }
+    );
+    const clientReadAttributes = clientWriteAttributes.withStandardAttributes({
+      emailVerified: true,
+    });
     const userPoolClient = userPool.addClient("UserPoolClient", {
       generateSecret: true,
       oAuth: {
         callbackUrls: ["https://" + distro.domainName + "/prod/get-cookies"],
-        scopes: [cognito.OAuthScope.EMAIL],
+        scopes: [
+          cognito.OAuthScope.EMAIL,
+          cognito.OAuthScope.COGNITO_ADMIN,
+          cognito.OAuthScope.OPENID,
+          cognito.OAuthScope.PROFILE,
+        ],
         flows: {
           authorizationCodeGrant: true,
           clientCredentials: false,
           implicitCodeGrant: false,
         },
       },
+      readAttributes: clientReadAttributes,
+      writeAttributes: clientWriteAttributes,
     });
 
     const stacknameHash = crypto

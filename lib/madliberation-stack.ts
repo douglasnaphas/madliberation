@@ -59,45 +59,45 @@ export class MadliberationStack extends cdk.Stack {
       defaultRootObject: "index.html",
     });
 
-    const userPool = new cognito.UserPool(this, "UserPool", {
-      selfSignUpEnabled: true,
-      userVerification: {
-        emailSubject: "Mad Liberation: verify your new account",
-        emailStyle: cognito.VerificationEmailStyle.LINK,
-      },
-      signInAliases: { username: false, email: true, phone: false },
-      autoVerify: { email: true, phone: false },
-      mfa: cognito.Mfa.OPTIONAL,
-      accountRecovery: cognito.AccountRecovery.EMAIL_ONLY,
-      passwordPolicy: {
-        requireDigits: false,
-        requireLowercase: false,
-        requireSymbols: false,
-        requireUppercase: false,
-      },
-      standardAttributes: {
-        email: {
-          required: true,
-          mutable: false,
-        },
-        nickname: {
-          required: true,
-          mutable: true,
-        },
-      },
-    });
-    const userPoolClient = userPool.addClient("UserPoolClient", {
-      generateSecret: true,
-      oAuth: {
-        callbackUrls: ["https://" + distro.domainName + "/prod/get-cookies"],
-        scopes: [cognito.OAuthScope.EMAIL],
-        flows: {
-          authorizationCodeGrant: true,
-          clientCredentials: false,
-          implicitCodeGrant: false,
-        },
-      },
-    });
+    // const userPool = new cognito.UserPool(this, "UserPool", {
+    //   selfSignUpEnabled: true,
+    //   userVerification: {
+    //     emailSubject: "Mad Liberation: verify your new account",
+    //     emailStyle: cognito.VerificationEmailStyle.LINK,
+    //   },
+    //   signInAliases: { username: false, email: true, phone: false },
+    //   autoVerify: { email: true, phone: false },
+    //   mfa: cognito.Mfa.OPTIONAL,
+    //   accountRecovery: cognito.AccountRecovery.EMAIL_ONLY,
+    //   passwordPolicy: {
+    //     requireDigits: false,
+    //     requireLowercase: false,
+    //     requireSymbols: false,
+    //     requireUppercase: false,
+    //   },
+    //   standardAttributes: {
+    //     email: {
+    //       required: true,
+    //       mutable: false,
+    //     },
+    //     nickname: {
+    //       required: true,
+    //       mutable: true,
+    //     },
+    //   },
+    // });
+    // const userPoolClient = userPool.addClient("UserPoolClient", {
+    //   generateSecret: true,
+    //   oAuth: {
+    //     callbackUrls: ["https://" + distro.domainName + "/prod/get-cookies"],
+    //     scopes: [cognito.OAuthScope.EMAIL],
+    //     flows: {
+    //       authorizationCodeGrant: true,
+    //       clientCredentials: false,
+    //       implicitCodeGrant: false,
+    //     },
+    //   },
+    // });
 
     const stacknameHash = crypto
       .createHash("sha256")
@@ -107,11 +107,11 @@ export class MadliberationStack extends cdk.Stack {
       .slice(0, 20);
     const domainPrefix = stacknameHash + this.account;
 
-    const userPoolDomain = userPool.addDomain("UserPoolDomain", {
-      cognitoDomain: {
-        domainPrefix: domainPrefix,
-      },
-    });
+    // const userPoolDomain = userPool.addDomain("UserPoolDomain", {
+    //   cognitoDomain: {
+    //     domainPrefix: domainPrefix,
+    //   },
+    // });
 
     const fn = new lambda.Function(this, "BackendHandler", {
       runtime: lambda.Runtime.NODEJS_10_X,
@@ -122,41 +122,41 @@ export class MadliberationStack extends cdk.Stack {
         NODE_ENV: "production",
         TABLE_NAME: sedersTable.tableName,
         CLIENT_SECRET_BUCKET_NAME: clientSecretBucket.bucketName,
-        JWKS_URL:
-          "https://cognito-idp." +
-          this.region +
-          ".amazonaws.com/" +
-          userPool.userPoolId +
-          "/.well-known/jwks.json",
-        USER_POOL_CLIENT_ID: userPoolClient.userPoolClientId,
-        USER_POOL_ID: userPool.userPoolId,
-        USER_POOL_DOMAIN: userPoolDomain.domainName,
-        REDIRECT_URI: "https://" + distro.domainName + "/prod/get-cookies",
-        REGION: this.region,
-        IDP_URL:
-          "https://" +
-          userPoolDomain.domainName +
-          ".auth." +
-          this.region +
-          ".amazoncognito.com/login?response_type=code&client_id=" +
-          userPoolClient.userPoolClientId +
-          "&redirect_uri=" +
-          "https://" +
-          distro.domainName +
-          "/prod/get-cookies",
+        //   JWKS_URL:
+        //     "https://cognito-idp." +
+        //     this.region +
+        //     ".amazonaws.com/" +
+        //     userPool.userPoolId +
+        //     "/.well-known/jwks.json",
+        //   USER_POOL_CLIENT_ID: userPoolClient.userPoolClientId,
+        //   USER_POOL_ID: userPool.userPoolId,
+        //   USER_POOL_DOMAIN: userPoolDomain.domainName,
+        //   REDIRECT_URI: "https://" + distro.domainName + "/prod/get-cookies",
+        //   REGION: this.region,
+        //   IDP_URL:
+        //     "https://" +
+        //     userPoolDomain.domainName +
+        //     ".auth." +
+        //     this.region +
+        //     ".amazoncognito.com/login?response_type=code&client_id=" +
+        //     userPoolClient.userPoolClientId +
+        //     "&redirect_uri=" +
+        //     "https://" +
+        //     distro.domainName +
+        //     "/prod/get-cookies",
       },
       timeout: cdk.Duration.seconds(20),
     });
 
-    fn.addToRolePolicy(
-      new PolicyStatement({
-        effect: Effect.ALLOW,
-        actions: ["cognito-idp:DescribeUserPoolClient"],
-        resources: [
-          `arn:aws:cognito-idp:${userPool.stack.region}:${userPool.stack.account}:userpool/${userPool.userPoolId}`,
-        ],
-      })
-    );
+    // fn.addToRolePolicy(
+    //   new PolicyStatement({
+    //     effect: Effect.ALLOW,
+    //     actions: ["cognito-idp:DescribeUserPoolClient"],
+    //     resources: [
+    //       `arn:aws:cognito-idp:${userPool.stack.region}:${userPool.stack.account}:userpool/${userPool.userPoolId}`,
+    //     ],
+    //   })
+    // );
 
     clientSecretBucket.grantRead(fn);
 
@@ -210,12 +210,12 @@ export class MadliberationStack extends cdk.Stack {
     new cdk.CfnOutput(this, "FrontendBucketNameParamName", {
       value: frontendBucketNameParam.parameterName,
     });
-    new cdk.CfnOutput(this, "UserPoolId", {
-      value: userPool.userPoolId,
-    });
-    new cdk.CfnOutput(this, "UserPoolClientId", {
-      value: userPoolClient.userPoolClientId,
-    });
+    // new cdk.CfnOutput(this, "UserPoolId", {
+    //   value: userPool.userPoolId,
+    // });
+    // new cdk.CfnOutput(this, "UserPoolClientId", {
+    //   value: userPoolClient.userPoolClientId,
+    // });
     new cdk.CfnOutput(this, "ClientSecretBucketName", {
       value: clientSecretBucket.bucketName,
     });

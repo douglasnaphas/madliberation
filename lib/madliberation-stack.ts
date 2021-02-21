@@ -95,7 +95,12 @@ export class MadliberationStack extends cdk.Stack {
       generateSecret: true,
       oAuth: {
         callbackUrls: ["https://" + distro.domainName + "/prod/get-cookies"],
-        scopes: [cognito.OAuthScope.EMAIL],
+        scopes: [
+          cognito.OAuthScope.EMAIL,
+          cognito.OAuthScope.COGNITO_ADMIN,
+          cognito.OAuthScope.OPENID,
+          cognito.OAuthScope.PROFILE,
+        ],
         flows: {
           authorizationCodeGrant: true,
           clientCredentials: false,

@@ -7,7 +7,6 @@ import * as origins from "@aws-cdk/aws-cloudfront-origins";
 import * as ssm from "@aws-cdk/aws-ssm";
 import * as dynamodb from "@aws-cdk/aws-dynamodb";
 import * as cognito from "@aws-cdk/aws-cognito";
-import { UserPool } from "@aws-cdk/aws-cognito";
 const stackname = require("@cdk-turnkey/stackname");
 const crypto = require("crypto");
 import { Effect, PolicyStatement } from "@aws-cdk/aws-iam";
@@ -82,10 +81,14 @@ export class MadliberationStack extends cdk.Stack {
         },
         nickname: {
           required: true,
-          mutable: false,
+          mutable: true,
         },
       },
     });
+    const clientWriteAttributes = new cognito.ClientAttributes().withStandardAttributes(
+      { nickname: true, email: true }
+    );
+    const clientReadAttributes = clientWriteAttributes;
     const userPoolClient = userPool.addClient("UserPoolClient", {
       generateSecret: true,
       oAuth: {
@@ -97,6 +100,8 @@ export class MadliberationStack extends cdk.Stack {
           implicitCodeGrant: false,
         },
       },
+      readAttributes: clientReadAttributes,
+      writeAttributes: clientWriteAttributes,
     });
 
     const stacknameHash = crypto

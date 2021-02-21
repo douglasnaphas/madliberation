@@ -88,7 +88,9 @@ export class MadliberationStack extends cdk.Stack {
     const clientWriteAttributes = new cognito.ClientAttributes().withStandardAttributes(
       { nickname: true, email: true }
     );
-    const clientReadAttributes = clientWriteAttributes;
+    const clientReadAttributes = clientWriteAttributes.withStandardAttributes({
+      emailVerified: true,
+    });
     const userPoolClient = userPool.addClient("UserPoolClient", {
       generateSecret: true,
       oAuth: {

@@ -85,15 +85,15 @@ jobs:
         run: |
           npm install
 
-      - name: Run integration tests, test account
-        working-directory: scripts
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.TEST_AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.TEST_AWS_SECRET_ACCESS_KEY }}
-          AWS_DEFAULT_REGION: ${{ secrets.TEST_AWS_DEFAULT_REGION }}
-          AWS_REGION: ${{ secrets.TEST_AWS_DEFAULT_REGION }}
-        run: |
-          bash itest.sh
+      # - name: Run integration tests, test account
+      #   working-directory: scripts
+      #   env:
+      #     AWS_ACCESS_KEY_ID: ${{ secrets.TEST_AWS_ACCESS_KEY_ID }}
+      #     AWS_SECRET_ACCESS_KEY: ${{ secrets.TEST_AWS_SECRET_ACCESS_KEY }}
+      #     AWS_DEFAULT_REGION: ${{ secrets.TEST_AWS_DEFAULT_REGION }}
+      #     AWS_REGION: ${{ secrets.TEST_AWS_DEFAULT_REGION }}
+      #   run: |
+      #     bash itest.sh
 
       - name: Identify prod account and region
         env:

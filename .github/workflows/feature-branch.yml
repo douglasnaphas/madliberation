@@ -81,7 +81,7 @@ jobs:
         run: |
           npx cdk bootstrap
           STACKNAME=$(npx @cdk-turnkey/stackname@1.2.0 --suffix ue1)
-          npx cdk deploy --require-approval never ${STACKNAME}
+          someV1="value from feature-branch.yml" npx cdk deploy --require-approval never ${STACKNAME}
 
       - name: Deploy AWS resources to dev account
         env:

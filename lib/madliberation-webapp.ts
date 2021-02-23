@@ -11,7 +11,7 @@ const stackname = require("@cdk-turnkey/stackname");
 const crypto = require("crypto");
 import { Effect, PolicyStatement } from "@aws-cdk/aws-iam";
 
-export class MadliberationStack extends cdk.Stack {
+export class MadliberationWebapp extends cdk.Stack {
   constructor(scope: cdk.App, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 

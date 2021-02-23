@@ -17,8 +17,9 @@ export class MadliberationUe1 extends cdk.Stack {
     new cdk.CfnOutput(this, "ue1StackStatus", {
       value: "created",
     });
+    const someEnvVarOutput = process.env.someV1 || "default val";
     new cdk.CfnOutput(this, "someEnvVar", {
-      value: process.env.someV1 as string,
+      value: someEnvVarOutput,
     });
   }
 }

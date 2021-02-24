@@ -83,7 +83,7 @@ jobs:
           STACKNAME=$(npx @cdk-turnkey/stackname@1.2.0 --suffix ue1)
           someV1="value from feature-branch.yml" npx cdk deploy --require-approval never ${STACKNAME}
 
-      - name: Deploy AWS resources to dev account
+      - name: Deploy the webapp stack to dev account
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.DEV_AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.DEV_AWS_SECRET_ACCESS_KEY }}

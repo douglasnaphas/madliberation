@@ -10,10 +10,39 @@ import * as cognito from "@aws-cdk/aws-cognito";
 const stackname = require("@cdk-turnkey/stackname");
 const crypto = require("crypto");
 import { Effect, PolicyStatement } from "@aws-cdk/aws-iam";
+const AWS = require("aws-sdk");
 
 export class MadliberationUe1 extends cdk.Stack {
   constructor(scope: cdk.App, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
+
+    // condition an output on an SSM param
+    const ssm = new AWS.SSM();
+    let ssmResponse: any;
+    const paramName = stackname("example-param-1");
+    const ssmParams = {
+      Name: paramName,
+    };
+    let outputBasedOnParam: any = "the default for outputBasedOnParam";
+    (async () => {
+      ssmResponse = await new Promise((resolve, reject) => {
+        ssm.getParameter(ssmParams, (err: any, data: any) => {
+          resolve({ err, data });
+        });
+      });
+    })();
+    if (
+      ssmResponse &&
+      ssmResponse.data &&
+      ssmResponse.data.Parameter &&
+      ssmResponse.data.Parameter.Value
+    ) {
+      outputBasedOnParam = ssmResponse.data.Parameter.Value;
+    }
+    new cdk.CfnOutput(this, "outputBasedOnParam", {
+      value: outputBasedOnParam,
+    });
+
     new cdk.CfnOutput(this, "ue1StackStatus", {
       value: "created",
     });

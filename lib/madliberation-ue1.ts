@@ -27,21 +27,35 @@ export class MadliberationUe1 extends cdk.Stack {
     (async () => {
       ssmResponse = await new Promise((resolve, reject) => {
         ssm.getParameter(ssmParams, (err: any, data: any) => {
+          console.log("in callback...");
+          console.log("data:");
+          console.log(data);
+          console.log(err);
+          console.log(err);
+          if (data && data.Parameter && data.Parameter.Value) {
+            console.log("data.Parameter.Value");
+          }
+          console.log(data.Parameter.Value);
           resolve({ err, data });
         });
       });
     })();
+    // maybe the above isn't being awaited?
     if (
       ssmResponse &&
       ssmResponse.data &&
       ssmResponse.data.Parameter &&
       ssmResponse.data.Parameter.Value
     ) {
+      console.log("assigning to outputBasedOnParam");
+      console.log(outputBasedOnParam);
       outputBasedOnParam = ssmResponse.data.Parameter.Value;
     }
     new cdk.CfnOutput(this, "outputBasedOnParam", {
       value: outputBasedOnParam,
     });
+
+    // If a
 
     new cdk.CfnOutput(this, "ue1StackStatus", {
       value: "created",

@@ -5,5 +5,5 @@ import { MadliberationUe1 } from "../lib/madliberation-ue1";
 const stackname = require("@cdk-turnkey/stackname");
 
 const app = new cdk.App();
-new MadliberationUe1(app, stackname("ue1"));
+new MadliberationUe1(app, stackname("ue1"), { env: { region: "us-east-1" } });
 new MadliberationWebapp(app, stackname("webapp"));

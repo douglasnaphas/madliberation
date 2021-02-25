@@ -50,5 +50,8 @@ export class MadliberationUe1 extends cdk.Stack {
     new cdk.CfnOutput(this, "someEnvVar", {
       value: someEnvVarOutput,
     });
+    new cdk.CfnOutput(this, "paramName", {
+      value: paramName,
+    });
   }
 }

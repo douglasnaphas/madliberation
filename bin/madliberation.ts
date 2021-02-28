@@ -11,6 +11,7 @@ const stackname = require("@cdk-turnkey/stackname");
   const ssmParams = {
     Name: paramName,
   };
+  AWS.config.update({ region: "us-east-1" });
   const ssm = new AWS.SSM();
   let ssmResponse: any;
   ssmResponse = await new Promise((resolve, reject) => {

@@ -16,15 +16,9 @@ const stackname = require("@cdk-turnkey/stackname");
   let ssmResponse: any;
   ssmResponse = await new Promise((resolve, reject) => {
     ssm.getParameter(ssmParams, (err: any, data: any) => {
-      console.log("in callback...");
-      console.log("data:");
-      console.log(data);
-      console.log(err);
-      console.log(err);
       if (data && data.Parameter && data.Parameter.Value) {
         console.log("data.Parameter.Value");
       }
-      console.log(data.Parameter.Value);
       resolve({ err, data });
     });
   });
@@ -35,7 +29,6 @@ const stackname = require("@cdk-turnkey/stackname");
     ssmResponse.data.Parameter &&
     ssmResponse.data.Parameter.Value
   ) {
-    console.log("assigning to sesEmailVerificationFromAddress");
     sesEmailVerificationFromAddress = ssmResponse.data.Parameter.Value;
   }
   new MadliberationUe1(app, stackname("ue1"), {

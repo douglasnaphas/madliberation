@@ -7,33 +7,34 @@ const stackname = require("@cdk-turnkey/stackname");
 
 (async () => {
   const app = new cdk.App();
-  const paramName = stackname("example-param-1");
+
+  const emailVerificationAddressParam = stackname(
+    "sesEmailVerificationFromAddress"
+  );
+  const emailVerificationRegionParam = stackname(
+    "sesEmailVerificationFromRegion"
+  );
   const ssmParams = {
-    Name: paramName,
+    Names: [emailVerificationAddressParam, emailVerificationRegionParam],
   };
   AWS.config.update({ region: "us-east-1" });
   const ssm = new AWS.SSM();
   let ssmResponse: any;
   ssmResponse = await new Promise((resolve, reject) => {
-    ssm.getParameter(ssmParams, (err: any, data: any) => {
-      if (data && data.Parameter && data.Parameter.Value) {
-        console.log("data.Parameter.Value");
-      }
+    ssm.getParameters(ssmParams, (err: any, data: any) => {
       resolve({ err, data });
     });
   });
   let sesEmailVerificationFromAddress;
-  if (
-    ssmResponse &&
-    ssmResponse.data &&
-    ssmResponse.data.Parameter &&
-    ssmResponse.data.Parameter.Value
-  ) {
+  if (ssmResponse && ssmResponse.data && ssmResponse.data.Parameters) {
     sesEmailVerificationFromAddress = ssmResponse.data.Parameter.Value;
   }
   new MadliberationUe1(app, stackname("ue1"), {
     env: { region: "us-east-1" },
-    sesEmailVerificationFromAddress,
+    sesVerificationConfig: sesEmailVerificationFromAddress && {
+      fromAddress: sesEmailVerificationFromAddress,
+      fromRegion: "us-east-1",
+    },
   });
   new MadliberationWebapp(app, stackname("webapp"));
 })();

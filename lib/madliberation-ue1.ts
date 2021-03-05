@@ -12,26 +12,17 @@ const crypto = require("crypto");
 import { Effect, PolicyStatement } from "@aws-cdk/aws-iam";
 
 export interface MadLiberationUe1Props extends cdk.StackProps {
-  sesEmailVerificationFromAddress?: string;
+  sesVerificationConfig?: { fromAddress: string; fromRegion: string };
 }
 
 export class MadliberationUe1 extends cdk.Stack {
   constructor(scope: cdk.App, id: string, props?: MadLiberationUe1Props) {
     super(scope, id, props);
 
-    let outputBasedOnParam: any = "the default for outputBasedOnParam";
-    if (props?.sesEmailVerificationFromAddress) {
-      outputBasedOnParam = props.sesEmailVerificationFromAddress;
-    }
-    new cdk.CfnOutput(this, "outputBasedOnParam", {
-      value: outputBasedOnParam,
-    });
-    new cdk.CfnOutput(this, "ue1StackStatus", {
-      value: "created",
-    });
-    const someEnvVarOutput = process.env.someV1 || "default val";
-    new cdk.CfnOutput(this, "someEnvVar", {
-      value: someEnvVarOutput,
+    const sesFromAddress =
+      props?.sesVerificationConfig?.fromAddress || "no SES from address";
+    new cdk.CfnOutput(this, "sesFromAddress", {
+      value: sesFromAddress,
     });
   }
 }

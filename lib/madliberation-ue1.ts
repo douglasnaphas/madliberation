@@ -15,14 +15,31 @@ export interface MadLiberationUe1Props extends cdk.StackProps {
   sesVerificationConfig?: { fromAddress: string; fromRegion: string };
 }
 
+export enum SES_VERIFICATION_PARAM_SUFFIXES {
+  FROM_ADDRESS = "sesEmailVerificationFromAddress",
+  FROM_REGION = "sesEmailVerificationFromRegion",
+}
+
 export class MadliberationUe1 extends cdk.Stack {
   constructor(scope: cdk.App, id: string, props?: MadLiberationUe1Props) {
     super(scope, id, props);
 
+    const sesFromAddressParamName = stackname(
+      SES_VERIFICATION_PARAM_SUFFIXES.FROM_ADDRESS
+    );
+    const sesFromRegionParamName = stackname(
+      SES_VERIFICATION_PARAM_SUFFIXES.FROM_REGION
+    );
+    new cdk.CfnOutput(this, "sesFromAddressParamName", {
+      value: sesFromAddressParamName,
+    });
     const sesFromAddress =
       props?.sesVerificationConfig?.fromAddress || "no SES from address";
     new cdk.CfnOutput(this, "sesFromAddress", {
       value: sesFromAddress,
+    });
+    new cdk.CfnOutput(this, "sesFromRegionParamName", {
+      value: sesFromRegionParamName,
     });
     const sesFromRegion =
       props?.sesVerificationConfig?.fromRegion || "no SES from region";

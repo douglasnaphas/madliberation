@@ -2,7 +2,10 @@
 import * as cdk from "@aws-cdk/core";
 const AWS = require("aws-sdk");
 import { MadliberationWebapp } from "../lib/madliberation-webapp";
-import { MadliberationUe1 } from "../lib/madliberation-ue1";
+import {
+  MadliberationUe1,
+  SES_VERIFICATION_PARAM_SUFFIXES,
+} from "../lib/madliberation-ue1";
 import { stringLike } from "@aws-cdk/assert";
 const stackname = require("@cdk-turnkey/stackname");
 
@@ -10,10 +13,10 @@ const stackname = require("@cdk-turnkey/stackname");
   const app = new cdk.App();
 
   const emailVerificationAddressParam = stackname(
-    "sesEmailVerificationFromAddress"
+    SES_VERIFICATION_PARAM_SUFFIXES.FROM_ADDRESS
   );
   const emailVerificationRegionParam = stackname(
-    "sesEmailVerificationFromRegion"
+    SES_VERIFICATION_PARAM_SUFFIXES.FROM_REGION
   );
   const ssmParams = {
     Names: [emailVerificationAddressParam, emailVerificationRegionParam],

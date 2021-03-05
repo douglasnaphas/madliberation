@@ -24,5 +24,10 @@ export class MadliberationUe1 extends cdk.Stack {
     new cdk.CfnOutput(this, "sesFromAddress", {
       value: sesFromAddress,
     });
+    const sesFromRegion =
+      props?.sesVerificationConfig?.fromRegion || "no SES from region";
+    new cdk.CfnOutput(this, "sesFromRegion", {
+      value: sesFromRegion,
+    });
   }
 }

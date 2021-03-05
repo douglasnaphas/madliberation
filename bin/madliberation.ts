@@ -3,6 +3,7 @@ import * as cdk from "@aws-cdk/core";
 const AWS = require("aws-sdk");
 import { MadliberationWebapp } from "../lib/madliberation-webapp";
 import { MadliberationUe1 } from "../lib/madliberation-ue1";
+import { stringLike } from "@aws-cdk/assert";
 const stackname = require("@cdk-turnkey/stackname");
 
 (async () => {
@@ -25,16 +26,26 @@ const stackname = require("@cdk-turnkey/stackname");
       resolve({ err, data });
     });
   });
-  let sesEmailVerificationFromAddress;
+  let sesEmailVerificationFromAddress, sesEmailVerificationFromRegion;
   if (ssmResponse && ssmResponse.data && ssmResponse.data.Parameters) {
-    sesEmailVerificationFromAddress = ssmResponse.data.Parameter.Value;
+    ssmResponse.data.Parameters.forEach(
+      (p: { Name: string; Value: string }) => {
+        if (p.Name === emailVerificationAddressParam) {
+          sesEmailVerificationFromAddress = p.Value;
+        }
+        if (p.Name === emailVerificationRegionParam) {
+          sesEmailVerificationFromRegion = p.Value;
+        }
+      }
+    );
   }
   new MadliberationUe1(app, stackname("ue1"), {
     env: { region: "us-east-1" },
-    sesVerificationConfig: sesEmailVerificationFromAddress && {
-      fromAddress: sesEmailVerificationFromAddress,
-      fromRegion: "us-east-1",
-    },
+    sesVerificationConfig: sesEmailVerificationFromAddress &&
+      sesEmailVerificationFromRegion && {
+        fromAddress: sesEmailVerificationFromAddress,
+        fromRegion: sesEmailVerificationFromRegion,
+      },
   });
   new MadliberationWebapp(app, stackname("webapp"));
 })();

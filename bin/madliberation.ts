@@ -79,6 +79,7 @@ const stackname = require("@cdk-turnkey/stackname");
     if (sesv2Response.err) {
       console.log("error: Could not get email identity, tried to get:");
       console.log(sesEmailVerificationFromAddress);
+      process.exit(1);
     }
 
     // Check to make sure the domain is DKIM-enabled

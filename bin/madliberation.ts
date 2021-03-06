@@ -81,6 +81,30 @@ const stackname = require("@cdk-turnkey/stackname");
       console.log(sesEmailVerificationFromAddress);
       process.exit(1);
     }
+    if (!sesv2Response.data.VerifiedForSendingStatus) {
+      console.log("error: VerifiedForSendingStatus is not true for email:");
+      console.log(sesEmailVerificationFromAddress);
+      process.exit(1);
+    }
+    if (
+      !(
+        sesv2Response.data.DkimAttributes &&
+        sesv2Response.data.DkimAttributes.Status &&
+        sesv2Response.data.DkimAttributes.Status === "SUCCESS"
+      )
+    ) {
+      console.log(
+        "error: DkimAttributes.Status is not SUCCESS. DkimAttributes.Status:"
+      );
+      console.log(
+        sesv2Response.data.DkimAttributes &&
+          sesv2Response.data.DkimAttributes.Status &&
+          sesv2Response.data.DkimAttributes.Status
+      );
+      console.log("email:");
+      console.log(sesEmailVerificationFromAddress);
+      process.exit(1);
+    }
 
     // Check to make sure the domain is DKIM-enabled
   }

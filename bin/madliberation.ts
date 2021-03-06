@@ -6,7 +6,6 @@ import {
   MadliberationUe1,
   SES_VERIFICATION_PARAM_SUFFIXES,
 } from "../lib/madliberation-ue1";
-import { stringLike } from "@aws-cdk/assert";
 const stackname = require("@cdk-turnkey/stackname");
 
 (async () => {
@@ -21,9 +20,6 @@ const stackname = require("@cdk-turnkey/stackname");
   const ssmParams = {
     Names: [emailVerificationAddressParam, emailVerificationRegionParam],
   };
-  // TODO: Either remove this region constraint, or enforce it for the from
-  // address as well.
-  AWS.config.update({ region: "us-east-1" });
   const ssm = new AWS.SSM();
   let ssmResponse: any;
   ssmResponse = await new Promise((resolve, reject) => {

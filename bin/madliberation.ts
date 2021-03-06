@@ -105,17 +105,16 @@ const stackname = require("@cdk-turnkey/stackname");
       console.log(sesEmailVerificationFromAddress);
       process.exit(1);
     }
-
-    // Check to make sure the domain is DKIM-enabled
   }
+  const sesVerificationConfig = sesEmailVerificationFromAddress &&
+    sesEmailVerificationFromRegion && {
+      fromAddress: sesEmailVerificationFromAddress,
+      fromRegion: sesEmailVerificationFromRegion, // prob. must be ue1 for now
+    };
 
   new MadliberationUe1(app, stackname("ue1"), {
     env: { region: "us-east-1" },
-    sesVerificationConfig: sesEmailVerificationFromAddress &&
-      sesEmailVerificationFromRegion && {
-        fromAddress: sesEmailVerificationFromAddress,
-        fromRegion: sesEmailVerificationFromRegion, // prob. must be ue1 for now
-      },
+    sesVerificationConfig,
   });
-  new MadliberationWebapp(app, stackname("webapp"));
+  new MadliberationWebapp(app, stackname("webapp"), { sesVerificationConfig });
 })();

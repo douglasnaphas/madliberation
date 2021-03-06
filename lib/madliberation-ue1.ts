@@ -11,6 +11,8 @@ const stackname = require("@cdk-turnkey/stackname");
 const crypto = require("crypto");
 import { Effect, PolicyStatement } from "@aws-cdk/aws-iam";
 
+// might not be needed here
+// it's the webapp that has to use these
 export interface MadLiberationUe1Props extends cdk.StackProps {
   sesVerificationConfig?: { fromAddress: string; fromRegion: string };
 }

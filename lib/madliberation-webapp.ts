@@ -11,8 +11,12 @@ const stackname = require("@cdk-turnkey/stackname");
 const crypto = require("crypto");
 import { Effect, PolicyStatement } from "@aws-cdk/aws-iam";
 
+export interface MadLiberationWebappProps extends cdk.StackProps {
+  sesVerificationConfig?: { fromAddress: string; fromRegion: string };
+}
+
 export class MadliberationWebapp extends cdk.Stack {
-  constructor(scope: cdk.App, id: string, props?: cdk.StackProps) {
+  constructor(scope: cdk.App, id: string, props?: MadLiberationWebappProps) {
     super(scope, id, props);
 
     const sedersTable = new dynamodb.Table(this, "SedersTable", {
@@ -85,6 +89,19 @@ export class MadliberationWebapp extends cdk.Stack {
         },
       },
     });
+    let cfnUserPool;
+    if (props?.sesVerificationConfig) {
+      cfnUserPool = userPool.node.defaultChild as cognito.CfnUserPool;
+      cfnUserPool.emailConfiguration = {
+        emailSendingAccount: "DEVELOPER",
+        from: `Mad Liberation Verification <${props?.sesVerificationConfig?.fromAddress}>`,
+        sourceArn:
+          // SES integration is only available in us-east-1, us-west-2, eu-west-1
+          `arn:aws:ses:${props?.sesVerificationConfig?.fromRegion}` +
+          `:${this.account}:identity/` +
+          `${props?.sesVerificationConfig?.fromAddress}`,
+      };
+    }
     const clientWriteAttributes = new cognito.ClientAttributes().withStandardAttributes(
       { nickname: true, email: true }
     );

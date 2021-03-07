@@ -115,14 +115,15 @@ jobs:
           aws sts get-caller-identity
           echo ${AWS_DEFAULT_REGION} | sed 's/-/+/g'
 
-      - name: Deploy AWS resources to prod account
+      - name: Deploy the webapp stack to the prod account
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.PROD_AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.PROD_AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: "us-east-1"
         run: |
           npx cdk bootstrap
-          npx cdk deploy --require-approval never
+          STACKNAME=$(npx @cdk-turnkey/stackname@1.2.0 --suffix webapp)
+          npx cdk deploy --require-approval never ${STACKNAME}
 
       - name: Deploy to the frontend bucket (prod account)
         env:

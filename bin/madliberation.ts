@@ -65,6 +65,7 @@ const stackname = require("@cdk-turnkey/stackname");
     }
 
     // We have the verification email info, now validate it
+    AWS.config.update({ region: sesEmailVerificationFromRegion });
     const sesv2 = new AWS.SESV2({ apiVersion: "2019-09-27" });
     // Check to make sure the email is verified and has sending enabled
     let sesv2Response: any;

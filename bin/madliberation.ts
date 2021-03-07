@@ -20,6 +20,8 @@ const stackname = require("@cdk-turnkey/stackname");
   const ssmParams = {
     Names: [emailVerificationAddressParam, emailVerificationRegionParam],
   };
+  console.log(process.env.AWS_DEFAULT_REGION);
+  AWS.config.update({ region: process.env.AWS_DEFAULT_REGION });
   const ssm = new AWS.SSM();
   let ssmResponse: any;
   ssmResponse = await new Promise((resolve, reject) => {

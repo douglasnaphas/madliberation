@@ -68,25 +68,26 @@ jobs:
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.TEST_AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.TEST_AWS_SECRET_ACCESS_KEY }}
-          AWS_DEFAULT_REGION: ${{ secrets.TEST_AWS_DEFAULT_REGION }}
+          AWS_DEFAULT_REGION: "us-east-1"
         run: |
           aws sts get-caller-identity
           echo ${AWS_DEFAULT_REGION} | sed 's/-/+/g'
 
-      - name: Deploy AWS resources to test account
+      - name: Deploy the webapp stack to the test account
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.TEST_AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.TEST_AWS_SECRET_ACCESS_KEY }}
-          AWS_DEFAULT_REGION: ${{ secrets.TEST_AWS_DEFAULT_REGION }}
+          AWS_DEFAULT_REGION: "us-east-1"
         run: |
           npx cdk bootstrap
-          npx cdk deploy --require-approval never
+          STACKNAME=$(npx @cdk-turnkey/stackname@1.2.0 --suffix webapp)
+          npx cdk deploy --require-approval never ${STACKNAME}
 
       - name: Deploy to the frontend bucket (test account)
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.TEST_AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.TEST_AWS_SECRET_ACCESS_KEY }}
-          AWS_DEFAULT_REGION: ${{ secrets.TEST_AWS_DEFAULT_REGION }}
+          AWS_DEFAULT_REGION: "us-east-1"
         run: |
           bash scripts/deploy-frontend.sh
 
@@ -100,8 +101,8 @@ jobs:
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.TEST_AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.TEST_AWS_SECRET_ACCESS_KEY }}
-          AWS_DEFAULT_REGION: ${{ secrets.TEST_AWS_DEFAULT_REGION }}
-          AWS_REGION: ${{ secrets.TEST_AWS_DEFAULT_REGION }}
+          AWS_DEFAULT_REGION: "us-east-1"
+          AWS_REGION: "us-east-1"
         run: |
           bash itest.sh
 
@@ -109,7 +110,7 @@ jobs:
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.PROD_AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.PROD_AWS_SECRET_ACCESS_KEY }}
-          AWS_DEFAULT_REGION: ${{ secrets.PROD_AWS_DEFAULT_REGION }}
+          AWS_DEFAULT_REGION: "us-east-1"
         run: |
           aws sts get-caller-identity
           echo ${AWS_DEFAULT_REGION} | sed 's/-/+/g'
@@ -118,7 +119,7 @@ jobs:
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.PROD_AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.PROD_AWS_SECRET_ACCESS_KEY }}
-          AWS_DEFAULT_REGION: ${{ secrets.PROD_AWS_DEFAULT_REGION }}
+          AWS_DEFAULT_REGION: "us-east-1"
         run: |
           npx cdk bootstrap
           npx cdk deploy --require-approval never
@@ -127,7 +128,7 @@ jobs:
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.PROD_AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.PROD_AWS_SECRET_ACCESS_KEY }}
-          AWS_DEFAULT_REGION: ${{ secrets.PROD_AWS_DEFAULT_REGION }}
+          AWS_DEFAULT_REGION: "us-east-1"
         run: |
           bash scripts/deploy-frontend.sh
 
@@ -136,7 +137,7 @@ jobs:
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.PROD_AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.PROD_AWS_SECRET_ACCESS_KEY }}
-          AWS_DEFAULT_REGION: ${{ secrets.PROD_AWS_DEFAULT_REGION }}
-          AWS_REGION: ${{ secrets.PROD_AWS_DEFAULT_REGION }}
+          AWS_DEFAULT_REGION: "us-east-1"
+          AWS_REGION: "us-east-1"
         run: |
           bash itest.sh

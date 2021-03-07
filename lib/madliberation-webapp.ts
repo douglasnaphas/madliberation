@@ -12,7 +12,11 @@ const crypto = require("crypto");
 import { Effect, PolicyStatement } from "@aws-cdk/aws-iam";
 
 export interface MadLiberationWebappProps extends cdk.StackProps {
-  sesVerificationConfig?: { fromAddress: string; fromRegion: string };
+  sesVerificationConfig?: { fromAddress: string };
+}
+
+export enum SES_VERIFICATION_PARAM_SUFFIXES {
+  FROM_ADDRESS = "sesEmailVerificationFromAddress",
 }
 
 export class MadliberationWebapp extends cdk.Stack {
@@ -24,13 +28,6 @@ export class MadliberationWebapp extends cdk.Stack {
       sortKey: { name: "lib_id", type: dynamodb.AttributeType.STRING },
       billingMode: dynamodb.BillingMode.PAY_PER_REQUEST,
       removalPolicy: cdk.RemovalPolicy.DESTROY,
-    });
-
-    // This has to happen before the backend handler, because the Lambda needs
-    // the bucket name as an env var.
-    const clientSecretBucket = new s3.Bucket(this, "BackendSecretBucket", {
-      blockPublicAccess: s3.BlockPublicAccess.BLOCK_ALL,
-      versioned: true,
     });
 
     const frontendBucket = new s3.Bucket(this, "FrontendBucket");
@@ -150,7 +147,6 @@ export class MadliberationWebapp extends cdk.Stack {
       environment: {
         NODE_ENV: "production",
         TABLE_NAME: sedersTable.tableName,
-        CLIENT_SECRET_BUCKET_NAME: clientSecretBucket.bucketName,
         JWKS_URL:
           "https://cognito-idp." +
           this.region +
@@ -187,8 +183,6 @@ export class MadliberationWebapp extends cdk.Stack {
       })
     );
 
-    clientSecretBucket.grantRead(fn);
-
     const lambdaApi = new apigw.LambdaRestApi(this, "Endpoint", {
       handler: fn,
     });
@@ -218,17 +212,22 @@ export class MadliberationWebapp extends cdk.Stack {
       }
     );
 
+    const sesFromAddressParamName = stackname(
+      SES_VERIFICATION_PARAM_SUFFIXES.FROM_ADDRESS
+    );
+    new cdk.CfnOutput(this, "sesFromAddressParamName", {
+      value: sesFromAddressParamName,
+    });
+    const sesFromAddress =
+      props?.sesVerificationConfig?.fromAddress || "no SES from address";
+    new cdk.CfnOutput(this, "sesFromAddress", {
+      value: sesFromAddress,
+    });
     new cdk.CfnOutput(this, "DistributionDomainName", {
       value: distro.distributionDomainName,
     });
     new cdk.CfnOutput(this, "lambdaApi_url", {
       value: lambdaApi.url,
-    });
-    new cdk.CfnOutput(this, "lambdaApi_url_transformed", {
-      value: lambdaApi.url.replace(/https:\/\/|\/prod\//g, ""),
-    });
-    new cdk.CfnOutput(this, "lambdaApi_url_constructed", {
-      value: lambdaApiUrlConstructed,
     });
     new cdk.CfnOutput(this, "FrontendBucketName", {
       value: frontendBucket.bucketName,
@@ -241,9 +240,6 @@ export class MadliberationWebapp extends cdk.Stack {
     });
     new cdk.CfnOutput(this, "UserPoolClientId", {
       value: userPoolClient.userPoolClientId,
-    });
-    new cdk.CfnOutput(this, "ClientSecretBucketName", {
-      value: clientSecretBucket.bucketName,
     });
   }
 }

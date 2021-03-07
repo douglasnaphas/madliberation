@@ -73,21 +73,11 @@ jobs:
           aws sts get-caller-identity
           echo ${AWS_DEFAULT_REGION} | sed 's/-/+/g'
 
-      - name: Deploy the us-east-1 stack (ue1) to dev account
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.DEV_AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.DEV_AWS_SECRET_ACCESS_KEY }}
-          AWS_DEFAULT_REGION: "us-east-1"
-        run: |
-          npx cdk bootstrap
-          STACKNAME=$(npx @cdk-turnkey/stackname@1.2.0 --suffix ue1)
-          someV1="value from feature-branch.yml" npx cdk deploy --require-approval never ${STACKNAME}
-
       - name: Deploy the webapp stack to dev account
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.DEV_AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.DEV_AWS_SECRET_ACCESS_KEY }}
-          AWS_DEFAULT_REGION: ${{ secrets.DEV_AWS_DEFAULT_REGION }}
+          AWS_DEFAULT_REGION: "us-east-1"
         run: |
           npx cdk bootstrap
           STACKNAME=$(npx @cdk-turnkey/stackname@1.2.0 --suffix webapp)
@@ -97,17 +87,9 @@ jobs:
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.DEV_AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.DEV_AWS_SECRET_ACCESS_KEY }}
-          AWS_DEFAULT_REGION: ${{ secrets.DEV_AWS_DEFAULT_REGION }}
+          AWS_DEFAULT_REGION: "us-east-1"
         run: |
           bash scripts/deploy-frontend.sh
-
-      - name: Save the user pool client secret to S3 (dev account)
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.DEV_AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.DEV_AWS_SECRET_ACCESS_KEY }}
-          AWS_DEFAULT_REGION: ${{ secrets.DEV_AWS_DEFAULT_REGION }}
-        run: |
-          bash scripts/save-client-secret.sh
 
       - name: Install itest
         working-directory: itest
@@ -119,7 +101,7 @@ jobs:
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.DEV_AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.DEV_AWS_SECRET_ACCESS_KEY }}
-          AWS_DEFAULT_REGION: ${{ secrets.DEV_AWS_DEFAULT_REGION }}
-          AWS_REGION: ${{ secrets.DEV_AWS_DEFAULT_REGION }}
+          AWS_DEFAULT_REGION: "us-east-1"
+          AWS_REGION: "us-east-1"
         run: |
           bash itest.sh

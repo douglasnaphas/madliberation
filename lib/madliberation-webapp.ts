@@ -19,6 +19,9 @@ export class MadliberationWebapp extends cdk.Stack {
   constructor(scope: cdk.App, id: string, props?: MadLiberationWebappProps) {
     super(scope, id, props);
 
+    console.log("webapp: received prop sesVerificationConfig:");
+    console.log(props?.sesVerificationConfig);
+
     const sedersTable = new dynamodb.Table(this, "SedersTable", {
       partitionKey: { name: "room_code", type: dynamodb.AttributeType.STRING },
       sortKey: { name: "lib_id", type: dynamodb.AttributeType.STRING },

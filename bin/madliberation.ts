@@ -108,6 +108,9 @@ const stackname = require("@cdk-turnkey/stackname");
       fromRegion: sesEmailVerificationFromRegion, // prob. must be ue1 for now
     };
 
+  console.log("bin: Instantiating stack with sesVerificationConfig:");
+  console.log(sesVerificationConfig);
+
   new MadliberationUe1(app, stackname("ue1"), {
     env: { region: "us-east-1" },
     sesVerificationConfig,

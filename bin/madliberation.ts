@@ -31,6 +31,8 @@ const stackname = require("@cdk-turnkey/stackname");
   });
   let sesEmailVerificationFromAddress, sesEmailVerificationFromRegion;
   if (ssmResponse && ssmResponse.data && ssmResponse.data.Parameters) {
+    console.log("ssmResponse.data:");
+    console.log(ssmResponse.data);
     ssmResponse.data.Parameters.forEach(
       (p: { Name: string; Value: string }) => {
         if (p.Name === emailVerificationAddressParam) {

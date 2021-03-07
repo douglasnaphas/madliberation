@@ -97,7 +97,7 @@ export class MadliberationWebapp extends cdk.Stack {
         from: `Mad Liberation Verification <${props?.sesVerificationConfig?.fromAddress}>`,
         sourceArn:
           // SES integration is only available in us-east-1, us-west-2, eu-west-1
-          `arn:aws:ses:${props?.sesVerificationConfig?.fromRegion}` +
+          `arn:aws:ses:${this.region}` +
           `:${this.account}:identity/` +
           `${props?.sesVerificationConfig?.fromAddress}`,
       };

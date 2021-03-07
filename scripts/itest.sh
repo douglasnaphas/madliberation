@@ -3,7 +3,7 @@
 STACKNAME=$(npx @cdk-turnkey/stackname@1.1.0 --suffix webapp)
 APP_URL=https://$(aws cloudformation describe-stacks \
   --stack-name ${STACKNAME} | \
-  jq '.Stacks[0].Outputs | map(select(.OutputKey == "DomainName"))[0].OutputValue' | \
+  jq '.Stacks[0].Outputs | map(select(.OutputKey == "DistributionDomainName"))[0].OutputValue' | \
   tr -d \")
 
 # Backend smoke test

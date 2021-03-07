@@ -221,9 +221,6 @@ export class MadliberationWebapp extends cdk.Stack {
     new cdk.CfnOutput(this, "DistributionDomainName", {
       value: distro.distributionDomainName,
     });
-    new cdk.CfnOutput(this, "DomainName", {
-      value: distro.domainName,
-    });
     new cdk.CfnOutput(this, "lambdaApi_url", {
       value: lambdaApi.url,
     });

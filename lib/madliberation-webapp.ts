@@ -12,14 +12,22 @@ const crypto = require("crypto");
 import { Effect, PolicyStatement } from "@aws-cdk/aws-iam";
 import * as acm from "@aws-cdk/aws-certificatemanager";
 import * as route53 from "@aws-cdk/aws-route53";
+import * as targets from "@aws-cdk/aws-route53-targets";
 
 export interface MadLiberationWebappProps extends cdk.StackProps {
   fromAddress?: string;
+  domainName?: string;
 }
 
 export class MadliberationWebapp extends cdk.Stack {
-  constructor(scope: cdk.App, id: string, props?: MadLiberationWebappProps) {
+  constructor(
+    scope: cdk.App,
+    id: string,
+    props: MadLiberationWebappProps = {}
+  ) {
     super(scope, id, props);
+
+    const { fromAddress, domainName } = props;
 
     const sedersTable = new dynamodb.Table(this, "SedersTable", {
       partitionKey: { name: "room_code", type: dynamodb.AttributeType.STRING },
@@ -45,7 +53,24 @@ export class MadliberationWebapp extends cdk.Stack {
       }
     );
 
-    const distro = new cloudfront.Distribution(this, "Distro", {
+    let hostedZone, wwwDomainName, certificate, domainNames;
+    if (domainName) {
+      hostedZone = new route53.HostedZone(this, "HostedZone", {
+        zoneName: domainName,
+      });
+      const wwwDomainName = "www" + domainName;
+      certificate = new acm.Certificate(this, "Certificate", {
+        domainName,
+        subjectAlternativeNames: [wwwDomainName],
+        validation: acm.CertificateValidation.fromDnsMultiZone({
+          domainName: hostedZone,
+          wwwDomainName: hostedZone,
+        }),
+      });
+      domainNames = [domainName, wwwDomainName];
+    }
+
+    const distroProps: any = {
       logBucket: new s3.Bucket(this, "DistroLoggingBucket"),
       logFilePrefix: "distribution-access-logs/",
       logIncludesCookies: true,
@@ -55,7 +80,11 @@ export class MadliberationWebapp extends cdk.Stack {
         cachePolicy: cloudfront.CachePolicy.CACHING_DISABLED,
       },
       defaultRootObject: "index.html",
-    });
+      domainNames,
+      certificate,
+    };
+
+    const distro = new cloudfront.Distribution(this, "Distro", distroProps);
 
     const userPool = new cognito.UserPool(this, "UserPool", {
       selfSignUpEnabled: true,
@@ -85,16 +114,16 @@ export class MadliberationWebapp extends cdk.Stack {
       },
     });
     let cfnUserPool;
-    if (props?.fromAddress) {
+    if (fromAddress) {
       cfnUserPool = userPool.node.defaultChild as cognito.CfnUserPool;
       cfnUserPool.emailConfiguration = {
         emailSendingAccount: "DEVELOPER",
-        from: `Mad Liberation Verification <${props?.fromAddress}>`,
+        from: `Mad Liberation Verification <${fromAddress}>`,
         sourceArn:
           // SES integration is only available in us-east-1, us-west-2, eu-west-1
           `arn:aws:ses:${this.region}` +
           `:${this.account}:identity/` +
-          `${props?.fromAddress}`,
+          `${fromAddress}`,
       };
     }
     const clientWriteAttributes = new cognito.ClientAttributes().withStandardAttributes(
@@ -103,10 +132,11 @@ export class MadliberationWebapp extends cdk.Stack {
     const clientReadAttributes = clientWriteAttributes.withStandardAttributes({
       emailVerified: true,
     });
+    const webappDomainName = domainName || distro.distributionDomainName;
     const userPoolClient = userPool.addClient("UserPoolClient", {
       generateSecret: true,
       oAuth: {
-        callbackUrls: ["https://" + distro.domainName + "/prod/get-cookies"],
+        callbackUrls: ["https://" + webappDomainName + "/prod/get-cookies"],
         scopes: [
           cognito.OAuthScope.EMAIL,
           cognito.OAuthScope.COGNITO_ADMIN,
@@ -154,7 +184,7 @@ export class MadliberationWebapp extends cdk.Stack {
         USER_POOL_CLIENT_ID: userPoolClient.userPoolClientId,
         USER_POOL_ID: userPool.userPoolId,
         USER_POOL_DOMAIN: userPoolDomain.domainName,
-        REDIRECT_URI: "https://" + distro.domainName + "/prod/get-cookies",
+        REDIRECT_URI: "https://" + webappDomainName + "/prod/get-cookies",
         REGION: this.region,
         IDP_URL:
           "https://" +
@@ -165,7 +195,7 @@ export class MadliberationWebapp extends cdk.Stack {
           userPoolClient.userPoolClientId +
           "&redirect_uri=" +
           "https://" +
-          distro.domainName +
+          webappDomainName +
           "/prod/get-cookies",
       },
       timeout: cdk.Duration.seconds(20),
@@ -210,9 +240,30 @@ export class MadliberationWebapp extends cdk.Stack {
       }
     );
 
-    const fromAddressOutput = props?.fromAddress || "no SES from address";
+    if (domainName && wwwDomainName && hostedZone) {
+      // point the domain name with an alias record to the distro
+      new route53.AaaaRecord(this, "Alias", {
+        recordName: domainName,
+        zone: hostedZone,
+        target: route53.RecordTarget.fromAlias(
+          new targets.CloudFrontTarget(distro)
+        ),
+      });
+      new route53.AaaaRecord(this, "AliasWWW", {
+        recordName: wwwDomainName,
+        zone: hostedZone,
+        target: route53.RecordTarget.fromAlias(
+          new targets.CloudFrontTarget(distro)
+        ),
+      });
+    }
+
+    const fromAddressOutput = fromAddress || "no SES from address";
     new cdk.CfnOutput(this, "sesFromAddress", {
       value: fromAddressOutput,
+    });
+    new cdk.CfnOutput(this, "webappDomainName", {
+      value: webappDomainName || "no domain name specified",
     });
     new cdk.CfnOutput(this, "DistributionDomainName", {
       value: distro.distributionDomainName,

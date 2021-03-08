@@ -12,8 +12,9 @@ const stackname = require("@cdk-turnkey/stackname");
     DOMAIN_NAME = "domainName",
   }
   const fromAddressParam = stackname(PARAM_SUFFIXES.FROM_ADDRESS);
+  const domainNameParam = stackname(PARAM_SUFFIXES.DOMAIN_NAME);
   const ssmParams = {
-    Names: [fromAddressParam],
+    Names: [fromAddressParam, domainNameParam],
   };
   AWS.config.update({ region: process.env.AWS_DEFAULT_REGION });
   const ssm = new AWS.SSM();
@@ -23,7 +24,7 @@ const stackname = require("@cdk-turnkey/stackname");
       resolve({ err, data });
     });
   });
-  let fromAddress;
+  let fromAddress, domainName;
   if (ssmResponse?.data?.Parameters?.length > 0) {
     console.log("ssmResponse.data:");
     console.log(ssmResponse.data);
@@ -32,11 +33,14 @@ const stackname = require("@cdk-turnkey/stackname");
         if (p.Name === fromAddressParam) {
           fromAddress = p.Value;
         }
+        if (p.Name === domainNameParam) {
+          domainName = p.Value;
+        }
       }
     );
 
+    // Validate the fromAddress, if provided
     if (fromAddress) {
-      // We have the verification email info, now validate it
       const sesv2 = new AWS.SESV2({ apiVersion: "2019-09-27" });
       // Check to make sure the email is verified and has sending enabled
       let sesv2Response: any;
@@ -81,10 +85,20 @@ const stackname = require("@cdk-turnkey/stackname");
         process.exit(1);
       }
     }
+
+    // No validation on the domainName param, because of edge cases.
+    // For example, what if the account that owns the name has set the name
+    // server's to this account's name servers for the name, thus
+    // delegating DNS authority?
+    // We'll just go with whatever is provided for domainName, and let the stack
+    // or build fail if anything goes wrong.
   }
   console.log("bin: Instantiating stack with fromAddress:");
   console.log(fromAddress);
+  console.log("and domainName:");
+  console.log(domainName);
   new MadliberationWebapp(app, stackname("webapp"), {
     fromAddress,
+    domainName,
   });
 })();

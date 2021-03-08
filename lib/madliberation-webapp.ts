@@ -10,13 +10,11 @@ import * as cognito from "@aws-cdk/aws-cognito";
 const stackname = require("@cdk-turnkey/stackname");
 const crypto = require("crypto");
 import { Effect, PolicyStatement } from "@aws-cdk/aws-iam";
+import * as acm from "@aws-cdk/aws-certificatemanager";
+import * as route53 from "@aws-cdk/aws-route53";
 
 export interface MadLiberationWebappProps extends cdk.StackProps {
-  sesVerificationConfig?: { fromAddress: string };
-}
-
-export enum SES_VERIFICATION_PARAM_SUFFIXES {
-  FROM_ADDRESS = "sesEmailVerificationFromAddress",
+  fromAddress?: string;
 }
 
 export class MadliberationWebapp extends cdk.Stack {
@@ -87,16 +85,16 @@ export class MadliberationWebapp extends cdk.Stack {
       },
     });
     let cfnUserPool;
-    if (props?.sesVerificationConfig) {
+    if (props?.fromAddress) {
       cfnUserPool = userPool.node.defaultChild as cognito.CfnUserPool;
       cfnUserPool.emailConfiguration = {
         emailSendingAccount: "DEVELOPER",
-        from: `Mad Liberation Verification <${props?.sesVerificationConfig?.fromAddress}>`,
+        from: `Mad Liberation Verification <${props?.fromAddress}>`,
         sourceArn:
           // SES integration is only available in us-east-1, us-west-2, eu-west-1
           `arn:aws:ses:${this.region}` +
           `:${this.account}:identity/` +
-          `${props?.sesVerificationConfig?.fromAddress}`,
+          `${props?.fromAddress}`,
       };
     }
     const clientWriteAttributes = new cognito.ClientAttributes().withStandardAttributes(
@@ -212,16 +210,9 @@ export class MadliberationWebapp extends cdk.Stack {
       }
     );
 
-    const sesFromAddressParamName = stackname(
-      SES_VERIFICATION_PARAM_SUFFIXES.FROM_ADDRESS
-    );
-    new cdk.CfnOutput(this, "sesFromAddressParamName", {
-      value: sesFromAddressParamName,
-    });
-    const sesFromAddress =
-      props?.sesVerificationConfig?.fromAddress || "no SES from address";
+    const fromAddressOutput = props?.fromAddress || "no SES from address";
     new cdk.CfnOutput(this, "sesFromAddress", {
-      value: sesFromAddress,
+      value: fromAddressOutput,
     });
     new cdk.CfnOutput(this, "DistributionDomainName", {
       value: distro.distributionDomainName,

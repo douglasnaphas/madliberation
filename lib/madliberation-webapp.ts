@@ -17,6 +17,7 @@ import * as targets from "@aws-cdk/aws-route53-targets";
 export interface MadLiberationWebappProps extends cdk.StackProps {
   fromAddress?: string;
   domainName?: string;
+  zoneId?: string;
 }
 
 export class MadliberationWebapp extends cdk.Stack {
@@ -27,7 +28,7 @@ export class MadliberationWebapp extends cdk.Stack {
   ) {
     super(scope, id, props);
 
-    const { fromAddress, domainName } = props;
+    const { fromAddress, domainName, zoneId } = props;
 
     const sedersTable = new dynamodb.Table(this, "SedersTable", {
       partitionKey: { name: "room_code", type: dynamodb.AttributeType.STRING },
@@ -54,18 +55,17 @@ export class MadliberationWebapp extends cdk.Stack {
     );
 
     let hostedZone, wwwDomainName, certificate, domainNames;
-    if (domainName) {
-      hostedZone = new route53.HostedZone(this, "HostedZone", {
-        zoneName: domainName,
-      });
+    if (domainName && zoneId) {
+      hostedZone = route53.HostedZone.fromHostedZoneId(
+        this,
+        "HostedZone",
+        zoneId
+      );
       const wwwDomainName = "www." + domainName;
       certificate = new acm.Certificate(this, "Certificate", {
         domainName,
         subjectAlternativeNames: [wwwDomainName],
-        validation: acm.CertificateValidation.fromDnsMultiZone({
-          domainName: hostedZone,
-          wwwDomainName: hostedZone,
-        }),
+        validation: acm.CertificateValidation.fromDns(hostedZone),
       });
       domainNames = [domainName, wwwDomainName];
     }

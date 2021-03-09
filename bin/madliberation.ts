@@ -10,11 +10,13 @@ const stackname = require("@cdk-turnkey/stackname");
   enum PARAM_SUFFIXES {
     FROM_ADDRESS = "sesEmailVerificationFromAddress",
     DOMAIN_NAME = "domainName",
+    ZONE_ID = "zoneId",
   }
   const fromAddressParam = stackname(PARAM_SUFFIXES.FROM_ADDRESS);
   const domainNameParam = stackname(PARAM_SUFFIXES.DOMAIN_NAME);
+  const zoneIdParam = stackname(PARAM_SUFFIXES.ZONE_ID);
   const ssmParams = {
-    Names: [fromAddressParam, domainNameParam],
+    Names: [fromAddressParam, domainNameParam, zoneIdParam],
   };
   AWS.config.update({ region: process.env.AWS_DEFAULT_REGION });
   const ssm = new AWS.SSM();
@@ -24,7 +26,7 @@ const stackname = require("@cdk-turnkey/stackname");
       resolve({ err, data });
     });
   });
-  let fromAddress, domainName;
+  let fromAddress, domainName, zoneId;
   if (ssmResponse?.data?.Parameters?.length > 0) {
     console.log("ssmResponse.data:");
     console.log(ssmResponse.data);
@@ -35,6 +37,9 @@ const stackname = require("@cdk-turnkey/stackname");
         }
         if (p.Name === domainNameParam) {
           domainName = p.Value;
+        }
+        if (p.Name === zoneIdParam) {
+          zoneId = p.Value;
         }
       }
     );
@@ -97,8 +102,11 @@ const stackname = require("@cdk-turnkey/stackname");
   console.log(fromAddress);
   console.log("and domainName:");
   console.log(domainName);
+  console.log("and zoneId:");
+  console.log(zoneId);
   new MadliberationWebapp(app, stackname("webapp"), {
     fromAddress,
     domainName,
+    zoneId,
   });
 })();

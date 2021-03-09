@@ -17,6 +17,17 @@ then
   echo "failing"
   exit 1
 fi
+# www smoke test
+WWW_CANARY_URL=$(echo ${BACKEND_CANARY_URL} | sed 's~https://~https://ww.~')
+WWW_OUTPUT=$(curl ${WWW_CANARY_URL} | jq '.Output')
+if [[ "${WWW_OUTPUT}" != "\"this endpoint is public\"" ]]
+then
+  echo "expected output from ${WWW_CANARY_URL} to be \"this endpoint is public\""
+  echo "got:"
+  echo "${WWW_OUTPUT}"
+  echo "failing"
+  exit 1
+fi
 
 # End-to-end test
 # Figure out the Cognito hosted UI URL

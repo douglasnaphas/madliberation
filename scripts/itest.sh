@@ -18,15 +18,21 @@ then
   exit 1
 fi
 # www smoke test
-WWW_CANARY_URL=$(echo ${BACKEND_CANARY_URL} | sed 's~https://~https://www.~')
-WWW_OUTPUT=$(curl ${WWW_CANARY_URL} | jq '.Output')
-if [[ "${WWW_OUTPUT}" != "\"this endpoint is public\"" ]]
+WWW_CANARY_URL=https://$(aws cloudformation describe-stacks \
+  --stack-name ${STACKNAME} | \
+  jq '.Stacks[0].Outputs | map(select(.OutputKey == "wwwDomainName"))[0].OutputValue' | \
+  tr -d \")
+if [[ "${WWW_CANARY_URL}" != "https://no www domain name" ]]
 then
-  echo "expected output from ${WWW_CANARY_URL} to be \"this endpoint is public\""
-  echo "got:"
-  echo "${WWW_OUTPUT}"
-  echo "failing"
-  exit 1
+  WWW_OUTPUT=$(curl ${WWW_CANARY_URL} | jq '.Output')
+  if [[ "${WWW_OUTPUT}" != "\"this endpoint is public\"" ]]
+  then
+    echo "expected output from ${WWW_CANARY_URL} to be \"this endpoint is public\""
+    echo "got:"
+    echo "${WWW_OUTPUT}"
+    echo "failing"
+    exit 1
+  fi
 fi
 
 # End-to-end test

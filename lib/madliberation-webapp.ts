@@ -61,7 +61,7 @@ export class MadliberationWebapp extends cdk.Stack {
         "HostedZone",
         zoneId
       );
-      const wwwDomainName = "www." + domainName;
+      wwwDomainName = "www." + domainName;
       certificate = new acm.Certificate(this, "Certificate", {
         domainName,
         subjectAlternativeNames: [wwwDomainName],

@@ -56,10 +56,10 @@ export class MadliberationWebapp extends cdk.Stack {
 
     let hostedZone, wwwDomainName, certificate, domainNames;
     if (domainName && zoneId) {
-      hostedZone = route53.HostedZone.fromHostedZoneId(
+      hostedZone = route53.HostedZone.fromHostedZoneAttributes(
         this,
         "HostedZone",
-        zoneId
+        { hostedZoneId: zoneId, zoneName: domainName + "." }
       );
       wwwDomainName = "www." + domainName;
       certificate = new acm.Certificate(this, "Certificate", {

@@ -58,7 +58,7 @@ export class MadliberationWebapp extends cdk.Stack {
       hostedZone = new route53.HostedZone(this, "HostedZone", {
         zoneName: domainName,
       });
-      const wwwDomainName = "www" + domainName;
+      const wwwDomainName = "www." + domainName;
       certificate = new acm.Certificate(this, "Certificate", {
         domainName,
         subjectAlternativeNames: [wwwDomainName],
@@ -242,14 +242,14 @@ export class MadliberationWebapp extends cdk.Stack {
 
     if (domainName && wwwDomainName && hostedZone) {
       // point the domain name with an alias record to the distro
-      new route53.AaaaRecord(this, "Alias", {
+      new route53.ARecord(this, "Alias", {
         recordName: domainName,
         zone: hostedZone,
         target: route53.RecordTarget.fromAlias(
           new targets.CloudFrontTarget(distro)
         ),
       });
-      new route53.AaaaRecord(this, "AliasWWW", {
+      new route53.ARecord(this, "AliasWWW", {
         recordName: wwwDomainName,
         zone: hostedZone,
         target: route53.RecordTarget.fromAlias(

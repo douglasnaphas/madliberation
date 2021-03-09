@@ -18,7 +18,7 @@ then
   exit 1
 fi
 # www smoke test
-WWW_CANARY_URL=$(echo ${BACKEND_CANARY_URL} | sed 's~https://~https://ww.~')
+WWW_CANARY_URL=$(echo ${BACKEND_CANARY_URL} | sed 's~https://~https://www.~')
 WWW_OUTPUT=$(curl ${WWW_CANARY_URL} | jq '.Output')
 if [[ "${WWW_OUTPUT}" != "\"this endpoint is public\"" ]]
 then

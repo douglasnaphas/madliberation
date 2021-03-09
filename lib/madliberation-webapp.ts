@@ -265,6 +265,9 @@ export class MadliberationWebapp extends cdk.Stack {
     new cdk.CfnOutput(this, "webappDomainName", {
       value: webappDomainName || "no domain name specified",
     });
+    new cdk.CfnOutput(this, "zoneId", {
+      value: zoneId || "no zoneId specified",
+    });
     new cdk.CfnOutput(this, "DistributionDomainName", {
       value: distro.distributionDomainName,
     });

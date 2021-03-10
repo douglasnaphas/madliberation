@@ -58,7 +58,10 @@ export class MadliberationWebapp extends cdk.Stack {
         schema.PATH,
       ],
       projectionType: dynamodb.ProjectionType.INCLUDE,
-      sortKey: schema.SCRIPT_NUMBER,
+      sortKey: {
+        name: schema.SCRIPT_NUMBER,
+        type: dynamodb.AttributeType.STRING,
+      },
     });
 
     const frontendBucket = new s3.Bucket(this, "FrontendBucket");

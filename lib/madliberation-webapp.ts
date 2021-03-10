@@ -31,6 +31,9 @@ export class MadliberationWebapp extends cdk.Stack {
 
     const { fromAddress, domainName, zoneId } = props;
 
+    console.log("schema.PARTITION_KEY:");
+    console.log(schema.PARTITION_KEY);
+
     const sedersTable = new dynamodb.Table(this, "SedersTable", {
       partitionKey: {
         name: schema.PARTITION_KEY,

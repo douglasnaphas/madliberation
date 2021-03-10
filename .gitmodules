@@ -7,3 +7,6 @@
 [submodule "itest"]
 	path = itest
 	url = git@github.com:douglasnaphas/madliberation-itest.git
+[submodule "content"]
+	path = content
+	url = git@github.com:douglasnaphas/madliberation-scripts.git

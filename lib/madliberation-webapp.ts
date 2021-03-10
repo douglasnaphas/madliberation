@@ -13,6 +13,7 @@ import { Effect, PolicyStatement } from "@aws-cdk/aws-iam";
 import * as acm from "@aws-cdk/aws-certificatemanager";
 import * as route53 from "@aws-cdk/aws-route53";
 import * as targets from "@aws-cdk/aws-route53-targets";
+const schema = require("./backend/schema");
 
 export interface MadLiberationWebappProps extends cdk.StackProps {
   fromAddress?: string;
@@ -31,10 +32,30 @@ export class MadliberationWebapp extends cdk.Stack {
     const { fromAddress, domainName, zoneId } = props;
 
     const sedersTable = new dynamodb.Table(this, "SedersTable", {
-      partitionKey: { name: "room_code", type: dynamodb.AttributeType.STRING },
-      sortKey: { name: "lib_id", type: dynamodb.AttributeType.STRING },
+      partitionKey: {
+        name: schema.PARTITION_KEY,
+        type: dynamodb.AttributeType.STRING,
+      },
+      sortKey: { name: schema.SORT_KEY, type: dynamodb.AttributeType.STRING },
       billingMode: dynamodb.BillingMode.PAY_PER_REQUEST,
       removalPolicy: cdk.RemovalPolicy.DESTROY,
+    });
+    sedersTable.addGlobalSecondaryIndex({
+      indexName: schema.SCRIPTS_INDEX,
+      partitionKey: {
+        name: schema.SCRIPTS_PART_KEY,
+        type: dynamodb.AttributeType.STRING,
+      },
+      nonKeyAttributes: [
+        schema.HAGGADAH_DESCRIPTION,
+        schema.HAGGADAH_NAME,
+        schema.SORT_KEY,
+        schema.PARTITION_KEY,
+        schema.HAGGADAH_SHORT_DESC,
+        schema.PATH,
+      ],
+      projectionType: dynamodb.ProjectionType.INCLUDE,
+      sortKey: schema.SCRIPT_NUMBER,
     });
 
     const frontendBucket = new s3.Bucket(this, "FrontendBucket");
@@ -200,6 +221,8 @@ export class MadliberationWebapp extends cdk.Stack {
       },
       timeout: cdk.Duration.seconds(20),
     });
+
+    sedersTable.grantReadWriteData(fn);
 
     fn.addToRolePolicy(
       new PolicyStatement({

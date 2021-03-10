@@ -13,7 +13,7 @@ import { Effect, PolicyStatement } from "@aws-cdk/aws-iam";
 import * as acm from "@aws-cdk/aws-certificatemanager";
 import * as route53 from "@aws-cdk/aws-route53";
 import * as targets from "@aws-cdk/aws-route53-targets";
-const schema = require("./backend/schema");
+const schema = require("../backend/schema");
 
 export interface MadLiberationWebappProps extends cdk.StackProps {
   fromAddress?: string;

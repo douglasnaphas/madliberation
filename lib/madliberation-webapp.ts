@@ -256,7 +256,7 @@ export class MadliberationWebapp extends cdk.Stack {
         protocolPolicy: cloudfront.OriginProtocolPolicy.HTTPS_ONLY,
       }),
       {
-        allowedMethods: { methods: ["GET", "HEAD", "POST", "DELETE"] },
+        allowedMethods: cloudfront.AllowedMethods.ALLOW_ALL,
         viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
         cachePolicy: cloudfront.CachePolicy.CACHING_DISABLED,
         originRequestPolicy: new cloudfront.OriginRequestPolicy(

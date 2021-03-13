@@ -47,7 +47,7 @@ export class MadliberationWebapp extends cdk.Stack {
       indexName: schema.SCRIPTS_INDEX,
       partitionKey: {
         name: schema.SCRIPTS_PART_KEY,
-        type: dynamodb.AttributeType.STRING,
+        type: dynamodb.AttributeType.NUMBER,
       },
       nonKeyAttributes: [
         schema.HAGGADAH_DESCRIPTION,
@@ -60,7 +60,7 @@ export class MadliberationWebapp extends cdk.Stack {
       projectionType: dynamodb.ProjectionType.INCLUDE,
       sortKey: {
         name: schema.SCRIPT_NUMBER,
-        type: dynamodb.AttributeType.STRING,
+        type: dynamodb.AttributeType.NUMBER,
       },
     });
 

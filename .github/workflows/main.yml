@@ -128,7 +128,7 @@ jobs:
       - name: Archive debugging screenshot
         uses: actions/upload-artifact@v2
         with:
-          name: pick-your-script-page-screenshot
+          name: pick-your-script-page-screenshot-test
           path: scripts/pick-your-script-page.jpeg
 
       - name: Identify prod account and region

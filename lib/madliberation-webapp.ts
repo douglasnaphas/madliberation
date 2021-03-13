@@ -287,6 +287,11 @@ export class MadliberationWebapp extends cdk.Stack {
       });
     }
 
+    const scriptsBucket = new s3.Bucket(this, "ScriptsBucket", {
+      versioned: true,
+    });
+    scriptsBucket.grantRead(fn);
+
     const fromAddressOutput = fromAddress || "no SES from address";
     new cdk.CfnOutput(this, "sesFromAddress", {
       value: fromAddressOutput,
@@ -318,5 +323,9 @@ export class MadliberationWebapp extends cdk.Stack {
     new cdk.CfnOutput(this, "UserPoolClientId", {
       value: userPoolClient.userPoolClientId,
     });
+    new cdk.CfnOutput(this, "ScriptsBucketName", {
+      value: scriptsBucket.bucketName,
+    });
+    new cdk.CfnOutput(this, "TableName", { value: sedersTable.tableName });
   }
 }

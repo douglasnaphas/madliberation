@@ -125,6 +125,12 @@ jobs:
         run: |
           bash itest.sh
 
+      - name: Archive debugging screenshot
+        uses: actions/upload-artifact@v2
+        with:
+          name: pick-your-script-page-screenshot
+          path: scripts/pick-your-script-page.jpeg
+
       - name: Identify prod account and region
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.PROD_AWS_ACCESS_KEY_ID }}

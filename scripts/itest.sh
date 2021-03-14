@@ -2,7 +2,7 @@
 
 set -e
 
-STACKNAME=$(npx @cdk-turnkey/stackname@1.1.0 --suffix webapp)
+STACKNAME=$(npx @cdk-turnkey/stackname@1.2.0 --suffix webapp)
 APP_URL=https://$(aws cloudformation describe-stacks \
   --stack-name ${STACKNAME} | \
   jq '.Stacks[0].Outputs | map(select(.OutputKey == "webappDomainName"))[0].OutputValue' | \
@@ -20,16 +20,17 @@ then
   exit 1
 fi
 # www smoke test
-WWW_CANARY_URL=https://$(aws cloudformation describe-stacks \
+WWW_APP_URL=https://$(aws cloudformation describe-stacks \
   --stack-name ${STACKNAME} | \
   jq '.Stacks[0].Outputs | map(select(.OutputKey == "wwwDomainName"))[0].OutputValue' | \
   tr -d \")
-if [[ "${WWW_CANARY_URL}" != "https://no www domain name" ]]
+if [[ "${WWW_APP_URL}" != "https://no www domain name" ]]
 then
-  WWW_OUTPUT=$(curl ${WWW_CANARY_URL} | jq '.Output')
+  WWW_BACKEND_CANARY_URL=${WWW_APP_URL}/prod/public-endpoint
+  WWW_OUTPUT=$(curl ${WWW_BACKEND_CANARY_URL} | jq '.Output')
   if [[ "${WWW_OUTPUT}" != "\"this endpoint is public\"" ]]
   then
-    echo "expected output from ${WWW_CANARY_URL} to be \"this endpoint is public\""
+    echo "expected output from ${WWW_BACKEND_CANARY_URL} to be \"this endpoint is public\""
     echo "got:"
     echo "${WWW_OUTPUT}"
     echo "failing"

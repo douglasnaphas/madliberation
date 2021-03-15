@@ -74,6 +74,15 @@ jobs:
         run: |
           npm test
 
+      - name: Identity provider app secret roll call
+        env:
+          FACEBOOK_APP_SECRET: ${{ secrets.FACEBOOK_APP_SECRET }}
+          GOOGLE_APP_SECRET: ${{ secrets.GOOGLE_APP_SECRET }}
+          AMAZON_APP_SECRET: ${{ secrets.AMAZON_APP_SECRET }}
+          APPLE_APP_SECRET: ${{ secrets.APPLE_APP_SECRET }}
+        run: |
+          node scripts/idp-app-secret-roll-call.js
+
       - name: Identify test account and region
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.TEST_AWS_ACCESS_KEY_ID }}

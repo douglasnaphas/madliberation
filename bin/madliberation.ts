@@ -40,81 +40,74 @@ const stackname = require("@cdk-turnkey/stackname");
     });
   });
 
-  if (ssmResponse?.data?.Parameters?.length > 0) {
-    for (let i = 0; i < ssmResponse.data.Parameters.length; i++) {
-      for (let j = 0; j < configParams.length; j++) {
-        if (
-          ssmResponse.data.Parameters[i].Name === configParams[j].ssmParamName()
-        ) {
-          if (ssmResponse.data.Parameters[i].Name === "fromAddress") {
-            // validation
-            const fromAddress = ssmResponse.data.Parameters[i].Value;
-            if (fromAddress) {
-              const sesv2 = new AWS.SESV2({ apiVersion: "2019-09-27" });
-              // Check to make sure the email is verified and has sending enabled
-              let sesv2Response: any;
-              const getEmailIdentityParams = {
-                EmailIdentity: fromAddress,
-              };
-              sesv2Response = await new Promise((resolve, reject) => {
-                sesv2.getEmailIdentity(
-                  getEmailIdentityParams,
-                  (err: any, data: any) => {
-                    resolve({ err, data });
-                  }
-                );
-              });
-              if (sesv2Response.err) {
-                console.log(
-                  "error: Could not get email identity, tried to get:"
-                );
-                console.log(fromAddress);
-                process.exit(1);
-              }
-              if (!sesv2Response.data.VerifiedForSendingStatus) {
-                console.log(
-                  "error: VerifiedForSendingStatus is not true for email:"
-                );
-                console.log(fromAddress);
-                process.exit(1);
-              }
-              if (
-                !(
-                  sesv2Response.data.DkimAttributes &&
-                  sesv2Response.data.DkimAttributes.Status &&
-                  sesv2Response.data.DkimAttributes.Status === "SUCCESS"
-                )
-              ) {
-                console.log(
-                  "error: DkimAttributes.Status is not SUCCESS. DkimAttributes.Status:"
-                );
-                console.log(
-                  sesv2Response.data.DkimAttributes &&
-                    sesv2Response.data.DkimAttributes.Status &&
-                    sesv2Response.data.DkimAttributes.Status
-                );
-                console.log("email:");
-                console.log(fromAddress);
-                process.exit(1);
-              }
-            }
+  const ssmParameterData: any = {};
+  ssmResponse?.data?.Parameters?.forEach(
+    (p: { Name: string; Value: string }) => {
+      ssmParameterData[p.Name] = p.Value;
+    }
+  );
+
+  // Validation
+  if (ssmParameterData.fromAddress) {
+    // Validate the fromAddress, if provided
+    const { fromAddress } = ssmParameterData;
+    if (fromAddress) {
+      const sesv2 = new AWS.SESV2({ apiVersion: "2019-09-27" });
+      // Check to make sure the email is verified and has sending enabled
+      let sesv2Response: any;
+      const getEmailIdentityParams = {
+        EmailIdentity: fromAddress,
+      };
+      sesv2Response = await new Promise((resolve, reject) => {
+        sesv2.getEmailIdentity(
+          getEmailIdentityParams,
+          (err: any, data: any) => {
+            resolve({ err, data });
           }
-          configParams[j].ssmParamValue = ssmResponse.data.Parameters[i].Value;
-        }
+        );
+      });
+      if (sesv2Response.err) {
+        console.log("error: Could not get email identity, tried to get:");
+        console.log(fromAddress);
+        process.exit(1);
+      }
+      if (!sesv2Response.data.VerifiedForSendingStatus) {
+        console.log("error: VerifiedForSendingStatus is not true for email:");
+        console.log(fromAddress);
+        process.exit(1);
+      }
+      if (
+        !(
+          sesv2Response.data.DkimAttributes &&
+          sesv2Response.data.DkimAttributes.Status &&
+          sesv2Response.data.DkimAttributes.Status === "SUCCESS"
+        )
+      ) {
+        console.log(
+          "error: DkimAttributes.Status is not SUCCESS. DkimAttributes.Status:"
+        );
+        console.log(
+          sesv2Response.data.DkimAttributes &&
+            sesv2Response.data.DkimAttributes.Status &&
+            sesv2Response.data.DkimAttributes.Status
+        );
+        console.log("email:");
+        console.log(fromAddress);
+        process.exit(1);
       }
     }
-
-    // Validate the fromAddress, if provided
-
-    // No validation on the domainName param, because of edge cases.
-    // For example, what if the account that owns the name has set the name
-    // server's to this account's name servers for the name, thus
-    // delegating DNS authority?
-    // We'll just go with whatever is provided for domainName, and let the stack
-    // or build fail if anything goes wrong.
   }
-  const webappProps: any = {};
+  // No validation on the domainName param, because of edge cases.
+  // For example, what if the account that owns the name has set the name
+  // server's to this account's name servers for the name, thus
+  // delegating DNS authority?
+  // We'll just go with whatever is provided for domainName, and let the stack
+  // or build fail if anything goes wrong.
 
+  configParams.forEach((c) => {
+    c.ssmParamValue = ssmParameterData[c.ssmParamName()];
+  });
+  const webappProps: any = {};
   configParams.forEach((c) => {
     webappProps[c.webappParamName] = c.ssmParamValue;
   });

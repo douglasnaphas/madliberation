@@ -197,6 +197,8 @@ export class MadliberationWebapp extends cdk.Stack {
     });
 
     if (props.facebookAppId && props.facebookAppSecret) {
+      console.log("received facebookAppId and facebookAppSecret");
+      console.log(props.facebookAppId);
       new cognito.UserPoolIdentityProviderFacebook(this, "Facebook", {
         clientId: props.facebookAppId,
         clientSecret: props.facebookAppSecret,

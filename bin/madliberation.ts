@@ -1,6 +1,8 @@
 #!/usr/bin/env node
 import * as cdk from "@aws-cdk/core";
+import { Console } from "console";
 const AWS = require("aws-sdk");
+const crypto = require("crypto");
 import {
   MadliberationWebapp,
   MadLiberationWebappProps,
@@ -41,6 +43,9 @@ const stackname = require("@cdk-turnkey/stackname");
     WithDecryption: true,
   };
 
+  console.log("ssmParams");
+  console.log(ssmParams);
+
   AWS.config.update({ region: process.env.AWS_DEFAULT_REGION });
   const ssm = new AWS.SSM();
   let ssmResponse: any;
@@ -62,6 +67,18 @@ const stackname = require("@cdk-turnkey/stackname");
       ssmParameterData[p.Name] = p.Value;
     }
   );
+
+  console.log("ssmParameterData.facebookAppId:");
+  console.log(ssmParameterData.facebookAppId);
+  if (ssmParameterData.facebookAppSecret) {
+    const facebookAppSecretHash = crypto
+      .createHash("sha256")
+      .update(ssmParameterData.facebookAppSecret)
+      .digest("hex")
+      .toLowerCase();
+    console.log("facebookAppSecretHash");
+    console.log(facebookAppSecretHash);
+  }
 
   // Validation
   if (ssmParameterData.fromAddress) {

@@ -19,6 +19,8 @@ export interface MadLiberationWebappProps extends cdk.StackProps {
   fromAddress?: string;
   domainName?: string;
   zoneId?: string;
+  facebookAppId?: string;
+  facebookAppSecret?: string;
 }
 
 export class MadliberationWebapp extends cdk.Stack {

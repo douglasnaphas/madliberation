@@ -30,6 +30,7 @@ const stackname = require("@cdk-turnkey/stackname");
 
   const ssmParams = {
     Names: [configParams.map((c) => c.ssmParamName())],
+    WithDecryption: true,
   };
   AWS.config.update({ region: process.env.AWS_DEFAULT_REGION });
   const ssm = new AWS.SSM();

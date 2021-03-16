@@ -196,6 +196,19 @@ export class MadliberationWebapp extends cdk.Stack {
       },
     });
 
+    if (props.facebookAppId && props.facebookAppSecret) {
+      new cognito.UserPoolIdentityProviderFacebook(this, "Facebook", {
+        clientId: props.facebookAppId,
+        clientSecret: props.facebookAppSecret,
+        userPool: userPool,
+        scopes: ["public_profile", "email"],
+        attributeMapping: {
+          nickname: cognito.ProviderAttribute.FACEBOOK_NAME,
+          email: cognito.ProviderAttribute.FACEBOOK_EMAIL,
+        },
+      });
+    }
+
     const fn = new lambda.Function(this, "BackendHandler", {
       runtime: lambda.Runtime.NODEJS_10_X,
       handler: "index.handler",

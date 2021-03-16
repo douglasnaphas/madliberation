@@ -50,9 +50,6 @@ const stackname = require("@cdk-turnkey/stackname");
     });
   });
 
-  console.log("ssmResponse:");
-  console.log(ssmResponse);
-
   if (!ssmResponse.data) {
     console.log("error: unsuccessful SSM call, failing");
     console.log(ssmResponse);
@@ -136,6 +133,7 @@ const stackname = require("@cdk-turnkey/stackname");
   console.log(webappProps.domainName);
   console.log("and zoneId:");
   console.log(webappProps.zoneId);
+  // TODO: print a hash of the IDP app secrets
   new MadliberationWebapp(app, stackname("webapp"), {
     ...(webappProps as MadLiberationWebappProps),
   });

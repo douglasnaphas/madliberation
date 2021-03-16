@@ -80,17 +80,6 @@ const stackname = require("@cdk-turnkey/stackname");
   );
 
   console.log("==================");
-  console.log("ssmParameterData.facebookAppId:");
-  console.log(ssmParameterData.facebookAppId);
-  if (ssmParameterData.facebookAppSecret) {
-    const facebookAppSecretHash = crypto
-      .createHash("sha256")
-      .update(ssmParameterData.facebookAppSecret)
-      .digest("hex")
-      .toLowerCase();
-    console.log("facebookAppSecretHash");
-    console.log(facebookAppSecretHash);
-  }
 
   // Validation
   if (ssmParameterData.fromAddress) {

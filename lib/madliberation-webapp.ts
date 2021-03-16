@@ -162,6 +162,32 @@ export class MadliberationWebapp extends cdk.Stack {
       emailVerified: true,
     });
     const webappDomainName = domainName || distro.distributionDomainName;
+
+    console.log("lib: props.facebookAppId");
+    console.log(props.facebookAppId);
+    if (props.facebookAppSecret) {
+      console.log("lib: received facebookAppSecret");
+    }
+    if (props.facebookAppId && props.facebookAppSecret) {
+      console.log("received facebookAppId and facebookAppSecret");
+      console.log(props.facebookAppId);
+      const userPoolIdentityProviderFacebook = new cognito.UserPoolIdentityProviderFacebook(
+        this,
+        "Facebook",
+        {
+          clientId: props.facebookAppId,
+          clientSecret: props.facebookAppSecret,
+          userPool: userPool,
+          scopes: ["public_profile", "email"],
+          attributeMapping: {
+            nickname: cognito.ProviderAttribute.FACEBOOK_NAME,
+            email: cognito.ProviderAttribute.FACEBOOK_EMAIL,
+          },
+        }
+      );
+      userPool.registerIdentityProvider(userPoolIdentityProviderFacebook);
+    }
+
     const userPoolClient = userPool.addClient("UserPoolClient", {
       generateSecret: true,
       oAuth: {
@@ -195,26 +221,6 @@ export class MadliberationWebapp extends cdk.Stack {
         domainPrefix: domainPrefix,
       },
     });
-
-    console.log("lib: props.facebookAppId");
-    console.log(props.facebookAppId);
-    if (props.facebookAppSecret) {
-      console.log("lib: received facebookAppSecret");
-    }
-    if (props.facebookAppId && props.facebookAppSecret) {
-      console.log("received facebookAppId and facebookAppSecret");
-      console.log(props.facebookAppId);
-      new cognito.UserPoolIdentityProviderFacebook(this, "Facebook", {
-        clientId: props.facebookAppId,
-        clientSecret: props.facebookAppSecret,
-        userPool: userPool,
-        scopes: ["public_profile", "email"],
-        attributeMapping: {
-          nickname: cognito.ProviderAttribute.FACEBOOK_NAME,
-          email: cognito.ProviderAttribute.FACEBOOK_EMAIL,
-        },
-      });
-    }
 
     const fn = new lambda.Function(this, "BackendHandler", {
       runtime: lambda.Runtime.NODEJS_10_X,

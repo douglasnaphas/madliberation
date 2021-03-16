@@ -36,19 +36,10 @@ const stackname = require("@cdk-turnkey/stackname");
     new ConfigParam("facebookAppSecret"),
   ];
 
-  console.log("configParams");
-  configParams.forEach((c) => {
-    c.print();
-  });
-
   const ssmParams = {
-    Names: [configParams.map((c) => c.ssmParamName())],
+    Names: configParams.map((c) => c.ssmParamName()),
     WithDecryption: true,
   };
-
-  console.log("ssmParams:");
-  console.log(ssmParams);
-  console.log(ssmParams.Names);
 
   AWS.config.update({ region: process.env.AWS_DEFAULT_REGION });
   const ssm = new AWS.SSM();
@@ -62,15 +53,18 @@ const stackname = require("@cdk-turnkey/stackname");
   console.log("ssmResponse:");
   console.log(ssmResponse);
 
+  if (!ssmResponse.data) {
+    console.log("error: unsuccessful SSM call, failing");
+    console.log(ssmResponse);
+    process.exit(1);
+  }
+
   const ssmParameterData: any = {};
   ssmResponse?.data?.Parameters?.forEach(
     (p: { Name: string; Value: string }) => {
       ssmParameterData[p.Name] = p.Value;
     }
   );
-
-  console.log("ssmParameterData:");
-  console.log(ssmParameterData);
 
   // Validation
   if (ssmParameterData.fromAddress) {
@@ -130,17 +124,12 @@ const stackname = require("@cdk-turnkey/stackname");
   // or build fail if anything goes wrong.
 
   configParams.forEach((c) => {
-    console.log("configParams: assigning:");
-    ssmParameterData[c.ssmParamName()];
-    console.log("to ssmParamValue");
     c.ssmParamValue = ssmParameterData[c.ssmParamName()];
   });
   const webappProps: any = {};
   configParams.forEach((c) => {
     webappProps[c.webappParamName] = c.ssmParamValue;
   });
-  console.log("webappProps:");
-  console.log(webappProps);
   console.log("bin: Instantiating stack with fromAddress:");
   console.log(webappProps.fromAddress);
   console.log("and domainName:");

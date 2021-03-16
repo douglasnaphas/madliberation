@@ -196,6 +196,11 @@ export class MadliberationWebapp extends cdk.Stack {
       },
     });
 
+    console.log("lib: props.facebookAppId");
+    console.log(props.facebookAppId);
+    if (props.facebookAppSecret) {
+      console.log("lib: received facebookAppSecret");
+    }
     if (props.facebookAppId && props.facebookAppSecret) {
       console.log("received facebookAppId and facebookAppSecret");
       console.log(props.facebookAppId);

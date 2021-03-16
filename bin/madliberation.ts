@@ -34,7 +34,7 @@ const stackname = require("@cdk-turnkey/stackname");
     new ConfigParam("fromAddress"),
     new ConfigParam("domainName"),
     new ConfigParam("zoneId"),
-    new ConfigParam("facbookAppId"),
+    new ConfigParam("facebookAppId"),
     new ConfigParam("facebookAppSecret"),
   ];
 
@@ -62,12 +62,24 @@ const stackname = require("@cdk-turnkey/stackname");
   }
 
   const ssmParameterData: any = {};
+  let valueHash;
   ssmResponse?.data?.Parameters?.forEach(
     (p: { Name: string; Value: string }) => {
+      console.log("Received parameter named:");
+      console.log(p.Name);
+      valueHash = crypto
+        .createHash("sha256")
+        .update(p.Value)
+        .digest("hex")
+        .toLowerCase();
+      console.log("value hash:");
+      console.log(valueHash);
+      console.log("**************");
       ssmParameterData[p.Name] = p.Value;
     }
   );
 
+  console.log("==================");
   console.log("ssmParameterData.facebookAppId:");
   console.log(ssmParameterData.facebookAppId);
   if (ssmParameterData.facebookAppSecret) {

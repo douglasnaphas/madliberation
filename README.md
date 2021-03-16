@@ -136,6 +136,6 @@ It figures out the names of parameters using [stackname](https://www.npmjs.com/p
 
 The parameters are as follows. They are all optional. The app will deploy with default behavior for any unset param. Default behavior is usually appropriate for dev and test environments. Production environments will generally want most or all params set. Params:
 
-1. `stackname("sesEmailVerificationFromAddress")`. The email address that Cognito and SES will use to verify new user self-signups. The from-email address itself should be [verified](https://docs.aws.amazon.com/ses/latest/DeveloperGuide/verify-email-addresses.html) with AWS.
+1. `stackname("fromAddress")`. The email address that Cognito and SES will use to verify new user self-signups. The from-email address itself should be [verified](https://docs.aws.amazon.com/ses/latest/DeveloperGuide/verify-email-addresses.html) with AWS.
 2. `stackname("domainName")`. The DNS name where the app will be reachable. You should have the right to configure DNS for this name, in AWS Route53.
 3. `stackname("zoneId")`. The Route53 hosted zone where a DNS record pointing to the app, and DNS records validating the TLS certificate, should be created.

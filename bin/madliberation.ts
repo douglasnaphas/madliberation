@@ -1,22 +1,35 @@
 #!/usr/bin/env node
 import * as cdk from "@aws-cdk/core";
 const AWS = require("aws-sdk");
-import { MadliberationWebapp } from "../lib/madliberation-webapp";
+import {
+  MadliberationWebapp,
+  MadLiberationWebappProps,
+} from "../lib/madliberation-webapp";
 const stackname = require("@cdk-turnkey/stackname");
 
 (async () => {
   const app = new cdk.App();
 
-  enum PARAM_SUFFIXES {
-    FROM_ADDRESS = "sesEmailVerificationFromAddress",
-    DOMAIN_NAME = "domainName",
-    ZONE_ID = "zoneId",
+  // This is the array I'll eventually use to elegantly state these names only
+  // once in this file.
+  class ConfigParam {
+    webappParamName: string;
+    ssmParamName = () => stackname(this.webappParamName);
+    ssmParamValue?: string;
+    constructor(webappParamName: string) {
+      this.webappParamName = webappParamName;
+    }
   }
-  const fromAddressParam = stackname(PARAM_SUFFIXES.FROM_ADDRESS);
-  const domainNameParam = stackname(PARAM_SUFFIXES.DOMAIN_NAME);
-  const zoneIdParam = stackname(PARAM_SUFFIXES.ZONE_ID);
+  const configParams: Array<ConfigParam> = [
+    new ConfigParam("fromAddress"),
+    new ConfigParam("domainName"),
+    new ConfigParam("zoneId"),
+    new ConfigParam("facbookAppId"),
+    new ConfigParam("facebookAppSecret"),
+  ];
+
   const ssmParams = {
-    Names: [fromAddressParam, domainNameParam, zoneIdParam],
+    Names: [configParams.map((c) => c.ssmParamName())],
   };
   AWS.config.update({ region: process.env.AWS_DEFAULT_REGION });
   const ssm = new AWS.SSM();
@@ -26,70 +39,72 @@ const stackname = require("@cdk-turnkey/stackname");
       resolve({ err, data });
     });
   });
-  let fromAddress, domainName, zoneId;
-  if (ssmResponse?.data?.Parameters?.length > 0) {
-    console.log("ssmResponse.data:");
-    console.log(ssmResponse.data);
-    ssmResponse.data.Parameters.forEach(
-      (p: { Name: string; Value: string }) => {
-        if (p.Name === fromAddressParam) {
-          fromAddress = p.Value;
-        }
-        if (p.Name === domainNameParam) {
-          domainName = p.Value;
-        }
-        if (p.Name === zoneIdParam) {
-          zoneId = p.Value;
-        }
-      }
-    );
 
-    // Validate the fromAddress, if provided
-    if (fromAddress) {
-      const sesv2 = new AWS.SESV2({ apiVersion: "2019-09-27" });
-      // Check to make sure the email is verified and has sending enabled
-      let sesv2Response: any;
-      const getEmailIdentityParams = {
-        EmailIdentity: fromAddress,
-      };
-      sesv2Response = await new Promise((resolve, reject) => {
-        sesv2.getEmailIdentity(
-          getEmailIdentityParams,
-          (err: any, data: any) => {
-            resolve({ err, data });
+  if (ssmResponse?.data?.Parameters?.length > 0) {
+    for (let i = 0; i < ssmResponse.data.Parameters.length; i++) {
+      for (let j = 0; j < configParams.length; j++) {
+        if (
+          ssmResponse.data.Parameters[i].Name === configParams[j].ssmParamName()
+        ) {
+          if (ssmResponse.data.Parameters[i].Name === "fromAddress") {
+            // validation
+            const fromAddress = ssmResponse.data.Parameters[i].Value;
+            if (fromAddress) {
+              const sesv2 = new AWS.SESV2({ apiVersion: "2019-09-27" });
+              // Check to make sure the email is verified and has sending enabled
+              let sesv2Response: any;
+              const getEmailIdentityParams = {
+                EmailIdentity: fromAddress,
+              };
+              sesv2Response = await new Promise((resolve, reject) => {
+                sesv2.getEmailIdentity(
+                  getEmailIdentityParams,
+                  (err: any, data: any) => {
+                    resolve({ err, data });
+                  }
+                );
+              });
+              if (sesv2Response.err) {
+                console.log(
+                  "error: Could not get email identity, tried to get:"
+                );
+                console.log(fromAddress);
+                process.exit(1);
+              }
+              if (!sesv2Response.data.VerifiedForSendingStatus) {
+                console.log(
+                  "error: VerifiedForSendingStatus is not true for email:"
+                );
+                console.log(fromAddress);
+                process.exit(1);
+              }
+              if (
+                !(
+                  sesv2Response.data.DkimAttributes &&
+                  sesv2Response.data.DkimAttributes.Status &&
+                  sesv2Response.data.DkimAttributes.Status === "SUCCESS"
+                )
+              ) {
+                console.log(
+                  "error: DkimAttributes.Status is not SUCCESS. DkimAttributes.Status:"
+                );
+                console.log(
+                  sesv2Response.data.DkimAttributes &&
+                    sesv2Response.data.DkimAttributes.Status &&
+                    sesv2Response.data.DkimAttributes.Status
+                );
+                console.log("email:");
+                console.log(fromAddress);
+                process.exit(1);
+              }
+            }
           }
-        );
-      });
-      if (sesv2Response.err) {
-        console.log("error: Could not get email identity, tried to get:");
-        console.log(fromAddress);
-        process.exit(1);
-      }
-      if (!sesv2Response.data.VerifiedForSendingStatus) {
-        console.log("error: VerifiedForSendingStatus is not true for email:");
-        console.log(fromAddress);
-        process.exit(1);
-      }
-      if (
-        !(
-          sesv2Response.data.DkimAttributes &&
-          sesv2Response.data.DkimAttributes.Status &&
-          sesv2Response.data.DkimAttributes.Status === "SUCCESS"
-        )
-      ) {
-        console.log(
-          "error: DkimAttributes.Status is not SUCCESS. DkimAttributes.Status:"
-        );
-        console.log(
-          sesv2Response.data.DkimAttributes &&
-            sesv2Response.data.DkimAttributes.Status &&
-            sesv2Response.data.DkimAttributes.Status
-        );
-        console.log("email:");
-        console.log(fromAddress);
-        process.exit(1);
+          configParams[j].ssmParamValue = ssmResponse.data.Parameters[i].Value;
+        }
       }
     }
+
+    // Validate the fromAddress, if provided
 
     // No validation on the domainName param, because of edge cases.
     // For example, what if the account that owns the name has set the name
@@ -98,15 +113,18 @@ const stackname = require("@cdk-turnkey/stackname");
     // We'll just go with whatever is provided for domainName, and let the stack
     // or build fail if anything goes wrong.
   }
+  const webappProps: any = {};
+
+  configParams.forEach((c) => {
+    webappProps[c.webappParamName] = c.ssmParamValue;
+  });
   console.log("bin: Instantiating stack with fromAddress:");
-  console.log(fromAddress);
+  console.log(webappProps.fromAddress);
   console.log("and domainName:");
-  console.log(domainName);
+  console.log(webappProps.domainName);
   console.log("and zoneId:");
-  console.log(zoneId);
+  console.log(webappProps.zoneId);
   new MadliberationWebapp(app, stackname("webapp"), {
-    fromAddress,
-    domainName,
-    zoneId,
+    ...(webappProps as MadLiberationWebappProps),
   });
 })();

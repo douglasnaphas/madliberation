@@ -6,7 +6,7 @@ name: CI-feature-branch
 on:
   # Triggers the workflow on push to feature branches
   push:
-    branches: ["*", "!main", "!master"]
+    branches: ["*", "!main", "!master", "!skip/*"]
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:

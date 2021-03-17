@@ -21,6 +21,10 @@ export interface MadLiberationWebappProps extends cdk.StackProps {
   zoneId?: string;
   facebookAppId?: string;
   facebookAppSecret?: string;
+  amazonClientId?: string;
+  amazonClientSecret?: string;
+  googleClientId?: string;
+  googleClientSecret?: string;
 }
 
 export class MadliberationWebapp extends cdk.Stack {
@@ -31,7 +35,17 @@ export class MadliberationWebapp extends cdk.Stack {
   ) {
     super(scope, id, props);
 
-    const { fromAddress, domainName, zoneId } = props;
+    const {
+      fromAddress,
+      domainName,
+      zoneId,
+      facebookAppId,
+      facebookAppSecret,
+      amazonClientId,
+      amazonClientSecret,
+      googleClientId,
+      googleClientSecret,
+    } = props;
 
     console.log("schema.PARTITION_KEY:");
     console.log(schema.PARTITION_KEY);
@@ -187,21 +201,14 @@ export class MadliberationWebapp extends cdk.Stack {
     });
     const webappDomainName = domainName || distro.distributionDomainName;
 
-    console.log("lib: props.facebookAppId");
-    console.log(props.facebookAppId);
-    if (props.facebookAppSecret) {
-      console.log("lib: received facebookAppSecret");
-    }
-    if (props.facebookAppId && props.facebookAppSecret) {
-      console.log("received facebookAppId and facebookAppSecret");
-      console.log(props.facebookAppId);
+    if (facebookAppId && facebookAppSecret) {
       const userPoolIdentityProviderFacebook = new cognito.UserPoolIdentityProviderFacebook(
         this,
         "Facebook",
         {
-          clientId: props.facebookAppId,
-          clientSecret: props.facebookAppSecret,
-          userPool: userPool,
+          clientId: facebookAppId,
+          clientSecret: facebookAppSecret,
+          userPool,
           scopes: ["public_profile", "email"],
           /*
           > Apps may ask for the following two permissions from any person
@@ -219,6 +226,39 @@ export class MadliberationWebapp extends cdk.Stack {
         }
       );
       userPool.registerIdentityProvider(userPoolIdentityProviderFacebook);
+    }
+    if (amazonClientId && amazonClientSecret) {
+      const userPoolIdentityProviderAmazon = new cognito.UserPoolIdentityProviderAmazon(
+        this,
+        "Amazon",
+        {
+          clientId: amazonClientId,
+          clientSecret: amazonClientSecret,
+          userPool,
+          attributeMapping: {
+            nickname: cognito.ProviderAttribute.AMAZON_NAME,
+            email: cognito.ProviderAttribute.AMAZON_EMAIL,
+          },
+        }
+      );
+      userPool.registerIdentityProvider(userPoolIdentityProviderAmazon);
+    }
+    if (googleClientId && googleClientSecret) {
+      const userPoolIdentityProviderGoogle = new cognito.UserPoolIdentityProviderGoogle(
+        this,
+        "Google",
+        {
+          clientId: googleClientId,
+          clientSecret: googleClientSecret,
+          userPool,
+          scopes: ["profile", "email"],
+          attributeMapping: {
+            nickname: cognito.ProviderAttribute.GOOGLE_NAME,
+            email: cognito.ProviderAttribute.GOOGLE_EMAIL,
+          },
+        }
+      );
+      userPool.registerIdentityProvider(userPoolIdentityProviderGoogle);
     }
 
     const userPoolClient = userPool.addClient("UserPoolClient", {

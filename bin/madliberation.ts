@@ -36,6 +36,10 @@ const stackname = require("@cdk-turnkey/stackname");
     new ConfigParam("zoneId"),
     new ConfigParam("facebookAppId"),
     new ConfigParam("facebookAppSecret"),
+    new ConfigParam("amazonClientId"),
+    new ConfigParam("amazonClientSecret"),
+    new ConfigParam("googleClientId"),
+    new ConfigParam("googleClientSecret"),
   ];
 
   const ssmParams = {

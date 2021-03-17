@@ -65,6 +65,30 @@ export class MadliberationWebapp extends cdk.Stack {
         type: dynamodb.AttributeType.NUMBER,
       },
     });
+    sedersTable.addGlobalSecondaryIndex({
+      indexName: schema.EMAIL_PATH_INDEX,
+      partitionKey: {
+        name: schema.USER_EMAIL,
+        type: dynamodb.AttributeType.STRING,
+      },
+      sortKey: {
+        name: schema.PATH,
+        type: dynamodb.AttributeType.STRING,
+      },
+      projectionType: dynamodb.ProjectionType.ALL,
+    });
+    sedersTable.addGlobalSecondaryIndex({
+      indexName: schema.EMAIL_GAME_NAME_INDEX,
+      partitionKey: {
+        name: schema.USER_EMAIL,
+        type: dynamodb.AttributeType.STRING,
+      },
+      sortKey: {
+        name: schema.GAME_NAME,
+        type: dynamodb.AttributeType.STRING,
+      },
+      projectionType: dynamodb.ProjectionType.ALL,
+    });
 
     const frontendBucket = new s3.Bucket(this, "FrontendBucket");
 
@@ -179,6 +203,15 @@ export class MadliberationWebapp extends cdk.Stack {
           clientSecret: props.facebookAppSecret,
           userPool: userPool,
           scopes: ["public_profile", "email"],
+          /*
+          > Apps may ask for the following two permissions from any person
+          > without submitting for review by Facebook:
+          > 
+          > public profile
+          > email
+
+          https://developers.facebook.com/docs/facebook-login/overview
+          */
           attributeMapping: {
             nickname: cognito.ProviderAttribute.FACEBOOK_NAME,
             email: cognito.ProviderAttribute.FACEBOOK_EMAIL,

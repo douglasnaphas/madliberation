@@ -77,18 +77,18 @@ export class MadliberationWebapp extends cdk.Stack {
       },
       projectionType: dynamodb.ProjectionType.ALL,
     });
-    // sedersTable.addGlobalSecondaryIndex({
-    //   indexName: schema.EMAIL_GAME_NAME_INDEX,
-    //   partitionKey: {
-    //     name: schema.USER_EMAIL,
-    //     type: dynamodb.AttributeType.STRING,
-    //   },
-    //   sortKey: {
-    //     name: schema.GAME_NAME,
-    //     type: dynamodb.AttributeType.STRING,
-    //   },
-    //   projectionType: dynamodb.ProjectionType.ALL,
-    // });
+    sedersTable.addGlobalSecondaryIndex({
+      indexName: schema.EMAIL_GAME_NAME_INDEX,
+      partitionKey: {
+        name: schema.USER_EMAIL,
+        type: dynamodb.AttributeType.STRING,
+      },
+      sortKey: {
+        name: schema.GAME_NAME,
+        type: dynamodb.AttributeType.STRING,
+      },
+      projectionType: dynamodb.ProjectionType.ALL,
+    });
 
     const frontendBucket = new s3.Bucket(this, "FrontendBucket");
 

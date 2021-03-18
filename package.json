@@ -35,6 +35,7 @@
     "@aws-cdk/aws-ssm": "^1.92.0",
     "@aws-cdk/core": "^1.92.0",
     "@cdk-turnkey/stackname": "^1.2.0",
-    "aws-sdk": "^2.850.0"
+    "aws-sdk": "^2.850.0",
+    "uuid": "^8.3.2"
   }
 }

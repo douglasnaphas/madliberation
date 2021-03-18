@@ -13,6 +13,7 @@ import { Effect, PolicyStatement } from "@aws-cdk/aws-iam";
 import * as acm from "@aws-cdk/aws-certificatemanager";
 import * as route53 from "@aws-cdk/aws-route53";
 import * as targets from "@aws-cdk/aws-route53-targets";
+const { v4: uuidv4 } = require("uuid");
 const schema = require("../backend/schema");
 
 export interface MadLiberationWebappProps extends cdk.StackProps {
@@ -373,20 +374,29 @@ export class MadliberationWebapp extends cdk.Stack {
 
     if (domainName && wwwDomainName && hostedZone) {
       // point the domain name with an alias record to the distro
-      new route53.ARecord(this, "Alias", {
+      const aliasRecord = new route53.ARecord(this, "Alias", {
         recordName: domainName,
         zone: hostedZone,
         target: route53.RecordTarget.fromAlias(
           new targets.CloudFrontTarget(distro)
         ),
       });
-      new route53.ARecord(this, "AliasWWW", {
+      const aliasWWWRecord = new route53.ARecord(this, "AliasWWW", {
         recordName: wwwDomainName,
         zone: hostedZone,
         target: route53.RecordTarget.fromAlias(
           new targets.CloudFrontTarget(distro)
         ),
       });
+      const DNS_WEIGHT = 100;
+      const cfnAliasRecordSet = aliasRecord.node
+        .defaultChild as route53.CfnRecordSet;
+      cfnAliasRecordSet.weight = DNS_WEIGHT;
+      cfnAliasRecordSet.setIdentifier = "mlwebapp-" + uuidv4();
+      const cfnAliasWWWRecordSet = aliasWWWRecord.node
+        .defaultChild as route53.CfnRecordSet;
+      cfnAliasWWWRecordSet.weight = DNS_WEIGHT;
+      cfnAliasWWWRecordSet.setIdentifier = "mlwebapp-" + uuidv4();
     }
 
     const scriptsBucket = new s3.Bucket(this, "ScriptsBucket", {

@@ -47,9 +47,6 @@ const stackname = require("@cdk-turnkey/stackname");
     WithDecryption: true,
   };
 
-  console.log("ssmParams");
-  console.log(ssmParams);
-
   AWS.config.update({ region: process.env.AWS_DEFAULT_REGION });
   const ssm = new AWS.SSM();
   let ssmResponse: any;
@@ -85,54 +82,57 @@ const stackname = require("@cdk-turnkey/stackname");
 
   console.log("==================");
 
+  configParams.forEach((c) => {
+    c.ssmParamValue = ssmParameterData[c.ssmParamName()];
+  });
+  const webappProps: any = {};
+  configParams.forEach((c) => {
+    webappProps[c.webappParamName] = c.ssmParamValue;
+  });
+
   // Validation
-  if (ssmParameterData.fromAddress) {
+  if (webappProps.fromAddress) {
     // Validate the fromAddress, if provided
-    const { fromAddress } = ssmParameterData;
-    if (fromAddress) {
-      const sesv2 = new AWS.SESV2({ apiVersion: "2019-09-27" });
-      // Check to make sure the email is verified and has sending enabled
-      let sesv2Response: any;
-      const getEmailIdentityParams = {
-        EmailIdentity: fromAddress,
-      };
-      sesv2Response = await new Promise((resolve, reject) => {
-        sesv2.getEmailIdentity(
-          getEmailIdentityParams,
-          (err: any, data: any) => {
-            resolve({ err, data });
-          }
-        );
+    const { fromAddress } = webappProps;
+    const sesv2 = new AWS.SESV2({ apiVersion: "2019-09-27" });
+    // Check to make sure the email is verified and has sending enabled
+    let sesv2Response: any;
+    const getEmailIdentityParams = {
+      EmailIdentity: fromAddress,
+    };
+    sesv2Response = await new Promise((resolve, reject) => {
+      sesv2.getEmailIdentity(getEmailIdentityParams, (err: any, data: any) => {
+        resolve({ err, data });
       });
-      if (sesv2Response.err) {
-        console.log("error: Could not get email identity, tried to get:");
-        console.log(fromAddress);
-        process.exit(1);
-      }
-      if (!sesv2Response.data.VerifiedForSendingStatus) {
-        console.log("error: VerifiedForSendingStatus is not true for email:");
-        console.log(fromAddress);
-        process.exit(1);
-      }
-      if (
-        !(
-          sesv2Response.data.DkimAttributes &&
+    });
+    if (sesv2Response.err) {
+      console.log("error: Could not get email identity, tried to get:");
+      console.log(fromAddress);
+      process.exit(1);
+    }
+    if (!sesv2Response.data.VerifiedForSendingStatus) {
+      console.log("error: VerifiedForSendingStatus is not true for email:");
+      console.log(fromAddress);
+      process.exit(1);
+    }
+    if (
+      !(
+        sesv2Response.data.DkimAttributes &&
+        sesv2Response.data.DkimAttributes.Status &&
+        sesv2Response.data.DkimAttributes.Status === "SUCCESS"
+      )
+    ) {
+      console.log(
+        "error: DkimAttributes.Status is not SUCCESS. DkimAttributes.Status:"
+      );
+      console.log(
+        sesv2Response.data.DkimAttributes &&
           sesv2Response.data.DkimAttributes.Status &&
-          sesv2Response.data.DkimAttributes.Status === "SUCCESS"
-        )
-      ) {
-        console.log(
-          "error: DkimAttributes.Status is not SUCCESS. DkimAttributes.Status:"
-        );
-        console.log(
-          sesv2Response.data.DkimAttributes &&
-            sesv2Response.data.DkimAttributes.Status &&
-            sesv2Response.data.DkimAttributes.Status
-        );
-        console.log("email:");
-        console.log(fromAddress);
-        process.exit(1);
-      }
+          sesv2Response.data.DkimAttributes.Status
+      );
+      console.log("email:");
+      console.log(fromAddress);
+      process.exit(1);
     }
   }
   // No validation on the domainName param, because of edge cases.
@@ -142,13 +142,6 @@ const stackname = require("@cdk-turnkey/stackname");
   // We'll just go with whatever is provided for domainName, and let the stack
   // or build fail if anything goes wrong.
 
-  configParams.forEach((c) => {
-    c.ssmParamValue = ssmParameterData[c.ssmParamName()];
-  });
-  const webappProps: any = {};
-  configParams.forEach((c) => {
-    webappProps[c.webappParamName] = c.ssmParamValue;
-  });
   console.log("bin: Instantiating stack with fromAddress:");
   console.log(webappProps.fromAddress);
   console.log("and domainName:");

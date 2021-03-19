@@ -215,3 +215,13 @@ jobs:
           AWS_DEFAULT_REGION: "us-east-1"
         run: |
           bash deploy-content.sh
+
+      - name: Run integration tests, prod2 account
+        working-directory: scripts
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.PROD2_AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.PROD2_AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: "us-east-1"
+          AWS_REGION: "us-east-1"
+        run: |
+          bash itest.sh

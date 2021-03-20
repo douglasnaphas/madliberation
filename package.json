@@ -9,7 +9,8 @@
     "watch": "tsc -w",
     "test": "jest",
     "synth": "npx cdk synth --no-staging",
-    "diff": "npx cdk diff"
+    "diff": "npx cdk diff",
+    "init-submods": "git submodule update --init --recursive"
   },
   "devDependencies": {
     "@aws-cdk/assert": "^1.92.0",

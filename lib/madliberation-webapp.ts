@@ -153,147 +153,147 @@ export class MadliberationWebapp extends cdk.Stack {
 
     const distro = new cloudfront.Distribution(this, "Distro", distroProps);
 
-    const userPool = new cognito.UserPool(this, "UserPool", {
-      selfSignUpEnabled: true,
-      userVerification: {
-        emailSubject: "Mad Liberation: verify your new account",
-        emailStyle: cognito.VerificationEmailStyle.LINK,
-      },
-      signInAliases: { username: false, email: true, phone: false },
-      autoVerify: { email: true, phone: false },
-      mfa: cognito.Mfa.OPTIONAL,
-      accountRecovery: cognito.AccountRecovery.EMAIL_ONLY,
-      passwordPolicy: {
-        requireDigits: false,
-        requireLowercase: false,
-        requireSymbols: false,
-        requireUppercase: false,
-      },
-      standardAttributes: {
-        email: {
-          required: true,
-          mutable: false,
-        },
-        nickname: {
-          required: true,
-          mutable: true,
-        },
-      },
-    });
-    let cfnUserPool;
-    if (fromAddress) {
-      cfnUserPool = userPool.node.defaultChild as cognito.CfnUserPool;
-      cfnUserPool.emailConfiguration = {
-        emailSendingAccount: "DEVELOPER",
-        from: `Mad Liberation Verification <${fromAddress}>`,
-        sourceArn:
-          // SES integration is only available in us-east-1, us-west-2, eu-west-1
-          `arn:aws:ses:${this.region}` +
-          `:${this.account}:identity/` +
-          `${fromAddress}`,
-      };
-    }
-    const clientWriteAttributes = new cognito.ClientAttributes().withStandardAttributes(
-      { nickname: true, email: true }
-    );
-    const clientReadAttributes = clientWriteAttributes.withStandardAttributes({
-      emailVerified: true,
-    });
+    // const userPool = new cognito.UserPool(this, "UserPool", {
+    //   selfSignUpEnabled: true,
+    //   userVerification: {
+    //     emailSubject: "Mad Liberation: verify your new account",
+    //     emailStyle: cognito.VerificationEmailStyle.LINK,
+    //   },
+    //   signInAliases: { username: false, email: true, phone: false },
+    //   autoVerify: { email: true, phone: false },
+    //   mfa: cognito.Mfa.OPTIONAL,
+    //   accountRecovery: cognito.AccountRecovery.EMAIL_ONLY,
+    //   passwordPolicy: {
+    //     requireDigits: false,
+    //     requireLowercase: false,
+    //     requireSymbols: false,
+    //     requireUppercase: false,
+    //   },
+    //   standardAttributes: {
+    //     email: {
+    //       required: true,
+    //       mutable: true,
+    //     },
+    //     nickname: {
+    //       required: true,
+    //       mutable: true,
+    //     },
+    //   },
+    // });
+    // let cfnUserPool;
+    // if (fromAddress) {
+    //   cfnUserPool = userPool.node.defaultChild as cognito.CfnUserPool;
+    //   cfnUserPool.emailConfiguration = {
+    //     emailSendingAccount: "DEVELOPER",
+    //     from: `Mad Liberation Verification <${fromAddress}>`,
+    //     sourceArn:
+    //       // SES integration is only available in us-east-1, us-west-2, eu-west-1
+    //       `arn:aws:ses:${this.region}` +
+    //       `:${this.account}:identity/` +
+    //       `${fromAddress}`,
+    //   };
+    // }
+    // const clientWriteAttributes = new cognito.ClientAttributes().withStandardAttributes(
+    //   { nickname: true, email: true }
+    // );
+    // const clientReadAttributes = clientWriteAttributes.withStandardAttributes({
+    //   emailVerified: true,
+    // });
     const webappDomainName = domainName || distro.distributionDomainName;
 
-    if (facebookAppId && facebookAppSecret) {
-      const userPoolIdentityProviderFacebook = new cognito.UserPoolIdentityProviderFacebook(
-        this,
-        "Facebook",
-        {
-          clientId: facebookAppId,
-          clientSecret: facebookAppSecret,
-          userPool,
-          scopes: ["public_profile", "email"],
-          /*
-          > Apps may ask for the following two permissions from any person
-          > without submitting for review by Facebook:
-          > 
-          > public profile
-          > email
+    // if (facebookAppId && facebookAppSecret) {
+    //   const userPoolIdentityProviderFacebook = new cognito.UserPoolIdentityProviderFacebook(
+    //     this,
+    //     "Facebook",
+    //     {
+    //       clientId: facebookAppId,
+    //       clientSecret: facebookAppSecret,
+    //       userPool,
+    //       scopes: ["public_profile", "email"],
+    //       /*
+    //       > Apps may ask for the following two permissions from any person
+    //       > without submitting for review by Facebook:
+    //       >
+    //       > public profile
+    //       > email
 
-          https://developers.facebook.com/docs/facebook-login/overview
-          */
-          attributeMapping: {
-            nickname: cognito.ProviderAttribute.FACEBOOK_NAME,
-            email: cognito.ProviderAttribute.FACEBOOK_EMAIL,
-          },
-        }
-      );
-      userPool.registerIdentityProvider(userPoolIdentityProviderFacebook);
-    }
-    if (amazonClientId && amazonClientSecret) {
-      const userPoolIdentityProviderAmazon = new cognito.UserPoolIdentityProviderAmazon(
-        this,
-        "Amazon",
-        {
-          clientId: amazonClientId,
-          clientSecret: amazonClientSecret,
-          userPool,
-          attributeMapping: {
-            nickname: cognito.ProviderAttribute.AMAZON_NAME,
-            email: cognito.ProviderAttribute.AMAZON_EMAIL,
-          },
-        }
-      );
-      userPool.registerIdentityProvider(userPoolIdentityProviderAmazon);
-    }
-    if (googleClientId && googleClientSecret) {
-      const userPoolIdentityProviderGoogle = new cognito.UserPoolIdentityProviderGoogle(
-        this,
-        "Google",
-        {
-          clientId: googleClientId,
-          clientSecret: googleClientSecret,
-          userPool,
-          scopes: ["profile", "email"],
-          attributeMapping: {
-            nickname: cognito.ProviderAttribute.GOOGLE_NAME,
-            email: cognito.ProviderAttribute.GOOGLE_EMAIL,
-          },
-        }
-      );
-      userPool.registerIdentityProvider(userPoolIdentityProviderGoogle);
-    }
+    //       https://developers.facebook.com/docs/facebook-login/overview
+    //       */
+    //       attributeMapping: {
+    //         nickname: cognito.ProviderAttribute.FACEBOOK_NAME,
+    //         email: cognito.ProviderAttribute.FACEBOOK_EMAIL,
+    //       },
+    //     }
+    //   );
+    //   userPool.registerIdentityProvider(userPoolIdentityProviderFacebook);
+    // }
+    // if (amazonClientId && amazonClientSecret) {
+    //   const userPoolIdentityProviderAmazon = new cognito.UserPoolIdentityProviderAmazon(
+    //     this,
+    //     "Amazon",
+    //     {
+    //       clientId: amazonClientId,
+    //       clientSecret: amazonClientSecret,
+    //       userPool,
+    //       attributeMapping: {
+    //         nickname: cognito.ProviderAttribute.AMAZON_NAME,
+    //         email: cognito.ProviderAttribute.AMAZON_EMAIL,
+    //       },
+    //     }
+    //   );
+    //   userPool.registerIdentityProvider(userPoolIdentityProviderAmazon);
+    // }
+    // if (googleClientId && googleClientSecret) {
+    //   const userPoolIdentityProviderGoogle = new cognito.UserPoolIdentityProviderGoogle(
+    //     this,
+    //     "Google",
+    //     {
+    //       clientId: googleClientId,
+    //       clientSecret: googleClientSecret,
+    //       userPool,
+    //       scopes: ["profile", "email"],
+    //       attributeMapping: {
+    //         nickname: cognito.ProviderAttribute.GOOGLE_NAME,
+    //         email: cognito.ProviderAttribute.GOOGLE_EMAIL,
+    //       },
+    //     }
+    //   );
+    //   userPool.registerIdentityProvider(userPoolIdentityProviderGoogle);
+    // }
 
-    const userPoolClient = userPool.addClient("UserPoolClient", {
-      generateSecret: true,
-      oAuth: {
-        callbackUrls: ["https://" + webappDomainName + "/prod/get-cookies"],
-        scopes: [
-          cognito.OAuthScope.EMAIL,
-          cognito.OAuthScope.COGNITO_ADMIN,
-          cognito.OAuthScope.OPENID,
-          cognito.OAuthScope.PROFILE,
-        ],
-        flows: {
-          authorizationCodeGrant: true,
-          clientCredentials: false,
-          implicitCodeGrant: false,
-        },
-      },
-      readAttributes: clientReadAttributes,
-      writeAttributes: clientWriteAttributes,
-    });
+    // const userPoolClient = userPool.addClient("UserPoolClient", {
+    //   generateSecret: true,
+    //   oAuth: {
+    //     callbackUrls: ["https://" + webappDomainName + "/prod/get-cookies"],
+    //     scopes: [
+    //       cognito.OAuthScope.EMAIL,
+    //       cognito.OAuthScope.COGNITO_ADMIN,
+    //       cognito.OAuthScope.OPENID,
+    //       cognito.OAuthScope.PROFILE,
+    //     ],
+    //     flows: {
+    //       authorizationCodeGrant: true,
+    //       clientCredentials: false,
+    //       implicitCodeGrant: false,
+    //     },
+    //   },
+    //   readAttributes: clientReadAttributes,
+    //   writeAttributes: clientWriteAttributes,
+    // });
 
-    const stacknameHash = crypto
-      .createHash("sha256")
-      .update(stackname(`udp`))
-      .digest("hex")
-      .toLowerCase()
-      .slice(0, 20);
-    const domainPrefix = stacknameHash + this.account;
+    // const stacknameHash = crypto
+    //   .createHash("sha256")
+    //   .update(stackname(`udp`))
+    //   .digest("hex")
+    //   .toLowerCase()
+    //   .slice(0, 20);
+    // const domainPrefix = stacknameHash + this.account;
 
-    const userPoolDomain = userPool.addDomain("UserPoolDomain", {
-      cognitoDomain: {
-        domainPrefix: domainPrefix,
-      },
-    });
+    // const userPoolDomain = userPool.addDomain("UserPoolDomain", {
+    //   cognitoDomain: {
+    //     domainPrefix: domainPrefix,
+    //   },
+    // });
 
     const fn = new lambda.Function(this, "BackendHandler", {
       runtime: lambda.Runtime.NODEJS_10_X,
@@ -307,20 +307,20 @@ export class MadliberationWebapp extends cdk.Stack {
           "https://cognito-idp." +
           this.region +
           ".amazonaws.com/" +
-          userPool.userPoolId +
+          `userPool.userPoolId` + // CHANGE THIS
           "/.well-known/jwks.json",
-        USER_POOL_CLIENT_ID: userPoolClient.userPoolClientId,
-        USER_POOL_ID: userPool.userPoolId,
-        USER_POOL_DOMAIN: userPoolDomain.domainName,
+        USER_POOL_CLIENT_ID: `userPoolClient.userPoolClientId`, // CHANGE
+        USER_POOL_ID: `userPool.userPoolId`, // CHANGE
+        USER_POOL_DOMAIN: `userPoolDomain.domainName`, // CHANGE
         REDIRECT_URI: "https://" + webappDomainName + "/prod/get-cookies",
         REGION: this.region,
         IDP_URL:
           "https://" +
-          userPoolDomain.domainName +
+          `userPoolDomain.domainName` + // CHANGE
           ".auth." +
           this.region +
           ".amazoncognito.com/login?response_type=code&client_id=" +
-          userPoolClient.userPoolClientId +
+          `userPoolClient.userPoolClientId` + // CHANGE (unquote this and above)
           "&redirect_uri=" +
           "https://" +
           webappDomainName +
@@ -331,15 +331,15 @@ export class MadliberationWebapp extends cdk.Stack {
 
     sedersTable.grantReadWriteData(fn);
 
-    fn.addToRolePolicy(
-      new PolicyStatement({
-        effect: Effect.ALLOW,
-        actions: ["cognito-idp:DescribeUserPoolClient"],
-        resources: [
-          `arn:aws:cognito-idp:${userPool.stack.region}:${userPool.stack.account}:userpool/${userPool.userPoolId}`,
-        ],
-      })
-    );
+    // fn.addToRolePolicy(
+    //   new PolicyStatement({
+    //     effect: Effect.ALLOW,
+    //     actions: ["cognito-idp:DescribeUserPoolClient"],
+    //     resources: [
+    //       `arn:aws:cognito-idp:${userPool.stack.region}:${userPool.stack.account}:userpool/${userPool.userPoolId}`,
+    //     ],
+    //   })
+    // );
 
     const lambdaApi = new apigw.LambdaRestApi(this, "Endpoint", {
       handler: fn,
@@ -428,12 +428,12 @@ export class MadliberationWebapp extends cdk.Stack {
     new cdk.CfnOutput(this, "FrontendBucketNameParamName", {
       value: frontendBucketNameParam.parameterName,
     });
-    new cdk.CfnOutput(this, "UserPoolId", {
-      value: userPool.userPoolId,
-    });
-    new cdk.CfnOutput(this, "UserPoolClientId", {
-      value: userPoolClient.userPoolClientId,
-    });
+    // new cdk.CfnOutput(this, "UserPoolId", {
+    //   value: userPool.userPoolId,
+    // });
+    // new cdk.CfnOutput(this, "UserPoolClientId", {
+    //   value: userPoolClient.userPoolClientId,
+    // });
     new cdk.CfnOutput(this, "ScriptsBucketName", {
       value: scriptsBucket.bucketName,
     });

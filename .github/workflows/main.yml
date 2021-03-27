@@ -179,48 +179,48 @@ jobs:
         run: |
           bash itest.sh
 
-      # - name: Identify prod2 account and region
-      #   env:
-      #     AWS_ACCESS_KEY_ID: ${{ secrets.PROD2_AWS_ACCESS_KEY_ID }}
-      #     AWS_SECRET_ACCESS_KEY: ${{ secrets.PROD2_AWS_SECRET_ACCESS_KEY }}
-      #     AWS_DEFAULT_REGION: "us-east-1"
-      #   run: |
-      #     aws sts get-caller-identity
-      #     echo ${AWS_DEFAULT_REGION} | sed 's/-/+/g'
+      - name: Identify prod2 account and region
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.PROD2_AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.PROD2_AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: "us-east-1"
+        run: |
+          aws sts get-caller-identity
+          echo ${AWS_DEFAULT_REGION} | sed 's/-/+/g'
 
-      # - name: Deploy the webapp stack to the prod2 account
-      #   env:
-      #     AWS_ACCESS_KEY_ID: ${{ secrets.PROD2_AWS_ACCESS_KEY_ID }}
-      #     AWS_SECRET_ACCESS_KEY: ${{ secrets.PROD2_AWS_SECRET_ACCESS_KEY }}
-      #     AWS_DEFAULT_REGION: "us-east-1"
-      #   run: |
-      #     npx cdk bootstrap
-      #     STACKNAME=$(npx @cdk-turnkey/stackname@1.2.0 --suffix webapp)
-      #     npx cdk deploy --require-approval never ${STACKNAME}
+      - name: Deploy the webapp stack to the prod2 account
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.PROD2_AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.PROD2_AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: "us-east-1"
+        run: |
+          npx cdk bootstrap
+          STACKNAME=$(npx @cdk-turnkey/stackname@1.2.0 --suffix webapp)
+          npx cdk deploy --require-approval never ${STACKNAME}
 
-      # - name: Deploy to the frontend bucket (prod2 account)
-      #   env:
-      #     AWS_ACCESS_KEY_ID: ${{ secrets.PROD2_AWS_ACCESS_KEY_ID }}
-      #     AWS_SECRET_ACCESS_KEY: ${{ secrets.PROD2_AWS_SECRET_ACCESS_KEY }}
-      #     AWS_DEFAULT_REGION: "us-east-1"
-      #   run: |
-      #     bash scripts/deploy-frontend.sh
+      - name: Deploy to the frontend bucket (prod2 account)
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.PROD2_AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.PROD2_AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: "us-east-1"
+        run: |
+          bash scripts/deploy-frontend.sh
 
-      # - name: Deploy content (prod2 account)
-      #   working-directory: content
-      #   env:
-      #     AWS_ACCESS_KEY_ID: ${{ secrets.PROD2_AWS_ACCESS_KEY_ID }}
-      #     AWS_SECRET_ACCESS_KEY: ${{ secrets.PROD2_AWS_SECRET_ACCESS_KEY }}
-      #     AWS_DEFAULT_REGION: "us-east-1"
-      #   run: |
-      #     bash deploy-content.sh
+      - name: Deploy content (prod2 account)
+        working-directory: content
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.PROD2_AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.PROD2_AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: "us-east-1"
+        run: |
+          bash deploy-content.sh
 
-      # - name: Run integration tests, prod2 account
-      #   working-directory: scripts
-      #   env:
-      #     AWS_ACCESS_KEY_ID: ${{ secrets.PROD2_AWS_ACCESS_KEY_ID }}
-      #     AWS_SECRET_ACCESS_KEY: ${{ secrets.PROD2_AWS_SECRET_ACCESS_KEY }}
-      #     AWS_DEFAULT_REGION: "us-east-1"
-      #     AWS_REGION: "us-east-1"
-      #   run: |
-      #     bash itest.sh
+      - name: Run integration tests, prod2 account
+        working-directory: scripts
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.PROD2_AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.PROD2_AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: "us-east-1"
+          AWS_REGION: "us-east-1"
+        run: |
+          bash itest.sh

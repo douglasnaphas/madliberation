@@ -69,7 +69,7 @@ jobs:
         run: |
           npm test
 
-      - name: Test
+      - name: Test (top-level)
         run: |
           npm test
 

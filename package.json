@@ -36,6 +36,8 @@
     "@aws-cdk/aws-ssm": "^1.107.0",
     "@aws-cdk/core": "^1.107.0",
     "@cdk-turnkey/stackname": "^1.2.0",
-    "aws-sdk": "^2.850.0"
+    "aws-sdk": "^2.850.0",
+    "bufferutil": "^4.0.3",
+    "utf-8-validate": "^5.0.5"
   }
 }

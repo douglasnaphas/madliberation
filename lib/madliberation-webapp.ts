@@ -289,7 +289,7 @@ export class MadliberationWebapp extends cdk.Stack {
     });
 
     const fn = new lambda.Function(this, "BackendHandler", {
-      runtime: lambda.Runtime.NODEJS_10_X,
+      runtime: lambda.Runtime.NODEJS_14_X,
       handler: "index.handler",
       code: lambda.Code.fromAsset("backend"),
       memorySize: 3000,

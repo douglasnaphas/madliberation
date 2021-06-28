@@ -47,6 +47,9 @@ export class MadliberationWebapp extends cdk.Stack {
       googleClientSecret,
     } = props;
 
+    // Something to show up in the diff for the PR build
+    const prActionCanaryBucket = new s3.Bucket(this, "PRActionCanaryBucket");
+
     console.log("schema.PARTITION_KEY:");
     console.log(schema.PARTITION_KEY);
 

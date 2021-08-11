@@ -13,3 +13,5 @@ cdk.out
 /*template*.yml
 
 .DS_Store
+
+.vscode

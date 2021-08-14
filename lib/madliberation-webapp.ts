@@ -13,6 +13,7 @@ import { Effect, PolicyStatement } from "@aws-cdk/aws-iam";
 import * as acm from "@aws-cdk/aws-certificatemanager";
 import * as route53 from "@aws-cdk/aws-route53";
 import * as targets from "@aws-cdk/aws-route53-targets";
+import { RemovalPolicy } from "@aws-cdk/core";
 const schema = require("../backend/schema");
 
 export interface MadLiberationWebappProps extends cdk.StackProps {
@@ -46,6 +47,33 @@ export class MadliberationWebapp extends cdk.Stack {
       googleClientId,
       googleClientSecret,
     } = props;
+
+    class MadLiberationBucket extends s3.Bucket {
+      constructor(
+        scope: cdk.Construct,
+        id: string,
+        props: s3.BucketProps = {}
+      ) {
+        super(scope, id, {
+          removalPolicy: RemovalPolicy.DESTROY,
+          autoDeleteObjects: true,
+          ...props,
+        });
+      }
+    }
+
+    class MadLiberationUserPool extends cognito.UserPool {
+      constructor(
+        scope: cdk.Construct,
+        id: string,
+        props: cognito.UserPoolProps = {}
+      ) {
+        super(scope, id, {
+          removalPolicy: RemovalPolicy.DESTROY,
+          ...props,
+        });
+      }
+    }
 
     console.log("schema.PARTITION_KEY:");
     console.log(schema.PARTITION_KEY);
@@ -104,7 +132,7 @@ export class MadliberationWebapp extends cdk.Stack {
       projectionType: dynamodb.ProjectionType.ALL,
     });
 
-    const frontendBucket = new s3.Bucket(this, "FrontendBucket");
+    const frontendBucket = new MadLiberationBucket(this, "FrontendBucket");
 
     // This is so a script can find the bucket and deploy to it.
     // I can't wrap up the artifact at cdk-deploy time, because the CDK Level-3
@@ -138,7 +166,7 @@ export class MadliberationWebapp extends cdk.Stack {
     }
 
     const distroProps: any = {
-      logBucket: new s3.Bucket(this, "DistroLoggingBucket"),
+      logBucket: new MadLiberationBucket(this, "DistroLoggingBucket"),
       logFilePrefix: "distribution-access-logs/",
       logIncludesCookies: true,
       defaultBehavior: {
@@ -153,7 +181,7 @@ export class MadliberationWebapp extends cdk.Stack {
 
     const distro = new cloudfront.Distribution(this, "Distro", distroProps);
 
-    const userPool = new cognito.UserPool(this, "UserPool", {
+    const userPool = new MadLiberationUserPool(this, "UserPool", {
       selfSignUpEnabled: true,
       userVerification: {
         emailSubject: "Mad Liberation: verify your new account",
@@ -392,7 +420,7 @@ export class MadliberationWebapp extends cdk.Stack {
       cfnAliasWWWRecordSet.setIdentifier = "mlwebapp-www-cf-alias";
     }
 
-    const scriptsBucket = new s3.Bucket(this, "ScriptsBucket", {
+    const scriptsBucket = new MadLiberationBucket(this, "ScriptsBucket", {
       versioned: true,
     });
     scriptsBucket.grantRead(fn);

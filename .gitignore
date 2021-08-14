@@ -2,6 +2,8 @@
 !jest.config.js
 !frontend/*.js
 !frontend/**/*.js
+!backend/*.js
+!backend/**/*.js
 *.d.ts
 node_modules
 

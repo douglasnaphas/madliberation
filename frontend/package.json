@@ -1,0 +1,44 @@
+{
+  "name": "madliberationjs",
+  "description": "Mad Liberation front-end",
+  "version": "0.0.1",
+  "private": true,
+  "homepage": ".",
+  "devDependencies": {
+    "@wojtekmaj/enzyme-adapter-react-17": "^0.4.1",
+    "enzyme": "^3.11.0",
+    "react-test-renderer": "^17.0.1",
+    "unit.js": "^2.1.0"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "test": "react-scripts test --env=jsdom",
+    "build": "react-scripts build"
+  },
+  "dependencies": {
+    "@material-ui/core": "^4.11.2",
+    "@material-ui/icons": "^4.11.2",
+    "acorn": "^7.4.1",
+    "babel-preset-react-app": "^9.1.2",
+    "browserslist": "^4.16.6",
+    "commander": "^2.20.0",
+    "prop-types": "^15.7.2",
+    "react": "^17.0.1",
+    "react-dom": "^17.0.1",
+    "react-router-dom": "^5.2.0",
+    "react-scripts": "^4.0.3",
+    "typescript": "^3.9.7"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}

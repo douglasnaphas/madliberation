@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top" />
+    <link
+      rel="stylesheet"
+      href="https://ssl.gstatic.com/docs/script/css/add-ons1.css"
+    />
+    <style>
+      .border {
+        padding: 1em;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="sidebar-ui" class="border">
+      <div id="lib-form-container">
+        <form>
+          <div id="create-lib-button-container">
+            <button id="create-lib-button">Create lib</button>
+            <button id="insert-lib-button">Insert lib</button>
+          </div>
+          <!-- create-lib-button-container -->
+          <div id="prompt-container">
+            <label for="prompt-textarea">Prompt: </label>
+            <div>
+              <textarea
+                id="prompt-textarea"
+                name="prompt"
+                rows="5"
+                cols="32"
+                data-lib-textarea
+              ></textarea>
+            </div>
+          </div>
+          <!-- prompt-container -->
+          <div id="example-container">
+            <label for="example-textarea">Example: </label>
+            <div>
+              <textarea
+                id="example-textarea"
+                name="example"
+                rows="5"
+                cols="32"
+                data-lib-textarea
+              ></textarea>
+            </div>
+          </div>
+          <!-- example-container -->
+          <div id="sentence-container">
+            <label for="sentence-textarea">Sentence: </label>
+            <div>
+              <textarea
+                id="sentence-textarea"
+                name="sentence"
+                rows="5"
+                cols="32"
+                data-lib-textarea
+              ></textarea>
+            </div>
+          </div>
+          <!-- sentence-container -->
+          <div id="default-container">
+            <label for="default-textarea">Default: </label>
+            <div>
+              <textarea
+                id="default-textarea"
+                name="default"
+                rows="5"
+                cols="32"
+                data-lib-textarea
+              ></textarea>
+            </div>
+          </div>
+          <!-- default-container -->
+        </form>
+      </div>
+      <!-- lib-form-container -->
+      <br />
+      <div id="download-md-button-container">
+        <div><a id="generate-script-md" download>Generate markdown</a></div>
+      </div>
+      <!-- download-md-button-container -->
+      <div id="debug-container">
+        <div>
+          <textarea
+            id="debug-textarea"
+            name="debug"
+            rows="5"
+            cols="32"
+            data-lib-textarea
+          ></textarea>
+        </div>
+      </div>
+    </div>
+    <!-- sidebar-ui -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script>
+      // TODO: rename this; say where it displays the text
+      function displaySelectedText(selectedText) {
+        var displayText = "";
+        if (Array.isArray(selectedText)) {
+          displayText = selectedText.join(" ");
+        } else {
+          displayText = selectedText;
+        }
+        if (displayText && displayText.length > 0) {
+          $("#prompt-textarea").val(displayText);
+        }
+      }
+
+      // register click handlers
+      $(function () {
+        $("#create-lib-button").click(function () {
+          google.script.run
+            .withSuccessHandler(displaySelectedText)
+            .getSelectedText();
+        });
+        $("#insert-lib-button").click(function () {
+          google.script.run.insertText(
+            "{{ " +
+              $("#prompt-textarea").val() +
+              " // " +
+              $("#example-textarea").val() +
+              " // " +
+              $("#sentence-textarea").val() +
+              " // " +
+              $("#default-textarea").val() +
+              " }}"
+          );
+        });
+        $("#generate-script-md").click(function () {
+          google.script.run
+            .withSuccessHandler(function (input) {
+              $("#debug-textarea").val(input);
+            })
+            .exportMD();
+        });
+      });
+    </script>
+  </body>
+</html>

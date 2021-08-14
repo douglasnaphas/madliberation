@@ -1,0 +1,137 @@
+{
+    "Items": [
+        {
+            "haggadah_description": {
+                "S": "A short script to help you get good at Mad Liberation. Max 12 players."
+            },
+            "lib_id": {
+                "S": "script#0004"
+            },
+            "haggadah_short_desc": {
+                "S": "Practice Script"
+            },
+            "room_code": {
+                "S": "script#AAAAAD"
+            },
+            "path": {
+                "S": "madliberation-scripts/004-Practice_Script"
+            },
+            "is_script": {
+                "N": "1"
+            },
+            "haggadah_name": {
+                "S": "0004 - Practice Script"
+            },
+            "script_number": {
+                "N": "4"
+            }
+        },
+        {
+            "haggadah_description": {
+                "S": "A whole Haggadah. Takes about an hour and a half."
+            },
+            "lib_id": {
+                "S": "script#006"
+            },
+            "haggadah_short_desc": {
+                "S": "Real Script"
+            },
+            "room_code": {
+                "S": "script#AAAAAF"
+            },
+            "path": {
+                "S": "madliberation-scripts/006-2019_Script"
+            },
+            "is_script": {
+                "N": "1"
+            },
+            "haggadah_name": {
+                "S": "0006 - Real Script"
+            },
+            "script_number": {
+                "N": "6"
+            }
+        },
+        {
+            "haggadah_description": {
+                "S": "Just the part about Moses."
+            },
+            "lib_id": {
+                "S": "script#007"
+            },
+            "haggadah_short_desc": {
+                "S": "Just the Magid"
+            },
+            "room_code": {
+                "S": "script#AAAAAG"
+            },
+            "path": {
+                "S": "madliberation-scripts/007-2019_Magid"
+            },
+            "is_script": {
+                "N": "1"
+            },
+            "haggadah_name": {
+                "S": "0007 - Just the Magid"
+            },
+            "script_number": {
+                "N": "7"
+            }
+        },
+        {
+            "haggadah_description": {
+                "S": "Just the part with the Four Sons."
+            },
+            "lib_id": {
+                "S": "script#008"
+            },
+            "haggadah_short_desc": {
+                "S": "Just the Four Sons"
+            },
+            "room_code": {
+                "S": "script#AAAAAH"
+            },
+            "path": {
+                "S": "madliberation-scripts/008-2019_4_Sons"
+            },
+            "is_script": {
+                "N": "1"
+            },
+            "haggadah_name": {
+                "S": "0008 - Just the Four Sons"
+            },
+            "script_number": {
+                "N": "8"
+            }
+        },
+        {
+            "haggadah_description": {
+                "S": "A script tailored for video seders."
+            },
+            "lib_id": {
+                "S": "script#009"
+            },
+            "haggadah_short_desc": {
+                "S": "2020 Video Script"
+            },
+            "room_code": {
+                "S": "script#AAAAAI"
+            },
+            "path": {
+                "S": "madliberation-scripts/009-2020_Video_Seder"
+            },
+            "is_script": {
+                "N": "1"
+            },
+            "haggadah_name": {
+                "S": "0009 - 2020 Video Script"
+            },
+            "script_number": {
+                "N": "9"
+            }
+        }
+    ],
+    "Count": 5,
+    "ScannedCount": 5,
+    "ConsumedCapacity": null
+}

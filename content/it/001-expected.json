@@ -1,0 +1,17 @@
+{
+  "pages": [
+    {
+      "lines": [
+        {
+          "type": "h1",
+          "segments": [
+            {
+              "type": "text",
+              "text": "The simplest possible script"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

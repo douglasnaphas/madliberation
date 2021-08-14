@@ -1,0 +1,102 @@
+{
+  "Pages": [
+    {
+      "Segments": [
+        {
+          "type": "h1",
+          "text": "Script Title"
+        },
+        {
+          "type": "h2",
+          "text": "Some info about the script"
+        },
+        {
+          "type": "p",
+          "text": "This info will be in a Segment. Segments are parts of Pages.\nPages are things read by "
+        },
+        {
+          "type": "lib",
+          "prompt": "people",
+          "example": "my homeroom teachers from the past seven years",
+          "default": "furries with no jobs"
+        },
+        {
+          "type": "p",
+          "text": ". These people pass the phone around from person to person, in order, to celebrate "
+        },
+        {
+          "type": "lib",
+          "prompt": "an occasion",
+          "example": "Halloween",
+          "default": "Jupiter going faster than Saturn"
+        },
+        {
+          "type": "p",
+          "text": ".\nEach lib is its own Segment. Each block of text between libs, between the beginning of a Page and the first lib, between the last lib and the end of a Page, or between the beginning and end of the rare Page with no libs in it, it its own Segment.\nSegments will appear in order in an array called \"Segments\"."
+        }
+      ]
+    },
+    {
+      "Segments": [
+        {
+          "type": "h2",
+          "text": "Some info about this section, optional"
+        },
+        {
+          "type": "p",
+          "text": "Not all Pages have headings, just like not all "
+        },
+        {
+          "type": "lib",
+          "prompt": "practitioners of an occupation",
+          "example": "plumbers",
+          "default": "underground gardeners"
+        },
+        {
+          "type": "p",
+          "text": " have "
+        },
+        {
+          "type": "lib",
+          "prompt": "useful items",
+          "example": "hand-warmers",
+          "default": "pots to piss in"
+        },
+        {
+          "type": "p",
+          "text": "."
+        }
+      ]
+    },
+    {
+      "Segments": [
+        {
+          "type": "p",
+          "text": "Here we have a Page with uncommon characteristics.\nFirstly, it has no libs. Secondly, it has no page heading. It is a libless, headingless, Page."
+        }
+      ]
+    },
+    {
+      "Segments": [
+        {
+          "type": "h2",
+          "text": "Back to normal"
+        },
+        {
+          "type": "p",
+          "text": "This is the last page. Some of the statements made earlier in this document about the script structure may be inaccurate, like "
+        },
+        {
+          "type": "lib",
+          "prompt": "something inaccurate",
+          "example": "a one-handed clock",
+          "default": "a book report"
+        },
+        {
+          "type": "p",
+          "text": "."
+        }
+      ]
+    }
+  ]
+}

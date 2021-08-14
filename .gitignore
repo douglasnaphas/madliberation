@@ -4,6 +4,10 @@
 !frontend/**/*.js
 !backend/*.js
 !backend/**/*.js
+!itest/*.js
+!itest/**/*.js
+!content/*.js
+!content/**/*.js
 *.d.ts
 node_modules
 

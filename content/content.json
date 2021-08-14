@@ -1,0 +1,163 @@
+{
+  "Items": [
+    {
+      "haggadah_description": {
+        "S": "A short script to help you get good at Mad Liberation. Max 12 players."
+      },
+      "lib_id": {
+        "S": "script#0004"
+      },
+      "haggadah_short_desc": {
+        "S": "Practice Script"
+      },
+      "room_code": {
+        "S": "script#AAAAAD"
+      },
+      "path": {
+        "S": "004-Practice_Script"
+      },
+      "is_script": {
+        "N": "1"
+      },
+      "haggadah_name": {
+        "S": "0004 - Practice Script"
+      },
+      "script_number": {
+        "N": "4"
+      }
+    },
+    {
+      "haggadah_description": {
+        "S": "A whole Haggadah. Takes about an hour and a half. For in-person seders."
+      },
+      "lib_id": {
+        "S": "script#006"
+      },
+      "haggadah_short_desc": {
+        "S": "Real Script (2019)"
+      },
+      "room_code": {
+        "S": "script#AAAAAF"
+      },
+      "path": {
+        "S": "006-2019_Script"
+      },
+      "is_script": {
+        "N": "1"
+      },
+      "haggadah_name": {
+        "S": "0006 - Real Script"
+      },
+      "script_number": {
+        "N": "6"
+      }
+    },
+    {
+      "haggadah_description": {
+        "S": "Just the part about Moses."
+      },
+      "lib_id": {
+        "S": "script#007"
+      },
+      "haggadah_short_desc": {
+        "S": "Just the Magid (2019)"
+      },
+      "room_code": {
+        "S": "script#AAAAAG"
+      },
+      "path": {
+        "S": "007-2019_Magid"
+      },
+      "is_script": {
+        "N": "1"
+      },
+      "haggadah_name": {
+        "S": "0007 - Just the Magid"
+      },
+      "script_number": {
+        "N": "7"
+      }
+    },
+    {
+      "haggadah_description": {
+        "S": "Just the part with the Four Sons."
+      },
+      "lib_id": {
+        "S": "script#008"
+      },
+      "haggadah_short_desc": {
+        "S": "Just the Four Sons (2019)"
+      },
+      "room_code": {
+        "S": "script#AAAAAH"
+      },
+      "path": {
+        "S": "008-2019_4_Sons"
+      },
+      "is_script": {
+        "N": "1"
+      },
+      "haggadah_name": {
+        "S": "0008 - Just the Four Sons"
+      },
+      "script_number": {
+        "N": "8"
+      }
+    },
+    {
+      "haggadah_description": {
+        "S": "A script tailored for video seders."
+      },
+      "lib_id": {
+        "S": "script#009"
+      },
+      "haggadah_short_desc": {
+        "S": "2020 Video Script"
+      },
+      "room_code": {
+        "S": "script#AAAAAI"
+      },
+      "path": {
+        "S": "009-2020_Video_Seder"
+      },
+      "is_script": {
+        "N": "1"
+      },
+      "haggadah_name": {
+        "S": "0009 - 2020 Video Script"
+      },
+      "script_number": {
+        "N": "9"
+      }
+    },
+    {
+      "haggadah_description": {
+        "S": "The latest script, from 2021."
+      },
+      "lib_id": {
+        "S": "script#010"
+      },
+      "haggadah_short_desc": {
+        "S": "2021 Video Script"
+      },
+      "room_code": {
+        "S": "script#AAAAAJ"
+      },
+      "path": {
+        "S": "010-2021_Video_Seder"
+      },
+      "is_script": {
+        "N": "1"
+      },
+      "haggadah_name": {
+        "S": "0010 - 2021 Video Script"
+      },
+      "script_number": {
+        "N": "5"
+      }
+    }
+  ],
+  "Count": 6,
+  "ScannedCount": 6,
+  "ConsumedCapacity": null
+}

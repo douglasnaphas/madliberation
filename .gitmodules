@@ -1,6 +1,3 @@
-[submodule "mljsapi"]
-	path = backend
-	url = git@github.com:douglasnaphas/mljsapi.git
 [submodule "madliberationjs"]
 	path = frontend
 	url = git@github.com:douglasnaphas/madliberationjs.git

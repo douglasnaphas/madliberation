@@ -1,5 +1,7 @@
 *.js
 !jest.config.js
+!frontend/*.js
+!frontend/**/*.js
 *.d.ts
 node_modules
 

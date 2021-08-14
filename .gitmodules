@@ -1,6 +1,3 @@
-[submodule "madliberationjs"]
-	path = frontend
-	url = git@github.com:douglasnaphas/madliberationjs.git
 [submodule "content"]
 	path = content
 	url = git@github.com:douglasnaphas/madliberation-scripts.git

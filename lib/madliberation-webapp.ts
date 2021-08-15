@@ -13,7 +13,7 @@ import { Effect, PolicyStatement } from "@aws-cdk/aws-iam";
 import * as acm from "@aws-cdk/aws-certificatemanager";
 import * as route53 from "@aws-cdk/aws-route53";
 import * as targets from "@aws-cdk/aws-route53-targets";
-import { RemovalPolicy } from "@aws-cdk/core";
+import { Duration, RemovalPolicy } from "@aws-cdk/core";
 const schema = require("../backend/schema");
 
 export interface MadLiberationWebappProps extends cdk.StackProps {
@@ -283,6 +283,7 @@ export class MadliberationWebapp extends cdk.Stack {
     }
 
     const userPoolClient = userPool.addClient("UserPoolClient", {
+      accessTokenValidity: Duration.minutes(5),
       generateSecret: true,
       oAuth: {
         callbackUrls: ["https://" + webappDomainName + "/prod/get-cookies"],

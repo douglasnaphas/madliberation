@@ -284,6 +284,7 @@ export class MadliberationWebapp extends cdk.Stack {
 
     const userPoolClient = userPool.addClient("UserPoolClient", {
       accessTokenValidity: Duration.minutes(5),
+      idTokenValidity: Duration.minutes(5),
       generateSecret: true,
       oAuth: {
         callbackUrls: ["https://" + webappDomainName + "/prod/get-cookies"],

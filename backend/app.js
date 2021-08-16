@@ -38,6 +38,13 @@ app.use(function (req, res, next) {
   next();
 });
 
+app.get("/clear-jwts", (req, res) => {
+  res.cookie("c1", "v1", { expires: new Date(0) });
+  res.cookie("c2", "v2");
+  res.cookie("id_token");
+  return res.status(200).send({ message: "JWTs cleared" });
+});
+
 app.get("/scripts", async function (req, res) {
   console.log("in /scripts 1");
   const params = {

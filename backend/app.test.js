@@ -44,4 +44,38 @@ describe("app request-level tests", () => {
       });
     });
   });
+  describe("/clear-jwts", () => {
+    test(
+      "request with no cookies, params, or data should receive expired " +
+        "cookies.",
+      async () => {
+        const resPublicEndpoint = await request(app).get("/public-endpoint");
+        expect(resPublicEndpoint.body.Output).toEqual(
+          "this endpoint is public"
+        );
+        const clearJWTsPath = "/clear-jwts";
+        const resClearJWTs = await request(app).get(clearJWTsPath);
+        expect(resClearJWTs.statusCode).toBe(200);
+        console.log(resClearJWTs.res.headers);
+        expect(resClearJWTs.res.headers["set-cookie"]).toBeTruthy();
+        const expectedTestCookie = "c1=v1; Path=/";
+        expect(
+          resClearJWTs.res.headers["set-cookie"].find((c) =>
+            c.match(new RegExp(`^${expectedTestCookie}`))
+          )
+        ).toBeTruthy();
+        // ; Path=/; HttpOnly; Secure; SameSite=Strict
+        ["c1", "c2", "id_token" /*, "access_token", "refresh_token"*/].forEach(
+          (t) => {
+            expect(
+              resClearJWTs.res.headers["set-cookie"].find((c) =>
+                c.match(new RegExp(`^${t}=`))
+              )
+            ).toBeTruthy();
+            // get the expiration date
+          }
+        );
+      }
+    );
+  });
 });

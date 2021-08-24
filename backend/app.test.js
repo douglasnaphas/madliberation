@@ -58,23 +58,20 @@ describe("app request-level tests", () => {
         expect(resClearJWTs.statusCode).toBe(200);
         console.log(resClearJWTs.res.headers);
         expect(resClearJWTs.res.headers["set-cookie"]).toBeTruthy();
-        const expectedTestCookie = "c1=v1; Path=/";
-        expect(
-          resClearJWTs.res.headers["set-cookie"].find((c) =>
-            c.match(new RegExp(`^${expectedTestCookie}`))
-          )
-        ).toBeTruthy();
+        const deletedCookieValue = "expired-via-clear-jwts";
         // ; Path=/; HttpOnly; Secure; SameSite=Strict
-        ["c1", "c2", "id_token" /*, "access_token", "refresh_token"*/].forEach(
-          (t) => {
-            expect(
-              resClearJWTs.res.headers["set-cookie"].find((c) =>
-                c.match(new RegExp(`^${t}=`))
+        [("id_token", "access_token", "refresh_token")].forEach((t) => {
+          expect(
+            resClearJWTs.res.headers["set-cookie"].find((c) =>
+              c.match(
+                new RegExp(
+                  `^${t}=${deletedCookieValue}.*; ?Expires=Thu, 01 Jan 1970 00:00:00 GMT`
+                )
               )
-            ).toBeTruthy();
-            // get the expiration date
-          }
-        );
+            )
+          ).toBeTruthy();
+          // get the expiration date
+        });
       }
     );
   });

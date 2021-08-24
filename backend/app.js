@@ -39,9 +39,10 @@ app.use(function (req, res, next) {
 });
 
 app.get("/clear-jwts", (req, res) => {
-  res.cookie("c1", "v1", { expires: new Date(0) });
-  res.cookie("c2", "v2");
-  res.cookie("id_token");
+  const expiredCookieValue = "expired-via-clear-jwts";
+  res.cookie("id_token", expiredCookieValue, { expires: new Date(0) });
+  res.cookie("access_token", expiredCookieValue, { expires: new Date(0) });
+  res.cookie("refresh_token", expiredCookieValue, { expires: new Date(0) });
   return res.status(200).send({ message: "JWTs cleared" });
 });
 

@@ -38,6 +38,14 @@ app.use(function (req, res, next) {
   next();
 });
 
+app.get("/clear-jwts", (req, res) => {
+  const expiredCookieValue = "expired-via-clear-jwts";
+  res.cookie("id_token", expiredCookieValue, { expires: new Date(0) });
+  res.cookie("access_token", expiredCookieValue, { expires: new Date(0) });
+  res.cookie("refresh_token", expiredCookieValue, { expires: new Date(0) });
+  return res.status(200).send({ message: "JWTs cleared" });
+});
+
 app.get("/scripts", async function (req, res) {
   console.log("in /scripts 1");
   const params = {

@@ -316,7 +316,7 @@ export class MadliberationWebapp extends cdk.Stack {
       },
     });
 
-    const fn = new lambda.Function(this, "BackendHandler", {
+    const backendHandler = new lambda.Function(this, "BackendHandler", {
       runtime: lambda.Runtime.NODEJS_14_X,
       handler: "index.handler",
       code: lambda.Code.fromAsset("backend"),
@@ -350,9 +350,9 @@ export class MadliberationWebapp extends cdk.Stack {
       timeout: cdk.Duration.seconds(20),
     });
 
-    sedersTable.grantReadWriteData(fn);
+    sedersTable.grantReadWriteData(backendHandler);
 
-    fn.addToRolePolicy(
+    backendHandler.addToRolePolicy(
       new PolicyStatement({
         effect: Effect.ALLOW,
         actions: ["cognito-idp:DescribeUserPoolClient"],
@@ -363,7 +363,7 @@ export class MadliberationWebapp extends cdk.Stack {
     );
 
     const lambdaApi = new apigw.LambdaRestApi(this, "Endpoint", {
-      handler: fn,
+      handler: backendHandler,
     });
 
     const lambdaApiUrlConstructed =
@@ -423,7 +423,7 @@ export class MadliberationWebapp extends cdk.Stack {
     const scriptsBucket = new MadLiberationBucket(this, "ScriptsBucket", {
       versioned: true,
     });
-    scriptsBucket.grantRead(fn);
+    scriptsBucket.grantRead(backendHandler);
 
     const fromAddressOutput = fromAddress || "no SES from address";
     new cdk.CfnOutput(this, "sesFromAddress", {

@@ -487,7 +487,8 @@ export class MadliberationWebapp extends cdk.Stack {
             headerBehavior: cloudfront.OriginRequestHeaderBehavior.allowList(
               "Sec-WebSocket-Extensions",
               "Sec-WebSocket-Key",
-              "Sec-WebSocket-Version"
+              "Sec-WebSocket-Version",
+              "Cookie"
             ),
             queryStringBehavior:
               cloudfront.OriginRequestQueryStringBehavior.all(),

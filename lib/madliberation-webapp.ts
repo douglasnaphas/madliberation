@@ -487,11 +487,11 @@ export class MadliberationWebapp extends cdk.Stack {
             headerBehavior: cloudfront.OriginRequestHeaderBehavior.allowList(
               "Sec-WebSocket-Extensions",
               "Sec-WebSocket-Key",
-              "Sec-WebSocket-Version",
-              "Cookie"
+              "Sec-WebSocket-Version"
             ),
             queryStringBehavior:
               cloudfront.OriginRequestQueryStringBehavior.all(),
+            cookieBehavior: cloudfront.OriginRequestCookieBehavior.all(),
           }
         ),
       }

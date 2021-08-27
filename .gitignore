@@ -4,6 +4,7 @@
 !frontend/**/*.js
 !backend/*.js
 !backend/**/*.js
+backend/ws.js
 !itest/*.js
 !itest/**/*.js
 !content/*.js

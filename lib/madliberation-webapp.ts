@@ -1,6 +1,9 @@
 import * as cdk from "@aws-cdk/core";
 import * as lambda from "@aws-cdk/aws-lambda";
 import * as apigw from "@aws-cdk/aws-apigateway";
+import * as apigwv2 from "@aws-cdk/aws-apigatewayv2";
+import * as apigwv2i from "@aws-cdk/aws-apigatewayv2-integrations";
+import * as iam from "@aws-cdk/aws-iam";
 import * as s3 from "@aws-cdk/aws-s3";
 import * as cloudfront from "@aws-cdk/aws-cloudfront";
 import * as origins from "@aws-cdk/aws-cloudfront-origins";
@@ -316,38 +319,46 @@ export class MadliberationWebapp extends cdk.Stack {
       },
     });
 
-    const backendHandler = new lambda.Function(this, "BackendHandler", {
-      runtime: lambda.Runtime.NODEJS_14_X,
-      handler: "index.handler",
-      code: lambda.Code.fromAsset("backend"),
+    const lambdaEnvironment = {
+      NODE_ENV: "production",
+      TABLE_NAME: sedersTable.tableName,
+      JWKS_URL:
+        "https://cognito-idp." +
+        this.region +
+        ".amazonaws.com/" +
+        userPool.userPoolId +
+        "/.well-known/jwks.json",
+      USER_POOL_CLIENT_ID: userPoolClient.userPoolClientId,
+      USER_POOL_ID: userPool.userPoolId,
+      USER_POOL_DOMAIN: userPoolDomain.domainName,
+      REDIRECT_URI: "https://" + webappDomainName + "/prod/get-cookies",
+      REGION: this.region,
+      IDP_URL:
+        "https://" +
+        userPoolDomain.domainName +
+        ".auth." +
+        this.region +
+        ".amazoncognito.com/login?response_type=code&client_id=" +
+        userPoolClient.userPoolClientId +
+        "&redirect_uri=" +
+        "https://" +
+        webappDomainName +
+        "/prod/get-cookies",
+    };
+
+    const lambdaProps = {
+      code: lambda.Code.fromAsset("backend", {
+        exclude: ["*.ts", "*.ts.map"],
+      }),
       memorySize: 3000,
-      environment: {
-        NODE_ENV: "production",
-        TABLE_NAME: sedersTable.tableName,
-        JWKS_URL:
-          "https://cognito-idp." +
-          this.region +
-          ".amazonaws.com/" +
-          userPool.userPoolId +
-          "/.well-known/jwks.json",
-        USER_POOL_CLIENT_ID: userPoolClient.userPoolClientId,
-        USER_POOL_ID: userPool.userPoolId,
-        USER_POOL_DOMAIN: userPoolDomain.domainName,
-        REDIRECT_URI: "https://" + webappDomainName + "/prod/get-cookies",
-        REGION: this.region,
-        IDP_URL:
-          "https://" +
-          userPoolDomain.domainName +
-          ".auth." +
-          this.region +
-          ".amazoncognito.com/login?response_type=code&client_id=" +
-          userPoolClient.userPoolClientId +
-          "&redirect_uri=" +
-          "https://" +
-          webappDomainName +
-          "/prod/get-cookies",
-      },
+      environment: lambdaEnvironment,
+      runtime: lambda.Runtime.NODEJS_14_X,
       timeout: cdk.Duration.seconds(20),
+    };
+
+    const backendHandler = new lambda.Function(this, "BackendHandler", {
+      handler: "index.handler",
+      ...lambdaProps,
     });
 
     sedersTable.grantReadWriteData(backendHandler);
@@ -392,6 +403,100 @@ export class MadliberationWebapp extends cdk.Stack {
         ),
       }
     );
+
+    ///////////////////// VVV WebSockets VVV ///////////////////////////////////
+
+    const connectFn = new lambda.Function(this, "ConnectionHandler", {
+      ...lambdaProps,
+      handler: "ws.connectHandler",
+    });
+    const disconnectFn = new lambda.Function(this, "DisconnectionHandler", {
+      ...lambdaProps,
+      handler: "ws.disconnectHandler",
+    });
+    const defaultFn = new lambda.Function(this, "DefaultHandler", {
+      ...lambdaProps,
+      handler: "ws.defaultHandler",
+    });
+
+    const stageName = "ws";
+    const webSocketApi = new apigwv2.WebSocketApi(this, "RoomAppWS", {
+      connectRouteOptions: {
+        integration: new apigwv2i.LambdaWebSocketIntegration({
+          handler: connectFn,
+        }),
+      },
+      disconnectRouteOptions: {
+        integration: new apigwv2i.LambdaWebSocketIntegration({
+          handler: disconnectFn,
+        }),
+      },
+      defaultRouteOptions: {
+        integration: new apigwv2i.LambdaWebSocketIntegration({
+          handler: defaultFn,
+        }),
+      },
+    });
+    const webSocketStage = new apigwv2.WebSocketStage(this, "ProdStage", {
+      webSocketApi,
+      stageName,
+      autoDeploy: true,
+    });
+
+    const ENDPOINT = `https://${webSocketApi.apiId}.execute-api.${this.region}.${this.urlSuffix}/${webSocketStage.stageName}/`;
+    connectFn.addEnvironment("ENDPOINT", ENDPOINT);
+    disconnectFn.addEnvironment("ENDPOINT", ENDPOINT);
+    defaultFn.addEnvironment("ENDPOINT", ENDPOINT);
+
+    const webSocketArn = `arn:aws:execute-api:${this.region}:${this.account}:${webSocketApi.apiId}/${webSocketStage.stageName}/*`;
+    connectFn.addToRolePolicy(
+      new iam.PolicyStatement({
+        resources: [webSocketArn],
+        actions: ["execute-api:Invoke", "execute-api:ManageConnections"],
+      })
+    );
+    disconnectFn.addToRolePolicy(
+      new iam.PolicyStatement({
+        resources: [webSocketArn],
+        actions: ["execute-api:Invoke", "execute-api:ManageConnections"],
+      })
+    );
+    defaultFn.addToRolePolicy(
+      new iam.PolicyStatement({
+        resources: [webSocketArn],
+        actions: ["execute-api:Invoke", "execute-api:ManageConnections"],
+      })
+    );
+
+    distro.addBehavior(
+      `/${stageName}/*`,
+      new origins.HttpOrigin(
+        `${webSocketApi.apiId}.execute-api.${this.region}.${this.urlSuffix}`,
+        {
+          protocolPolicy: cloudfront.OriginProtocolPolicy.HTTPS_ONLY,
+        }
+      ),
+      {
+        allowedMethods: cloudfront.AllowedMethods.ALLOW_ALL,
+        cachePolicy: cloudfront.CachePolicy.CACHING_DISABLED,
+        viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
+        originRequestPolicy: new cloudfront.OriginRequestPolicy(
+          this,
+          "WSOriginRequestPolicy",
+          {
+            headerBehavior: cloudfront.OriginRequestHeaderBehavior.allowList(
+              "Sec-WebSocket-Extensions",
+              "Sec-WebSocket-Key",
+              "Sec-WebSocket-Version"
+            ),
+            queryStringBehavior:
+              cloudfront.OriginRequestQueryStringBehavior.all(),
+          }
+        ),
+      }
+    );
+
+    ///////////////////// ^^^ WebSockets ^^^ ///////////////////////////////////
 
     if (domainName && wwwDomainName && hostedZone) {
       // point the domain name with an alias record to the distro
@@ -460,5 +565,10 @@ export class MadliberationWebapp extends cdk.Stack {
       value: scriptsBucket.bucketName,
     });
     new cdk.CfnOutput(this, "TableName", { value: sedersTable.tableName });
+    new cdk.CfnOutput(this, "WSAPIEndpoint", {
+      value: webSocketApi.apiEndpoint,
+    });
+    new cdk.CfnOutput(this, "WebSocketARN", { value: webSocketArn });
+    new cdk.CfnOutput(this, "ENDPOINT", { value: ENDPOINT });
   }
 }

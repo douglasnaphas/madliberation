@@ -73,6 +73,12 @@ jobs:
         run: |
           npm test
 
+      - name: Build backend prod artifact
+        working-directory: backend
+        run: |
+          rm -rf node_modules
+          npm install --production
+
       - name: Identity provider app secret roll call
         env:
           FACEBOOK_APP_SECRET: ${{ secrets.FACEBOOK_APP_SECRET }}

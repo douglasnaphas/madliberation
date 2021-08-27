@@ -73,6 +73,12 @@ jobs:
         run: |
           npm test
 
+      - name: Build backend prod artifact
+        working-directory: backend
+        run: |
+          rm -rf node_modules
+          npm install --production
+
       - name: Identify dev account and region
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.DEV_AWS_ACCESS_KEY_ID }}

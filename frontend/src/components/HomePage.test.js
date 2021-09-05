@@ -123,4 +123,9 @@ describe("<HomePage />", () => {
     expect(storage.removeItem).toHaveBeenCalledWith("user-sub");
     expect(storage.removeItem).toHaveBeenCalledTimes(3);
   });
+  test(
+    "Clicking the Log Out button should deactivate the button until " +
+      "/clear-jwts returns",
+    () => {}
+  );
 });

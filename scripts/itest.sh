@@ -38,6 +38,20 @@ then
   fi
 fi
 
+# More backend endpoint tests
+CLEAR_JWTS_URL=https://${APP_URL}/prod/clear-jwts
+CLEAR_JWTS="$(curl --include ${CLEAR_JWTS_URL})"
+for JWT in "access_token" "id_token" "refresh_token"
+do
+  if ! echo "${CLEAR_JWTS}" | grep --quiet --ignore-case \
+    '^set-cookie:\s*'${JWT}'=.*;\s*expires=Thu, 01 Jan 1970'
+  then
+    echo "no ${JWT} in response from /clear-jwts"
+    echo "failing"
+    exit 1
+  fi
+done
+
 # End-to-end test
 # Figure out the Cognito hosted UI URL
 # This has some info for constructing the URL:

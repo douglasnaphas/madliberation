@@ -39,11 +39,7 @@ then
 fi
 
 # More backend endpoint tests
-echo "APP_URL:"
-echo "${APP_URL}"
-CLEAR_JWTS_URL=https://${APP_URL}/prod/clear-jwts
-echo "CLEAR_JWTS_URL:"
-echo "${CLEAR_JWTS_URL}"
+CLEAR_JWTS_URL=${APP_URL}/prod/clear-jwts
 CLEAR_JWTS="$(curl --include ${CLEAR_JWTS_URL})"
 for JWT in "access_token" "id_token" "refresh_token"
 do

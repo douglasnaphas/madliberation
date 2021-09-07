@@ -35,6 +35,7 @@ import TermsOfService from "./components/TermsOfService";
 import ContactUs from "./components/ContactUs";
 import ExplainVideoPage from "./components/ExplainVideoPage";
 import SedersPageWithRouter from "./components/SedersPageWithRouter";
+import useParams from "react-router-dom";
 
 const theme = createMuiTheme({
   palette: {
@@ -207,6 +208,15 @@ class App extends Component {
                 path="/about"
                 exact
                 render={(props) => <About {...props} />}
+              />
+              <Route
+                path="/about2/:param1"
+                exact
+                render={(props) => {
+                  let { param1 } = useParams();
+                  console.log(`param1: ${param1}`);
+                  return <About {...props} />;
+                }}
               />
               <Route
                 path="/how-to-play"

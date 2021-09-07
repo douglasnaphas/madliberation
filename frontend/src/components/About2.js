@@ -44,7 +44,8 @@ const About2 = () => {
           (opens in a new tab) for any bugs encountered or features desired.
         </Typography>
         <Typography component="p" paragraph gutterBottom>
-          param1=${`${param1}`}
+          param1={`${param1}`}
+          param2={`${param2}`}
         </Typography>
       </div>
     </div>

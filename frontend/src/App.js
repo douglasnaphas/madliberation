@@ -210,7 +210,7 @@ class App extends Component {
                 render={(props) => <About {...props} />}
               />
               <Route
-                path="/about2/:param1"
+                path="/about2/:param1/:param2"
                 exact
                 render={(props) => {
                   return <About2 {...props} />;

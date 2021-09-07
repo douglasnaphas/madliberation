@@ -35,7 +35,7 @@ import TermsOfService from "./components/TermsOfService";
 import ContactUs from "./components/ContactUs";
 import ExplainVideoPage from "./components/ExplainVideoPage";
 import SedersPageWithRouter from "./components/SedersPageWithRouter";
-import useParams from "react-router-dom";
+import { useParams } from "react-router-dom";
 
 const theme = createMuiTheme({
   palette: {

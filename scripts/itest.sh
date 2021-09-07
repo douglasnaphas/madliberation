@@ -44,9 +44,9 @@ CLEAR_JWTS="$(curl --include ${CLEAR_JWTS_URL})"
 for JWT in "access_token" "id_token" "refresh_token"
 do
   if ! echo "${CLEAR_JWTS}" | grep --quiet --ignore-case \
-    '^set-cookie:\s*'${JWT}'=.*;\s*expires=Fri, 02 Jan 1970'
+    '^set-cookie:\s*'${JWT}'=.*;\s*expires=Thu, 01 Jan 1970'
   then
-    echo "no ${JWT} in response from /clear-jwts, or wrong expiration"
+    echo "no ${JWT} in response from /clear-jwts"
     echo "failing"
     exit 1
   fi

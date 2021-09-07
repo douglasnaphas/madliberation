@@ -4,6 +4,7 @@ import { Route } from "react-router-dom";
 import { HashRouter as Router } from "react-router-dom";
 
 import About from "./components/About";
+import About2 from "./components/About2";
 import "./App.css";
 import { closeSeder } from "./lib/closeSeder";
 import DoneNotReadingPage from "./components/DoneNotReadingPage";
@@ -35,7 +36,6 @@ import TermsOfService from "./components/TermsOfService";
 import ContactUs from "./components/ContactUs";
 import ExplainVideoPage from "./components/ExplainVideoPage";
 import SedersPageWithRouter from "./components/SedersPageWithRouter";
-import { useParams } from "react-router-dom";
 
 const theme = createMuiTheme({
   palette: {
@@ -213,9 +213,7 @@ class App extends Component {
                 path="/about2/:param1"
                 exact
                 render={(props) => {
-                  let { param1 } = useParams();
-                  console.log(`param1: ${param1}`);
-                  return <About {...props} />;
+                  return <About2 {...props} />;
                 }}
               />
               <Route

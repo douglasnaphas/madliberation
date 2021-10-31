@@ -3,7 +3,7 @@
 set -e
 
 # get the bucket name from SSM param store
-PARAM_NAME=$(npx @cdk-turnkey/stackname --suffix FrontendBucketName)
+PARAM_NAME=$(npx @cdk-turnkey/stackname@1.2.0 --suffix FrontendBucketName)
 BUCKET=$(aws ssm get-parameter --name ${PARAM_NAME} | jq '.Parameter.Value' | tr -d '"')
 
 echo "PARAM_NAME:"

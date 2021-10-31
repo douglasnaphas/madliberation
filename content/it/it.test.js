@@ -1,3 +1,0 @@
-describe('scriptParse.js', () => {
-  test('...', () => {});
-});

@@ -1,12 +1,9 @@
 {
   "name": "madliberation",
   "version": "0.1.0",
-  "bin": {
-    "madliberation": "bin/madliberation.js"
-  },
   "repository": {
     "type": "git",
-    "url": "git://github.com/cdk-turnkey/brian-liberation"
+    "url": "git://github.com/douglasnaphas/madliberation"
   },
   "license": "Apache-2.0",
   "scripts": {

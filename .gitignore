@@ -23,3 +23,5 @@ cdk.out
 .DS_Store
 
 .vscode
+
+itest/screenlog*

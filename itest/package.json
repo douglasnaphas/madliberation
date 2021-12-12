@@ -25,11 +25,11 @@
   },
   "homepage": "https://github.com/douglasnaphas/madliberation-itest#readme",
   "devDependencies": {
-    "jest": "^25.1.0"
+    "jest": "^27.4.4"
   },
   "dependencies": {
     "aws-sdk": "^2.844.0",
     "commander": "^7.0.0",
-    "puppeteer": "^7.0.1"
+    "puppeteer": "^13.0.0"
   }
 }

@@ -1,7 +1,7 @@
 # This is a basic workflow to help you get started with Actions
 
 name: CI-feature-branch
-
+concurrency: ci-${{ github.ref }}
 # Controls when the action will run.
 on:
   # Triggers the workflow on push to feature branches

@@ -137,7 +137,7 @@ jobs:
           AWS_DEFAULT_REGION: "us-east-1"
           AWS_REGION: "us-east-1"
         run: |
-          bash itest.sh
+          npm run itest
 
       - name: Identify prod account and region
         env:
@@ -183,7 +183,7 @@ jobs:
           AWS_DEFAULT_REGION: "us-east-1"
           AWS_REGION: "us-east-1"
         run: |
-          bash itest.sh
+          npm run itest
 
       - name: Identify prod2 account and region
         env:
@@ -229,4 +229,4 @@ jobs:
           AWS_DEFAULT_REGION: "us-east-1"
           AWS_REGION: "us-east-1"
         run: |
-          bash itest.sh
+          npm run itest

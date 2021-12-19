@@ -2,6 +2,22 @@
 
 set -e
 
+# check for necessary env vars
+for required_env_var in \
+  AWS_ACCESS_KEY_ID \
+  AWS_SECRET_ACCESS_KEY \
+  AWS_DEFAULT_REGION \
+  AWS_REGION \
+  GITHUB_REPOSITORY \
+  GITHUB_REF ; do
+  if [[ ! -n "${!required_env_var}" ]] ; then
+    echo "env var ${required_env_var} must be set"
+    exit 2
+  fi
+done
+
+# set SLOW_ARG
+
 STACKNAME=$(npx @cdk-turnkey/stackname@1.2.0 --suffix webapp)
 APP_URL=https://$(aws cloudformation describe-stacks \
   --stack-name ${STACKNAME} | \
@@ -65,6 +81,6 @@ echo ${USER_POOL_ID}
 npx ../itest \
   --site ${APP_URL} \
   --idp-url "${IDP_URL}" \
-  --user-pool-id ${USER_POOL_ID}
+  --user-pool-id ${USER_POOL_ID} # add SLOW_ARG
 pwd
 ls

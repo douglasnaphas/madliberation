@@ -310,7 +310,6 @@ const submitAllLibs = async (page, prefix) => {
   await itWait({ page: page, madliberationid: "pick-your-script-page" });
 
   // Pick the Practice Script
-  await page.screenshot({ path: "pick-your-script-page.jpeg" });
   await itClick({ page: page, madliberationid: "Practice Script" });
   await itNavigate({ page: page, madliberationid: "pick-this-script-button" });
 

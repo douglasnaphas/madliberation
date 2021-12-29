@@ -16,8 +16,6 @@ for required_env_var in \
   fi
 done
 
-# set SLOW_ARG
-
 STACKNAME=$(npx @cdk-turnkey/stackname@1.2.0 --suffix webapp)
 APP_URL=https://$(aws cloudformation describe-stacks \
   --stack-name ${STACKNAME} | \

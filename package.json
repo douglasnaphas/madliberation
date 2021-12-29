@@ -12,7 +12,8 @@
     "test": "jest",
     "synth": "npx cdk synth --no-staging",
     "diff": "npx cdk diff",
-    "itest": "bash scripts/itest.sh"
+    "itest": "bash scripts/itest.sh",
+    "smoke": "bash scripts/smoke.sh"
   },
   "devDependencies": {
     "@aws-cdk/assert": "1.134.0",

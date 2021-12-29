@@ -45,7 +45,7 @@ Similar to the _Deploy content (dev account)_ step in `.github/workflows/feature
 
 ```
 AWS_PROFILE=my-profile-from-aws-credentials-file \
-  GITHUB_REPOSITORY=your-github-username \
+  GITHUB_REPOSITORY=your-github-username/repository-name \
   GITHUB_REF=refs/heads/your-branch-name \
   bash deploy-frontend.sh
 ```

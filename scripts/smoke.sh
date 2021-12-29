@@ -52,37 +52,13 @@ then
   fi
 fi
 
-# End-to-end test
-# Figure out the Cognito hosted UI URL
-# This has some info for constructing the URL:
-# https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pools-domain.html
-USER_POOL_CLIENT_ID=$(aws cloudformation describe-stacks \
-  --stack-name ${STACKNAME} | \
-  jq '.Stacks[0].Outputs | map(select(.OutputKey == "UserPoolClientId"))[0].OutputValue' | \
-  tr -d \")
-USER_POOL_ID=$(aws cloudformation describe-stacks \
-  --stack-name ${STACKNAME} | \
-  jq '.Stacks[0].Outputs | map(select(.OutputKey == "UserPoolId"))[0].OutputValue' | \
-  tr -d \")
-USER_POOL_DOMAIN=$(aws cognito-idp describe-user-pool \
-  --user-pool-id ${USER_POOL_ID} | \
-  jq '.UserPool.Domain' | \
-  tr -d \")
-REDIRECT_URI=${APP_URL}/prod/get-cookies
-IDP_URL="https://${USER_POOL_DOMAIN}.auth.${AWS_DEFAULT_REGION}.amazoncognito.com/login?response_type=code&client_id=${USER_POOL_CLIENT_ID}&redirect_uri=${REDIRECT_URI}"
-echo "APP_URL:"
-echo ${APP_URL}
-echo "IDP_URL:"
-echo ${IDP_URL}
-echo "USER_POOL_ID:"
-echo ${USER_POOL_ID}
+
+# browser test
 if [[ "${SLOW}" == "y" ]]
 then
   SLOW_ARG="--slow"
 else
   SLOW_ARG=
 fi
-node itest/App.itest.cjs \
-  --site ${APP_URL} \
-  --idp-url "${IDP_URL}" \
-  --user-pool-id ${USER_POOL_ID} ${SLOW_ARG}
+node itest/Smoke.cjs \
+  --site ${APP_URL} ${SLOW_ARG}

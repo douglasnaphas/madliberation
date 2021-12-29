@@ -78,7 +78,7 @@ echo "IDP_URL:"
 echo ${IDP_URL}
 echo "USER_POOL_ID:"
 echo ${USER_POOL_ID}
-npx ../itest \
+node itest/App.itest.cjs \
   --site ${APP_URL} \
   --idp-url "${IDP_URL}" \
   --user-pool-id ${USER_POOL_ID} # add SLOW_ARG

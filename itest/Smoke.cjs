@@ -101,11 +101,9 @@ const itGetText = async ({ page, madliberationid }) => {
   return text;
 };
 const itGetGroupText = async (page, containerMLId, groupName) => {
-  await itWait({ page, madliberationid: containerMLId }).catch(
-    async (e) => {
-      failTest(e, `Failed to find container ${containerMLId}`);
-    }
-  );
+  await itWait({ page, madliberationid: containerMLId }).catch(async (e) => {
+    failTest(e, `Failed to find container ${containerMLId}`);
+  });
   const container = await page
     .$(`[madliberationid="${containerMLId}"]`)
     .catch(async (e) => {
@@ -131,7 +129,8 @@ const submitAllLibs = async (page, prefix) => {
   }
   const numLibs = progress[1];
   for (let currentLib = progress[0]; currentLib <= numLibs; currentLib++) {
-    if (currentLib == 1) { // smoke test, only do one lib
+    if (currentLib == 1) {
+      // smoke test, only do one lib
       // Enter a lib, save it to answers
       const ans = `${prefix}${currentLib}`;
       await itType({
@@ -364,13 +363,6 @@ const submitAllLibs = async (page, prefix) => {
       failTest("/read failure", `submitted lib not inserted in script: ${a}`);
     }
   });
-  if (leaderAnswers.length + p2Answers.length != libs.length) {
-    failTest(
-      "/read failure",
-      `submitted ${leaderAnswers.length + p2Answers.length} answers, ` +
-        `${libs.length} found in script`
-    );
-  }
 
   // Close browsers
   await browser.close();

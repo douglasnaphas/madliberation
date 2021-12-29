@@ -78,9 +78,13 @@ echo "IDP_URL:"
 echo ${IDP_URL}
 echo "USER_POOL_ID:"
 echo ${USER_POOL_ID}
+if [[ "${SLOW}" == "y" ]]
+then
+  SLOW_ARG="--slow"
+else
+  SLOW_ARG=
+fi
 node itest/App.itest.cjs \
   --site ${APP_URL} \
   --idp-url "${IDP_URL}" \
-  --user-pool-id ${USER_POOL_ID} # add SLOW_ARG
-pwd
-ls
+  --user-pool-id ${USER_POOL_ID} ${SLOW_ARG}

@@ -54,6 +54,13 @@ then
   fi
 fi
 
-# End-to-end test
+
+# browser test
+if [[ "${SLOW}" == "y" ]]
+then
+  SLOW_ARG="--slow"
+else
+  SLOW_ARG=
+fi
 node itest/Smoke.cjs \
-  --site ${APP_URL} \
+  --site ${APP_URL} ${SLOW_ARG}

@@ -147,7 +147,7 @@ const submitAllLibs = async (page, prefix) => {
   const numLibs = progress[1];
   for (let currentLib = progress[0]; currentLib <= numLibs; currentLib++) {
     // Enter a lib, save it to answers
-    const ans = `${prefix}-${currentLib}`;
+    const ans = `${prefix}${currentLib}`;
     await itType({
       page: page,
       madliberationid: `answer-${currentLib - 1}`,
@@ -321,7 +321,7 @@ const submitAllLibs = async (page, prefix) => {
     madliberationid: "your-room-code",
   });
   // Got the Room Code, enter the leader's Game Name
-  const leaderName = `ITestLdr ${roomCode}`;
+  const leaderName = `Le`;
   await itType({
     page: page,
     madliberationid: "ringleader-game-name-text-field",
@@ -476,7 +476,7 @@ const submitAllLibs = async (page, prefix) => {
   await itWait({ page: page2, madliberationid: "enter-room-code-page" });
 
   // Enter Room Code and Game Name
-  const player2Name = `ITestP2 ${roomCode}`;
+  const player2Name = `P2`;
   await itType({
     page: page2,
     madliberationid: "enter-room-code-text-field",
@@ -534,7 +534,7 @@ const submitAllLibs = async (page, prefix) => {
 
   // Make sure we're on the /play page
   await itWait({ page: page, madliberationid: "lib-progress" });
-  const leaderAnswers = await submitAllLibs(page, "leader");
+  const leaderAnswers = await submitAllLibs(page, "le");
 
   ////////////////////////////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////////////////////////

@@ -158,10 +158,6 @@ app.get("/script", gameNameCookieCheckMidWare, scriptMiddleware, (req, res) => {
   res.send(res.locals.script);
 });
 
-const db = require("./lib/dbPlayAssignLibs");
-app.post("/db", db);
-app.get("/db", db);
-
 app.post("/play", readRosterMiddleware, (req, res) => {
   res.send({ err: res.locals.dbError, data: res.locals.dbData });
 });

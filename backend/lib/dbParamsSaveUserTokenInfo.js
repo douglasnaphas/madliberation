@@ -10,8 +10,6 @@
 function dbParamsSaveUserTokenInfo() {
   const schema = require('../schema');
   const responses = require('../responses');
-  const api = require('../api');
-  const DbSchema = require('../DbSchema');
   const middleware = (req, res, next) => {
     if(!res.locals.nickname || !res.locals.email || !res.locals.sub ||
       !res.locals["cognito:username"]) {

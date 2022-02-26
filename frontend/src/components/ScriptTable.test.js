@@ -8,7 +8,12 @@ import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
 import TableRow from "@material-ui/core/TableRow";
 import Radio from "@material-ui/core/Radio";
-import { render, screen } from "@testing-library/react";
+import {
+  getByLabelText,
+  getByText,
+  render,
+  screen,
+} from "@testing-library/react";
 import "@testing-library/jest-dom";
 
 import ScriptTable from "./ScriptTable";
@@ -213,50 +218,51 @@ function expectedTable(scripts, selectedIndex) {
 describe("<ScriptTable />", () => {
   test("scripts in props should appear in a table 1", () => {
     const props = getProps({ scripts: fourScripts() });
-
     render(
       <MemoryRouter>
         <ScriptTable {...props}></ScriptTable>
       </MemoryRouter>
     );
-    expect(screen.queryAllByText("Dirty Script")).toHaveLength(1);
-    expect(screen.getAllByRole("radio").length).toEqual(4);
-    expect(screen.getByText("Dirty Script")).toHaveTextContent("Dirty Script");
-    expect(screen.getAllByLabelText("Dirty Script").length).toEqual(1);
-    expect(screen.getByLabelText("Dirty Script")).toHaveAttribute(
-      "type",
-      "radio"
-    );
     fourScripts().forEach((script) => {
-      expect(
-        screen.getByLabelText(
-          new RegExp(`^${script.haggadah_short_desc}$`)
-        )
-      ).toHaveAttribute("type", "radio");
+      const el = screen.getByLabelText(
+        new RegExp(`^${script.haggadah_short_desc}$`)
+      );
+      expect(el).toHaveAttribute("type", "radio");
+      const row = el.closest("tr");
+      getByText(row, script.haggadah_description);
     });
   });
   test("scripts in props should appear in a table 2", () => {
     const props = getProps({ scripts: differentScripts() });
-    const wrapper = mount(
+    render(
       <MemoryRouter>
-        <ScriptTable {...props} />
+        <ScriptTable {...props}></ScriptTable>
       </MemoryRouter>
     );
-    expect(
-      wrapper.containsMatchingElement(expectedTable(differentScripts(), 0))
-    ).toBe(true);
+    differentScripts().forEach((script) => {
+      const el = screen.getByLabelText(
+        new RegExp(`^${script.haggadah_short_desc}$`)
+      );
+      expect(el).toHaveAttribute("type", "radio");
+      const row = el.closest("tr");
+      getByText(row, script.haggadah_description);
+    });
   });
   test(
     "the Use This One button should call setChosenPath with the selected" +
       " script, after others have been clicked",
     () => {
       const props = getProps({ scripts: fourScripts() });
-      const wrapper = mount(
+      render(
         <MemoryRouter>
           <ScriptTable {...props} />
         </MemoryRouter>
       );
-      expect(scriptChecked(wrapper, 0)).toBe(true);
+      const radioGroups = screen.getAllByRole("radiogroup")
+      expect(radioGroups.length).toEqual(1);
+      const radioGroup = radioGroups[0];
+      expect(screen.getByLabelText("Family Script")).toHaveAttribute("checked")
+      return;
       // click the 3rd script
       selectScript(wrapper, 2);
       expect(scriptChecked(wrapper, 0)).toBe(false);

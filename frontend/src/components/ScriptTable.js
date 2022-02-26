@@ -7,6 +7,7 @@ import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableRow from '@material-ui/core/TableRow';
 import Radio from '@material-ui/core/Radio';
+import RadioGroup from '@material-ui/core/RadioGroup';
 import { withStyles } from '@material-ui/core/styles';
 
 // takes in JSON collection of scripts, and a function it will call to set
@@ -91,9 +92,11 @@ class ScriptTable extends React.Component {
     return (
       <div>
         <div>
+          <RadioGroup name={`script`}>
           <Table>
             <TableBody>{scriptRows}</TableBody>
           </Table>
+          </RadioGroup>
         </div>
         {pickButton}
       </div>

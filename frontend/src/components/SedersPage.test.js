@@ -1,49 +1,17 @@
 import SedersPage from "./SedersPage";
-import { createMount } from "@material-ui/core/test-utils";
 import React from "react";
 import { MemoryRouter } from "react-router-dom";
-import { act } from "react-dom/test-utils";
-import Button from "@material-ui/core/Button";
-import Radio from "@material-ui/core/Radio";
-import {
-  getAllByRole,
-  getByLabelText,
-  getByRole,
-  getByText,
-  render,
-  screen,
-  waitFor,
-} from "@testing-library/react";
+import { getByRole, render, screen, waitFor } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import userEvent from "@testing-library/user-event";
 
-let mount;
 let globalFetch = global.fetch;
 
-beforeEach(() => {
-  mount = createMount();
-});
 afterEach(() => {
-  mount.cleanUp();
   global.fetch = globalFetch;
 });
 
 describe("SedersPage", () => {
-  const selectSederByRoomCode = (wrapper, roomCode) => {
-    expect(
-      wrapper
-        .findWhere((n) => n.is(Radio) && n.is(`#radio-${roomCode}`))
-        .exists()
-    ).toBe(true);
-    act(() => {
-      wrapper
-        .findWhere((n) => n.is(Radio) && n.is(`#radio-${roomCode}`))
-        .prop("onChange")({
-        target: { value: `${roomCode}` },
-      });
-      wrapper.update();
-    });
-  };
   describe("Re-join Case 1: user started the seder, non-closed, user un-named", () => {
     // should drop the user back at /your-room-code
     test("user rejoins an open seder 1", async () => {
@@ -600,32 +568,25 @@ describe("SedersPage", () => {
         });
       });
       const history = { push: jest.fn() };
-      let wrapper;
-      await act(async () => {
-        wrapper = mount(
-          <MemoryRouter>
-            <SedersPage
-              history={history}
-              user={user}
-              setConfirmedRoomCode={setConfirmedRoomCode}
-              setChosenPath={setChosenPath}
-              setConfirmedGameName={setConfirmedGameName}
-            ></SedersPage>
-          </MemoryRouter>
-        );
-      });
-      expect(global.fetch).toHaveBeenCalled();
-      wrapper.update();
-      expect(wrapper.findWhere((n) => n.is(Button)).exists()).toBe(true);
-      selectSederByRoomCode(wrapper, selectedRoomCode);
-      wrapper.update();
-      await act(async () => {
-        const button = wrapper.findWhere(
-          (n) => n.is(Button) && n.is("#resume-this-seder-button")
-        );
-        await button.prop("onClick")();
-      });
-      wrapper.update();
+      render(
+        <MemoryRouter>
+          <SedersPage
+            history={history}
+            user={user}
+            setConfirmedRoomCode={setConfirmedRoomCode}
+            setChosenPath={setChosenPath}
+            setConfirmedGameName={setConfirmedGameName}
+          ></SedersPage>
+        </MemoryRouter>
+      );
+      await waitFor(() => expect(global.fetch).toHaveBeenCalled());
+      const resumeSederButton = (
+        await screen.findByText("Resume seder")
+      ).closest("button");
+      await userEvent.click(
+        getByRole(screen.getByText(selectedRoomCode).closest("tr"), "radio")
+      );
+      await userEvent.click(resumeSederButton);
       expect(setConfirmedRoomCode).toHaveBeenCalled();
       expect(setConfirmedRoomCode).toHaveBeenCalledTimes(1);
       expect(setConfirmedRoomCode).toHaveBeenCalledWith(selectedRoomCode);
@@ -740,32 +701,25 @@ describe("SedersPage", () => {
         });
       });
       const history = { push: jest.fn() };
-      let wrapper;
-      await act(async () => {
-        wrapper = mount(
-          <MemoryRouter>
-            <SedersPage
-              history={history}
-              user={user}
-              setConfirmedRoomCode={setConfirmedRoomCode}
-              setChosenPath={setChosenPath}
-              setConfirmedGameName={setConfirmedGameName}
-            ></SedersPage>
-          </MemoryRouter>
-        );
-      });
-      expect(global.fetch).toHaveBeenCalled();
-      wrapper.update();
-      expect(wrapper.findWhere((n) => n.is(Button)).exists()).toBe(true);
-      selectSederByRoomCode(wrapper, selectedRoomCode);
-      wrapper.update();
-      await act(async () => {
-        const button = wrapper.findWhere(
-          (n) => n.is(Button) && n.is("#resume-this-seder-button")
-        );
-        await button.prop("onClick")();
-      });
-      wrapper.update();
+      render(
+        <MemoryRouter>
+          <SedersPage
+            history={history}
+            user={user}
+            setConfirmedRoomCode={setConfirmedRoomCode}
+            setChosenPath={setChosenPath}
+            setConfirmedGameName={setConfirmedGameName}
+          ></SedersPage>
+        </MemoryRouter>
+      );
+      await waitFor(() => expect(global.fetch).toHaveBeenCalled());
+      const resumeSederButton = (
+        await screen.findByText("Resume seder")
+      ).closest("button");
+      await userEvent.click(
+        getByRole(screen.getByText(selectedRoomCode).closest("tr"), "radio")
+      );
+      await userEvent.click(resumeSederButton);
       expect(setConfirmedRoomCode).toHaveBeenCalled();
       expect(setConfirmedRoomCode).toHaveBeenCalledTimes(1);
       expect(setConfirmedRoomCode).toHaveBeenCalledWith(selectedRoomCode);
@@ -942,33 +896,26 @@ describe("SedersPage", () => {
       });
       const history = { push: jest.fn() };
       const setAssignmentsData = jest.fn();
-      let wrapper;
-      await act(async () => {
-        wrapper = mount(
-          <MemoryRouter>
-            <SedersPage
-              history={history}
-              user={user}
-              setConfirmedRoomCode={setConfirmedRoomCode}
-              setChosenPath={setChosenPath}
-              setConfirmedGameName={setConfirmedGameName}
-              setAssignmentsData={setAssignmentsData}
-            ></SedersPage>
-          </MemoryRouter>
-        );
-      });
-      expect(global.fetch).toHaveBeenCalled();
-      wrapper.update();
-      expect(wrapper.findWhere((n) => n.is(Button)).exists()).toBe(true);
-      selectSederByRoomCode(wrapper, selectedRoomCode);
-      wrapper.update();
-      await act(async () => {
-        const button = wrapper.findWhere(
-          (n) => n.is(Button) && n.is("#resume-this-seder-button")
-        );
-        await button.prop("onClick")();
-      });
-      wrapper.update();
+      render(
+        <MemoryRouter>
+          <SedersPage
+            history={history}
+            user={user}
+            setConfirmedRoomCode={setConfirmedRoomCode}
+            setChosenPath={setChosenPath}
+            setConfirmedGameName={setConfirmedGameName}
+            setAssignmentsData={setAssignmentsData}
+          ></SedersPage>
+        </MemoryRouter>
+      );
+      await waitFor(() => expect(global.fetch).toHaveBeenCalled());
+      const resumeSederButton = (
+        await screen.findByText("Resume seder")
+      ).closest("button");
+      await userEvent.click(
+        getByRole(screen.getByText(selectedRoomCode).closest("tr"), "radio")
+      );
+      await userEvent.click(resumeSederButton);
       expect(setConfirmedRoomCode).toHaveBeenCalled();
       expect(setConfirmedRoomCode).toHaveBeenCalledTimes(1);
       expect(setConfirmedRoomCode).toHaveBeenCalledWith(selectedRoomCode);
@@ -1152,33 +1099,27 @@ describe("SedersPage", () => {
       });
       const history = { push: jest.fn() };
       const setAssignmentsData = jest.fn();
-      let wrapper;
-      await act(async () => {
-        wrapper = mount(
-          <MemoryRouter>
-            <SedersPage
-              history={history}
-              user={user}
-              setConfirmedRoomCode={setConfirmedRoomCode}
-              setChosenPath={setChosenPath}
-              setConfirmedGameName={setConfirmedGameName}
-              setAssignmentsData={setAssignmentsData}
-            ></SedersPage>
-          </MemoryRouter>
-        );
-      });
-      expect(global.fetch).toHaveBeenCalled();
-      wrapper.update();
-      expect(wrapper.findWhere((n) => n.is(Button)).exists()).toBe(true);
-      selectSederByRoomCode(wrapper, selectedRoomCode);
-      wrapper.update();
-      await act(async () => {
-        const button = wrapper.findWhere(
-          (n) => n.is(Button) && n.is("#resume-this-seder-button")
-        );
-        await button.prop("onClick")();
-      });
-      wrapper.update();
+      render(
+        <MemoryRouter>
+          <SedersPage
+            history={history}
+            user={user}
+            setConfirmedRoomCode={setConfirmedRoomCode}
+            setChosenPath={setChosenPath}
+            setConfirmedGameName={setConfirmedGameName}
+            setAssignmentsData={setAssignmentsData}
+          ></SedersPage>
+        </MemoryRouter>
+      );
+
+      await waitFor(() => expect(global.fetch).toHaveBeenCalled());
+      const resumeSederButton = (
+        await screen.findByText("Resume seder")
+      ).closest("button");
+      await userEvent.click(
+        getByRole(screen.getByText(selectedRoomCode).closest("tr"), "radio")
+      );
+      await userEvent.click(resumeSederButton);
       expect(setConfirmedRoomCode).toHaveBeenCalled();
       expect(setConfirmedRoomCode).toHaveBeenCalledTimes(1);
       expect(setConfirmedRoomCode).toHaveBeenCalledWith(selectedRoomCode);
@@ -1261,60 +1202,21 @@ describe("SedersPage", () => {
       }
     });
     const history = { push: jest.fn() };
-    let wrapper;
-    await act(async () => {
-      wrapper = mount(
-        <MemoryRouter>
-          <SedersPage
-            history={history}
-            user={user}
-            setConfirmedRoomCode={setConfirmedRoomCode}
-            setChosenPath={setChosenPath}
-          ></SedersPage>
-        </MemoryRouter>
-      );
-    });
-    expect(global.fetch).toHaveBeenCalled();
-    wrapper.update();
-    expect(wrapper.findWhere((n) => n.is(Button)).exists()).toBe(true);
-    expect(
-      wrapper
-        .findWhere(
-          (n) =>
-            n.is(Button) &&
-            n.prop("disabled") &&
-            n.is("#resume-this-seder-button")
-        )
-        .exists()
-    ).toBe(true);
-    selectSederByRoomCode(wrapper, "ZLSXQA");
-    wrapper.update();
-    expect(
-      wrapper
-        .findWhere(
-          (n) =>
-            n.is(Button) &&
-            !n.prop("disabled") &&
-            n.is("#resume-this-seder-button")
-        )
-        .exists()
-    ).toBe(true);
-    act(() => {
-      const button = wrapper.findWhere(
-        (n) => n.is(Button) && n.is("#resume-this-seder-button")
-      );
-      button.prop("onClick")();
-    });
-    expect(setConfirmedRoomCode).toHaveBeenCalled();
-    expect(setConfirmedRoomCode).toHaveBeenCalledTimes(1);
-    expect(setConfirmedRoomCode).toHaveBeenCalledWith("ZLSXQA");
-    expect(setChosenPath).toHaveBeenCalled();
-    expect(setChosenPath).toHaveBeenCalledTimes(1);
-    expect(setChosenPath).toHaveBeenCalledWith(
-      "madliberation-scripts/006-Practice_Script"
+    render(
+      <MemoryRouter>
+        <SedersPage
+          history={history}
+          user={user}
+          setConfirmedRoomCode={setConfirmedRoomCode}
+          setChosenPath={setChosenPath}
+        ></SedersPage>
+      </MemoryRouter>
     );
-    expect(history.push).toHaveBeenCalled();
-    expect(history.push).toHaveBeenCalledWith("/your-room-code");
+    await waitFor(() => expect(global.fetch).toHaveBeenCalled());
+    const resumeSederButton = (await screen.findByText("Resume seder")).closest(
+      "button"
+    );
+    expect(resumeSederButton).toBeDisabled();
   });
   describe("Failed fetches", () => {
     test("failed fetch to /seders-started should show an error message", () => {});
@@ -1322,3 +1224,5 @@ describe("SedersPage", () => {
     test("failed fetch to /rejoin should show an error message", () => {});
   });
 });
+
+// TODO: who is printing "failed fetch", and why?

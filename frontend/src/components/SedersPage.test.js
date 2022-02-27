@@ -12,6 +12,7 @@ import {
   getByText,
   render,
   screen,
+  waitFor,
 } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import userEvent from "@testing-library/user-event";
@@ -260,32 +261,59 @@ describe("SedersPage", () => {
         });
       });
       const history = { push: jest.fn() };
-      let wrapper;
-      await act(async () => {
-        wrapper = mount(
-          <MemoryRouter>
-            <SedersPage
-              history={history}
-              user={user}
-              setConfirmedRoomCode={setConfirmedRoomCode}
-              setChosenPath={setChosenPath}
-              setConfirmedGameName={setConfirmedGameName}
-            ></SedersPage>
-          </MemoryRouter>
-        );
-      });
-      expect(global.fetch).toHaveBeenCalled();
-      wrapper.update();
-      expect(wrapper.findWhere((n) => n.is(Button)).exists()).toBe(true);
-      selectSederByRoomCode(wrapper, selectedRoomCode);
-      wrapper.update();
-      await act(async () => {
-        const button = wrapper.findWhere(
-          (n) => n.is(Button) && n.is("#resume-this-seder-button")
-        );
-        await button.prop("onClick")();
-      });
-      wrapper.update();
+      // let wrapper;
+      // await act(async () => {
+      //   wrapper = mount(
+      // <MemoryRouter>
+      //   <SedersPage
+      //     history={history}
+      //     user={user}
+      //     setConfirmedRoomCode={setConfirmedRoomCode}
+      //     setChosenPath={setChosenPath}
+      //     setConfirmedGameName={setConfirmedGameName}
+      //   ></SedersPage>
+      // </MemoryRouter>
+      //   );
+      // });
+      render(
+        <MemoryRouter>
+          <SedersPage
+            history={history}
+            user={user}
+            setConfirmedRoomCode={setConfirmedRoomCode}
+            setChosenPath={setChosenPath}
+            setConfirmedGameName={setConfirmedGameName}
+          ></SedersPage>
+        </MemoryRouter>
+      );
+      await waitFor(() => expect(global.fetch).toHaveBeenCalled());
+      const resumeSederButton = (
+        await screen.findByText("Resume seder")
+      ).closest("button");
+
+      // wrapper.update();
+      // expect(wrapper.findWhere((n) => n.is(Button)).exists()).toBe(true);
+      // selectSederByRoomCode(wrapper, selectedRoomCode);
+      // wrapper.update();
+      // await act(async () => {
+      //   const button = wrapper.findWhere(
+      //     (n) => n.is(Button) && n.is("#resume-this-seder-button")
+      //   );
+      //   await button.prop("onClick")();
+      // });
+      // wrapper.update();
+    
+      // await userEvent.click(
+      //   getByRole(screen.getByText(selectedRoomCode).closest("tr")),
+      //   "radio"
+      // );
+      const roomCodeCell = screen.getByText(selectedRoomCode)
+      const row = roomCodeCell.closest("tr");
+      const radioButton = getByRole(roomCodeCell.closest("tr"), "radio");
+      await userEvent.click(radioButton);
+      // return;
+      await userEvent.click(resumeSederButton);
+
       expect(setConfirmedRoomCode).toHaveBeenCalled();
       expect(setConfirmedRoomCode).toHaveBeenCalledTimes(1);
       expect(setConfirmedRoomCode).toHaveBeenCalledWith(selectedRoomCode);

@@ -1055,7 +1055,10 @@ describe("SedersPage", () => {
       global.fetch = jest.fn().mockImplementation((url, init) => {
         const postData =
           init && init.body && init.body.length && JSON.parse(init.body);
-        if (url.pathname === "/seders" || url.pathname === "/seders-started") {
+        if (
+          url.pathname === "/prod/seders" ||
+          url.pathname === "/prod/seders-started"
+        ) {
           return new Promise((resolve, reject) => {
             resolve({
               json: jest.fn().mockImplementation(() => {
@@ -1224,5 +1227,3 @@ describe("SedersPage", () => {
     test("failed fetch to /rejoin should show an error message", () => {});
   });
 });
-
-// TODO: who is printing "failed fetch", and why?

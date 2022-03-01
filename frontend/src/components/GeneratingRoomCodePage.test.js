@@ -1,12 +1,15 @@
-import { createMount } from '@material-ui/core/test-utils';
-import { MemoryRouter } from 'react-router-dom';
-import React from 'react';
-import CircularProgress from '@material-ui/core/CircularProgress';
-import { Typography } from '@material-ui/core';
-import { Link } from 'react-router-dom';
+import { createMount } from "@material-ui/core/test-utils";
+import { MemoryRouter } from "react-router-dom";
+import React from "react";
+import CircularProgress from "@material-ui/core/CircularProgress";
+import { Typography } from "@material-ui/core";
+import { Link } from "react-router-dom";
+import { getByRole, render, screen, waitFor } from "@testing-library/react";
+import "@testing-library/jest-dom";
+import userEvent from "@testing-library/user-event";
 
-import { Configs } from '../Configs';
-import GeneratingRoomCodePage from './GeneratingRoomCodePage';
+import { Configs } from "../Configs";
+import GeneratingRoomCodePage from "./GeneratingRoomCodePage";
 
 let mount;
 
@@ -17,23 +20,23 @@ afterEach(() => {
   mount.cleanUp();
 });
 
-describe('GeneratingRoomCodePageWithRouter', () => {
-  test('should display a spinner before fetch returns', done => {
+describe("GeneratingRoomCodePageWithRouter", () => {
+  test("should display a spinner before fetch returns", () => {
     const mockSuccessResponse = {};
     const mockJsonPromise = Promise.resolve(mockSuccessResponse);
     const mockFetchPromise = Promise.resolve({
-      json: () => mockJsonPromise
+      json: () => mockJsonPromise,
     });
-    jest.spyOn(global, 'fetch').mockImplementation(() => {
+    jest.spyOn(global, "fetch").mockImplementation(() => {
       return mockFetchPromise;
     });
     const history = {
-      push: jest.fn()
+      push: jest.fn(),
     };
     const setChosenPath = jest.fn();
     const setConfirmedRoomCode = jest.fn();
-    const chosenPath = 'a/b/c';
-    const wrapper = mount(
+    const chosenPath = "a/b/c";
+    render(
       <MemoryRouter>
         <GeneratingRoomCodePage
           history={history}
@@ -43,34 +46,26 @@ describe('GeneratingRoomCodePageWithRouter', () => {
         ></GeneratingRoomCodePage>
       </MemoryRouter>
     );
+    screen.getByText("Generating a Room Code...");
+    const circles = document.getElementsByTagName("circle");
+    expect(circles.length).toBeGreaterThan(0);
     expect(global.fetch).toHaveBeenCalled();
-    const expectedTypography = (
-      <Typography variant="h3">Generating a Room Code...</Typography>
-    );
-    expect(wrapper.find(CircularProgress).exists()).toBe(true);
-    expect(
-      wrapper.findWhere(n => n.matchesElement(expectedTypography)).exists()
-    ).toBe(true);
-    process.nextTick(() => {
-      global.fetch.mockClear();
-      done();
-    });
   });
-  test('should fetch /room-code, user present', done => {
+  test("should fetch /room-code, user present", (done) => {
     const mockSuccessResponse = {};
     const mockJsonPromise = Promise.resolve(mockSuccessResponse);
     const mockFetchPromise = Promise.resolve({
-      json: () => mockJsonPromise
+      json: () => mockJsonPromise,
     });
-    jest.spyOn(global, 'fetch').mockImplementation(() => {
+    jest.spyOn(global, "fetch").mockImplementation(() => {
       return mockFetchPromise;
     });
     const history = {
-      push: jest.fn()
+      push: jest.fn(),
     };
     const setChosenPath = jest.fn();
     const setConfirmedRoomCode = jest.fn();
-    const chosenPath = 'a/b/c';
+    const chosenPath = "a/b/c";
     const wrapper = mount(
       <MemoryRouter>
         <GeneratingRoomCodePage
@@ -79,9 +74,9 @@ describe('GeneratingRoomCodePageWithRouter', () => {
           chosenPath={chosenPath}
           setConfirmedRoomCode={setConfirmedRoomCode}
           user={{
-            email: 'mrseff@f.com',
-            nickname: 'Mrs. F',
-            sub: 'vnf8da-fjasd-44farqeio'
+            email: "mrseff@f.com",
+            nickname: "Mrs. F",
+            sub: "vnf8da-fjasd-44farqeio",
           }}
         ></GeneratingRoomCodePage>
       </MemoryRouter>
@@ -89,15 +84,15 @@ describe('GeneratingRoomCodePageWithRouter', () => {
     expect(global.fetch).toHaveBeenCalled();
     expect(global.fetch).toHaveBeenCalledTimes(1);
     expect(global.fetch).toHaveBeenCalledWith(
-      new URL('/room-code', Configs.apiUrl()),
+      new URL("/room-code", Configs.apiUrl()),
       {
-        method: 'POST',
+        method: "POST",
         body: JSON.stringify({
           path: chosenPath,
-          user: 'vnf8da-fjasd-44farqeio'
+          user: "vnf8da-fjasd-44farqeio",
         }),
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include'
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
       }
     );
     process.nextTick(() => {
@@ -105,21 +100,21 @@ describe('GeneratingRoomCodePageWithRouter', () => {
       done();
     });
   });
-  test('should fetch /room-code, no user present', done => {
+  test("should fetch /room-code, no user present", (done) => {
     const mockSuccessResponse = {};
     const mockJsonPromise = Promise.resolve(mockSuccessResponse);
     const mockFetchPromise = Promise.resolve({
-      json: () => mockJsonPromise
+      json: () => mockJsonPromise,
     });
-    jest.spyOn(global, 'fetch').mockImplementation(() => {
+    jest.spyOn(global, "fetch").mockImplementation(() => {
       return mockFetchPromise;
     });
     const history = {
-      push: jest.fn()
+      push: jest.fn(),
     };
     const setChosenPath = jest.fn();
     const setConfirmedRoomCode = jest.fn();
-    const chosenPath = 'a/b/c';
+    const chosenPath = "a/b/c";
     const wrapper = mount(
       <MemoryRouter>
         <GeneratingRoomCodePage
@@ -133,13 +128,13 @@ describe('GeneratingRoomCodePageWithRouter', () => {
     expect(global.fetch).toHaveBeenCalled();
     expect(global.fetch).toHaveBeenCalledTimes(1);
     expect(global.fetch).toHaveBeenCalledWith(
-      new URL('/room-code', Configs.apiUrl()),
+      new URL("/room-code", Configs.apiUrl()),
       {
-        method: 'POST',
+        method: "POST",
         body: JSON.stringify({
-          path: chosenPath
+          path: chosenPath,
         }),
-        headers: { 'Content-Type': 'application/json' }
+        headers: { "Content-Type": "application/json" },
       }
     );
     process.nextTick(() => {
@@ -147,22 +142,22 @@ describe('GeneratingRoomCodePageWithRouter', () => {
       done();
     });
   });
-  test('should set confirmedRoomCode on successful fetch', done => {
-    const mockSuccessResponse = { roomCode: 'SUCCES' };
+  test("should set confirmedRoomCode on successful fetch", (done) => {
+    const mockSuccessResponse = { roomCode: "SUCCES" };
     const mockJsonPromise = Promise.resolve(mockSuccessResponse);
     const mockFetchPromise = Promise.resolve({
       json: () => mockJsonPromise,
-      ok: true
+      ok: true,
     });
-    jest.spyOn(global, 'fetch').mockImplementation(() => {
+    jest.spyOn(global, "fetch").mockImplementation(() => {
       return mockFetchPromise;
     });
     const history = {
-      push: jest.fn()
+      push: jest.fn(),
     };
     const setChosenPath = jest.fn();
     const setConfirmedRoomCode = jest.fn();
-    const chosenPath = 'a/b/c';
+    const chosenPath = "a/b/c";
     const wrapper = mount(
       <MemoryRouter>
         <GeneratingRoomCodePage
@@ -177,27 +172,27 @@ describe('GeneratingRoomCodePageWithRouter', () => {
     process.nextTick(() => {
       expect(setConfirmedRoomCode).toHaveBeenCalled();
       expect(setConfirmedRoomCode).toHaveBeenCalledTimes(1);
-      expect(setConfirmedRoomCode).toHaveBeenCalledWith('SUCCES');
+      expect(setConfirmedRoomCode).toHaveBeenCalledWith("SUCCES");
       global.fetch.mockClear();
       done();
     });
   });
-  test('should set confirmedRoomCode on successful fetch 2', done => {
-    const mockSuccessResponse = { roomCode: 'SECOND' };
+  test("should set confirmedRoomCode on successful fetch 2", (done) => {
+    const mockSuccessResponse = { roomCode: "SECOND" };
     const mockJsonPromise = Promise.resolve(mockSuccessResponse);
     const mockFetchPromise = Promise.resolve({
       json: () => mockJsonPromise,
-      ok: true
+      ok: true,
     });
-    jest.spyOn(global, 'fetch').mockImplementation(() => {
+    jest.spyOn(global, "fetch").mockImplementation(() => {
       return mockFetchPromise;
     });
     const history = {
-      push: jest.fn()
+      push: jest.fn(),
     };
     const setChosenPath = jest.fn();
     const setConfirmedRoomCode = jest.fn();
-    const chosenPath = 'a/b/c';
+    const chosenPath = "a/b/c";
     const wrapper = mount(
       <MemoryRouter>
         <GeneratingRoomCodePage
@@ -212,27 +207,27 @@ describe('GeneratingRoomCodePageWithRouter', () => {
     process.nextTick(() => {
       expect(setConfirmedRoomCode).toHaveBeenCalled();
       expect(setConfirmedRoomCode).toHaveBeenCalledTimes(1);
-      expect(setConfirmedRoomCode).toHaveBeenCalledWith('SECOND');
+      expect(setConfirmedRoomCode).toHaveBeenCalledWith("SECOND");
       global.fetch.mockClear();
       done();
     });
   });
-  test('should push onto history', done => {
-    const mockSuccessResponse = { roomCode: 'HISTOR' };
+  test("should push onto history", (done) => {
+    const mockSuccessResponse = { roomCode: "HISTOR" };
     const mockJsonPromise = Promise.resolve(mockSuccessResponse);
     const mockFetchPromise = Promise.resolve({
       json: () => mockJsonPromise,
-      ok: true
+      ok: true,
     });
-    jest.spyOn(global, 'fetch').mockImplementation(() => {
+    jest.spyOn(global, "fetch").mockImplementation(() => {
       return mockFetchPromise;
     });
     const history = {
-      push: jest.fn()
+      push: jest.fn(),
     };
     const setChosenPath = jest.fn();
     const setConfirmedRoomCode = jest.fn();
-    const chosenPath = 'a/b/c';
+    const chosenPath = "a/b/c";
     const wrapper = mount(
       <MemoryRouter>
         <GeneratingRoomCodePage
@@ -247,30 +242,30 @@ describe('GeneratingRoomCodePageWithRouter', () => {
     process.nextTick(() => {
       expect(history.push).toHaveBeenCalled();
       expect(history.push).toHaveBeenCalledTimes(1);
-      expect(history.push).toHaveBeenCalledWith('/your-room-code');
+      expect(history.push).toHaveBeenCalledWith("/your-room-code");
       global.fetch.mockClear();
       done();
     });
   });
-  test('chosenPath should be hydrated if not supplied, but present in storage, user present', done => {
-    const mockSuccessResponse = { roomCode: 'LOCALS' };
+  test("chosenPath should be hydrated if not supplied, but present in storage, user present", (done) => {
+    const mockSuccessResponse = { roomCode: "LOCALS" };
     const mockJsonPromise = Promise.resolve(mockSuccessResponse);
     const mockFetchPromise = Promise.resolve({
-      json: () => mockJsonPromise
+      json: () => mockJsonPromise,
     });
-    jest.spyOn(global, 'fetch').mockImplementation(() => {
+    jest.spyOn(global, "fetch").mockImplementation(() => {
       return mockFetchPromise;
     });
     const history = {
-      push: jest.fn()
+      push: jest.fn(),
     };
     const setChosenPath = jest.fn();
     const setConfirmedRoomCode = jest.fn();
     const chosenPath = undefined;
     const spy = jest
-      .spyOn(Storage.prototype, 'getItem')
+      .spyOn(Storage.prototype, "getItem")
       .mockImplementation(() => {
-        return 'script/path/from/storage';
+        return "script/path/from/storage";
       });
 
     const wrapper = mount(
@@ -281,24 +276,24 @@ describe('GeneratingRoomCodePageWithRouter', () => {
           chosenPath={chosenPath}
           setConfirmedRoomCode={setConfirmedRoomCode}
           user={{
-            nickname: 'God of Fun',
-            email: 'sumslummy@raw.raw',
-            sub: 'fj32x-fsa'
+            nickname: "God of Fun",
+            email: "sumslummy@raw.raw",
+            sub: "fj32x-fsa",
           }}
         ></GeneratingRoomCodePage>
       </MemoryRouter>
     );
     expect(global.fetch).toHaveBeenCalledTimes(1);
     expect(global.fetch).toHaveBeenCalledWith(
-      new URL('/room-code', Configs.apiUrl()), // deviations here are not failing the tests
+      new URL("/room-code", Configs.apiUrl()), // deviations here are not failing the tests
       {
-        method: 'POST',
+        method: "POST",
         body: JSON.stringify({
-          path: 'script/path/from/storage',
-          user: 'fj32x-fsa'
+          path: "script/path/from/storage",
+          user: "fj32x-fsa",
         }),
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include'
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
       }
     );
     Storage.prototype.getItem.mockClear();
@@ -307,24 +302,24 @@ describe('GeneratingRoomCodePageWithRouter', () => {
       done();
     });
   });
-  test('chosenPath not received or in localStorage', done => {
+  test("chosenPath not received or in localStorage", (done) => {
     done();
   });
-  test('fetch resolves to failed response -- should display error message', done => {
-    const mockJsonPromise = Promise.resolve({ error: 'there was an error' });
+  test("fetch resolves to failed response -- should display error message", (done) => {
+    const mockJsonPromise = Promise.resolve({ error: "there was an error" });
     const mockFetchPromise = Promise.resolve({
       json: () => mockJsonPromise,
-      ok: false
+      ok: false,
     });
-    jest.spyOn(global, 'fetch').mockImplementation(() => {
+    jest.spyOn(global, "fetch").mockImplementation(() => {
       return mockFetchPromise;
     });
     const history = {
-      push: jest.fn()
+      push: jest.fn(),
     };
     const setChosenPath = jest.fn();
     const setConfirmedRoomCode = jest.fn();
-    const chosenPath = 'a/b/c';
+    const chosenPath = "a/b/c";
     const wrapper = mount(
       <MemoryRouter>
         <GeneratingRoomCodePage
@@ -341,7 +336,7 @@ describe('GeneratingRoomCodePageWithRouter', () => {
       const expectedFailureMessage1 = (
         <Typography variant="h5">
           So sorry, but a Room Code could not be generated. Please start over by
-          clicking{' '}
+          clicking{" "}
           <Link
             madliberationid="room-code-error-pick-script-link"
             to="/pick-script"
@@ -358,22 +353,22 @@ describe('GeneratingRoomCodePageWithRouter', () => {
       );
       expect(
         wrapper
-          .findWhere(n => n.matchesElement(expectedFailureMessage1))
+          .findWhere((n) => n.matchesElement(expectedFailureMessage1))
           .exists()
       ).toBe(true);
       expect(
         wrapper
-          .findWhere(n => n.matchesElement(expectedFailureMessage2))
+          .findWhere((n) => n.matchesElement(expectedFailureMessage2))
           .exists()
       ).toBe(true);
       global.fetch.mockClear();
       done();
     });
   });
-  test('should fetch with user=<user sub> in body if there is a logged-in user', () => {}); // this can now be covered in the earlier tests
+  test("should fetch with user=<user sub> in body if there is a logged-in user", () => {}); // this can now be covered in the earlier tests
   test(
     'should show a "try logging in again" message if a logged-in ' +
-      'request fails for identity reasons, with option to not be logged in',
+      "request fails for identity reasons, with option to not be logged in",
     () => {}
   );
 });

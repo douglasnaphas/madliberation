@@ -66,7 +66,7 @@ describe("GeneratingRoomCodePageWithRouter", () => {
     const setChosenPath = jest.fn();
     const setConfirmedRoomCode = jest.fn();
     const chosenPath = "a/b/c";
-    const wrapper = mount(
+    render(
       <MemoryRouter>
         <GeneratingRoomCodePage
           history={history}
@@ -84,7 +84,7 @@ describe("GeneratingRoomCodePageWithRouter", () => {
     expect(global.fetch).toHaveBeenCalled();
     expect(global.fetch).toHaveBeenCalledTimes(1);
     expect(global.fetch).toHaveBeenCalledWith(
-      new URL("/room-code", Configs.apiUrl()),
+      "/prod/room-code",
       {
         method: "POST",
         body: JSON.stringify({

@@ -1,6 +1,12 @@
+const apiStage = `/prod`;
+
 class Configs {
   static loginUrl() {
     return "/prod/login";
+  }
+
+  static apiRelativeUrl(resource) {
+    return `${apiStage}/${resource}`;
   }
 
   static apiUrl() {

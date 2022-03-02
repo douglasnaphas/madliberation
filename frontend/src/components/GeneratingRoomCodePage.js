@@ -23,7 +23,7 @@ class GeneratingRoomCodePage extends Component {
       chosenPath = localStorage.getItem("chosenPath");
       setChosenPath(chosenPath);
     }
-    const roomCodeUrl = new URL("./room-code", Configs.apiUrl());
+    const roomCodeUrl = Configs.apiRelativeUrl("room-code")
     const body = { path: chosenPath };
     if (this.props.user) body.user = user.sub;
     const fetchInit = {

@@ -128,7 +128,7 @@ describe("GeneratingRoomCodePageWithRouter", () => {
     expect(global.fetch).toHaveBeenCalled();
     expect(global.fetch).toHaveBeenCalledTimes(1);
     expect(global.fetch).toHaveBeenCalledWith(
-      new URL("/room-code", Configs.apiUrl()),
+      '/prod/room-code',
       {
         method: "POST",
         body: JSON.stringify({
@@ -285,7 +285,7 @@ describe("GeneratingRoomCodePageWithRouter", () => {
     );
     expect(global.fetch).toHaveBeenCalledTimes(1);
     expect(global.fetch).toHaveBeenCalledWith(
-      new URL("/room-code", Configs.apiUrl()), // deviations here are not failing the tests
+      '/prod/room-code',
       {
         method: "POST",
         body: JSON.stringify({

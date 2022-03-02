@@ -1,24 +1,10 @@
-import { createMount } from "@material-ui/core/test-utils";
 import { MemoryRouter } from "react-router-dom";
 import React from "react";
-import CircularProgress from "@material-ui/core/CircularProgress";
-import { Typography } from "@material-ui/core";
-import { Link } from "react-router-dom";
-import { getByRole, render, screen, waitFor } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import "@testing-library/jest-dom";
-import userEvent from "@testing-library/user-event";
 
 import { Configs } from "../Configs";
 import GeneratingRoomCodePage from "./GeneratingRoomCodePage";
-
-let mount;
-
-beforeEach(() => {
-  mount = createMount();
-});
-afterEach(() => {
-  mount.cleanUp();
-});
 
 describe("GeneratingRoomCodePageWithRouter", () => {
   test("should display a spinner before fetch returns", () => {
@@ -83,18 +69,15 @@ describe("GeneratingRoomCodePageWithRouter", () => {
     );
     expect(global.fetch).toHaveBeenCalled();
     expect(global.fetch).toHaveBeenCalledTimes(1);
-    expect(global.fetch).toHaveBeenCalledWith(
-      "/prod/room-code",
-      {
-        method: "POST",
-        body: JSON.stringify({
-          path: chosenPath,
-          user: "vnf8da-fjasd-44farqeio",
-        }),
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-      }
-    );
+    expect(global.fetch).toHaveBeenCalledWith("/prod/room-code", {
+      method: "POST",
+      body: JSON.stringify({
+        path: chosenPath,
+        user: "vnf8da-fjasd-44farqeio",
+      }),
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+    });
     process.nextTick(() => {
       global.fetch.mockClear();
       done();
@@ -115,7 +98,7 @@ describe("GeneratingRoomCodePageWithRouter", () => {
     const setChosenPath = jest.fn();
     const setConfirmedRoomCode = jest.fn();
     const chosenPath = "a/b/c";
-    const wrapper = mount(
+    render(
       <MemoryRouter>
         <GeneratingRoomCodePage
           history={history}
@@ -127,16 +110,13 @@ describe("GeneratingRoomCodePageWithRouter", () => {
     );
     expect(global.fetch).toHaveBeenCalled();
     expect(global.fetch).toHaveBeenCalledTimes(1);
-    expect(global.fetch).toHaveBeenCalledWith(
-      '/prod/room-code',
-      {
-        method: "POST",
-        body: JSON.stringify({
-          path: chosenPath,
-        }),
-        headers: { "Content-Type": "application/json" },
-      }
-    );
+    expect(global.fetch).toHaveBeenCalledWith("/prod/room-code", {
+      method: "POST",
+      body: JSON.stringify({
+        path: chosenPath,
+      }),
+      headers: { "Content-Type": "application/json" },
+    });
     process.nextTick(() => {
       global.fetch.mockClear();
       done();
@@ -158,7 +138,7 @@ describe("GeneratingRoomCodePageWithRouter", () => {
     const setChosenPath = jest.fn();
     const setConfirmedRoomCode = jest.fn();
     const chosenPath = "a/b/c";
-    const wrapper = mount(
+    render(
       <MemoryRouter>
         <GeneratingRoomCodePage
           history={history}
@@ -193,7 +173,7 @@ describe("GeneratingRoomCodePageWithRouter", () => {
     const setChosenPath = jest.fn();
     const setConfirmedRoomCode = jest.fn();
     const chosenPath = "a/b/c";
-    const wrapper = mount(
+    render(
       <MemoryRouter>
         <GeneratingRoomCodePage
           history={history}
@@ -228,7 +208,7 @@ describe("GeneratingRoomCodePageWithRouter", () => {
     const setChosenPath = jest.fn();
     const setConfirmedRoomCode = jest.fn();
     const chosenPath = "a/b/c";
-    const wrapper = mount(
+    render(
       <MemoryRouter>
         <GeneratingRoomCodePage
           history={history}
@@ -268,7 +248,7 @@ describe("GeneratingRoomCodePageWithRouter", () => {
         return "script/path/from/storage";
       });
 
-    const wrapper = mount(
+    render(
       <MemoryRouter>
         <GeneratingRoomCodePage
           history={history}
@@ -284,18 +264,15 @@ describe("GeneratingRoomCodePageWithRouter", () => {
       </MemoryRouter>
     );
     expect(global.fetch).toHaveBeenCalledTimes(1);
-    expect(global.fetch).toHaveBeenCalledWith(
-      '/prod/room-code',
-      {
-        method: "POST",
-        body: JSON.stringify({
-          path: "script/path/from/storage",
-          user: "fj32x-fsa",
-        }),
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-      }
-    );
+    expect(global.fetch).toHaveBeenCalledWith("/prod/room-code", {
+      method: "POST",
+      body: JSON.stringify({
+        path: "script/path/from/storage",
+        user: "fj32x-fsa",
+      }),
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+    });
     Storage.prototype.getItem.mockClear();
     process.nextTick(() => {
       global.fetch.mockClear();
@@ -305,7 +282,7 @@ describe("GeneratingRoomCodePageWithRouter", () => {
   test("chosenPath not received or in localStorage", (done) => {
     done();
   });
-  test("fetch resolves to failed response -- should display error message", (done) => {
+  test("fetch resolves to failed response -- should display error message", async () => {
     const mockJsonPromise = Promise.resolve({ error: "there was an error" });
     const mockFetchPromise = Promise.resolve({
       json: () => mockJsonPromise,
@@ -320,7 +297,7 @@ describe("GeneratingRoomCodePageWithRouter", () => {
     const setChosenPath = jest.fn();
     const setConfirmedRoomCode = jest.fn();
     const chosenPath = "a/b/c";
-    const wrapper = mount(
+    render(
       <MemoryRouter>
         <GeneratingRoomCodePage
           history={history}
@@ -331,39 +308,15 @@ describe("GeneratingRoomCodePageWithRouter", () => {
       </MemoryRouter>
     );
     expect(global.fetch).toHaveBeenCalledTimes(1);
-    process.nextTick(() => {
-      wrapper.update();
-      const expectedFailureMessage1 = (
-        <Typography variant="h5">
-          So sorry, but a Room Code could not be generated. Please start over by
-          clicking{" "}
-          <Link
-            madliberationid="room-code-error-pick-script-link"
-            to="/pick-script"
-          >
-            here
-          </Link>
-          , or refreshing the page.
-        </Typography>
-      );
-      const expectedFailureMessage2 = (
-        <Typography variant="h5">
-          If this keeps happening, try a different browser or device.
-        </Typography>
-      );
-      expect(
-        wrapper
-          .findWhere((n) => n.matchesElement(expectedFailureMessage1))
-          .exists()
-      ).toBe(true);
-      expect(
-        wrapper
-          .findWhere((n) => n.matchesElement(expectedFailureMessage2))
-          .exists()
-      ).toBe(true);
-      global.fetch.mockClear();
-      done();
-    });
+    await screen.findByText(
+      /So sorry, but a Room Code could not be generated./
+    );
+    const links = screen.getAllByRole("link");
+    expect(document.querySelector('a[href="/pick-script"]')).not.toBeNull();
+    screen.getByText(
+      `If this keeps happening, try a different browser or device.`
+    );
+    global.fetch.mockClear();
   });
   test("should fetch with user=<user sub> in body if there is a logged-in user", () => {}); // this can now be covered in the earlier tests
   test(

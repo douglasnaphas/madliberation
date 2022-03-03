@@ -10,9 +10,6 @@ class Configs {
   }
 
   static apiUrl() {
-    if (process && process.env && process.env.REACT_APP_MLJSAPI_URL) {
-      return process.env.REACT_APP_MLJSAPI_URL;
-    }
     return "https://" + window.location.hostname + "/prod/";
   }
 

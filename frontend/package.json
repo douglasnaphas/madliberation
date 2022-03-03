@@ -10,7 +10,7 @@
     "@testing-library/user-event": "^14.0.0-beta",
     "@wojtekmaj/enzyme-adapter-react-17": "^0.4.1",
     "enzyme": "^3.11.0",
-    "react-scripts": "^4.0.3",
+    "react-scripts": "^5.0.0",
     "react-test-renderer": "^17.0.1",
     "unit.js": "^2.1.0"
   },

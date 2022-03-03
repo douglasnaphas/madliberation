@@ -1,69 +1,40 @@
-import { createMount } from '@material-ui/core/test-utils';
-import { Link } from 'react-router-dom';
-import { MemoryRouter } from 'react-router-dom';
-import React from 'react';
-import IconButton from '@material-ui/core/IconButton';
+import { MemoryRouter } from "react-router-dom";
+import React from "react";
+import { render, screen } from "@testing-library/react";
+import "@testing-library/jest-dom";
+import userEvent from "@testing-library/user-event";
 
-import MenuAppBar from './MenuAppBar';
+import MenuAppBar from "./MenuAppBar";
 
-describe('MenuAppBar', () => {
-  let mount;
-
-  beforeEach(() => {
-    mount = createMount();
-  });
-
-  afterEach(() => {
-    mount.cleanUp();
-  });
-
-  test('Menu should link to Home, About, and How to Play', () => {
-    const wrapper = mount(
+describe("MenuAppBar", () => {
+  test("Menu should link to Home, About, and How to Play", async () => {
+    render(
       <MemoryRouter>
         <MenuAppBar />
       </MemoryRouter>
     );
-    let homeLink = wrapper.findWhere(
-      n => n.is(Link) && n.is({ madliberationid: 'menu-home-link' })
+    expect(
+      document.querySelector('[madliberationid="menu-home-link"]')
+    ).toBeNull();
+    const menuLinks = [
+      "Home",
+      "About",
+      "How to play",
+      "Privacy policy",
+      "Terms of service",
+      "Contact us",
+      "Help",
+    ];
+    menuLinks.forEach((menuLink) =>
+      expect(screen.queryByText(menuLink)).toBeNull()
     );
-    expect(homeLink.exists()).toBe(false);
-    let aboutLink = wrapper.findWhere(
-      n => n.is(Link) && n.is({ madliberationid: 'menu-about-link' })
+    await userEvent.click(screen.getByRole("button"));
+    await screen.findByText(menuLinks[0]);
+    menuLinks.forEach((menuLink) =>
+      expect(screen.getByText(menuLink).closest("a")).toEqual(
+        screen.getByText(menuLink)
+      )
     );
-    expect(aboutLink.exists()).toBe(false);
-    let howToPlayLink = wrapper.findWhere(
-      n => n.is(Link) && n.is({ madliberationid: 'menu-how-to-play-link' })
-    );
-    expect(howToPlayLink.exists()).toBe(false);
-    let menuButton = wrapper.findWhere(
-      n =>
-        n.is(IconButton) &&
-        n.is({
-          madliberationid: 'app-bar-menu-icon-button'
-        })
-    );
-    const target = window.document.querySelector(
-      `[madliberationid="app-bar-menu-icon-button"]`
-    );
-    const mockEventForClick = {
-      currentTarget: target
-    };
-    menuButton.props().onClick(mockEventForClick);
-    wrapper.update();
-    homeLink = wrapper.findWhere(
-      n => n.is(Link) && n.is({ madliberationid: 'menu-home-link' })
-    );
-    expect(homeLink.exists()).toBe(true);
-
-    aboutLink = wrapper.findWhere(
-      n => n.is(Link) && n.is({ madliberationid: 'menu-about-link' })
-    );
-    expect(aboutLink.exists()).toBe(true);
-    howToPlayLink = wrapper.findWhere(
-      n => n.is(Link) && n.is({ madliberationid: 'menu-how-to-play-link' })
-    );
-    expect(howToPlayLink.exists()).toBe(true);
-    const menu = wrapper.find('#leftMenu').first();
-    expect(menu.prop('anchorEl')).toBe(target);
+    return;
   });
 });

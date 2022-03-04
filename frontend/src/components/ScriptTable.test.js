@@ -9,6 +9,7 @@ import {
 } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import userEvent from "@testing-library/user-event";
+import { ThemeProvider, createTheme } from "@mui/material/styles";
 import ScriptTable from "./ScriptTable";
 
 function fourScripts() {
@@ -108,14 +109,17 @@ function getProps({ scripts }) {
     setChosenPath: jest.fn(),
   };
 }
+const theme = createTheme({ palette: { primary: { main: "#81181f" } } });
 
 describe("<ScriptTable />", () => {
   test("scripts in props should appear in a table 1", () => {
     const props = getProps({ scripts: fourScripts() });
     render(
-      <MemoryRouter>
-        <ScriptTable {...props}></ScriptTable>
-      </MemoryRouter>
+      <ThemeProvider theme={theme}>
+        <MemoryRouter>
+          <ScriptTable {...props}></ScriptTable>
+        </MemoryRouter>
+      </ThemeProvider>
     );
     fourScripts().forEach((script) => {
       const el = screen.getByLabelText(
@@ -129,9 +133,11 @@ describe("<ScriptTable />", () => {
   test("scripts in props should appear in a table 2", () => {
     const props = getProps({ scripts: differentScripts() });
     render(
-      <MemoryRouter>
-        <ScriptTable {...props}></ScriptTable>
-      </MemoryRouter>
+      <ThemeProvider theme={theme}>
+        <MemoryRouter>
+          <ScriptTable {...props}></ScriptTable>
+        </MemoryRouter>
+      </ThemeProvider>
     );
     differentScripts().forEach((script) => {
       const el = screen.getByLabelText(
@@ -148,9 +154,11 @@ describe("<ScriptTable />", () => {
     async () => {
       const props = getProps({ scripts: fourScripts() });
       render(
-        <MemoryRouter>
-          <ScriptTable {...props} />
-        </MemoryRouter>
+        <ThemeProvider theme={theme}>
+          <MemoryRouter>
+            <ScriptTable {...props} />
+          </MemoryRouter>
+        </ThemeProvider>
       );
       const radioGroups = screen.getAllByRole("radiogroup");
       expect(radioGroups.length).toEqual(1);
@@ -162,7 +170,7 @@ describe("<ScriptTable />", () => {
       await userEvent.click(screen.getByLabelText("Dirty Family Script"));
       expect(getByLabelText(radioGroup, "Dirty Family Script")).toBeChecked();
       await userEvent.click(screen.getByLabelText("Dirty Script"));
-      const button = screen.getByRole("button");
+      const button = screen.getByRole("link");
       expect(button).toHaveTextContent("Use this one");
       await userEvent.click(button);
       expect(props.setChosenPath).toHaveBeenCalledWith(
@@ -176,12 +184,14 @@ describe("<ScriptTable />", () => {
     async () => {
       const props = getProps({ scripts: differentScripts() });
       render(
-        <MemoryRouter>
-          <ScriptTable {...props} />
-        </MemoryRouter>
+        <ThemeProvider theme={theme}>
+          <MemoryRouter>
+            <ScriptTable {...props} />
+          </MemoryRouter>
+        </ThemeProvider>
       );
       expect(screen.getByLabelText("Different Family Script")).toBeChecked();
-      await userEvent.click(screen.getByRole("button"));
+      await userEvent.click(screen.getByRole("link"));
       expect(props.setChosenPath).toHaveBeenCalledWith(
         "madliberation-scripts/005-Family_Script"
       );
@@ -190,9 +200,11 @@ describe("<ScriptTable />", () => {
   test("The Pick This One button should be a link to /generating-room-code", () => {
     const props = getProps({ scripts: fourScripts() });
     render(
-      <MemoryRouter>
-        <ScriptTable {...props}></ScriptTable>
-      </MemoryRouter>
+      <ThemeProvider theme={theme}>
+        <MemoryRouter>
+          <ScriptTable {...props}></ScriptTable>
+        </MemoryRouter>
+      </ThemeProvider>
     );
     expect(screen.getByText("Use this one").closest("a")).toHaveAttribute(
       "href",

@@ -3,6 +3,12 @@ import React from "react";
 import { render, screen } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import userEvent from "@testing-library/user-event";
+import {
+  ThemeProvider,
+  StyledEngineProvider,
+  createTheme,
+  adaptV4Theme,
+} from "@mui/material/styles";
 
 describe("<Page />", () => {
   const p1 = {
@@ -73,9 +79,14 @@ describe("<Page />", () => {
       },
     ],
   };
+  const theme = createTheme({ palette: { primary: { main: "#81181f" } } });
 
   test("full DOM rendering", async () => {
-    render(<Page page={p1} pageIndex={0} />);
+    render(
+      <ThemeProvider theme={theme}>
+        <Page page={p1} pageIndex={0} />
+      </ThemeProvider>
+    );
     const readyToReadButton = screen
       .getByText("Ready to read")
       .closest("button");

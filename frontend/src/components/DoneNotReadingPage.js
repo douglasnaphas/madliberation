@@ -1,8 +1,8 @@
 import MenuAppBar from './MenuAppBar';
 import React from 'react';
-import { Typography } from '@material-ui/core';
-import { withStyles } from '@material-ui/core/styles';
-import Button from '@material-ui/core/Button';
+import { Typography } from '@mui/material';
+import withStyles from '@mui/styles/withStyles';
+import Button from '@mui/material/Button';
 import { Link } from 'react-router-dom';
 
 const styles = theme => ({});

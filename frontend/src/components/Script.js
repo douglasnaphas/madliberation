@@ -1,9 +1,9 @@
-import CircularProgress from '@material-ui/core/CircularProgress';
+import CircularProgress from '@mui/material/CircularProgress';
 import Page from './Page';
 import React from 'react';
-import { Typography } from '@material-ui/core';
-import { withStyles } from '@material-ui/core/styles';
-import Button from '@material-ui/core/Button';
+import { Typography } from '@mui/material';
+import withStyles from '@mui/styles/withStyles';
+import Button from '@mui/material/Button';
 
 const styles = theme => ({});
 class Script extends React.Component {

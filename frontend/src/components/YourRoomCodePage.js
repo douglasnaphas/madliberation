@@ -1,11 +1,11 @@
 import { Configs } from "../Configs";
-import Divider from "@material-ui/core/Divider";
+import Divider from "@mui/material/Divider";
 import React, { Component } from "react";
 import MenuAppBar from "./MenuAppBar";
 import PropTypes from "prop-types";
-import TextField from "@material-ui/core/TextField";
-import { Typography } from "@material-ui/core";
-import { withStyles } from "@material-ui/core/styles";
+import TextField from "@mui/material/TextField";
+import { Typography } from "@mui/material";
+import withStyles from '@mui/styles/withStyles';
 import { madLiberationStyles } from "../madLiberationStyles";
 
 import ThatsMyNameButtonWithRouter from "./ThatsMyNameButtonWithRouter";

@@ -1,10 +1,10 @@
-import Button from '@material-ui/core/Button';
-import CircularProgress from '@material-ui/core/CircularProgress';
+import Button from '@mui/material/Button';
+import CircularProgress from '@mui/material/CircularProgress';
 import MenuAppBar from './MenuAppBar';
 import React, { Component } from 'react';
-import { Typography } from '@material-ui/core';
+import { Typography } from '@mui/material';
 import { withRouter } from 'react-router-dom';
-import { withStyles } from '@material-ui/core/styles';
+import withStyles from '@mui/styles/withStyles';
 
 const styles = theme => ({
   button: {

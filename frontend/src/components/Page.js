@@ -1,8 +1,8 @@
-import Button from "@material-ui/core/Button";
+import Button from "@mui/material/Button";
 import { madLiberationStyles } from "../madLiberationStyles";
 import React from "react";
-import { Typography } from "@material-ui/core";
-import { withStyles } from "@material-ui/core/styles";
+import { Typography } from "@mui/material";
+import withStyles from '@mui/styles/withStyles';
 import Answer from "./Answer";
 import StageDirection from "./StageDirection";
 

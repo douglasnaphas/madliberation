@@ -1,15 +1,15 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import MenuAppBar from './MenuAppBar';
-import { Button } from '@material-ui/core';
+import { Button } from '@mui/material';
 import { madLiberationStyles } from '../madLiberationStyles';
-import { Typography } from '@material-ui/core';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
-import ChevronRight from '@material-ui/icons/ChevronRight';
-import { withStyles } from '@material-ui/core/styles';
+import { Typography } from '@mui/material';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import ListItemText from '@mui/material/ListItemText';
+import ChevronRight from '@mui/icons-material/ChevronRight';
+import withStyles from '@mui/styles/withStyles';
 import StageDirection from './StageDirection';
 import Answer from './Answer';
 

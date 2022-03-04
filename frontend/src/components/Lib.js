@@ -1,10 +1,10 @@
-import Button from '@material-ui/core/Button';
+import Button from '@mui/material/Button';
 import { madLiberationStyles } from '../madLiberationStyles';
-import Paper from '@material-ui/core/Paper';
+import Paper from '@mui/material/Paper';
 import React, { Component } from 'react';
-import TextField from '@material-ui/core/TextField';
-import { Typography } from '@material-ui/core';
-import { withStyles } from '@material-ui/core/styles';
+import TextField from '@mui/material/TextField';
+import { Typography } from '@mui/material';
+import withStyles from '@mui/styles/withStyles';
 
 const styles = theme => madLiberationStyles;
 

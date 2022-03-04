@@ -1,10 +1,10 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import MenuAppBar from "./MenuAppBar";
-import { Button } from "@material-ui/core";
+import { Button } from "@mui/material";
 import { madLiberationStyles } from "../madLiberationStyles";
-import { Typography } from "@material-ui/core";
-import { withStyles } from "@material-ui/core/styles";
+import { Typography } from "@mui/material";
+import withStyles from '@mui/styles/withStyles';
 import StageDirection from "./StageDirection";
 
 const styles = () => {

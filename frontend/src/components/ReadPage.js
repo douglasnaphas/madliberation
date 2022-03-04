@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import ReadRoster from './ReadRoster';
 import MenuAppBar from './MenuAppBar';
 import Script from './Script';
-import { withStyles } from '@material-ui/core/styles';
+import withStyles from '@mui/styles/withStyles';
 
 const styles = theme => ({
   button: {

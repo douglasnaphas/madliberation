@@ -1,10 +1,10 @@
-import CircularProgress from "@material-ui/core/CircularProgress";
+import CircularProgress from "@mui/material/CircularProgress";
 import { Configs } from "../Configs";
 import MenuAppBar from "./MenuAppBar";
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { Typography } from "@material-ui/core";
-import { withStyles } from "@material-ui/core/styles";
+import { Typography } from "@mui/material";
+import withStyles from '@mui/styles/withStyles';
 import { Link } from "react-router-dom";
 
 const styles = (theme) => ({});

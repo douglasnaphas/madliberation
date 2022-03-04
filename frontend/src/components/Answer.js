@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import Popover from '@material-ui/core/Popover';
-import { Typography } from '@material-ui/core';
-import { withStyles } from '@material-ui/core/styles';
+import Popover from '@mui/material/Popover';
+import { Typography } from '@mui/material';
+import withStyles from '@mui/styles/withStyles';
 
 const styles = theme => ({
   typography: {

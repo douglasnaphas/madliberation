@@ -1,13 +1,13 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
-import { Button, Typography } from "@material-ui/core";
-import { withStyles } from "@material-ui/core/styles";
+import { Button, Typography } from "@mui/material";
+import withStyles from '@mui/styles/withStyles';
 import RedSeaImage from "../background-red-sea.jpg";
 import MadLiberationLogo from "../mad-liberation-logo.png";
 import VeryAwesomePassoverLogo from "../VAPLogo-white.png";
 import { Configs } from "../Configs";
 import { madLiberationStyles } from "../madLiberationStyles";
-import Paper from "@material-ui/core/Paper";
+import Paper from "@mui/material/Paper";
 import PropTypes from "prop-types";
 
 const styles = () => {

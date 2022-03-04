@@ -1,9 +1,9 @@
-import Button from '@material-ui/core/Button';
+import Button from '@mui/material/Button';
 import { Link } from 'react-router-dom';
 import MenuAppBar from './MenuAppBar';
 import React, { Component } from 'react';
-import { Typography } from '@material-ui/core';
-import { withStyles } from '@material-ui/core/styles';
+import { Typography } from '@mui/material';
+import withStyles from '@mui/styles/withStyles';
 
 import { madLiberationStyles } from '../madLiberationStyles';
 

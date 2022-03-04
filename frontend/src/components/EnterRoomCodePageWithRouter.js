@@ -1,9 +1,9 @@
-import Button from '@material-ui/core/Button';
+import Button from '@mui/material/Button';
 import MenuAppBar from './MenuAppBar';
 import React, { Component } from 'react';
-import TextField from '@material-ui/core/TextField';
-import { Typography } from '@material-ui/core';
-import { withStyles } from '@material-ui/core/styles';
+import TextField from '@mui/material/TextField';
+import { Typography } from '@mui/material';
+import withStyles from '@mui/styles/withStyles';
 import { withRouter } from 'react-router-dom';
 
 import { Configs } from '../Configs';

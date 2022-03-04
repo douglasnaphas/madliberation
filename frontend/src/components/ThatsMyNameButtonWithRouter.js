@@ -1,7 +1,7 @@
-import Button from '@material-ui/core/Button';
+import Button from '@mui/material/Button';
 import React from 'react';
 import { withRouter } from 'react-router-dom';
-import { withStyles } from '@material-ui/core/styles';
+import withStyles from '@mui/styles/withStyles';
 
 const styles = theme => ({
   button: {

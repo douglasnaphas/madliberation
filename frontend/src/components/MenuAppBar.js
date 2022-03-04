@@ -1,15 +1,15 @@
-import AccountCircle from "@material-ui/icons/AccountCircle";
+import AccountCircle from "@mui/icons-material/AccountCircle";
 import React from "react";
 import PropTypes from "prop-types";
-import { withStyles } from "@material-ui/core/styles";
-import AppBar from "@material-ui/core/AppBar";
-import Toolbar from "@material-ui/core/Toolbar";
-import Typography from "@material-ui/core/Typography";
-import IconButton from "@material-ui/core/IconButton";
+import withStyles from '@mui/styles/withStyles';
+import AppBar from "@mui/material/AppBar";
+import Toolbar from "@mui/material/Toolbar";
+import Typography from "@mui/material/Typography";
+import IconButton from "@mui/material/IconButton";
 import { Link } from "react-router-dom";
-import MenuIcon from "@material-ui/icons/Menu";
-import MenuItem from "@material-ui/core/MenuItem";
-import Menu from "@material-ui/core/Menu";
+import MenuIcon from "@mui/icons-material/Menu";
+import MenuItem from "@mui/material/MenuItem";
+import Menu from "@mui/material/Menu";
 
 const styles = {
   root: {
@@ -59,7 +59,7 @@ class MenuAppBar extends React.Component {
           color="inherit"
           aria-label="Menu"
           onClick={this.handleLeftMenu}
-        >
+          size="large">
           <MenuIcon />
         </IconButton>
         <Menu
@@ -129,7 +129,7 @@ class MenuAppBar extends React.Component {
           aria-haspopup="true"
           onClick={this.handleMenu}
           color="inherit"
-        >
+          size="large">
           <AccountCircle />
         </IconButton>
         {user.nickname}

@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from "react";
-import Table from "@material-ui/core/Table";
-import TableBody from "@material-ui/core/TableBody";
-import TableCell from "@material-ui/core/TableCell";
-import TableRow from "@material-ui/core/TableRow";
-import Radio from "@material-ui/core/Radio";
-import { Button, CircularProgress } from "@material-ui/core";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableRow from "@mui/material/TableRow";
+import Radio from "@mui/material/Radio";
+import { Button, CircularProgress } from "@mui/material";
 import MenuAppBar from "./MenuAppBar";
 import { Configs } from "../Configs";
-import { Typography } from "@material-ui/core";
+import { Typography } from "@mui/material";
 
 function SedersPage({
   history,

@@ -1,9 +1,9 @@
-import CircularProgress from '@material-ui/core/CircularProgress';
+import CircularProgress from '@mui/material/CircularProgress';
 import React, { Component } from 'react';
 import MenuAppBar from './MenuAppBar';
 import ScriptTable from './ScriptTable';
-import { Typography } from '@material-ui/core';
-import { withStyles } from '@material-ui/core/styles';
+import { Typography } from '@mui/material';
+import withStyles from '@mui/styles/withStyles';
 
 const styles = theme => ({});
 

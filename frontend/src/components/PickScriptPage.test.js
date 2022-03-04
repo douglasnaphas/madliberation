@@ -2,9 +2,9 @@ import { MemoryRouter } from "react-router-dom";
 import React from "react";
 import { getByRole, getByText, render, screen } from "@testing-library/react";
 import "@testing-library/jest-dom";
+import { ThemeProvider, createTheme } from "@mui/material/styles";
 
 import PickScriptPage from "./PickScriptPage";
-import ScriptTable from "./ScriptTable";
 
 describe("<PickScriptPage />", () => {
   const fourScripts = {
@@ -118,11 +118,17 @@ describe("<PickScriptPage />", () => {
       resolve(differentScripts);
     });
   };
+  const theme = createTheme({ palette: { primary: { main: "#81181f" } } });
   test("JSON from getScripts should be displayed in a table", async () => {
     render(
-      <MemoryRouter>
-        <PickScriptPage getScripts={getFourScripts} setChosenPath={jest.fn()} />
-      </MemoryRouter>
+      <ThemeProvider theme={theme}>
+        <MemoryRouter>
+          <PickScriptPage
+            getScripts={getFourScripts}
+            setChosenPath={jest.fn()}
+          />
+        </MemoryRouter>
+      </ThemeProvider>
     );
     const fourScripts = await getFourScripts();
     fourScripts.scripts.Items.forEach((script) => {
@@ -134,12 +140,14 @@ describe("<PickScriptPage />", () => {
   });
   test("JSON from getScripts should be displayed in a table 2", async () => {
     render(
-      <MemoryRouter>
-        <PickScriptPage
-          getScripts={getFourDifferentScripts}
-          setChosenPath={jest.fn()}
-        />
-      </MemoryRouter>
+      <ThemeProvider theme={theme}>
+        <MemoryRouter>
+          <PickScriptPage
+            getScripts={getFourDifferentScripts}
+            setChosenPath={jest.fn()}
+          />
+        </MemoryRouter>
+      </ThemeProvider>
     );
     const fourScripts = await getFourDifferentScripts();
     fourScripts.scripts.Items.forEach((script) => {

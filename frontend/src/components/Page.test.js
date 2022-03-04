@@ -3,12 +3,7 @@ import React from "react";
 import { render, screen } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import userEvent from "@testing-library/user-event";
-import {
-  ThemeProvider,
-  StyledEngineProvider,
-  createTheme,
-  adaptV4Theme,
-} from "@mui/material/styles";
+import { ThemeProvider, createTheme } from "@mui/material/styles";
 
 describe("<Page />", () => {
   const p1 = {

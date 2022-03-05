@@ -2,6 +2,7 @@ import { MemoryRouter } from "react-router-dom";
 import React from "react";
 import { render } from "@testing-library/react";
 import "@testing-library/jest-dom";
+import { ThemeProvider, createTheme } from "@mui/material/styles";
 
 import YourRoomCodePage from "./YourRoomCodePage";
 
@@ -18,14 +19,17 @@ const getProps = ({ joinSeder, roomCode, gameName }) => {
   }
   return props;
 };
+const theme = createTheme({ palette: { primary: { main: "#81181f" } } });
 
 describe("YourRoomCodePage", () => {
   test("confirmedRoomCode not received", () => {
     const props = getProps({});
     render(
-      <MemoryRouter>
-        <YourRoomCodePage {...props}></YourRoomCodePage>
-      </MemoryRouter>
+      <ThemeProvider theme={theme}>
+        <MemoryRouter>
+          <YourRoomCodePage {...props}></YourRoomCodePage>
+        </MemoryRouter>
+      </ThemeProvider>
     );
   });
   test("chosenPath not received", () => {});

@@ -140,7 +140,7 @@ function SedersPage({
           You are or were in seders with these Room Codes:
         </Typography>
       </div>
-      {seders && seders.size && seders.size > 1 && (
+      {seders.size > 0 && (
         <>
           <div>{sederTable}</div>
           <div>
@@ -214,12 +214,14 @@ function SedersPage({
           </div>
         </>
       )}
-      {!seders.size && !gotResponseSedersJoined && !gotResponseSedersStarted && (
-        <div>
-          <CircularProgress />
-        </div>
-      )}
-      {!seders.size && gotResponseSedersJoined && gotResponseSedersStarted && (
+      {seders.size == 0 &&
+        !gotResponseSedersJoined &&
+        !gotResponseSedersStarted && (
+          <div>
+            <CircularProgress />
+          </div>
+        )}
+      {seders.size == 0 && gotResponseSedersJoined && gotResponseSedersStarted && (
         <div>
           None. You are not and were not in any seders. Please{" "}
           <a href="/">start or join one</a>.

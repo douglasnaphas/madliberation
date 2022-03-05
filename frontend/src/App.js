@@ -30,7 +30,6 @@ import {
   ThemeProvider,
   StyledEngineProvider,
   createTheme,
-  adaptV4Theme,
 } from "@mui/material/styles";
 import FetchingPromptsPageWithRouter from "./components/FetchingPromptsPageWithRouter";
 import ExplainPage from "./components/ExplainPage";
@@ -41,15 +40,12 @@ import ContactUs from "./components/ContactUs";
 import ExplainVideoPage from "./components/ExplainVideoPage";
 import SedersPageWithRouter from "./components/SedersPageWithRouter";
 
-const theme = createTheme(
-  adaptV4Theme({
-    palette: {
-      primary: { main: "#81181f" },
-      secondary: { main: "#e0e0e0" },
-    },
-    typography: { useNextVariants: true },
-  })
-);
+const theme = createTheme({
+  palette: {
+    primary: { main: "#81181f" },
+    secondary: { main: "#e0e0e0" },
+  },
+});
 
 class App extends Component {
   constructor(props) {

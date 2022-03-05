@@ -221,9 +221,8 @@ class PlayPage extends Component {
                 <Button
                   disabled={this.state.submitButtonPressed}
                   onClick={this.onDialogClose}
-                  color="secondary"
                 >
-                  Cancel
+                  Not yet
                 </Button>
                 <YesSubmitLibsButtonWithRouter
                   submitLibsAndGoToSubmittedPage={

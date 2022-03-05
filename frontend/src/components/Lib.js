@@ -116,6 +116,7 @@ class Lib extends Component {
               <Button
                 madliberationid="previous-prompt"
                 onClick={decrementLibIndex}
+                color="secondary"
                 variant="contained"
               >
                 Previous

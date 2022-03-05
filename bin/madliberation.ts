@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import * as cdk from "@aws-cdk/core";
+import { App } from "aws-cdk-lib";
 import { Console } from "console";
 const AWS = require("aws-sdk");
 const crypto = require("crypto");
@@ -10,7 +10,7 @@ import {
 const stackname = require("@cdk-turnkey/stackname");
 
 (async () => {
-  const app = new cdk.App();
+  const app = new App();
 
   // This is the array I'll eventually use to elegantly state these names only
   // once in this file.

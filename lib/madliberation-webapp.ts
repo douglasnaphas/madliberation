@@ -1,22 +1,29 @@
-import * as cdk from "@aws-cdk/core";
-import * as lambda from "@aws-cdk/aws-lambda";
-import * as apigw from "@aws-cdk/aws-apigateway";
-import * as s3 from "@aws-cdk/aws-s3";
-import * as cloudfront from "@aws-cdk/aws-cloudfront";
-import * as origins from "@aws-cdk/aws-cloudfront-origins";
-import * as ssm from "@aws-cdk/aws-ssm";
-import * as dynamodb from "@aws-cdk/aws-dynamodb";
-import * as cognito from "@aws-cdk/aws-cognito";
+import { Construct } from "constructs";
+import {
+  App,
+  CfnOutput,
+  Duration,
+  RemovalPolicy,
+  Stack,
+  StackProps,
+} from "aws-cdk-lib";
+import { aws_lambda as lambda } from "aws-cdk-lib";
+import { aws_apigateway as apigw } from "aws-cdk-lib";
+import { aws_s3 as s3 } from "aws-cdk-lib";
+import { aws_cloudfront as cloudfront } from "aws-cdk-lib";
+import { aws_cloudfront_origins as origins } from "aws-cdk-lib";
+import { aws_ssm as ssm } from "aws-cdk-lib";
+import { aws_dynamodb as dynamodb } from "aws-cdk-lib";
+import { aws_cognito as cognito } from "aws-cdk-lib";
 const stackname = require("@cdk-turnkey/stackname");
 const crypto = require("crypto");
-import { Effect, PolicyStatement } from "@aws-cdk/aws-iam";
-import * as acm from "@aws-cdk/aws-certificatemanager";
-import * as route53 from "@aws-cdk/aws-route53";
-import * as targets from "@aws-cdk/aws-route53-targets";
-import { RemovalPolicy } from "@aws-cdk/core";
+import { aws_iam as iam } from "aws-cdk-lib";
+import { aws_certificatemanager as acm } from "aws-cdk-lib";
+import { aws_route53 as route53 } from "aws-cdk-lib";
+import { aws_route53_targets as targets } from "aws-cdk-lib";
 const schema = require("../backend/schema");
 
-export interface MadLiberationWebappProps extends cdk.StackProps {
+export interface MadLiberationWebappProps extends StackProps {
   fromAddress?: string;
   domainName?: string;
   zoneId?: string;
@@ -28,12 +35,8 @@ export interface MadLiberationWebappProps extends cdk.StackProps {
   googleClientSecret?: string;
 }
 
-export class MadliberationWebapp extends cdk.Stack {
-  constructor(
-    scope: cdk.App,
-    id: string,
-    props: MadLiberationWebappProps = {}
-  ) {
+export class MadliberationWebapp extends Stack {
+  constructor(scope: App, id: string, props: MadLiberationWebappProps = {}) {
     super(scope, id, props);
 
     const {
@@ -49,11 +52,7 @@ export class MadliberationWebapp extends cdk.Stack {
     } = props;
 
     class MadLiberationBucket extends s3.Bucket {
-      constructor(
-        scope: cdk.Construct,
-        id: string,
-        props: s3.BucketProps = {}
-      ) {
+      constructor(scope: Construct, id: string, props: s3.BucketProps = {}) {
         super(scope, id, {
           removalPolicy: RemovalPolicy.DESTROY,
           autoDeleteObjects: true,
@@ -64,7 +63,7 @@ export class MadliberationWebapp extends cdk.Stack {
 
     class MadLiberationUserPool extends cognito.UserPool {
       constructor(
-        scope: cdk.Construct,
+        scope: Construct,
         id: string,
         props: cognito.UserPoolProps = {}
       ) {
@@ -82,7 +81,7 @@ export class MadliberationWebapp extends cdk.Stack {
       },
       sortKey: { name: schema.SORT_KEY, type: dynamodb.AttributeType.STRING },
       billingMode: dynamodb.BillingMode.PAY_PER_REQUEST,
-      removalPolicy: cdk.RemovalPolicy.DESTROY,
+      removalPolicy: RemovalPolicy.DESTROY,
     });
     sedersTable.addGlobalSecondaryIndex({
       indexName: schema.SCRIPTS_INDEX,
@@ -344,14 +343,14 @@ export class MadliberationWebapp extends cdk.Stack {
           webappDomainName +
           "/prod/get-cookies",
       },
-      timeout: cdk.Duration.seconds(20),
+      timeout: Duration.seconds(20),
     });
 
     sedersTable.grantReadWriteData(backendHandler);
 
     backendHandler.addToRolePolicy(
-      new PolicyStatement({
-        effect: Effect.ALLOW,
+      new iam.PolicyStatement({
+        effect: iam.Effect.ALLOW,
         actions: ["cognito-idp:DescribeUserPoolClient"],
         resources: [
           `arn:aws:cognito-idp:${userPool.stack.region}:${userPool.stack.account}:userpool/${userPool.userPoolId}`,
@@ -423,39 +422,39 @@ export class MadliberationWebapp extends cdk.Stack {
     scriptsBucket.grantRead(backendHandler);
 
     const fromAddressOutput = fromAddress || "no SES from address";
-    new cdk.CfnOutput(this, "sesFromAddress", {
+    new CfnOutput(this, "sesFromAddress", {
       value: fromAddressOutput,
     });
-    new cdk.CfnOutput(this, "webappDomainName", {
+    new CfnOutput(this, "webappDomainName", {
       value: webappDomainName || "no domain name specified",
     });
-    new cdk.CfnOutput(this, "wwwDomainName", {
+    new CfnOutput(this, "wwwDomainName", {
       value: wwwDomainName || "no www domain name",
     });
-    new cdk.CfnOutput(this, "zoneId", {
+    new CfnOutput(this, "zoneId", {
       value: zoneId || "no zoneId specified",
     });
-    new cdk.CfnOutput(this, "DistributionDomainName", {
+    new CfnOutput(this, "DistributionDomainName", {
       value: distro.distributionDomainName,
     });
-    new cdk.CfnOutput(this, "lambdaApi_url", {
+    new CfnOutput(this, "lambdaApi_url", {
       value: lambdaApi.url,
     });
-    new cdk.CfnOutput(this, "FrontendBucketName", {
+    new CfnOutput(this, "FrontendBucketName", {
       value: frontendBucket.bucketName,
     });
-    new cdk.CfnOutput(this, "FrontendBucketNameParamName", {
+    new CfnOutput(this, "FrontendBucketNameParamName", {
       value: frontendBucketNameParam.parameterName,
     });
-    new cdk.CfnOutput(this, "UserPoolId", {
+    new CfnOutput(this, "UserPoolId", {
       value: userPool.userPoolId,
     });
-    new cdk.CfnOutput(this, "UserPoolClientId", {
+    new CfnOutput(this, "UserPoolClientId", {
       value: userPoolClient.userPoolClientId,
     });
-    new cdk.CfnOutput(this, "ScriptsBucketName", {
+    new CfnOutput(this, "ScriptsBucketName", {
       value: scriptsBucket.bucketName,
     });
-    new cdk.CfnOutput(this, "TableName", { value: sedersTable.tableName });
+    new CfnOutput(this, "TableName", { value: sedersTable.tableName });
   }
 }

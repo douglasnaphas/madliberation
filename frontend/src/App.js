@@ -26,7 +26,12 @@ import { script } from "./lib/script";
 import GeneratingRoomCodePageWithRouter from "./components/GeneratingRoomCodePageWithRouter";
 import EnterRoomCodePageWithRouter from "./components/EnterRoomCodePageWithRouter";
 import YouHaveJoinedPage from "./components/YouHaveJoinedPage";
-import { ThemeProvider, StyledEngineProvider, createTheme, adaptV4Theme } from "@mui/material/styles";
+import {
+  ThemeProvider,
+  StyledEngineProvider,
+  createTheme,
+  adaptV4Theme,
+} from "@mui/material/styles";
 import FetchingPromptsPageWithRouter from "./components/FetchingPromptsPageWithRouter";
 import ExplainPage from "./components/ExplainPage";
 import LoggingInPageWithRouter from "./components/LoggingInPageWithRouter";
@@ -36,12 +41,15 @@ import ContactUs from "./components/ContactUs";
 import ExplainVideoPage from "./components/ExplainVideoPage";
 import SedersPageWithRouter from "./components/SedersPageWithRouter";
 
-const theme = createTheme(adaptV4Theme({
-  palette: {
-    primary: { main: "#81181f" },
-  },
-  typography: { useNextVariants: true },
-}));
+const theme = createTheme(
+  adaptV4Theme({
+    palette: {
+      primary: { main: "#81181f" },
+      secondary: { main: "#e0e0e0" },
+    },
+    typography: { useNextVariants: true },
+  })
+);
 
 class App extends Component {
   constructor(props) {

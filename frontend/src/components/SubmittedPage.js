@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import MenuAppBar from "./MenuAppBar";
 import React, { Component } from "react";
 import { Typography } from "@mui/material";
-import withStyles from '@mui/styles/withStyles';
+import withStyles from "@mui/styles/withStyles";
 
 const styles = (theme) => ({
   button: {
@@ -75,6 +75,7 @@ class SubmittedPage extends Component {
             madliberationid="i-want-the-script-button"
             variant="contained"
             component={Link}
+            color="primary"
             to="/read"
           >
             Yes, I want the script
@@ -86,6 +87,7 @@ class SubmittedPage extends Component {
             madliberationid="use-someone-elses-device-button"
             variant="contained"
             component={Link}
+            color="secondary"
             to="/done-not-reading"
           >
             No, we'll use someone else's device

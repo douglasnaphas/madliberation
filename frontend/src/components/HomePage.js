@@ -70,6 +70,7 @@ class HomePage extends Component {
               title="Lead a seder - by video"
               variant="contained"
               component={Link}
+              color="secondary"
               to="/explain-video"
             >
               Lead a seder - by video
@@ -83,6 +84,7 @@ class HomePage extends Component {
                   madliberationid="login-button"
                   title="Log in"
                   variant="contained"
+                  color="secondary"
                 >
                   Log in
                 </Button>

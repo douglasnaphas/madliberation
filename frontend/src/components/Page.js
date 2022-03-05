@@ -2,7 +2,7 @@ import Button from "@mui/material/Button";
 import { madLiberationStyles } from "../madLiberationStyles";
 import React from "react";
 import { Typography } from "@mui/material";
-import withStyles from '@mui/styles/withStyles';
+import withStyles from "@mui/styles/withStyles";
 import Answer from "./Answer";
 import StageDirection from "./StageDirection";
 
@@ -193,7 +193,11 @@ class Page extends React.Component {
           </div>
           <br />
           <div hidden={pageIndex === 0}>
-            <Button variant="contained" onClick={decrementPageIndex}>
+            <Button
+              variant="contained"
+              color="secondary"
+              onClick={decrementPageIndex}
+            >
               Previous page
             </Button>
           </div>

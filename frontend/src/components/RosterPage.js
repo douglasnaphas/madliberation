@@ -191,6 +191,7 @@ class RosterPage extends Component {
               this.state.rosterLoading || this.state.thatsEveryonePressed
             }
             onClick={this.fetchRoster(confirmedRoomCode, confirmedGameName)}
+            color="secondary"
           >
             No, check again
           </Button>

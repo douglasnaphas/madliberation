@@ -31,7 +31,6 @@ class ThatsEveryoneButton extends React.Component {
       <div>
         <Button
           madliberationid="confirm-thats-everyone-button"
-          color="secondary"
           onClick={thatsEveryoneClick}
           disabled={this.state.yesClicked}
         >

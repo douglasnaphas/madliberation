@@ -1351,6 +1351,7 @@ describe("SedersPage", () => {
     expect(circles.length).toBeGreaterThan(0);
     expect(circles.length).toEqual(1);
     await waitForElementToBeRemoved(circles[0]);
+    expect(screen.queryByText("0")).toBeNull();
     screen.getByText(/None[.] You are not and were not in any seders[.].*/);
     expect(screen.getByText(/start or join one/)).toHaveAttribute("href", "/");
   });

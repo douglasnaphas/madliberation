@@ -127,8 +127,6 @@ function SedersPage({
     disabled: !selectionMade || buttonClicked,
   };
 
-  // if (!seders || !seders.size) return <CircularProgress></CircularProgress>;
-
   return (
     <>
       <MenuAppBar></MenuAppBar>

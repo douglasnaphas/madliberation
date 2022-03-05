@@ -1,7 +1,13 @@
 import SedersPage from "./SedersPage";
 import React from "react";
 import { MemoryRouter } from "react-router-dom";
-import { getByRole, render, screen, waitFor } from "@testing-library/react";
+import {
+  getByRole,
+  render,
+  screen,
+  waitFor,
+  waitForElementToBeRemoved,
+} from "@testing-library/react";
 import "@testing-library/jest-dom";
 import userEvent from "@testing-library/user-event";
 
@@ -1221,6 +1227,83 @@ describe("SedersPage", () => {
     );
     expect(resumeSederButton).toBeDisabled();
   });
+  describe("show circular progress while fetching seders", () => {
+    test("show a circle", async () => {
+      const user = {
+        email: "user1@gmail.com",
+        nickname: "Mister One",
+        sub: "11-aa-m1-gha-one",
+      };
+      const setConfirmedRoomCode = jest.fn();
+      const setChosenPath = jest.fn();
+      const sedersStarted = [
+        {
+          created: 1585970508141,
+          lib_id: "seder",
+          room_code: "IJYAQX",
+          path: "madliberation-scripts/005-Practice_Script",
+          user_email: "user1@gmail.com",
+          timestamp: "2020-04-04T03:21:48.141Z",
+        },
+        {
+          created: 1585973347633,
+          lib_id: "seder",
+          room_code: "ZLSXQA",
+          path: "madliberation-scripts/006-Practice_Script",
+          user_email: "user1@gmail.com",
+          timestamp: "2020-04-04T04:09:07.633Z",
+        },
+        {
+          created: 1585963851309,
+          lib_id: "seder",
+          room_code: "GMKMNB",
+          path: "madliberation-scripts/007-Practice_Script",
+          user_email: "user1@gmail.com",
+          timestamp: "2020-04-04T01:30:51.309Z",
+        },
+      ];
+      const sedersJoined = [];
+      global.fetch = jest.fn().mockImplementation((url, init) => {
+        if (
+          url.pathname === "/prod/seders" ||
+          url.pathname === "/seders-started"
+        ) {
+          return new Promise((resolve, reject) => {
+            resolve({
+              json: jest.fn().mockImplementation(() => {
+                return { Items: sedersStarted };
+              }),
+            });
+          });
+        }
+        if (url.pathname === "/prod/seders-joined") {
+          return new Promise((resolve, reject) => {
+            resolve({
+              json: jest.fn().mockImplementation(() => {
+                return { Items: sedersJoined };
+              }),
+            });
+          });
+        }
+      });
+      const history = { push: jest.fn() };
+      render(
+        <MemoryRouter>
+          <SedersPage
+            history={history}
+            user={user}
+            setConfirmedRoomCode={setConfirmedRoomCode}
+            setChosenPath={setChosenPath}
+          ></SedersPage>
+        </MemoryRouter>
+      );
+      const circles = document.getElementsByTagName("circle");
+      expect(circles.length).toBeGreaterThan(0);
+      expect(circles.length).toEqual(1);
+      await waitForElementToBeRemoved(circles[0]);
+    });
+  });
+  describe("No seders", () => {});
   describe("Failed fetches", () => {
     test("failed fetch to /seders-started should show an error message", () => {});
     test("failed fetch to /seders-joined should show an error message", () => {});

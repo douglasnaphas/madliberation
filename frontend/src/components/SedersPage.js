@@ -22,6 +22,10 @@ function SedersPage({
   const [selectedRoomCode, setSelectedRoomCode] = useState();
   const [selectionMade, setSelectionMade] = useState(false);
   const [buttonClicked, setButtonClicked] = useState(false);
+  const [gotResponseSedersStarted, setGotResponseSedersStarted] =
+    useState(false);
+  const [gotResponseSedersJoined, setGotResponseSedersJoines] = useState(false);
+
   useEffect(() => {
     if (!user || !user.sub) return;
     const sedersStartedUrl = new URL(
@@ -37,6 +41,7 @@ function SedersPage({
       .then((s) => {
         if (s.Items && Array.isArray(s.Items)) {
           setSedersIStarted(s.Items);
+          setGotResponseSedersStarted(true);
         }
       })
       .catch((err) => {
@@ -55,6 +60,7 @@ function SedersPage({
       .then((s) => {
         if (s.Items && Array.isArray(s.Items)) {
           setSedersIJoined(s.Items);
+          setGotResponseSedersJoines(true);
         }
       })
       .catch((err) => {
@@ -63,15 +69,8 @@ function SedersPage({
   }, [user]);
   const seders = new Map();
   sedersIStarted.forEach((seder) => {
-    const {
-      room_code,
-      created,
-      lib_id,
-      path,
-      user_email,
-      timestamp,
-      closed,
-    } = seder;
+    const { room_code, created, lib_id, path, user_email, timestamp, closed } =
+      seder;
     if (room_code) {
       seders.set(seder.room_code, {
         created,
@@ -84,14 +83,8 @@ function SedersPage({
     }
   });
   sedersIJoined.forEach((seder) => {
-    const {
-      lib_id,
-      room_code,
-      user_email,
-      game_name,
-      assignments,
-      answers,
-    } = seder;
+    const { lib_id, room_code, user_email, game_name, assignments, answers } =
+      seder;
     if (room_code) {
       seders.set(room_code, {
         ...seders.get(room_code),
@@ -147,7 +140,7 @@ function SedersPage({
           You are or were in seders with these Room Codes:
         </Typography>
       </div>
-      {seders.size ? (
+      {seders && seders.size && seders.size > 1 && (
         <>
           <div>{sederTable}</div>
           <div>
@@ -220,9 +213,16 @@ function SedersPage({
             </Button>
           </div>
         </>
-      ) : (
+      )}
+      {!seders.size && !gotResponseSedersJoined && !gotResponseSedersStarted && (
         <div>
           <CircularProgress />
+        </div>
+      )}
+      {!seders.size && gotResponseSedersJoined && gotResponseSedersStarted && (
+        <div>
+          None. You are not and were not in any seders. Please{" "}
+          <a href="/">start or join one</a>.
         </div>
       )}
     </>

@@ -1303,7 +1303,57 @@ describe("SedersPage", () => {
       await waitForElementToBeRemoved(circles[0]);
     });
   });
-  describe("No seders", () => {});
+  test("No seders", async () => {
+    const user = {
+      email: "user1@gmail.com",
+      nickname: "Mister One",
+      sub: "11-aa-m1-gha-one",
+    };
+    const setConfirmedRoomCode = jest.fn();
+    const setChosenPath = jest.fn();
+    const sedersStarted = [];
+    const sedersJoined = [];
+    global.fetch = jest.fn().mockImplementation((url, init) => {
+      if (
+        url.pathname === "/prod/seders" ||
+        url.pathname === "/seders-started"
+      ) {
+        return new Promise((resolve, reject) => {
+          resolve({
+            json: jest.fn().mockImplementation(() => {
+              return { Items: sedersStarted };
+            }),
+          });
+        });
+      }
+      if (url.pathname === "/prod/seders-joined") {
+        return new Promise((resolve, reject) => {
+          resolve({
+            json: jest.fn().mockImplementation(() => {
+              return { Items: sedersJoined };
+            }),
+          });
+        });
+      }
+    });
+    const history = { push: jest.fn() };
+    render(
+      <MemoryRouter>
+        <SedersPage
+          history={history}
+          user={user}
+          setConfirmedRoomCode={setConfirmedRoomCode}
+          setChosenPath={setChosenPath}
+        ></SedersPage>
+      </MemoryRouter>
+    );
+    const circles = document.getElementsByTagName("circle");
+    expect(circles.length).toBeGreaterThan(0);
+    expect(circles.length).toEqual(1);
+    await waitForElementToBeRemoved(circles[0]);
+    screen.getByText(/None[.] You are not and were not in any seders[.].*/);
+    expect(screen.getByText(/start or join one/)).toHaveAttribute("href", "/");
+  });
   describe("Failed fetches", () => {
     test("failed fetch to /seders-started should show an error message", () => {});
     test("failed fetch to /seders-joined should show an error message", () => {});

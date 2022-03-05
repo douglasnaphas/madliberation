@@ -4,7 +4,9 @@ import { MemoryRouter } from "react-router-dom";
 import { Configs } from "../Configs";
 import { render, screen, waitFor } from "@testing-library/react";
 import "@testing-library/jest-dom";
+import { ThemeProvider, createTheme } from "@mui/material/styles";
 
+const theme = createTheme({ palette: { primary: { main: "#81181f" } } });
 describe("Logging In Page", () => {
   const testData = [
     {
@@ -72,14 +74,16 @@ describe("Logging In Page", () => {
         setItem: jest.fn(),
       };
       render(
-        <MemoryRouter>
-          <LoggingInPage
-            history={history}
-            setUser={setUser}
-            browserWindow={browserWindow}
-            storage={storage}
-          ></LoggingInPage>
-        </MemoryRouter>
+        <ThemeProvider theme={theme}>
+          <MemoryRouter>
+            <LoggingInPage
+              history={history}
+              setUser={setUser}
+              browserWindow={browserWindow}
+              storage={storage}
+            ></LoggingInPage>
+          </MemoryRouter>
+        </ThemeProvider>
       );
       const expectedIdUrl = new URL("/id", Configs.apiUrl());
       const expectedInit = {

@@ -129,9 +129,8 @@ class ExplainPage extends Component {
                     Once you've joined the seder, don't close the tab or go to
                     any other web sites in the tab that you have the game open
                     in. If you click Log In on the Home Page before you join our
-                    seder, and you accidentally close your tab, you can probably
-                    re-join by logging in again and clicking{" "}
-                    <b>See your seders</b>, but that feature is experimental.
+                    seder, and you accidentally close your tab, you can re-join
+                    by logging in again and clicking <b>See your seders</b>.
                   </Typography>
                 </ListItemText>
               </ListItem>

@@ -66,6 +66,19 @@ class HomePage extends Component {
           <div>
             <br />
             <Button
+              madliberationid="lead-a-seder-in-person-button"
+              title="Lead a seder - in person"
+              variant="contained"
+              component={Link}
+              color="secondary"
+              to="/explain"
+            >
+              Lead a seder - in person
+            </Button>
+          </div>
+          <div>
+            <br />
+            <Button
               madliberationid="lead-a-seder-by-video-button"
               title="Lead a seder - by video"
               variant="contained"

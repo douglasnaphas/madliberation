@@ -38,12 +38,12 @@ app.use(function (req, res, next) {
   next();
 });
 
-app.get("/clear-jwts", (req, res) => {
-  const expiredCookieValue = "expired-via-clear-jwts";
+app.get("/logout", (req, res) => {
+  const expiredCookieValue = "expired-via-logout";
   res.cookie("id_token", expiredCookieValue, { expires: new Date(0) });
   res.cookie("access_token", expiredCookieValue, { expires: new Date(0) });
   res.cookie("refresh_token", expiredCookieValue, { expires: new Date(0) });
-  return res.status(200).send({ message: "JWTs cleared" });
+  return res.status(200).send({ message: "Logged out" });
 });
 
 app.get("/scripts", async function (req, res) {

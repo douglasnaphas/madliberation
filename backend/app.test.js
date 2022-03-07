@@ -44,7 +44,7 @@ describe("app request-level tests", () => {
       });
     });
   });
-  describe("/clear-jwts", () => {
+  describe("/logout", () => {
     test(
       "request with no cookies, params, or data should receive expired " +
         "cookies.",
@@ -53,16 +53,16 @@ describe("app request-level tests", () => {
         expect(resPublicEndpoint.body.Output).toEqual(
           "this endpoint is public"
         );
-        const clearJWTsPath = "/clear-jwts";
-        const resClearJWTs = await request(app).get(clearJWTsPath);
-        expect(resClearJWTs.statusCode).toBe(200);
-        console.log(resClearJWTs.res.headers);
-        expect(resClearJWTs.res.headers["set-cookie"]).toBeTruthy();
-        const deletedCookieValue = "expired-via-clear-jwts";
+        const logoutPath = "/logout";
+        const resLogout = await request(app).get(logoutPath);
+        expect(resLogout.statusCode).toBe(200);
+        console.log(resLogout.res.headers);
+        expect(resLogout.res.headers["set-cookie"]).toBeTruthy();
+        const deletedCookieValue = "expired-via-logout";
         // ; Path=/; HttpOnly; Secure; SameSite=Strict
         [("id_token", "access_token", "refresh_token")].forEach((t) => {
           expect(
-            resClearJWTs.res.headers["set-cookie"].find((c) =>
+            resLogout.res.headers["set-cookie"].find((c) =>
               c.match(
                 new RegExp(
                   `^${t}=${deletedCookieValue}.*; ?Expires=Thu, 01 Jan 1970 00:00:00 GMT`

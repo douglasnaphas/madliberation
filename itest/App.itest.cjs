@@ -687,6 +687,7 @@ const submitAllLibs = async (page, prefix) => {
   const browser2b = await puppeteer.launch(browserOptions);
   browsers.push(browser2b);
   const page2b = await browser2b.newPage();
+  await page2b.goto(site);
   await itNavigate({ page: page2b, madliberationid: "login-button" });
   await enterUserName({
     browser: browser2b,

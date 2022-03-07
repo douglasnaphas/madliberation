@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import { Button, Typography } from "@mui/material";
-import withStyles from '@mui/styles/withStyles';
+import withStyles from "@mui/styles/withStyles";
 import RedSeaImage from "../background-red-sea.jpg";
 import MadLiberationLogo from "../mad-liberation-logo.png";
 import VeryAwesomePassoverLogo from "../VAPLogo-white.png";
@@ -38,6 +38,7 @@ const styles = () => {
 };
 
 class HomePage extends Component {
+  state = { logoutClicked: false };
   render() {
     const { classes, user, setUser, storage } = this.props;
 
@@ -135,11 +136,17 @@ class HomePage extends Component {
                   <div>
                     <Typography component="p">
                       <Button
+                        disabled={this.state.logoutClicked}
                         onClick={() => {
-                          setUser(false);
-                          storage.removeItem("user-nickname");
-                          storage.removeItem("user-email");
-                          storage.removeItem("user-sub");
+                          this.setState({ logoutClicked: true });
+                          fetch("/logout", { credentials: "include" }).then(
+                            (r) => {
+                              setUser(false);
+                              storage.removeItem("user-nickname");
+                              storage.removeItem("user-email");
+                              storage.removeItem("user-sub");
+                            }
+                          );
                         }}
                         madliberationid="logout-button"
                       >

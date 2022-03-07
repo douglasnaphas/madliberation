@@ -1,9 +1,14 @@
 import { MemoryRouter } from "react-router-dom";
 import React from "react";
 import HomePage from "./HomePage";
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import userEvent from "@testing-library/user-event";
+
+let globalFetch = global.fetch;
+afterEach(() => {
+  global.fetch = globalFetch;
+});
 
 describe("<HomePage />", () => {
   const leadASederByVideoText = "Lead a seder - by video";
@@ -61,19 +66,39 @@ describe("<HomePage />", () => {
     const user = { nickname: "My Other Nick Name", email: "other@gmail.com" };
     const setUser = jest.fn();
     const storage = { removeItem: jest.fn() };
-    render(
+    global.fetch = jest.fn().mockImplementation((url, init) => {
+      return new Promise((resolve, reject) => {
+        resolve("ok");
+      });
+    });
+    const { rerender } = render(
       <MemoryRouter>
         <HomePage user={user} setUser={setUser} storage={storage}></HomePage>
       </MemoryRouter>
     );
     const logoutButton = screen.getByText(logoutText).closest("button");
+    expect(logoutButton).toBeEnabled();
     await userEvent.click(logoutButton);
-    expect(setUser).toHaveBeenCalled();
+    await waitFor(() =>
+      expect(screen.getByText(logoutText).closest("button")).toBeDisabled()
+    );
+    await waitFor(() => expect(global.fetch).toHaveBeenCalled());
+    expect(global.fetch).toHaveBeenCalledTimes(1);
+    expect(global.fetch.mock.calls[0][0]).toEqual("/logout");
+    expect(global.fetch.mock.calls[0][1].credentials).toEqual("include");
+    expect(logoutButton).toBeDisabled();
+    await waitFor(() => expect(setUser).toHaveBeenCalled());
     expect(setUser).toHaveBeenCalledWith(false);
     expect(storage.removeItem).toHaveBeenCalled();
     expect(storage.removeItem).toHaveBeenCalledWith("user-nickname");
     expect(storage.removeItem).toHaveBeenCalledWith("user-email");
     expect(storage.removeItem).toHaveBeenCalledWith("user-sub");
     expect(storage.removeItem).toHaveBeenCalledTimes(3);
+    rerender(
+      <MemoryRouter>
+        <HomePage user={false} setUser={setUser} storage={storage}></HomePage>
+      </MemoryRouter>
+    );
+    await screen.findByText(loginText);
   });
 });

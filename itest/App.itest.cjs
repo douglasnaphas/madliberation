@@ -647,10 +647,10 @@ const submitAllLibs = async (page, prefix) => {
   // Confirm that a logged-in-only fetch works
   // get the sub
   const SUB_KEY = "user-sub";
-  const user2Sub = await page.evaluate(() => {
+  const user2Sub = await page2.evaluate(() => {
     return localStorage.getItem(SUB_KEY);
   });
-  const sedersStarted = await page.evaluate(async () => {
+  const sedersStarted = await page2.evaluate(async () => {
     const items = await fetch(`/prod/seders?user=${user2Sub}`, {
       headers: { "cache-control": "no-cache" },
       credentials: "include",
@@ -674,7 +674,7 @@ const submitAllLibs = async (page, prefix) => {
   await itClick({ page: page2, madliberationid: "logout-button" });
   await itWait({ page: page2, madliberationid: "login-button" });
   // Confirm that a logged-in-only fetch now doesn't work
-  const sedersStartedStatus = await page.evaluate(async () => {
+  const sedersStartedStatus = await page2.evaluate(async () => {
     const status = await fetch(`/prod/seders?user=${user2Sub}`, {
       headers: { "cache-control": "no-cache" },
       credentials: "include",

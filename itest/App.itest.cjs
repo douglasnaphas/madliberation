@@ -193,11 +193,10 @@ const submitAllLibs = async (page, prefix) => {
 
   const AWS = require("aws-sdk");
   const createUser = async (userName, tempPassword) => {
-    const cognitoidentityserviceprovider = new AWS.CognitoIdentityServiceProvider(
-      {
+    const cognitoidentityserviceprovider =
+      new AWS.CognitoIdentityServiceProvider({
         apiVersion: "2016-04-18",
-      }
-    );
+      });
     const adminCreateUserParams = {
       UserPoolId: userPoolId,
       Username: userName,
@@ -344,30 +343,33 @@ const submitAllLibs = async (page, prefix) => {
 
   // Enter username
   const usernameSelector = `input#signInFormUsername[type='text']`;
-  await page2
-    .waitForSelector(usernameSelector, {
-      ...waitOptions,
-      visible: true,
-    })
-    .catch(async (e) => {
-      failTest(e, `Could not find username input`, browser2);
-    });
-  await page2
-    .click(usernameSelector, {
-      ...clickOptions,
-      visible: true,
-    })
-    .catch(async (e) => {
-      failTest(e, `Could not click username input`, browser2);
-    });
-  await page2
-    .type(usernameSelector, user2Name, {
-      ...typeOptions,
-      visible: true,
-    })
-    .catch(async (e) => {
-      failTest(e, `Could not enter username`, browser2);
-    });
+  const enterUserName = async ({ browser, page, userName }) => {
+    await page
+      .waitForSelector(usernameSelector, {
+        ...waitOptions,
+        visible: true,
+      })
+      .catch(async (e) => {
+        failTest(e, `Could not find username input`, browser);
+      });
+    await page
+      .click(usernameSelector, {
+        ...clickOptions,
+        visible: true,
+      })
+      .catch(async (e) => {
+        failTest(e, `Could not click username input`, browser);
+      });
+    await page
+      .type(usernameSelector, userName, {
+        ...typeOptions,
+        visible: true,
+      })
+      .catch(async (e) => {
+        failTest(e, `Could not enter username`, browser);
+      });
+  };
+  await enterUserName({ browser: browser2, page: page2, userName: user2Name });
 
   // Enter temp password
   const passwordSelector = `input#signInFormPassword[type='password']`;
@@ -467,6 +469,27 @@ const submitAllLibs = async (page, prefix) => {
     .catch(async (e) => {
       failTest(e, `Could not submit password change`, browser2);
     });
+
+  // Click Lead a Seder button, and get a room code. We will bail out of this
+  // seder and join the one the other player already started, as part of
+  // validating the re-join flow.
+  await itNavigate({
+    page: page,
+    madliberationid: "lead-a-seder-in-person-button",
+  });
+  await itNavigate({
+    page: page,
+    madliberationid: "proceed-from-explanation-button",
+  });
+  await itWait({ page: page, madliberationid: "pick-your-script-page" });
+  await itClick({ page: page, madliberationid: "Practice Script" });
+  await itNavigate({ page: page, madliberationid: "pick-this-script-button" });
+  await itWait({ page: page, madliberationid: "your-room-code" });
+  const abandonedSederRoomCode = await itGetText({
+    page: page,
+    madliberationid: "your-room-code",
+  });
+  await page.goto(site);
 
   // Click Join a Seder button
   await itNavigate({ page: page2, madliberationid: "join-a-seder-button" });
@@ -618,7 +641,59 @@ const submitAllLibs = async (page, prefix) => {
 
   // Close browsers
   await browser.close();
+
+  // Test some login-logout behaviors
+  await page2.goto(site);
+  // Confirm that a logged-in-only fetch works
+  // get the sub
+  const SUB_KEY = "user-sub";
+  const user2Sub = await page.evaluate(() => {
+    return localStorage.getItem(SUB_KEY);
+  });
+  const sedersStarted = await page.evaluate(async () => {
+    const items = await fetch(`/prod/seders?user=${user2Sub}`, {
+      headers: { "cache-control": "no-cache" },
+      credentials: "include",
+    })
+      .then((r) => r.json())
+      .then((j) => j.Items);
+    return items;
+  });
+  if (sedersStarted.length != 1) {
+    failTest(
+      new Error("sedersStarted.length != 1"),
+      "expected to get 1 started seder"
+    );
+  }
+  if (sedersStarted[0].room_code != abandonedSederRoomCode) {
+    failTest(
+      new Error("wrong seder started code in login test"),
+      `expected ${abandonedSederRoomCode}, got ${sedersStarted[0].room_code}`
+    );
+  }
+  await itClick({ page: page2, madliberationid: "logout-button" });
+  await itWait({ page: page2, madliberationid: "login-button" });
+  // Confirm that a logged-in-only fetch now doesn't work
+  const sedersStartedStatus = await page.evaluate(async () => {
+    const status = await fetch(`/prod/seders?user=${user2Sub}`, {
+      headers: { "cache-control": "no-cache" },
+      credentials: "include",
+    }).then((r) => r.status);
+    return status;
+  });
+  console.log(`sedersStartedStatus after logout:`);
+  console.log(sedersStartedStatus);
   await browser2.close();
+  const browser2b = await puppeteer.launch(browserOptions);
+  browsers.push(browser2b);
+  const page2b = await browser2b.newPage();
+  await itNavigate({ page: page2b, madliberationid: "login-button" });
+  await enterUserName({
+    browser: browser2b,
+    page: page2b,
+    userName: user2Name,
+  });
+  // go to /seders and confirm that the expected seders are there
 
   // Print the roomCode so caller can clean up
   // console.log(`madliberation-itest roomCode: ${roomCode}`);

@@ -698,6 +698,7 @@ const submitAllLibs = async (page, prefix) => {
     page: page2b,
     userName: user2Name,
   });
+  await browser2b.close();
   // go to /seders and confirm that the expected seders are there
 
   // Print the roomCode so caller can clean up

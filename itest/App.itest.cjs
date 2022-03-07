@@ -681,8 +681,12 @@ const submitAllLibs = async (page, prefix) => {
     }).then((r) => r.status);
     return status;
   }, user2Sub);
-  console.log(`sedersStartedStatus after logout:`);
-  console.log(sedersStartedStatus);
+  if (sedersStartedStatus != 401) {
+    failTest(
+      new Error("still logged in after logout"),
+      `expected 401 from post-logout /seders call, got ${sedersStartedStatus}`
+    );
+  }
   await browser2.close();
   const browser2b = await puppeteer.launch(browserOptions);
   browsers.push(browser2b);

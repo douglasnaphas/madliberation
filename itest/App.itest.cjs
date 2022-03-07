@@ -647,18 +647,18 @@ const submitAllLibs = async (page, prefix) => {
   // Confirm that a logged-in-only fetch works
   // get the sub
   const SUB_KEY = "user-sub";
-  const user2Sub = await page2.evaluate(() => {
-    return localStorage.getItem(SUB_KEY);
-  });
-  const sedersStarted = await page2.evaluate(async () => {
-    const items = await fetch(`/prod/seders?user=${user2Sub}`, {
+  const user2Sub = await page2.evaluate((subKey) => {
+    return localStorage.getItem(subKey);
+  }, SUB_KEY);
+  const sedersStarted = await page2.evaluate(async (sub) => {
+    const items = await fetch(`/prod/seders?user=${sub}`, {
       headers: { "cache-control": "no-cache" },
       credentials: "include",
     })
       .then((r) => r.json())
       .then((j) => j.Items);
     return items;
-  });
+  }, user2Sub);
   if (sedersStarted.length != 1) {
     failTest(
       new Error("sedersStarted.length != 1"),
@@ -674,13 +674,13 @@ const submitAllLibs = async (page, prefix) => {
   await itClick({ page: page2, madliberationid: "logout-button" });
   await itWait({ page: page2, madliberationid: "login-button" });
   // Confirm that a logged-in-only fetch now doesn't work
-  const sedersStartedStatus = await page2.evaluate(async () => {
-    const status = await fetch(`/prod/seders?user=${user2Sub}`, {
+  const sedersStartedStatus = await page2.evaluate(async (sub) => {
+    const status = await fetch(`/prod/seders?user=${sub}`, {
       headers: { "cache-control": "no-cache" },
       credentials: "include",
     }).then((r) => r.status);
     return status;
-  });
+  }, user2Sub);
   console.log(`sedersStartedStatus after logout:`);
   console.log(sedersStartedStatus);
   await browser2.close();

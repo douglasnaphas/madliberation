@@ -84,7 +84,7 @@ describe("<HomePage />", () => {
     );
     await waitFor(() => expect(global.fetch).toHaveBeenCalled());
     expect(global.fetch).toHaveBeenCalledTimes(1);
-    expect(global.fetch.mock.calls[0][0]).toEqual("/logout");
+    expect(global.fetch.mock.calls[0][0]).toEqual("/prod/logout");
     expect(global.fetch.mock.calls[0][1].credentials).toEqual("include");
     expect(logoutButton).toBeDisabled();
     await waitFor(() => expect(setUser).toHaveBeenCalled());

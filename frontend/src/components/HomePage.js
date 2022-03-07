@@ -139,14 +139,14 @@ class HomePage extends Component {
                         disabled={this.state.logoutClicked}
                         onClick={() => {
                           this.setState({ logoutClicked: true });
-                          fetch("/logout", { credentials: "include" }).then(
-                            (r) => {
-                              setUser(false);
-                              storage.removeItem("user-nickname");
-                              storage.removeItem("user-email");
-                              storage.removeItem("user-sub");
-                            }
-                          );
+                          fetch(Configs.apiRelativeUrl("logout"), {
+                            credentials: "include",
+                          }).then((r) => {
+                            setUser(false);
+                            storage.removeItem("user-nickname");
+                            storage.removeItem("user-email");
+                            storage.removeItem("user-sub");
+                          });
                         }}
                         madliberationid="logout-button"
                       >

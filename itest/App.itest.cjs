@@ -474,22 +474,22 @@ const submitAllLibs = async (page, prefix) => {
   // seder and join the one the other player already started, as part of
   // validating the re-join flow.
   await itNavigate({
-    page: page,
+    page: page2,
     madliberationid: "lead-a-seder-in-person-button",
   });
   await itNavigate({
-    page: page,
+    page: page2,
     madliberationid: "proceed-from-explanation-button",
   });
-  await itWait({ page: page, madliberationid: "pick-your-script-page" });
-  await itClick({ page: page, madliberationid: "Practice Script" });
-  await itNavigate({ page: page, madliberationid: "pick-this-script-button" });
-  await itWait({ page: page, madliberationid: "your-room-code" });
+  await itWait({ page: page2, madliberationid: "pick-your-script-page" });
+  await itClick({ page: page2, madliberationid: "Practice Script" });
+  await itNavigate({ page: page2, madliberationid: "pick-this-script-button" });
+  await itWait({ page: page2, madliberationid: "your-room-code" });
   const abandonedSederRoomCode = await itGetText({
-    page: page,
+    page: page2,
     madliberationid: "your-room-code",
   });
-  await page.goto(site);
+  await page2.goto(site);
 
   // Click Join a Seder button
   await itNavigate({ page: page2, madliberationid: "join-a-seder-button" });

@@ -6,7 +6,6 @@ var credChecker = require("./lib/credChecker");
 var cookieParser = require("cookie-parser");
 const AWS = require("aws-sdk");
 
-const joinSeder = require("./lib/joinSeder");
 const pathCheck = require("./lib/pathCheck");
 const roomCode = require("./lib/room-code");
 const roomCodeExists = require("./lib/roomCodeExists");

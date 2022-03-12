@@ -1,9 +1,9 @@
 const validateQueryCode = require("./validateQueryCode");
 describe("validateQueryCode", () => {
-  const runTest = (code, expectedStatus, expectNext) => {
+  const runTest = (code, expectedStatus, expectNext, expectedMessage) => {
     const req = { query: { code } };
-
-    const res = { status: jest.fn(), send: jest.fn(), sendStatus: jest.fn() };
+    const res = { send: jest.fn(), sendStatus: jest.fn() };
+    res.status = jest.fn(() => res);
     const next = jest.fn();
     const middleware = validateQueryCode;
     middleware(req, res, next);
@@ -29,6 +29,10 @@ describe("validateQueryCode", () => {
             res.sendStatus.mock.calls[0][0] === expectedStatus &&
             res.send.mock.calls.length === 0)
       ).toBeTruthy();
+      if (expectedMessage) {
+        expect(res.send.mock.calls.length === 1);
+        expect(res.send.mock.calls[0][0]).toEqual(expectedMessage);
+      }
     }
     if (expectNext) {
       expect(next).toHaveBeenCalled();
@@ -39,16 +43,19 @@ describe("validateQueryCode", () => {
     code
     ${true}
   `("non-string code=$1", ({ code }) => {
-    runTest(code, 400, false);
+    runTest(code, 400, false, "Bad code param");
   });
   // code has non-whitelisted characters -> 400
-  test.each([["abcd-efg;a"], [";"], ["#"]])("invalid string code=%s", code => {
-    runTest(code, 400, false);
-  });
+  test.each([["abcd-efg;a"], [";"], ["#"]])(
+    "invalid string code=%s",
+    (code) => {
+      runTest(code, 400, false);
+    }
+  );
   // code is valid
   test.each([["abcd-efg-hij-klmnopqr-stu"], ["-ab832-afdjk-eiHafaH-2390-AA"]])(
     "valid code=%s",
-    code => {
+    (code) => {
       runTest(code, false, true);
     }
   );

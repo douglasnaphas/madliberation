@@ -43,6 +43,9 @@ app.get("/logout", (req, res) => {
   res.cookie("id_token", expiredCookieValue, { expires: new Date(0) });
   res.cookie("access_token", expiredCookieValue, { expires: new Date(0) });
   res.cookie("refresh_token", expiredCookieValue, { expires: new Date(0) });
+  res.cookie(Configs.loginCookieName(), expiredCookieValue, {
+    expires: new Date(0),
+  });
   return res.status(200).send({ message: "Logged out" });
 });
 

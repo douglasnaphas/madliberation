@@ -1,6 +1,7 @@
 /* globals jest */
 const request = require("supertest");
 const app = require("./app");
+const Configs = require("./Configs");
 
 describe("app request-level tests", () => {
   describe("canary", () => {
@@ -59,7 +60,12 @@ describe("app request-level tests", () => {
         expect(resLogout.res.headers["set-cookie"]).toBeTruthy();
         const deletedCookieValue = "expired-via-logout";
         // ; Path=/; HttpOnly; Secure; SameSite=Strict
-        [("id_token", "access_token", "refresh_token")].forEach((t) => {
+        [
+          ("id_token",
+          "access_token",
+          "refresh_token",
+          Configs.loginCookieName()),
+        ].forEach((t) => {
           expect(
             resLogout.res.headers["set-cookie"].find((c) =>
               c.match(

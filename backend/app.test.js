@@ -56,7 +56,6 @@ describe("app request-level tests", () => {
         const logoutPath = "/logout";
         const resLogout = await request(app).get(logoutPath);
         expect(resLogout.statusCode).toBe(200);
-        console.log(resLogout.res.headers);
         expect(resLogout.res.headers["set-cookie"]).toBeTruthy();
         const deletedCookieValue = "expired-via-logout";
         // ; Path=/; HttpOnly; Secure; SameSite=Strict

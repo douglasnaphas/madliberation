@@ -1,4 +1,8 @@
 class Configs {
+  static loginCookieName() {
+    return "login";
+  }
+
   static idpUrl() {
     return process.env.IDP_URL;
   }

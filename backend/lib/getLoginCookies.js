@@ -16,8 +16,9 @@ const dbParamsSaveUserTokenInfo = require("./dbParamsSaveUserTokenInfo");
 const runPut = require("./runPut");
 const verifyJwt = require("./verifyJwt");
 const refreshAccessToken = require("./refreshAccessToken");
-const randomCapGenerator = require("./randomCapGenerator")
-const generateOpaqueCookie = require("./generateOpaqueCookie")
+const randomCapGenerator = require("./randomCapGenerator");
+const generateOpaqueCookie = require("./generateOpaqueCookie");
+const setLoginCookie = require("./setLoginCookie");
 
 const getLoginCookies = [
   checkQueryParams(["code"]),
@@ -28,12 +29,13 @@ const getLoginCookies = [
   checkJwt({ jwk2Pem, jwt, tokenType: "id", verifyJwt, refreshAccessToken }),
   setJwtCookies(),
   getUserInfo(jwt),
-  getPostLoginURI(process),
-  generateOpaqueCookie({randomCapGenerator}),
+  getPostLoginURI(),
+  generateOpaqueCookie({ randomCapGenerator }),
+  setLoginCookie(),
   dbParamsSaveUserTokenInfo(),
   runPut(awsSdk, "dbParamsSaveUserTokenInfo"),
   (req, res, next) => {
     return res.redirect(res.locals.postLoginURI);
-  }
+  },
 ];
 module.exports = getLoginCookies;

@@ -5,11 +5,12 @@
  *   capital letter strings, like randomCapGenerator.js.
  */
 function generateOpaqueCookie({ randomCapGenerator }) {
-  return (req, res) => {
+  return (req, res, next) => {
     const OPAQUE_COOKIE_LENGTH = 30;
     res.locals.opaqueCookie = randomCapGenerator({
       letters: OPAQUE_COOKIE_LENGTH,
     }).next().value;
+    return next();
   };
 }
 module.exports = generateOpaqueCookie;

@@ -11,7 +11,7 @@ describe("generateOpaqueCookie", () => {
       yield expectedCode;
     };
     const middleware = generateOpaqueCookie({ randomCapGenerator });
-    middleware({}, res);
+    middleware({}, res, () => {});
     expect(res.locals.opaqueCookie).toEqual(expectedCode);
   });
   test("successfully generated cookie should be saved 2", () => {
@@ -20,14 +20,24 @@ describe("generateOpaqueCookie", () => {
       yield expectedCode;
     };
     const middleware = generateOpaqueCookie({ randomCapGenerator });
-    middleware({}, res);
+    middleware({}, res, () => {});
     expect(res.locals.opaqueCookie).toEqual(expectedCode);
+  });
+  test("next should be called on success", () => {
+    const expectedCode = "DOUGEFGHIJKLMBBBQRSTUVWXYZDOUG";
+    const randomCapGenerator = function* () {
+      yield expectedCode;
+    };
+    const middleware = generateOpaqueCookie({ randomCapGenerator });
+    const next = jest.fn();
+    middleware({}, res, next);
+    expect(next).toHaveBeenCalledTimes(1);
   });
   test("cookie should be the right size", () => {
     const middleware = generateOpaqueCookie({
       randomCapGenerator: defaultRandomCapGenerator,
     });
-    middleware({}, res);
+    middleware({}, res, () => {});
     const EXPECTED_OPAQUE_COOKIE_SIZE = 30;
     expect(res.locals.opaqueCookie.length).toEqual(EXPECTED_OPAQUE_COOKIE_SIZE);
   });
@@ -39,7 +49,7 @@ describe("generateOpaqueCookie", () => {
       randomCapGenerator: singleGenerator,
     });
     for (let i = 0; i < A_FEW_TIMES; i++) {
-      middleware({}, res);
+      middleware({}, res, () => {});
       cookies.add(res.locals.opaqueCookie);
     }
     expect(cookies.size).toEqual(A_FEW_TIMES);
@@ -53,7 +63,7 @@ describe("generateOpaqueCookie", () => {
       const middleware = generateOpaqueCookie({
         randomCapGenerator: generator,
       });
-      middleware({}, res);
+      middleware({}, res, () => {});
       cookies.add(res.locals.opaqueCookie);
     }
     expect(cookies.size).toEqual(A_FEW_TIMES);

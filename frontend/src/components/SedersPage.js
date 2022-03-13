@@ -30,7 +30,7 @@ function SedersPage({
     if (!user || !user.sub) return;
     if (!user.email) return;
     const sedersStartedUrl = new URL(
-      `./seders?user=${user.sub}&email=${user.email}`,
+      `./seders?user=${user.sub}&email=${encodeURIComponent(user.email)}`,
       Configs.apiUrl()
     );
     fetch(sedersStartedUrl, {
@@ -49,7 +49,9 @@ function SedersPage({
         console.log(err);
       });
     const sedersJoinedUrl = new URL(
-      `./seders-joined?user=${user.sub}&email=${user.email}`,
+      `./seders-joined?user=${user.sub}&email=${encodeURIComponent(
+        user.email
+      )}`,
       Configs.apiUrl()
     );
     fetch(sedersJoinedUrl, {

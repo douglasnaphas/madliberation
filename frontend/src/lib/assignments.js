@@ -10,7 +10,9 @@ import { Configs } from "../Configs";
  */
 async function assignments(roomCode, gameName) {
   const assignmentsUrl = new URL(
-    `./assignments?roomcode=${roomCode}&gamename=${encodeURI(gameName)}`,
+    `./assignments?roomcode=${roomCode}&gamename=${encodeURIComponent(
+      gameName
+    )}`,
     Configs.apiUrl()
   );
   if (!roomCode || !gameName) return {};

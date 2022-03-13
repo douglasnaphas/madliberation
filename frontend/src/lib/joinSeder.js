@@ -21,6 +21,9 @@ async function joinSeder(roomCode, gameName, user) {
   if (user && user["sub"]) {
     postData.user = user["sub"];
   }
+  if (user && user["email"]) {
+    postData.email = user["email"];
+  }
   const response = await fetch(joinSederUrl, {
     method: "POST",
     credentials: "include",

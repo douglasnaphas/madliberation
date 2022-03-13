@@ -184,6 +184,7 @@ describe("SedersPage", () => {
           gameName: selectedGameName,
           roomCode: selectedRoomCode,
           user: userSub,
+          email: userEmail,
         }),
       };
       global.fetch = jest.fn().mockImplementation((url, init) => {
@@ -345,6 +346,7 @@ describe("SedersPage", () => {
           gameName: selectedGameName,
           roomCode: selectedRoomCode,
           user: userSub,
+          email: userEmail,
         }),
       };
       global.fetch = jest.fn().mockImplementation((url, init) => {
@@ -523,6 +525,7 @@ describe("SedersPage", () => {
           gameName: selectedGameName,
           roomCode: selectedRoomCode,
           user: userSub,
+          email: userEmail,
         }),
       };
       global.fetch = jest.fn().mockImplementation((url, init) => {
@@ -656,6 +659,7 @@ describe("SedersPage", () => {
           gameName: selectedGameName,
           roomCode: selectedRoomCode,
           user: userSub,
+          email: userEmail,
         }),
       };
       global.fetch = jest.fn().mockImplementation((url, init) => {
@@ -850,6 +854,7 @@ describe("SedersPage", () => {
           gameName: selectedGameName,
           roomCode: selectedRoomCode,
           user: userSub,
+          email: userEmail,
         }),
       };
       global.fetch = jest.fn().mockImplementation((url, init) => {
@@ -1056,6 +1061,7 @@ describe("SedersPage", () => {
           gameName: selectedGameName,
           roomCode: selectedRoomCode,
           user: userSub,
+          email: userEmail,
         }),
       };
       global.fetch = jest.fn().mockImplementation((url, init) => {

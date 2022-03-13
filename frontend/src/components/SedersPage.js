@@ -28,8 +28,9 @@ function SedersPage({
 
   useEffect(() => {
     if (!user || !user.sub) return;
+    if (!user.email) return;
     const sedersStartedUrl = new URL(
-      `./seders?user=${user.sub}`,
+      `./seders?user=${user.sub}&email=${user.email}`,
       Configs.apiUrl()
     );
     fetch(sedersStartedUrl, {
@@ -48,7 +49,7 @@ function SedersPage({
         console.log(err);
       });
     const sedersJoinedUrl = new URL(
-      `./seders-joined?user=${user.sub}`,
+      `./seders-joined?user=${user.sub}&email=${user.email}`,
       Configs.apiUrl()
     );
     fetch(sedersJoinedUrl, {
@@ -176,6 +177,7 @@ function SedersPage({
                     gameName: selectedGameName,
                     roomCode: selectedRoomCode,
                     user: user.sub,
+                    email: user.email,
                   }),
                 };
                 await fetch(new URL("./rejoin", Configs.apiUrl()), fetchInit);

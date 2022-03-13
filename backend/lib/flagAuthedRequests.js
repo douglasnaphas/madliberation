@@ -40,5 +40,3 @@ const flagAuthedRequests = () => {
   return middleware;
 };
 module.exports = flagAuthedRequests;
-// TODO: use req.{query,body}.email, as an alternative to user, to indicate
-// authed requests.

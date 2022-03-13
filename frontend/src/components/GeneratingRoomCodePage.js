@@ -4,7 +4,7 @@ import MenuAppBar from "./MenuAppBar";
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { Typography } from "@mui/material";
-import withStyles from '@mui/styles/withStyles';
+import withStyles from "@mui/styles/withStyles";
 import { Link } from "react-router-dom";
 
 const styles = (theme) => ({});
@@ -23,9 +23,12 @@ class GeneratingRoomCodePage extends Component {
       chosenPath = localStorage.getItem("chosenPath");
       setChosenPath(chosenPath);
     }
-    const roomCodeUrl = Configs.apiRelativeUrl("room-code")
+    const roomCodeUrl = Configs.apiRelativeUrl("room-code");
     const body = { path: chosenPath };
-    if (this.props.user) body.user = user.sub;
+    if (this.props.user) {
+      body.user = user.sub;
+      body.email = user.email;
+    }
     const fetchInit = {
       method: "POST",
       body: JSON.stringify(body),

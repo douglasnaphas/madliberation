@@ -74,6 +74,7 @@ describe("GeneratingRoomCodePageWithRouter", () => {
       body: JSON.stringify({
         path: chosenPath,
         user: "vnf8da-fjasd-44farqeio",
+        email: "mrseff@f.com",
       }),
       headers: { "Content-Type": "application/json" },
       credentials: "include",
@@ -269,6 +270,7 @@ describe("GeneratingRoomCodePageWithRouter", () => {
       body: JSON.stringify({
         path: "script/path/from/storage",
         user: "fj32x-fsa",
+        email: "sumslummy@raw.raw",
       }),
       headers: { "Content-Type": "application/json" },
       credentials: "include",

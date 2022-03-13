@@ -15,7 +15,7 @@ describe('lib/flagAuthedRequests', () => {
       expect(res.status).not.toHaveBeenCalled();
       expect(res.locals.user).toBeUndefined();
     });
-    test('email provided 1', () => {
+    test('user sub provided 1', () => {
       const req = {
         method: 'GET',
         query: {user: 'afjda0-943fakd8-fajsdk23-ffasdf3'}
@@ -30,7 +30,7 @@ describe('lib/flagAuthedRequests', () => {
       expect(res.status).not.toHaveBeenCalled();
       expect(res.locals.user).toEqual(req.query.user);
     });
-    test('email provided 2', () => {
+    test('user sub provided 2', () => {
       const req = {
         method: 'GET',
         query: {user: 'fjsadkl-4324-fa3erewio'}
@@ -45,7 +45,7 @@ describe('lib/flagAuthedRequests', () => {
       expect(res.status).not.toHaveBeenCalled();
       expect(res.locals.user).toEqual(req.query.user);
     });
-    test('bad email provided, should be accepted here', () => {
+    test('weird sub provided, should be accepted here', () => {
       const req = {
         method: 'GET',
         query: {user: 'even odd subs are accepted, they just have to' +
@@ -63,7 +63,7 @@ describe('lib/flagAuthedRequests', () => {
     });
   });
   describe('POST requests', () => {
-    test('no user param, expect next', () => {
+    test('no user or email param, expect next', () => {
       const req = {method: 'POST', body: {}};
       const send = jest.fn();
       const res = {locals: {}, status: jest.fn(() => ({send}))};

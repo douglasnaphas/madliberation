@@ -77,10 +77,6 @@ app.get("/scripts", async function (req, res) {
 
 app.use(cookieParser());
 
-app.options(/\/.*/, function (req, res) {
-  res.status(204).send();
-});
-
 app.get("/", function (req, res) {
   res.send({
     Output: "Hello World!! ",

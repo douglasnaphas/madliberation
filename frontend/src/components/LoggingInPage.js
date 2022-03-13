@@ -50,3 +50,5 @@ function LoggingInPage({ history, setUser, browserWindow, storage }) {
   );
 }
 export default withStyles(styles)(LoggingInPage);
+// TODO: Get the user info (nickname and email) from the URL query params.
+// Remove the call to /id.

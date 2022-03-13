@@ -45,6 +45,8 @@ app.get("/logout", (req, res) => {
   res.cookie(Configs.loginCookieName(), expiredCookieValue, {
     expires: new Date(0),
   });
+  // TODO: move this to its own file
+  // TODO: invalidate the login cookie server-side
   return res.status(200).send({ message: "Logged out" });
 });
 

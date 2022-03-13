@@ -3,6 +3,12 @@ class Configs {
     return "login";
   }
 
+  static loginCookieExpirationDate(issuedDate) {
+    const DAYS = 3;
+    const MILLISECONDS_PER_DAY = 1000 * 60 * 60 * 24;
+    return new Date(issuedDate.getTime() + DAYS * MILLISECONDS_PER_DAY);
+  }
+
   static idpUrl() {
     return process.env.IDP_URL;
   }

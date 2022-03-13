@@ -9,6 +9,7 @@
  */
 function dbParamsSaveUserTokenInfo() {
   const schema = require("../schema");
+  const Configs = require("../Configs");
   const responses = require("../responses");
   const middleware = (req, res, next) => {
     if (
@@ -20,6 +21,12 @@ function dbParamsSaveUserTokenInfo() {
     ) {
       return res.status(500).send(responses.SERVER_ERROR);
     }
+    const opaqueCookieIssuedDate = new Date();
+    const opaqueCookieIssuedMs = opaqueCookieIssuedDate.getTime();
+    const opaqueCookieExpirationDate = Configs.loginCookieExpirationDate(
+      opaqueCookieIssuedDate
+    );
+    const opaqueCookieExpirationMs = opaqueCookieExpirationDate.getTime();
     res.locals.dbParamsSaveUserTokenInfo = {
       TableName: schema.TABLE_NAME,
       Item: {
@@ -32,6 +39,10 @@ function dbParamsSaveUserTokenInfo() {
         [schema.USER_NICKNAME]: res.locals.nickname,
         [schema.USER_EMAIL]: res.locals.email,
         [schema.OPAQUE_COOKIE]: res.locals.opaqueCookie,
+        [schema.OPAQUE_COOKIE_ISSUED_DATE]: `${opaqueCookieIssuedDate.toISOString()}`,
+        [schema.OPAQUE_COOKIE_ISSUED_MILLISECONDS]: `${opaqueCookieIssuedMs}`,
+        [schema.OPAQUE_COOKIE_EXPIRATION_DATE]: `${opaqueCookieExpirationDate.toISOString()}`,
+        [schema.OPAQUE_COOKIE_EXPIRATION_MILLISECONDS]: `${opaqueCookieExpirationMs}`,
       },
     };
     return next();

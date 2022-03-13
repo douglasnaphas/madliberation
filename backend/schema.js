@@ -49,7 +49,11 @@ const schema = {
   USER_NICKNAME: "user_nickname",
   USER_EMAIL: "user_email",
   // opaque cookie
-  OPAQUE_COOKIE: "opaque_cookie"
+  OPAQUE_COOKIE: "opaque_cookie",
+  OPAQUE_COOKIE_ISSUED_MILLISECONDS: "cookie_issued_ms",
+  OPAQUE_COOKIE_EXPIRATION_MILLISECONDS: "cookie_expiration_ms",
+  OPAQUE_COOKIE_ISSUED_DATE: "cookie_issued_date",
+  OPAQUE_COOKIE_EXPIRATION_DATE: "cookie_expiration_date",
 };
 
 module.exports = schema;

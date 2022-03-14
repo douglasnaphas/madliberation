@@ -1,4 +1,8 @@
 class Configs {
+  static OPAQUE_COOKIE_LENGTH() {
+    return 30;
+  }
+
   static loginCookieName() {
     return "login";
   }

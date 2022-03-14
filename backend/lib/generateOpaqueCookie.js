@@ -1,3 +1,4 @@
+const Configs = require("../Configs");
 /**
  * @return Express middleware satisfying:
  *   post: res.locals.opaqueCookie is a sequence of random capital letters
@@ -6,9 +7,8 @@
  */
 function generateOpaqueCookie({ randomCapGenerator }) {
   return (req, res, next) => {
-    const OPAQUE_COOKIE_LENGTH = 30;
     res.locals.opaqueCookie = randomCapGenerator({
-      letters: OPAQUE_COOKIE_LENGTH,
+      letters: Configs.OPAQUE_COOKIE_LENGTH(),
     }).next().value;
     return next();
   };

@@ -139,5 +139,7 @@ describe("lib/flagAuthedRequests", () => {
       expect(next).toHaveBeenCalled();
     }
     expect(res.locals).toEqual(expectedLocals);
+    expect(res.status).not.toHaveBeenCalled();
+    expect(res.send).not.toHaveBeenCalled();
   });
 });

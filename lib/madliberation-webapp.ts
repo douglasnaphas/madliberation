@@ -127,14 +127,14 @@ export class MadliberationWebapp extends Stack {
       },
       projectionType: dynamodb.ProjectionType.ALL,
     });
-    sedersTable.addGlobalSecondaryIndex({
-      indexName: schema.OPAQUE_COOKIE_INDEX,
-      partitionKey: {
-        name: schema.OPAQUE_COOKIE,
-        type: dynamodb.AttributeType.STRING,
-      },
-      projectionType: dynamodb.ProjectionType.ALL,
-    });
+    // sedersTable.addGlobalSecondaryIndex({
+    //   indexName: schema.OPAQUE_COOKIE_INDEX,
+    //   partitionKey: {
+    //     name: schema.OPAQUE_COOKIE,
+    //     type: dynamodb.AttributeType.STRING,
+    //   },
+    //   projectionType: dynamodb.ProjectionType.ALL,
+    // });
 
     const frontendBucket = new MadLiberationBucket(this, "FrontendBucket");
 

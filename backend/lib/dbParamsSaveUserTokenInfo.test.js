@@ -4,14 +4,6 @@ const Configs = require("../Configs");
 const schema = require("../schema");
 const responses = require("../responses");
 
-const FAKE_TIME = new Date(2022, 4, 15, 19);
-beforeAll(() => {
-  jest.useFakeTimers("modern");
-  jest.setSystemTime(FAKE_TIME);
-});
-afterAll(() => {
-  jest.useRealTimers();
-});
 describe("dbParamsSaveUserTokenInfo", () => {
   const runTest = ({
     locals,
@@ -32,19 +24,6 @@ describe("dbParamsSaveUserTokenInfo", () => {
     middleware(req, res, next);
     if (expectedDbParams) {
       expect(res.locals.dbParamsSaveUserTokenInfo).toEqual(expectedDbParams);
-      expect(
-        Number(
-          res.locals.dbParamsSaveUserTokenInfo.Item[
-            schema.OPAQUE_COOKIE_EXPIRATION_MILLISECONDS
-          ]
-        )
-      ).toBeGreaterThan(
-        Number(
-          res.locals.dbParamsSaveUserTokenInfo.Item[
-            schema.OPAQUE_COOKIE_ISSUED_MILLISECONDS
-          ]
-        )
-      );
     }
     if (expectNext) {
       expect(next).toHaveBeenCalled();
@@ -68,12 +47,6 @@ describe("dbParamsSaveUserTokenInfo", () => {
       "cognito:username": "Google_3829328",
       opaqueCookie: "QWERTYQWERTYQWERTYQWERTYQWERTY",
     };
-    const opaqueCookieIssuedDate = FAKE_TIME;
-    const opaqueCookieIssuedMs = opaqueCookieIssuedDate.getTime();
-    const opaqueCookieExpirationDate = Configs.loginCookieExpirationDate(
-      opaqueCookieIssuedDate
-    );
-    const opaqueCookieExpirationMs = opaqueCookieExpirationDate.getTime();
     const expectedDbParams = {
       TableName: schema.TABLE_NAME,
       Item: {
@@ -86,10 +59,6 @@ describe("dbParamsSaveUserTokenInfo", () => {
         [schema.USER_NICKNAME]: locals.nickname,
         [schema.USER_EMAIL]: locals.email,
         [schema.OPAQUE_COOKIE]: locals.opaqueCookie,
-        [schema.OPAQUE_COOKIE_ISSUED_DATE]: `${opaqueCookieIssuedDate.toISOString()}`,
-        [schema.OPAQUE_COOKIE_ISSUED_MILLISECONDS]: `${opaqueCookieIssuedMs}`,
-        [schema.OPAQUE_COOKIE_EXPIRATION_DATE]: `${opaqueCookieExpirationDate.toISOString()}`,
-        [schema.OPAQUE_COOKIE_EXPIRATION_MILLISECONDS]: `${opaqueCookieExpirationMs}`,
       },
     };
     runTest({
@@ -106,12 +75,6 @@ describe("dbParamsSaveUserTokenInfo", () => {
       "cognito:username": "Facebook_88593282343ikf",
       opaqueCookie: "NUMINALQWERTYQWERTYQWERTYNUMINALF",
     };
-    const opaqueCookieIssuedDate = FAKE_TIME;
-    const opaqueCookieIssuedMs = opaqueCookieIssuedDate.getTime();
-    const opaqueCookieExpirationDate = Configs.loginCookieExpirationDate(
-      opaqueCookieIssuedDate
-    );
-    const opaqueCookieExpirationMs = opaqueCookieExpirationDate.getTime();
     const expectedDbParams = {
       TableName: schema.TABLE_NAME,
       Item: {
@@ -124,10 +87,6 @@ describe("dbParamsSaveUserTokenInfo", () => {
         [schema.USER_NICKNAME]: locals.nickname,
         [schema.USER_EMAIL]: locals.email,
         [schema.OPAQUE_COOKIE]: locals.opaqueCookie,
-        [schema.OPAQUE_COOKIE_ISSUED_DATE]: `${opaqueCookieIssuedDate.toISOString()}`,
-        [schema.OPAQUE_COOKIE_ISSUED_MILLISECONDS]: `${opaqueCookieIssuedMs}`,
-        [schema.OPAQUE_COOKIE_EXPIRATION_DATE]: `${opaqueCookieExpirationDate.toISOString()}`,
-        [schema.OPAQUE_COOKIE_EXPIRATION_MILLISECONDS]: `${opaqueCookieExpirationMs}`,
       },
     };
     runTest({

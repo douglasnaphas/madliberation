@@ -19,8 +19,8 @@ const authenticate = [
 
   validateOpaqueCookie({ local: "preAuthEmail" }),
 
-  // dbParamsGetEmailFromOpaqueCookie
-  
+  // dbParamsGetEmailFromOpaqueCookie("preAuthEmail")
+
 
   // runQuery
 

@@ -1,3 +1,5 @@
+const schema = require("../schema");
+const logger = require("../logger");
 /**
  * @return middleware satisfying:
  * pre:
@@ -10,7 +12,23 @@
  */
 function dbParamsGetEmailFromOpaqueCookie(local) {
   return (req, res, next) => {
+    if (!res.locals[local]) {
+      return next();
+    }
+    if (!res.locals.loginCookie) {
+      logger.log(
+        `res.locals[local] (${res.locals[local]}) is set, but not` +
+          ` loginCookie`
+      );
+      return res.sendStatus(500);
+    }
+    res.locals.dbParamsGetEmailFromOpaqueCookie = {
+      TableName: schema.TABLE_NAME,
+      Key: {
+        [schema.PARTITION_KEY]: res.locals.loginCookie,
+      },
+    };
     return next();
-  }
+  };
 }
 module.exports = dbParamsGetEmailFromOpaqueCookie;

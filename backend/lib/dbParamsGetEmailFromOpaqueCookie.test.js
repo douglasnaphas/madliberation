@@ -1,11 +1,7 @@
 const dbParamsGetEmailFromOpaqueCookie = require("./dbParamsGetEmailFromOpaqueCookie");
-const schema = require("../schema")
+const schema = require("../schema");
 
 describe("dbParamsGetEmailFromOpaqueCookie", () => {
-  test("if local is unset, return next and do not set Get params", () => {
-    const local = "preAuthEmail";
-  });
-  test("res.locals.dbParamsGetEmailFromOpaqueCookie should be set on success", () => {});
   test.each([
     {
       description: "if local is unset, return next and do not set Get params",
@@ -13,22 +9,69 @@ describe("dbParamsGetEmailFromOpaqueCookie", () => {
       expectNext: true,
       locals: {},
       req: {},
+      expectedLocals: {},
     },
     {
       description: "set params to get email from cookie 1",
       local: "preAuthEmail",
       expectNext: true,
-      locals: {preAuthEmail: "iamhere@here.cz", dbParamsGetEmailFromOpaqueCookie: {
-        TableName: schema.TABLE_NAME,
-        Key: {
-          [schema.PARTITION_KEY]: '...'
-        }
-      }},
-      req: {cookies: {login: "MVFADHMVFADHMVFADHMVFADHMVFADH"}},
+      locals: {
+        preAuthEmail: "iamhere@here.cz",
+        loginCookie: "SOMECOOKIESOMECOOKIE",
+      },
+      expectedLocals: {
+        preAuthEmail: "iamhere@here.cz",
+        loginCookie: "SOMECOOKIESOMECOOKIE",
+        dbParamsGetEmailFromOpaqueCookie: {
+          TableName: schema.TABLE_NAME,
+          Key: {
+            [schema.PARTITION_KEY]: "SOMECOOKIESOMECOOKIE",
+          },
+        },
+      },
+      req: {},
+    },
+    {
+      description: "set params to get email from cookie 2",
+      local: "preAuthEmail",
+      expectNext: true,
+      locals: {
+        preAuthEmail: "youwerehere@here.cz",
+        loginCookie: "DIFFERENTSOMECOOKIESOMECOOKIE",
+      },
+      expectedLocals: {
+        preAuthEmail: "youwerehere@here.cz",
+        loginCookie: "DIFFERENTSOMECOOKIESOMECOOKIE",
+        dbParamsGetEmailFromOpaqueCookie: {
+          TableName: schema.TABLE_NAME,
+          Key: {
+            [schema.PARTITION_KEY]: "DIFFERENTSOMECOOKIESOMECOOKIE",
+          },
+        },
+      },
+      req: {},
+    },
+    {
+      description: "res.locals.loginCookie not set, 500",
+      local: "preAuthEmail",
+      locals: { preAuthEmail: "youwerehere@here.cz" },
+      expectedLocals: {
+        preAuthEmail: "youwerehere@here.cz",
+      },
+      req: {},
+      expectedStatus: 500,
     },
   ])(
     "$description",
-    ({ local, expectNext, locals, req, expectedStatus, expectedMessage, expectedLocals }) => {
+    ({
+      local,
+      expectNext,
+      locals,
+      req,
+      expectedStatus,
+      expectedMessage,
+      expectedLocals,
+    }) => {
       const res = { locals };
       let tentativeStatus = 200;
       let sentStatus;
@@ -67,8 +110,8 @@ describe("dbParamsGetEmailFromOpaqueCookie", () => {
         expect(res.send).toHaveBeenCalledTimes(1);
         expect(res.sendStatus).not.toHaveBeenCalled();
       }
-      if(expectedLocals) {
-        expect(res.locals).toEqual(expectedLocals)
+      if (expectedLocals) {
+        expect(res.locals).toEqual(expectedLocals);
       }
     }
   );

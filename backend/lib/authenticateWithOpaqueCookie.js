@@ -51,6 +51,7 @@ const authenticate = [
       return res.sendStatus(400);
     }
     res.locals.userEmail = dbEmail;
+    return next();
   }, // userEmail
 
   //////////////////////////////////////////////////////////////////////////////

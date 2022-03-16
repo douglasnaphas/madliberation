@@ -124,40 +124,40 @@ describe("lib/runGet", () => {
       expect500: true,
     });
   });
-  // test.each([
-  //   {
-  //     description: "conditional: don't skip",
-  //     local: "preAuthEmail",
-  //     paramsName: "theParams",
-  //     locals: {
-  //       preAuthEmail: "something@provided.net",
-  //       theParams: { some: "params" },
-  //     },
-  //     expectNext: true,
-  //     expectDbCall: true,
-  //   },
-  // ])("$description", async ({ local, paramsName, locals, expectNext }) => {
-  //   const next = jest.fn();
+  test.each([
+    {
+      description: "conditional: don't skip",
+      local: "preAuthEmail",
+      paramsName: "theParams",
+      locals: {
+        preAuthEmail: "something@provided.net",
+        theParams: { some: "params" },
+      },
+      expectNext: true,
+      expectDbCall: true,
+    },
+  ])("$description", async ({ local, paramsName, locals, expectNext }) => {
+    const next = jest.fn();
 
-  //   const res = { locals };
-  //   const expectedData = "the data";
-  //   const expectedError = "the error";
-  //   const get = jest.fn((params, cb) => {
-  //     Promise.resolve({ data: expectedData });
-  //   });
-  //   const awsSdk = {
-  //     DynamoDB: {
-  //       DocumentClient: class {
-  //         constructor() {
-  //           return {
-  //             get,
-  //           };
-  //         }
-  //       },
-  //     },
-  //   };
-  //   const middleware = runGet(awsSdk, paramsName, local);
-  //   await middleware({}, res, next);
-  //   expect(res.locals.dbData).toEqual(expectedData);
-  // });
+    const res = { locals };
+    const expectedData = "the data";
+    const expectedError = "the error";
+    const get = jest.fn((params, cb) => {
+      cb(null, expectedData)
+    });
+    const awsSdk = {
+      DynamoDB: {
+        DocumentClient: class {
+          constructor() {
+            return {
+              get,
+            };
+          }
+        },
+      },
+    };
+    const middleware = runGet(awsSdk, paramsName, local);
+    await middleware({}, res, next);
+    expect(res.locals.dbData).toEqual(expectedData);
+  });
 });

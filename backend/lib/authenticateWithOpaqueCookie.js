@@ -3,7 +3,8 @@ const validateOpaqueCookie = require("./validateOpaqueCookie");
 const runGet = require("./runGet");
 const logger = require("../logger");
 const schema = require("../schema");
-const dbParamsGetEmailFromOpaqueCookie = require("./dbParamsGetEmailFromOpaqueCookie")
+const dbParamsGetEmailFromOpaqueCookie = require("./dbParamsGetEmailFromOpaqueCookie");
+const awsSdk = require("aws-sdk");
 
 const authenticate = [
   // get the preAuthEmail from the various places it could be (req.query.email,
@@ -15,7 +16,7 @@ const authenticate = [
   ////////// by looking for res.locals.preAuthEmail ////////////////////////////
   validateOpaqueCookie({ local: "preAuthEmail" }), // loginCookie
   dbParamsGetEmailFromOpaqueCookie("preAuthEmail"), // dbParamsGetEmailFromOpaqueCookie
-  runGet("preAuthEmail"), // dbError, dbData
+  runGet(awsSdk, "dbParamsGetEmailFromOpaqueCookie", "preAuthEmail"), // dbError, dbData
   // fail if error
   (req, res, next) => {
     if (res.locals.dbError) {

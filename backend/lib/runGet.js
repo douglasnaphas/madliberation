@@ -1,3 +1,4 @@
+const logger = require("../logger");
 /**
  * Return middleware satisfying:
  * pre: res.locals[paramsName] is set to an valid object for params to
@@ -16,17 +17,18 @@
  */
 function runGet(awsSdk, paramsName, local) {
   const middleware = async (req, res, next) => {
-    if(local && !res.locals[local]) {
+    if (local && !res.locals[local]) {
       return next();
     }
-    const responses = require('../responses');
-    if(!res.locals[paramsName]) {
+    const responses = require("../responses");
+    if (!res.locals[paramsName]) {
+      logger.log(`runGet: no local named ${paramsName}`);
       return res.status(500).send(responses.SERVER_ERROR);
     }
     const dynamodb = new awsSdk.DynamoDB.DocumentClient();
     const dbResponse = await new Promise((resolve, reject) => {
       dynamodb.get(res.locals[paramsName], (err, data) => {
-        resolve({err: err, data: data});
+        resolve({ err: err, data: data });
       });
     });
     res.locals.dbError = dbResponse.err;

@@ -144,6 +144,8 @@ describe("lib/runGet", () => {
     const expectedError = "the error";
     const get = jest.fn((params, cb) => {
       cb(null, expectedData)
+      // TODO: apply this testing approach elsewhere, wherever I have runXXX
+      // DynamoDB helper functions.
     });
     const awsSdk = {
       DynamoDB: {

@@ -13,22 +13,25 @@ describe("Logging In Page", () => {
       desc: "normal case 1",
       expectedEmail: "strip@query.com",
       expectedNickname: "From URL",
-      url: "https://passover.lol?email=strip%40query.com&nickname=From%20URL",
+      url: new URL(
+        "https://passover.lol?email=strip%40query.com&nickname=From%20URL"
+      ),
+      expectedNewUrl: "https://passover.lol/",
     },
   ];
   test.each(testData)(
     "$desc",
-    async ({expectedNickname, expectedEmail, url }) => {
+    async ({ expectedNickname, expectedEmail, url, expectedNewUrl }) => {
       const expectedUser = {
         nickname: expectedNickname,
-        email: expectedEmail
+        email: expectedEmail,
       };
       const history = { push: jest.fn() };
       const setUser = jest.fn();
       const browserWindow = {};
       browserWindow.location = {
-        href: url,
-        toString: () => url,
+        href: url.href,
+        search: url.search,
       };
       browserWindow.history = {
         replaceState: jest.fn().mockImplementation(() => {
@@ -53,6 +56,12 @@ describe("Logging In Page", () => {
       await waitFor(() => expect(setUser).toHaveBeenCalled());
       expect(setUser).toHaveBeenCalledWith(expectedUser);
       expect(setUser).toHaveBeenCalledTimes(1);
+      expect(browserWindow.history.replaceState).toHaveBeenCalledTimes(1);
+      expect(browserWindow.history.replaceState).toHaveBeenCalledWith(
+        expect.anything(),
+        expect.anything(),
+        expectedNewUrl
+      );
       expect(history.push).toHaveBeenCalled();
       expect(history.push).toHaveBeenCalledWith("/");
       expect(history.push).toHaveBeenCalledTimes(1);
@@ -61,11 +70,10 @@ describe("Logging In Page", () => {
         "user-nickname",
         expectedNickname
       );
-      expect(storage.setItem).toHaveBeenCalledWith(
-        "user-email",
-        expectedEmail
-      );
+      expect(storage.setItem).toHaveBeenCalledWith("user-email", expectedEmail);
       expect(storage.setItem).toHaveBeenCalledTimes(2);
     }
   );
 });
+// expect a "something bad happened" page if the required search params aren't
+// there

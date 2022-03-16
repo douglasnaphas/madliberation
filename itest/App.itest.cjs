@@ -693,10 +693,10 @@ const submitAllLibs = async (page, prefix) => {
     },
     { sub: user2Sub, userName: user2Name }
   );
-  if (sedersStartedStatus != 401) {
+  if (sedersStartedStatus < 400 || sedersStartedStatus > 499) {
     failTest(
       new Error("still logged in after logout"),
-      `expected 401 from post-logout /seders call, got ${sedersStartedStatus}`
+      `expected 4xx from post-logout /seders call, got ${sedersStartedStatus}`
     );
   }
   await browser2.close();

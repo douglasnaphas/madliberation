@@ -650,18 +650,21 @@ const submitAllLibs = async (page, prefix) => {
   const user2Sub = await page2.evaluate((subKey) => {
     return localStorage.getItem(subKey);
   }, SUB_KEY);
-  const sedersStarted = await page2.evaluate(async (sub) => {
-    const items = await fetch(
-      `/prod/seders?user=${sub}` + `&email=${encodeURIComponent(user2Name)}`,
-      {
-        headers: { "cache-control": "no-cache" },
-        credentials: "include",
-      }
-    )
-      .then((r) => r.json())
-      .then((j) => j.Items);
-    return items;
-  }, user2Sub);
+  const sedersStarted = await page2.evaluate(
+    async ({ sub, userName }) => {
+      const items = await fetch(
+        `/prod/seders?user=${sub}` + `&email=${encodeURIComponent(userName)}`,
+        {
+          headers: { "cache-control": "no-cache" },
+          credentials: "include",
+        }
+      )
+        .then((r) => r.json())
+        .then((j) => j.Items);
+      return items;
+    },
+    { sub: user2Sub, userName: user2Name }
+  );
   if (sedersStarted.length != 1) {
     failTest(
       new Error("sedersStarted.length != 1"),
@@ -677,16 +680,19 @@ const submitAllLibs = async (page, prefix) => {
   await itClick({ page: page2, madliberationid: "logout-button" });
   await itWait({ page: page2, madliberationid: "login-button" });
   // Confirm that a logged-in-only fetch now doesn't work
-  const sedersStartedStatus = await page2.evaluate(async (sub) => {
-    const status = await fetch(
-      `/prod/seders?user=${sub}` + `&email=${encodeURIComponent(user2Name)}`,
-      {
-        headers: { "cache-control": "no-cache" },
-        credentials: "include",
-      }
-    ).then((r) => r.status);
-    return status;
-  }, user2Sub);
+  const sedersStartedStatus = await page2.evaluate(
+    async ({ sub, userName }) => {
+      const status = await fetch(
+        `/prod/seders?user=${sub}` + `&email=${encodeURIComponent(userName)}`,
+        {
+          headers: { "cache-control": "no-cache" },
+          credentials: "include",
+        }
+      ).then((r) => r.status);
+      return status;
+    },
+    { sub: user2Sub, userName: user2Name }
+  );
   if (sedersStartedStatus != 401) {
     failTest(
       new Error("still logged in after logout"),

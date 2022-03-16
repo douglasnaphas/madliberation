@@ -26,6 +26,7 @@ describe("dbParamsGetEmailFromOpaqueCookie", () => {
           TableName: schema.TABLE_NAME,
           Key: {
             [schema.PARTITION_KEY]: "SOMECOOKIESOMECOOKIE",
+            [schema.SORT_KEY]: schema.OPAQUE_COOKIE,
           },
         },
       },
@@ -46,6 +47,7 @@ describe("dbParamsGetEmailFromOpaqueCookie", () => {
           TableName: schema.TABLE_NAME,
           Key: {
             [schema.PARTITION_KEY]: "DIFFERENTSOMECOOKIESOMECOOKIE",
+            [schema.SORT_KEY]: schema.OPAQUE_COOKIE,
           },
         },
       },

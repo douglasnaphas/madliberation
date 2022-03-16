@@ -26,6 +26,7 @@ function dbParamsGetEmailFromOpaqueCookie(local) {
       TableName: schema.TABLE_NAME,
       Key: {
         [schema.PARTITION_KEY]: res.locals.loginCookie,
+        [schema.SORT_KEY]: schema.OPAQUE_COOKIE,
       },
     };
     return next();

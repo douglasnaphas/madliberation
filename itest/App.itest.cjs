@@ -651,10 +651,13 @@ const submitAllLibs = async (page, prefix) => {
     return localStorage.getItem(subKey);
   }, SUB_KEY);
   const sedersStarted = await page2.evaluate(async (sub) => {
-    const items = await fetch(`/prod/seders?user=${sub}`, {
-      headers: { "cache-control": "no-cache" },
-      credentials: "include",
-    })
+    const items = await fetch(
+      `/prod/seders?user=${sub}` + `&email=${encodeURIComponent(user2Name)}`,
+      {
+        headers: { "cache-control": "no-cache" },
+        credentials: "include",
+      }
+    )
       .then((r) => r.json())
       .then((j) => j.Items);
     return items;
@@ -675,10 +678,13 @@ const submitAllLibs = async (page, prefix) => {
   await itWait({ page: page2, madliberationid: "login-button" });
   // Confirm that a logged-in-only fetch now doesn't work
   const sedersStartedStatus = await page2.evaluate(async (sub) => {
-    const status = await fetch(`/prod/seders?user=${sub}`, {
-      headers: { "cache-control": "no-cache" },
-      credentials: "include",
-    }).then((r) => r.status);
+    const status = await fetch(
+      `/prod/seders?user=${sub}` + `&email=${encodeURIComponent(user2Name)}`,
+      {
+        headers: { "cache-control": "no-cache" },
+        credentials: "include",
+      }
+    ).then((r) => r.status);
     return status;
   }, user2Sub);
   if (sedersStartedStatus != 401) {

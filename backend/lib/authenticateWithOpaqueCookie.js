@@ -21,7 +21,7 @@ const authenticate = [
   (req, res, next) => {
     if (res.locals.dbError) {
       logger.log("dbError getting email from opaque cookie");
-      logger.log(dbError);
+      logger.log(res.locals.dbError);
       return res.sendStatus(500);
     }
     return next();

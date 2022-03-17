@@ -645,15 +645,10 @@ const submitAllLibs = async (page, prefix) => {
   // Test some login-logout behaviors
   await page2.goto(site);
   // Confirm that a logged-in-only fetch works
-  // get the sub
-  const SUB_KEY = "user-sub";
-  const user2Sub = await page2.evaluate((subKey) => {
-    return localStorage.getItem(subKey);
-  }, SUB_KEY);
   const sedersStarted = await page2.evaluate(
-    async ({ sub, userName }) => {
+    async ({ userName }) => {
       const items = await fetch(
-        `/prod/seders?user=${sub}` + `&email=${encodeURIComponent(userName)}`,
+        `/prod/seders` + `?email=${encodeURIComponent(userName)}`,
         {
           headers: { "cache-control": "no-cache" },
           credentials: "include",
@@ -663,7 +658,7 @@ const submitAllLibs = async (page, prefix) => {
         .then((j) => j.Items);
       return items;
     },
-    { sub: user2Sub, userName: user2Name }
+    { userName: user2Name }
   );
   if (sedersStarted.length != 1) {
     failTest(
@@ -681,9 +676,9 @@ const submitAllLibs = async (page, prefix) => {
   await itWait({ page: page2, madliberationid: "login-button" });
   // Confirm that a logged-in-only fetch now doesn't work
   const sedersStartedStatus = await page2.evaluate(
-    async ({ sub, userName }) => {
+    async ({ userName }) => {
       const status = await fetch(
-        `/prod/seders?user=${sub}` + `&email=${encodeURIComponent(userName)}`,
+        `/prod/seders` + `?email=${encodeURIComponent(userName)}`,
         {
           headers: { "cache-control": "no-cache" },
           credentials: "include",
@@ -691,7 +686,7 @@ const submitAllLibs = async (page, prefix) => {
       ).then((r) => r.status);
       return status;
     },
-    { sub: user2Sub, userName: user2Name }
+    { userName: user2Name }
   );
   if (sedersStartedStatus < 400 || sedersStartedStatus > 499) {
     failTest(

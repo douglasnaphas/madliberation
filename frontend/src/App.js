@@ -55,12 +55,10 @@ class App extends Component {
         localStorage &&
         localStorage.getItem &&
         localStorage.getItem("user-email") &&
-        localStorage.getItem("user-nickname") &&
-        localStorage.getItem("user-sub")
+        localStorage.getItem("user-nickname")
           ? {
               email: localStorage.getItem("user-email"),
               nickname: localStorage.getItem("user-nickname"),
-              sub: localStorage.getItem("user-sub"),
             }
           : false,
       isSigningIn: true,

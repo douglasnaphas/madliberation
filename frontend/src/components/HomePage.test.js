@@ -92,8 +92,7 @@ describe("<HomePage />", () => {
     expect(storage.removeItem).toHaveBeenCalled();
     expect(storage.removeItem).toHaveBeenCalledWith("user-nickname");
     expect(storage.removeItem).toHaveBeenCalledWith("user-email");
-    expect(storage.removeItem).toHaveBeenCalledWith("user-sub");
-    expect(storage.removeItem).toHaveBeenCalledTimes(3);
+    expect(storage.removeItem).toHaveBeenCalledTimes(2);
     rerender(
       <MemoryRouter>
         <HomePage user={false} setUser={setUser} storage={storage}></HomePage>

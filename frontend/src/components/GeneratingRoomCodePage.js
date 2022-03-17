@@ -26,7 +26,6 @@ class GeneratingRoomCodePage extends Component {
     const roomCodeUrl = Configs.apiRelativeUrl("room-code");
     const body = { path: chosenPath };
     if (this.props.user) {
-      body.user = user.sub;
       body.email = user.email;
     }
     const fetchInit = {
@@ -110,7 +109,6 @@ GeneratingRoomCodePage.propTypes = {
   user: PropTypes.shape({
     nickname: PropTypes.string,
     email: PropTypes.string,
-    sub: PropTypes.string,
   }),
 };
 

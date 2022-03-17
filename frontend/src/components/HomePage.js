@@ -145,7 +145,6 @@ class HomePage extends Component {
                             setUser(false);
                             storage.removeItem("user-nickname");
                             storage.removeItem("user-email");
-                            storage.removeItem("user-sub");
                           });
                         }}
                         madliberationid="logout-button"

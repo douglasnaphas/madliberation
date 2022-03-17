@@ -27,10 +27,9 @@ function SedersPage({
   const [gotResponseSedersJoined, setGotResponseSedersJoines] = useState(false);
 
   useEffect(() => {
-    if (!user || !user.sub) return;
-    if (!user.email) return;
+    if (!user || !user.email) return;
     const sedersStartedUrl = new URL(
-      `./seders?user=${user.sub}&email=${encodeURIComponent(user.email)}`,
+      `./seders?email=${encodeURIComponent(user.email)}`,
       Configs.apiUrl()
     );
     fetch(sedersStartedUrl, {
@@ -49,9 +48,7 @@ function SedersPage({
         console.log(err);
       });
     const sedersJoinedUrl = new URL(
-      `./seders-joined?user=${user.sub}&email=${encodeURIComponent(
-        user.email
-      )}`,
+      `./seders-joined?email=${encodeURIComponent(user.email)}`,
       Configs.apiUrl()
     );
     fetch(sedersJoinedUrl, {
@@ -178,7 +175,6 @@ function SedersPage({
                   body: JSON.stringify({
                     gameName: selectedGameName,
                     roomCode: selectedRoomCode,
-                    user: user.sub,
                     email: user.email,
                   }),
                 };

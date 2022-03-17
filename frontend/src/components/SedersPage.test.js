@@ -24,7 +24,6 @@ describe("SedersPage", () => {
       const user = {
         email: "user1@gmail.com",
         nickname: "Mister One",
-        sub: "11-aa-m1-gha-one",
       };
       const setConfirmedRoomCode = jest.fn();
       const setChosenPath = jest.fn();
@@ -118,12 +117,10 @@ describe("SedersPage", () => {
       const userEmail = "munmunny@gmail.com";
       const selectedRoomCode = "MMEMUN";
       const selectedGameName = "madame un";
-      const userSub = "222-case2-thisiscase-2-x";
       const selectedPath = "xxx-madliberation-scripts/007-Practice_Script";
       const user = {
         email: userEmail,
         nickname: selectedGameName,
-        sub: userSub,
       };
       const setConfirmedRoomCode = jest.fn();
       const setChosenPath = jest.fn();
@@ -183,7 +180,6 @@ describe("SedersPage", () => {
         body: JSON.stringify({
           gameName: selectedGameName,
           roomCode: selectedRoomCode,
-          user: userSub,
           email: userEmail,
         }),
       };
@@ -280,12 +276,10 @@ describe("SedersPage", () => {
       const userEmail = "funfunny@yahoo.co";
       const selectedRoomCode = "FFUNNY";
       const selectedGameName = "Lapid Sprull";
-      const userSub = "mr3mr3-case3-maybethereareother-cases";
       const selectedPath = "xxx-madliberation-scripts/010-Three_Script";
       const user = {
         email: userEmail,
         nickname: selectedGameName,
-        sub: userSub,
       };
       const setConfirmedRoomCode = jest.fn();
       const setChosenPath = jest.fn();
@@ -345,7 +339,6 @@ describe("SedersPage", () => {
         body: JSON.stringify({
           gameName: selectedGameName,
           roomCode: selectedRoomCode,
-          user: userSub,
           email: userEmail,
         }),
       };
@@ -437,12 +430,10 @@ describe("SedersPage", () => {
       const userEmail = "multiple_overlaps@ab.cz";
       const selectedRoomCode = "DUNLOP";
       const selectedGameName = "Sply";
-      const userSub = "abx778-case4-treeof-treeof-4";
       const selectedPath = "44-madliberation-scripts/021-Scymillion";
       const user = {
         email: userEmail,
         nickname: selectedGameName,
-        sub: userSub,
       };
       const setConfirmedRoomCode = jest.fn();
       const setChosenPath = jest.fn();
@@ -524,7 +515,6 @@ describe("SedersPage", () => {
         body: JSON.stringify({
           gameName: selectedGameName,
           roomCode: selectedRoomCode,
-          user: userSub,
           email: userEmail,
         }),
       };
@@ -618,12 +608,10 @@ describe("SedersPage", () => {
       const userEmail = "funfunny@yahoo.co";
       const selectedRoomCode = "FFUNNY";
       const selectedGameName = "Lapid Sprull";
-      const userSub = "mr3mr3-case3-maybethereareother-cases";
       const selectedPath = "xxx-madliberation-scripts/010-Three_Script";
       const user = {
         email: userEmail,
         nickname: selectedGameName,
-        sub: userSub,
       };
       const setConfirmedRoomCode = jest.fn();
       const setChosenPath = jest.fn();
@@ -658,7 +646,6 @@ describe("SedersPage", () => {
         body: JSON.stringify({
           gameName: selectedGameName,
           roomCode: selectedRoomCode,
-          user: userSub,
           email: userEmail,
         }),
       };
@@ -751,7 +738,6 @@ describe("SedersPage", () => {
       const userEmail = "multiple_overlaps@ab.cz";
       const selectedRoomCode = "DUNLOP";
       const selectedGameName = "Sply";
-      const userSub = "abx778-case4-treeof-treeof-4";
       const selectedPath = "66-madliberation-scripts/021-Scymillion";
       const assignments = [
         {
@@ -770,7 +756,6 @@ describe("SedersPage", () => {
       const user = {
         email: userEmail,
         nickname: selectedGameName,
-        sub: userSub,
       };
       const setConfirmedRoomCode = jest.fn();
       const setChosenPath = jest.fn();
@@ -853,7 +838,6 @@ describe("SedersPage", () => {
         body: JSON.stringify({
           gameName: selectedGameName,
           roomCode: selectedRoomCode,
-          user: userSub,
           email: userEmail,
         }),
       };
@@ -953,7 +937,6 @@ describe("SedersPage", () => {
       const userEmail = "multiple_overlaps@alberta.ca";
       const selectedRoomCode = "DUNLOP";
       const selectedGameName = "Sply";
-      const userSub = "abx778-case4-treeof-treeof-4";
       const selectedPath = "66-madliberation-scripts/021-Scymillion";
       const assignments = [
         {
@@ -976,7 +959,6 @@ describe("SedersPage", () => {
       const user = {
         email: userEmail,
         nickname: selectedGameName,
-        sub: userSub,
       };
       const setConfirmedRoomCode = jest.fn();
       const setChosenPath = jest.fn();
@@ -1060,7 +1042,6 @@ describe("SedersPage", () => {
         body: JSON.stringify({
           gameName: selectedGameName,
           roomCode: selectedRoomCode,
-          user: userSub,
           email: userEmail,
         }),
       };
@@ -1161,7 +1142,6 @@ describe("SedersPage", () => {
     const user = {
       email: "user1@gmail.com",
       nickname: "Mister One",
-      sub: "11-aa-m1-gha-one",
     };
     const setConfirmedRoomCode = jest.fn();
     const setChosenPath = jest.fn();
@@ -1238,7 +1218,6 @@ describe("SedersPage", () => {
       const user = {
         email: "user1@gmail.com",
         nickname: "Mister One",
-        sub: "11-aa-m1-gha-one",
       };
       const setConfirmedRoomCode = jest.fn();
       const setChosenPath = jest.fn();
@@ -1313,7 +1292,6 @@ describe("SedersPage", () => {
     const user = {
       email: "user1@gmail.com",
       nickname: "Mister One",
-      sub: "11-aa-m1-gha-one",
     };
     const setConfirmedRoomCode = jest.fn();
     const setChosenPath = jest.fn();

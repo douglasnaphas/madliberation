@@ -10,7 +10,7 @@ import { Configs } from "../Configs";
  */
 async function script(roomCode, gameName) {
   const scriptUrl = new URL(
-    `./script?roomcode=${roomCode}&gamename=${encodeURI(gameName)}`,
+    `./script?roomcode=${roomCode}&gamename=${encodeURIComponent(gameName)}`,
     Configs.apiUrl()
   );
   if (!roomCode) return {};

@@ -1,25 +1,25 @@
-import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
-import MenuAppBar from './MenuAppBar';
-import { Button } from '@mui/material';
-import { madLiberationStyles } from '../madLiberationStyles';
-import { Typography } from '@mui/material';
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItemText from '@mui/material/ListItemText';
-import ChevronRight from '@mui/icons-material/ChevronRight';
-import withStyles from '@mui/styles/withStyles';
-import StageDirection from './StageDirection';
-import Answer from './Answer';
+import React, { Component } from "react";
+import { Link } from "react-router-dom";
+import MenuAppBar from "./MenuAppBar";
+import { Button } from "@mui/material";
+import { madLiberationStyles } from "../madLiberationStyles";
+import { Typography } from "@mui/material";
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
+import ListItemIcon from "@mui/material/ListItemIcon";
+import ListItemText from "@mui/material/ListItemText";
+import ChevronRight from "@mui/icons-material/ChevronRight";
+import withStyles from "@mui/styles/withStyles";
+import StageDirection from "./StageDirection";
+import Answer from "./Answer";
 
 const styles = () => {
   return {
     bordered: {
-      paddingRight: '20px',
-      paddingLeft: '20px',
-      paddingTop: '10px',
-      paddingBottom: '10px',
+      paddingRight: "20px",
+      paddingLeft: "20px",
+      paddingTop: "10px",
+      paddingBottom: "10px",
     },
   };
 };
@@ -40,7 +40,7 @@ class ExplainPage extends Component {
               </StageDirection>
             </Typography>
             <Typography component="p" paragraph>
-              Everyone please listen to me.{' '}
+              Everyone please listen to me.{" "}
               <StageDirection>
                 You can clink a glass, if that helps.
               </StageDirection>
@@ -57,9 +57,11 @@ class ExplainPage extends Component {
               that we'll pass around.
             </Typography>
             <Typography component="p" paragraph>
-              First, I need all of you to get out your phones and type{' '}
-              <span style={madLiberationStyles.blue}>passover.lol</span> in a
-              web browser. When you’re there, click <b>Log in</b>, then{' '}
+              First, I need all of you to get out your phones and type{" "}
+              <span style={madLiberationStyles.blue}>
+                {window.location.host}
+              </span>{" "}
+              in a web browser. When you’re there, click <b>Log in</b>, then{" "}
               <b>Join a Seder</b>. Logging in isn't mandatory, but it will let
               you re-join the seder if anything goes wrong. Go ahead, I’ll wait.
             </Typography>
@@ -127,9 +129,8 @@ class ExplainPage extends Component {
                     Once you've joined the seder, don't close the tab or go to
                     any other web sites in the tab that you have the game open
                     in. If you click Log In on the Home Page before you join our
-                    seder, and you accidentally close your tab, you can probably
-                    re-join by logging in again and clicking{' '}
-                    <b>See your seders</b>, but that feature is experimental.
+                    seder, and you accidentally close your tab, you can re-join
+                    by logging in again and clicking <b>See your seders</b>.
                   </Typography>
                 </ListItemText>
               </ListItem>

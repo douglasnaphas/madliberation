@@ -6,7 +6,6 @@ var credChecker = require("./lib/credChecker");
 var cookieParser = require("cookie-parser");
 const AWS = require("aws-sdk");
 
-const joinSeder = require("./lib/joinSeder");
 const pathCheck = require("./lib/pathCheck");
 const roomCode = require("./lib/room-code");
 const roomCodeExists = require("./lib/roomCodeExists");
@@ -21,8 +20,7 @@ const submitLibsMiddleware = require("./lib/submitLibsMiddleware/submitLibsMiddl
 const readRosterMiddleware = require("./lib/readRosterMiddleware/readRosterMiddleware.js");
 const scriptMiddleware = require("./lib/scriptMiddleware/scriptMiddleware");
 const getLoginCookies = require("./lib/getLoginCookies");
-const id = require("./lib/id");
-const authenticate = require("./lib/authenticate");
+const authenticate = require("./lib/authenticateWithOpaqueCookie");
 const send500OnError = require("./lib/send500OnError");
 const seders = require("./lib/seders");
 const sedersJoined = require("./lib/sedersJoined");
@@ -38,12 +36,17 @@ app.use(function (req, res, next) {
   next();
 });
 
-app.get("/clear-jwts", (req, res) => {
-  const expiredCookieValue = "expired-via-clear-jwts";
+app.get("/logout", (req, res) => {
+  const expiredCookieValue = "expired-via-logout";
   res.cookie("id_token", expiredCookieValue, { expires: new Date(0) });
   res.cookie("access_token", expiredCookieValue, { expires: new Date(0) });
   res.cookie("refresh_token", expiredCookieValue, { expires: new Date(0) });
-  return res.status(200).send({ message: "JWTs cleared" });
+  res.cookie(Configs.loginCookieName(), expiredCookieValue, {
+    expires: new Date(0),
+  });
+  // TODO: move this to its own file
+  // TODO: invalidate the login cookie server-side
+  return res.status(200).send({ message: "Logged out" });
 });
 
 app.get("/scripts", async function (req, res) {
@@ -73,10 +76,6 @@ app.get("/scripts", async function (req, res) {
 
 app.use(cookieParser());
 
-app.options(/\/.*/, function (req, res) {
-  res.status(204).send();
-});
-
 app.get("/", function (req, res) {
   res.send({
     Output: "Hello World!! ",
@@ -96,8 +95,6 @@ app.get("/public-endpoint", function (req, res) {
 });
 
 app.get("/get-cookies", getLoginCookies);
-
-app.get("/id", id);
 
 app.use(bodyParser.json());
 

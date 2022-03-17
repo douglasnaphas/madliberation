@@ -14,7 +14,7 @@ import { Configs } from "../Configs";
  */
 async function readRoster(roomCode, gameName) {
   const rosterUrl = new URL(
-    `./read-roster?roomcode=${roomCode}&gamename=${encodeURI(gameName)}`,
+    `./read-roster?roomcode=${roomCode}&gamename=${encodeURIComponent(gameName)}`,
     Configs.apiUrl()
   );
   if (!roomCode) return {};

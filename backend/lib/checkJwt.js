@@ -8,8 +8,8 @@
  * @param Function refreshAccessToken A function matching lib/refreshAccessToken
  * @param Function verifyJwt A function like lib/verifyJwt
  * @return middleware satisfying:
- 
- *   - if local && res.locals[local], call next() and do nothing else
+
+ *   - if local && !res.locals[local], call next() and do nothing else
  *   - check the access/id token if tokenType is access or id
  *   - get a new token if the access token is expired with the refresh token
  *   - populate res.locals.jwt_sub with the sub claim

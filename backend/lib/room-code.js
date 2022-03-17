@@ -5,7 +5,7 @@
  * @param {Function} awsSdk An object with an implementation of the AWS SDK
  *   method DynamoDB.
  * @param {Function*} roomCodeGenerator A Generator that yields a series of
- *   room codes, default roomCodeGenerator.js.
+ *   room codes, default randomCapGenerator.js.
  * @param configs An object with a roomCodeRetries method that returns an int.
  * @return {Function(Request, Response)} A function that can be used with an
  *   Express JS route like app.post('/endpoint', roomCode(awsSdk)).

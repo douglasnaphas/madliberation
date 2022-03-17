@@ -16,7 +16,7 @@
  * data from the DynamoDB API call should be stored, in addition to
  * res.locals.dbData
  * @param {String} local A res.locals property to condition the logic on; if
- * local is a non-zero length string and res.locals[local] is defined, next()
+ * local is a non-zero length string and res.locals[local] is undefined, next()
  * should be called immediately by the middleware, with no database API calls
  * executed
  * @return {Function} Express middleware that executes query and calls next,

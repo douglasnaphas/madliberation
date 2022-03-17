@@ -4,7 +4,7 @@ const validateQueryCode = (req, res, next) => {
     typeof req.query.code !== "string" ||
     codeBlacklist.test(req.query.code)
   ) {
-    return res.sendStatus(400);
+    return res.status(400).send("Bad code param");
   }
   return next();
 };

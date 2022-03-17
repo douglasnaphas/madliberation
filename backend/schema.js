@@ -28,6 +28,7 @@ const schema = {
     because this fetches seders that a logged-in user has created, but no one
     has joined yet. */
   EMAIL_GAME_NAME_INDEX: "user_email-game_name-index", // gets participants
+  OPAQUE_COOKIE_INDEX: "opaque_cookie_index",
   // attribute names
   SCRIPT_VERSION: "script_version",
   // scripts
@@ -47,6 +48,12 @@ const schema = {
   // users
   USER_NICKNAME: "user_nickname",
   USER_EMAIL: "user_email",
+  // opaque cookie
+  OPAQUE_COOKIE: "opaque_cookie",
+  OPAQUE_COOKIE_ISSUED_MILLISECONDS: "cookie_issued_ms",
+  OPAQUE_COOKIE_EXPIRATION_MILLISECONDS: "cookie_expiration_ms",
+  OPAQUE_COOKIE_ISSUED_DATE: "cookie_issued_date",
+  OPAQUE_COOKIE_EXPIRATION_DATE: "cookie_expiration_date",
 };
 
 module.exports = schema;

@@ -9,7 +9,7 @@ import { Configs } from "../Configs";
  * @param {String} roomCode The Room Code of the seder to join
  * @param {String} gameName The Game Name of the participant who is joining
  * @param {Object} user The logged-in user, if any, shaped like {user-email:
- *   '...', uer-nickname: '...', user-sub: '...'}
+ *   '...', user-nickname: '...'}
  */
 async function joinSeder(roomCode, gameName, user) {
   const joinSederUrl = new URL("./join-seder", Configs.apiUrl());
@@ -18,8 +18,8 @@ async function joinSeder(roomCode, gameName, user) {
     roomCode,
     gameName,
   };
-  if (user && user["sub"]) {
-    postData.user = user["sub"];
+  if (user && user["email"]) {
+    postData.email = user["email"];
   }
   const response = await fetch(joinSederUrl, {
     method: "POST",

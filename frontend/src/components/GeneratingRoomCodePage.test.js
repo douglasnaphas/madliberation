@@ -62,7 +62,6 @@ describe("GeneratingRoomCodePageWithRouter", () => {
           user={{
             email: "mrseff@f.com",
             nickname: "Mrs. F",
-            sub: "vnf8da-fjasd-44farqeio",
           }}
         ></GeneratingRoomCodePage>
       </MemoryRouter>
@@ -73,7 +72,7 @@ describe("GeneratingRoomCodePageWithRouter", () => {
       method: "POST",
       body: JSON.stringify({
         path: chosenPath,
-        user: "vnf8da-fjasd-44farqeio",
+        email: "mrseff@f.com",
       }),
       headers: { "Content-Type": "application/json" },
       credentials: "include",
@@ -258,7 +257,6 @@ describe("GeneratingRoomCodePageWithRouter", () => {
           user={{
             nickname: "God of Fun",
             email: "sumslummy@raw.raw",
-            sub: "fj32x-fsa",
           }}
         ></GeneratingRoomCodePage>
       </MemoryRouter>
@@ -268,7 +266,7 @@ describe("GeneratingRoomCodePageWithRouter", () => {
       method: "POST",
       body: JSON.stringify({
         path: "script/path/from/storage",
-        user: "fj32x-fsa",
+        email: "sumslummy@raw.raw",
       }),
       headers: { "Content-Type": "application/json" },
       credentials: "include",
@@ -318,7 +316,6 @@ describe("GeneratingRoomCodePageWithRouter", () => {
     );
     global.fetch.mockClear();
   });
-  test("should fetch with user=<user sub> in body if there is a logged-in user", () => {}); // this can now be covered in the earlier tests
   test(
     'should show a "try logging in again" message if a logged-in ' +
       "request fails for identity reasons, with option to not be logged in",

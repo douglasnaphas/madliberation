@@ -516,7 +516,12 @@ const submitAllLibs = async (page, prefix) => {
   ////////////////////////////////////////////////////////////////////////////////
 
   // Leader checks roster
-  // Click No, Check Again so Player 2 shows up on the roster
+  // Check to make sure WebSockets work for the roster
+  await itGetText({
+    page: page,
+    madliberationid: "pc1",
+  });
+  // Click No, Check Again. Players 1 and 2 should still be there
   await itClick({ page: page, madliberationid: "no-check-again-button" });
   // Verify both players are on the roster
   const leaderNameFromTable = await itGetText({

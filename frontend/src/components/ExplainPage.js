@@ -67,8 +67,7 @@ class ExplainPage extends Component {
             </Typography>
             <Typography component="p" paragraph>
               <StageDirection>
-                Wait for everyone to go to {window.location.host} and click “join a
-                seder.”
+                {`Wait for everyone to go to ${window.location.host} and click “join a seder.”`}
               </StageDirection>
             </Typography>
             <Typography component="p" paragraph>

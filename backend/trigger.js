@@ -19,7 +19,6 @@ exports.handler = async function (event, context, callback) {
   });
 
   try {
-    await Promise.all(postCalls);
   } catch (e) {
     return { statusCode: 500, body: e.stack };
   }

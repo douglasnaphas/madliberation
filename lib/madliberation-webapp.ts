@@ -21,6 +21,11 @@ import { aws_iam as iam } from "aws-cdk-lib";
 import { aws_certificatemanager as acm } from "aws-cdk-lib";
 import { aws_route53 as route53 } from "aws-cdk-lib";
 import { aws_route53_targets as targets } from "aws-cdk-lib";
+import { aws_sqs as sqs } from "aws-cdk-lib";
+import {
+  DynamoEventSource,
+  SqsDlq,
+} from "aws-cdk-lib/aws-lambda-event-sources";
 import * as apigwv2 from "@aws-cdk/aws-apigatewayv2-alpha";
 import * as apigwv2i from "@aws-cdk/aws-apigatewayv2-integrations-alpha";
 const schema = require("../backend/schema");
@@ -84,6 +89,7 @@ export class MadliberationWebapp extends Stack {
       sortKey: { name: schema.SORT_KEY, type: dynamodb.AttributeType.STRING },
       billingMode: dynamodb.BillingMode.PAY_PER_REQUEST,
       removalPolicy: RemovalPolicy.DESTROY,
+      stream: dynamodb.StreamViewType.NEW_AND_OLD_IMAGES,
     });
     sedersTable.addGlobalSecondaryIndex({
       indexName: schema.SCRIPTS_INDEX,
@@ -426,7 +432,7 @@ export class MadliberationWebapp extends Stack {
       cfnAliasWWWRecordSet.setIdentifier = "mlwebapp-www-cf-alias";
     }
 
-    const makeWSHandler = (prefix: string) =>
+    const makeHandler = (prefix: string) =>
       new lambda.Function(this, `${prefix}Handler`, {
         runtime: lambda.Runtime.NODEJS_14_X,
         handler: `${prefix.toLowerCase()}.handler`,
@@ -438,9 +444,10 @@ export class MadliberationWebapp extends Stack {
         },
         timeout: Duration.seconds(20),
       });
-    const connectHandler = makeWSHandler("Connect");
-    const disconnectHandler = makeWSHandler("Disconnet");
-    const defaultHandler = makeWSHandler("Default");
+    const connectHandler = makeHandler("Connect");
+    const disconnectHandler = makeHandler("Disconnet");
+    const defaultHandler = makeHandler("Default");
+    const triggerHandler = makeHandler("Trigger");
     [connectHandler, disconnectHandler, defaultHandler].forEach((handler) => {
       sedersTable.grantReadWriteData(handler);
     });
@@ -497,6 +504,19 @@ export class MadliberationWebapp extends Stack {
           }
         ),
       }
+    );
+    const deadLetterQueue = new sqs.Queue(this, "deadLetterQueue");
+
+    triggerHandler.addEnvironment("WS_ENDPOINT", webSocketApi.apiEndpoint);
+
+    triggerHandler.addEventSource(
+      new DynamoEventSource(sedersTable, {
+        startingPosition: lambda.StartingPosition.TRIM_HORIZON,
+        batchSize: 5,
+        bisectBatchOnError: true,
+        onFailure: new SqsDlq(deadLetterQueue),
+        retryAttempts: 10,
+      })
     );
 
     const scriptsBucket = new MadLiberationBucket(this, "ScriptsBucket", {

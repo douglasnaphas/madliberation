@@ -21,6 +21,8 @@ import { aws_iam as iam } from "aws-cdk-lib";
 import { aws_certificatemanager as acm } from "aws-cdk-lib";
 import { aws_route53 as route53 } from "aws-cdk-lib";
 import { aws_route53_targets as targets } from "aws-cdk-lib";
+import * as apigwv2 from "@aws-cdk/aws-apigatewayv2-alpha";
+import * as apigwv2i from "@aws-cdk/aws-apigatewayv2-integrations-alpha";
 const schema = require("../backend/schema");
 
 export interface MadLiberationWebappProps extends StackProps {
@@ -424,6 +426,73 @@ export class MadliberationWebapp extends Stack {
       cfnAliasWWWRecordSet.setIdentifier = "mlwebapp-www-cf-alias";
     }
 
+    const makeWSHandler = (prefix: string) =>
+      new lambda.Function(this, `${prefix}Handler`, {
+        runtime: lambda.Runtime.NODEJS_14_X,
+        handler: `${prefix.toLowerCase()}.handler`,
+        code: lambda.Code.fromAsset("backend"),
+        memorySize: 3000,
+        environment: {
+          NODE_ENV: "production",
+          TABLE_NAME: sedersTable.tableName,
+        },
+        timeout: Duration.seconds(20),
+      });
+    const connectHandler = makeWSHandler("Connect");
+    const disconnectHandler = makeWSHandler("Disconnet");
+    const defaultHandler = makeWSHandler("Default");
+    const webSocketApi = new apigwv2.WebSocketApi(this, "WSAPI", {
+      connectRouteOptions: {
+        integration: new apigwv2i.WebSocketLambdaIntegration(
+          "ConnectIntegration",
+          connectHandler
+        ),
+      },
+      disconnectRouteOptions: {
+        integration: new apigwv2i.WebSocketLambdaIntegration(
+          "DisconnectIntegration",
+          disconnectHandler
+        ),
+      },
+      defaultRouteOptions: {
+        integration: new apigwv2i.WebSocketLambdaIntegration(
+          "DefaultIntegration",
+          defaultHandler
+        ),
+      },
+    });
+    const stageName = "ws";
+    const wsStage = new apigwv2.WebSocketStage(this, "WSStage", {
+      stageName,
+      webSocketApi,
+      autoDeploy: true,
+    });
+    distro.addBehavior(
+      `/${stageName}/*`,
+      new origins.HttpOrigin(
+        `${webSocketApi.apiId}.execute-api.${this.region}.${this.urlSuffix}`,
+        {
+          protocolPolicy: cloudfront.OriginProtocolPolicy.HTTPS_ONLY,
+        }
+      ),
+      {
+        allowedMethods: cloudfront.AllowedMethods.ALLOW_ALL,
+        cachePolicy: cloudfront.CachePolicy.CACHING_DISABLED,
+        viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
+        originRequestPolicy: new cloudfront.OriginRequestPolicy(
+          this,
+          "WSOriginRequestPolicy",
+          {
+            headerBehavior: cloudfront.OriginRequestHeaderBehavior.allowList(
+              "Sec-WebSocket-Extensions",
+              "Sec-WebSocket-Key",
+              "Sec-WebSocket-Version"
+            ),
+          }
+        ),
+      }
+    );
+
     const scriptsBucket = new MadLiberationBucket(this, "ScriptsBucket", {
       versioned: true,
     });
@@ -464,5 +533,8 @@ export class MadliberationWebapp extends Stack {
       value: scriptsBucket.bucketName,
     });
     new CfnOutput(this, "TableName", { value: sedersTable.tableName });
+    new CfnOutput(this, "WSAPIEndpoint", {
+      value: webSocketApi.apiEndpoint,
+    });
   }
 }

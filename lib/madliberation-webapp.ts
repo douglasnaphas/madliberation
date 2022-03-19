@@ -491,6 +491,9 @@ export class MadliberationWebapp extends Stack {
               "Sec-WebSocket-Key",
               "Sec-WebSocket-Version"
             ),
+            cookieBehavior: cloudfront.OriginRequestCookieBehavior.all(),
+            queryStringBehavior:
+              cloudfront.OriginRequestQueryStringBehavior.all(),
           }
         ),
       }

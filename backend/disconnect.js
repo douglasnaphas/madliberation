@@ -1,5 +1,5 @@
 const DynamoDB = require("aws-sdk/clients/dynamodb");
-const schema = require("../schema");
+const schema = require("./schema");
 
 exports.handler = async function (event, context, callback) {
   console.log("disconnect handler called");

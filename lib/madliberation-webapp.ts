@@ -441,6 +441,9 @@ export class MadliberationWebapp extends Stack {
     const connectHandler = makeWSHandler("Connect");
     const disconnectHandler = makeWSHandler("Disconnet");
     const defaultHandler = makeWSHandler("Default");
+    [connectHandler, disconnectHandler, defaultHandler].forEach((handler) => {
+      sedersTable.grantReadWriteData(handler);
+    });
     const webSocketApi = new apigwv2.WebSocketApi(this, "WSAPI", {
       connectRouteOptions: {
         integration: new apigwv2i.WebSocketLambdaIntegration(

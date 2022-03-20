@@ -509,33 +509,14 @@ export class MadliberationWebapp extends Stack {
 
     joinedHandler.addEnvironment("WS_ENDPOINT", webSocketApi.apiEndpoint);
 
-    joinedHandler.addEventSource(
-      new DynamoEventSource(sedersTable, {
-        startingPosition: lambda.StartingPosition.TRIM_HORIZON,
-        bisectBatchOnError: true,
-        onFailure: new SqsDlq(deadLetterQueue),
-        retryAttempts: 5,
-      })
-    );
-
-    // const joinedMapping = new lambda.EventSourceMapping(this, "JoinedMapping", {
-    //   target: joinedHandler,
-    //   eventSourceArn: sedersTable.tableStreamArn,
-    //   startingPosition: lambda.StartingPosition.TRIM_HORIZON,
-    //   bisectBatchOnError: true,
-    //   onFailure: new SqsDlq(deadLetterQueue),
-    //   retryAttempts: 5,
-    // });
-
-    // const joinedFilter = require("../eventFilters/joinedFilter");
-
-    // const cfnJoinedMapping = joinedMapping.node
-    //   .defaultChild as lambda.CfnEventSourceMapping;
-    // cfnJoinedMapping.addPropertyOverride("FilterCriteria", {
-    //   Filters: [joinedFilter],
-    // });
-
-    // sedersTable.grantStreamRead(joinedHandler);
+    // joinedHandler.addEventSource(
+    //   new DynamoEventSource(sedersTable, {
+    //     startingPosition: lambda.StartingPosition.TRIM_HORIZON,
+    //     bisectBatchOnError: true,
+    //     onFailure: new SqsDlq(deadLetterQueue),
+    //     retryAttempts: 5,
+    //   })
+    // );
 
     const scriptsBucket = new MadLiberationBucket(this, "ScriptsBucket", {
       versioned: true,

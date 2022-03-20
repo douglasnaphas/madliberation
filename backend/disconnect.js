@@ -1,4 +1,5 @@
 const DynamoDB = require("aws-sdk/clients/dynamodb");
+const db = new DynamoDB.DocumentClient();
 const schema = require("./schema");
 
 exports.handler = async function (event, context, callback) {
@@ -7,7 +8,6 @@ exports.handler = async function (event, context, callback) {
   console.log(event);
   console.log("context:");
   console.log(context);
-  const db = new DynamoDB.DocumentClient();
   const now = new Date();
   var putParams = {
     TableName: process.env.TABLE_NAME,

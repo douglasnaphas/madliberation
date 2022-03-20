@@ -447,7 +447,7 @@ export class MadliberationWebapp extends Stack {
     const connectHandler = makeHandler("Connect");
     const disconnectHandler = makeHandler("Disconnet");
     const defaultHandler = makeHandler("Default");
-    const joinedHandler = makeHandler("Joined");
+    const streamHandler = makeHandler("Stream");
     [connectHandler, disconnectHandler, defaultHandler].forEach((handler) => {
       sedersTable.grantReadWriteData(handler);
     });
@@ -507,9 +507,9 @@ export class MadliberationWebapp extends Stack {
     );
     const deadLetterQueue = new sqs.Queue(this, "deadLetterQueue");
 
-    joinedHandler.addEnvironment("WS_ENDPOINT", webSocketApi.apiEndpoint);
+    streamHandler.addEnvironment("WS_ENDPOINT", webSocketApi.apiEndpoint);
 
-    joinedHandler.addEventSource(
+    streamHandler.addEventSource(
       new DynamoEventSource(sedersTable, {
         startingPosition: lambda.StartingPosition.TRIM_HORIZON,
         bisectBatchOnError: true,

@@ -509,14 +509,14 @@ export class MadliberationWebapp extends Stack {
 
     joinedHandler.addEnvironment("WS_ENDPOINT", webSocketApi.apiEndpoint);
 
-    // joinedHandler.addEventSource(
-    //   new DynamoEventSource(sedersTable, {
-    //     startingPosition: lambda.StartingPosition.TRIM_HORIZON,
-    //     bisectBatchOnError: true,
-    //     onFailure: new SqsDlq(deadLetterQueue),
-    //     retryAttempts: 5,
-    //   })
-    // );
+    joinedHandler.addEventSource(
+      new DynamoEventSource(sedersTable, {
+        startingPosition: lambda.StartingPosition.TRIM_HORIZON,
+        bisectBatchOnError: true,
+        onFailure: new SqsDlq(deadLetterQueue),
+        retryAttempts: 5,
+      })
+    );
 
     const scriptsBucket = new MadLiberationBucket(this, "ScriptsBucket", {
       versioned: true,

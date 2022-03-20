@@ -447,7 +447,7 @@ export class MadliberationWebapp extends Stack {
     const connectHandler = makeHandler("Connect");
     const disconnectHandler = makeHandler("Disconnet");
     const defaultHandler = makeHandler("Default");
-    const triggerHandler = makeHandler("Trigger");
+    const joinedHandler = makeHandler("Joined");
     [connectHandler, disconnectHandler, defaultHandler].forEach((handler) => {
       sedersTable.grantReadWriteData(handler);
     });
@@ -507,17 +507,38 @@ export class MadliberationWebapp extends Stack {
     );
     const deadLetterQueue = new sqs.Queue(this, "deadLetterQueue");
 
-    triggerHandler.addEnvironment("WS_ENDPOINT", webSocketApi.apiEndpoint);
+    joinedHandler.addEnvironment("WS_ENDPOINT", webSocketApi.apiEndpoint);
 
-    triggerHandler.addEventSource(
-      new DynamoEventSource(sedersTable, {
-        startingPosition: lambda.StartingPosition.TRIM_HORIZON,
-        batchSize: 5,
-        bisectBatchOnError: true,
-        onFailure: new SqsDlq(deadLetterQueue),
-        retryAttempts: 10,
-      })
-    );
+    const joinedMapping = new lambda.EventSourceMapping(this, "JoinedMapping", {
+      target: joinedHandler,
+      eventSourceArn: sedersTable.tableStreamArn,
+      startingPosition: lambda.StartingPosition.TRIM_HORIZON,
+      bisectBatchOnError: true,
+      onFailure: new SqsDlq(deadLetterQueue),
+      retryAttempts: 5,
+    });
+
+    const cfnJoinedMapping = joinedMapping.node
+      .defaultChild as lambda.CfnEventSourceMapping;
+    cfnJoinedMapping.addPropertyOverride("FilterCriteria", {
+      Filters: [
+        {
+          Pattern: `{
+          "dynamodb" : {
+              "NewImage": {
+                "${schema.SORT_KEY}": {
+                  "S": [
+                    {
+                      "prefix": "${schema.PARTICIPANT_PREFIX}${schema.SEPARATOR}"
+                    }
+                  ]
+                }
+              }
+            }
+          }`,
+        },
+      ],
+    });
 
     const scriptsBucket = new MadLiberationBucket(this, "ScriptsBucket", {
       versioned: true,

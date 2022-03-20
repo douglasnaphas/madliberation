@@ -526,6 +526,8 @@ export class MadliberationWebapp extends Stack {
       Filters: [joinedFilter],
     });
 
+    sedersTable.grantStreamRead(joinedHandler);
+
     const scriptsBucket = new MadLiberationBucket(this, "ScriptsBucket", {
       versioned: true,
     });

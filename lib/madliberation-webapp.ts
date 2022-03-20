@@ -509,24 +509,33 @@ export class MadliberationWebapp extends Stack {
 
     joinedHandler.addEnvironment("WS_ENDPOINT", webSocketApi.apiEndpoint);
 
-    const joinedMapping = new lambda.EventSourceMapping(this, "JoinedMapping", {
-      target: joinedHandler,
-      eventSourceArn: sedersTable.tableStreamArn,
-      startingPosition: lambda.StartingPosition.TRIM_HORIZON,
-      bisectBatchOnError: true,
-      onFailure: new SqsDlq(deadLetterQueue),
-      retryAttempts: 5,
-    });
+    joinedHandler.addEventSource(
+      new DynamoEventSource(sedersTable, {
+        startingPosition: lambda.StartingPosition.TRIM_HORIZON,
+        bisectBatchOnError: true,
+        onFailure: new SqsDlq(deadLetterQueue),
+        retryAttempts: 5,
+      })
+    );
 
-    const joinedFilter = require("../eventFilters/joinedFilter");
+    // const joinedMapping = new lambda.EventSourceMapping(this, "JoinedMapping", {
+    //   target: joinedHandler,
+    //   eventSourceArn: sedersTable.tableStreamArn,
+    //   startingPosition: lambda.StartingPosition.TRIM_HORIZON,
+    //   bisectBatchOnError: true,
+    //   onFailure: new SqsDlq(deadLetterQueue),
+    //   retryAttempts: 5,
+    // });
 
-    const cfnJoinedMapping = joinedMapping.node
-      .defaultChild as lambda.CfnEventSourceMapping;
-    cfnJoinedMapping.addPropertyOverride("FilterCriteria", {
-      Filters: [joinedFilter],
-    });
+    // const joinedFilter = require("../eventFilters/joinedFilter");
 
-    sedersTable.grantStreamRead(joinedHandler);
+    // const cfnJoinedMapping = joinedMapping.node
+    //   .defaultChild as lambda.CfnEventSourceMapping;
+    // cfnJoinedMapping.addPropertyOverride("FilterCriteria", {
+    //   Filters: [joinedFilter],
+    // });
+
+    // sedersTable.grantStreamRead(joinedHandler);
 
     const scriptsBucket = new MadLiberationBucket(this, "ScriptsBucket", {
       versioned: true,

@@ -518,26 +518,12 @@ export class MadliberationWebapp extends Stack {
       retryAttempts: 5,
     });
 
+    const joinedFilter = require("../eventFilters/joinedFilter");
+
     const cfnJoinedMapping = joinedMapping.node
       .defaultChild as lambda.CfnEventSourceMapping;
     cfnJoinedMapping.addPropertyOverride("FilterCriteria", {
-      Filters: [
-        {
-          Pattern: `{
-          "dynamodb" : {
-              "NewImage": {
-                "${schema.SORT_KEY}": {
-                  "S": [
-                    {
-                      "prefix": "${schema.PARTICIPANT_PREFIX}${schema.SEPARATOR}"
-                    }
-                  ]
-                }
-              }
-            }
-          }`,
-        },
-      ],
+      Filters: [joinedFilter],
     });
 
     const scriptsBucket = new MadLiberationBucket(this, "ScriptsBucket", {

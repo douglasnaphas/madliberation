@@ -26,10 +26,14 @@ const isJoin = (record) => {
     console.log(`no record.dynamodb.NewImage["${schema.SORT_KEY}"]`);
     return false;
   }
+  if (!record.dynamodb.NewImage[schema.SORT_KEY].S) {
+    console.log(`no record.dynamodb.NewImage["${schema.SORT_KEY}"].S`);
+    return false;
+  }
   const re = new RegExp(`^${schema.PARTICIPANT_PREFIX}${schema.SEPARATOR}`);
   console.log("re.test says:");
-  console.log(re.test(record.dynamodb.NewImage[schema.SORT_KEY]));
-  return re.test(record.dynamodb.NewImage[schema.SORT_KEY]);
+  console.log(re.test(record.dynamodb.NewImage[schema.SORT_KEY].S));
+  return re.test(record.dynamodb.NewImage[schema.SORT_KEY].S);
 };
 const handleJoin = () => {
   console.log("join");

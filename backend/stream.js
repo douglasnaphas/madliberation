@@ -11,18 +11,24 @@ const api = new ApiGatewayManagementApi({
 
 const isJoin = (record) => {
   if (!record.dynamodb) {
+    console.log("no record.dynamodb");
     return false;
   }
   if (record.dynamodb.OldImage) {
+    console.log("record.dynamodb.OldImage");
     return false;
   }
   if (!record.dynamodb.NewImage) {
+    console.log("no record.dynamodb.NewImage");
     return false;
   }
   if (!record.dynamodb.NewImage[schema.SORT_KEY]) {
+    console.log(`no record.dynamodb.NewImage["${schema.SORT_KEY}"]`);
     return false;
   }
   const re = new RegExp(`^${schema.PARTICIPANT_PREFIX}${schema.SEPARATOR}`);
+  console.log("re.test says:");
+  console.log(re.test(record.dynamodb.NewImage[schema.SORT_KEY]));
   return re.test(record.dynamodb.NewImage[schema.SORT_KEY]);
 };
 const handleJoin = () => {
@@ -36,14 +42,18 @@ exports.handler = async function (event, context, callback) {
   console.log("context:");
   console.log(JSON.stringify(context));
 
+  console.log("event.Records.length:");
+  console.log(event.Records.length);
+
   for (let r = 0; r < event.Records.length; r++) {
+    console.log("checking record...");
     if (!event.Records[r].dynamodb.NewImage) {
       console.log("stream: no NewImage in record");
       console.log(JSON.stringify(event));
       continue;
     }
     const record = event.Records[r];
-    if(isJoin(record)) {
+    if (isJoin(record)) {
       handleJoin();
     }
   }

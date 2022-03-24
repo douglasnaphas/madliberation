@@ -155,12 +155,18 @@ describe("RosterPage", () => {
     await findByText(table, "Moi Too");
     await findByText(table, "Em Three");
   });
-  test("new participant announced on socket should show up in roster", async () => {
+  test("WebSocket initialization", async () => {
     let mockWebSocketConstructorCalls = 0;
     const mockWebSocket = {};
     class WebSocket {
       constructor(server, protocol) {
         mockWebSocketConstructorCalls++;
+        // expect server to be correct
+        expect(server).toEqual(
+          `wss://${window.location.hostname}/ws/?` +
+            `roomcode=${confirmedRoomCode}&` +
+            `gamename=${encodeURIComponent(confirmedGameName)}`
+        );
         return mockWebSocket;
       }
     }
@@ -199,5 +205,8 @@ describe("RosterPage", () => {
       </ThemeProvider>
     );
     expect(setWebSocket).toHaveBeenCalledWith(mockWebSocket);
+  });
+  test("WebSocket passed in as prop", () => {
+    // WebSocket constructor should not be called
   });
 });

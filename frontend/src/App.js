@@ -101,6 +101,9 @@ class App extends Component {
   componentWillUnmount() {
     window.removeEventListener("visibilitychange", this.handleVisibilityChange);
     window.removeEventListener("pagehide", this.persistState);
+    if (this.state.webSocket && this.state.webSocket.close) {
+      this.state.webSocket.close();
+    }
     this._isMounted = false;
   }
   setConfirmedRoomCode = (roomCode) => {

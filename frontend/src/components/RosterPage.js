@@ -109,7 +109,11 @@ class RosterPage extends Component {
       setChosenPath(path);
     }
     this.fetchRoster(roomCode, gameName)();
-    const webSocket = new WebSocket('/ws/', 'ff');
+    const webSocket = new WebSocket(
+      `wss://${window.location.hostname}/ws/?` +
+        `roomcode=${roomCode}&` +
+        `gamename=${encodeURIComponent(gameName)}`
+    );
     setWebSocket(webSocket);
   }
   componentWillUnmount() {

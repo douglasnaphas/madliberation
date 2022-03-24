@@ -67,6 +67,7 @@ class App extends Component {
       isRingleader: false,
       chosenPath: false,
       assignmentsData: false,
+      webSocket: null,
     };
   }
   _isMounted = false;
@@ -120,6 +121,10 @@ class App extends Component {
   setUser = (user) => {
     this.setState({ user });
   };
+  setWebSocket = (webSocket) => {
+    this.setState({ webSocket });
+  };
+
   render() {
     return (
       <StyledEngineProvider injectFirst>
@@ -270,6 +275,8 @@ class App extends Component {
                       setConfirmedRoomCode={this.setConfirmedRoomCode}
                       setConfirmedGameName={this.setConfirmedGameName}
                       setChosenPath={this.setChosenPath}
+                      webSocket={this.state.webSocket}
+                      setWebSocket={this.setWebSocket}
                     />
                   )}
                 />

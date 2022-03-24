@@ -1,28 +1,28 @@
-import Button from '@mui/material/Button';
-import CircularProgress from '@mui/material/CircularProgress';
-import React, { Component } from 'react';
-import MenuAppBar from './MenuAppBar';
-import PropTypes from 'prop-types';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableRow from '@mui/material/TableRow';
-import ThatsEveryoneButtonWithRouter from './ThatsEveryoneButtonWithRouter';
-import { Typography } from '@mui/material';
-import withStyles from '@mui/styles/withStyles';
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle';
+import Button from "@mui/material/Button";
+import CircularProgress from "@mui/material/CircularProgress";
+import React, { Component } from "react";
+import MenuAppBar from "./MenuAppBar";
+import PropTypes from "prop-types";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableRow from "@mui/material/TableRow";
+import ThatsEveryoneButtonWithRouter from "./ThatsEveryoneButtonWithRouter";
+import { Typography } from "@mui/material";
+import withStyles from "@mui/styles/withStyles";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
 
-const styles = theme => ({
+const styles = (theme) => ({
   button: {
-    margin: theme.spacing(1)
+    margin: theme.spacing(1),
   },
   input: {
-    display: 'none'
-  }
+    display: "none",
+  },
 });
 
 class RosterPage extends Component {
@@ -32,7 +32,7 @@ class RosterPage extends Component {
     thatsEveryonePressed: false,
     thatsEveryoneFailed: false,
     dialogOpen: false,
-    dialogButtonClicked: false
+    dialogButtonClicked: false,
   };
   _isMounted = false;
   fetchRoster = (roomCode, gameName) => {
@@ -40,20 +40,20 @@ class RosterPage extends Component {
       if (
         !roomCode &&
         !gameName &&
-        localStorage.getItem('roomCode') &&
-        localStorage.getItem('gameName')
+        localStorage.getItem("roomCode") &&
+        localStorage.getItem("gameName")
       ) {
-        roomCode = localStorage.getItem('roomCode');
-        gameName = localStorage.getItem('gameName');
+        roomCode = localStorage.getItem("roomCode");
+        gameName = localStorage.getItem("gameName");
       }
       const { roster } = this.props;
       if (this._isMounted) this.setState({ rosterLoading: true });
-      roster(roomCode, gameName).then(d => {
+      roster(roomCode, gameName).then((d) => {
         if (d.status === 200) {
           if (this._isMounted) {
             this.setState({
               rosterLoading: false,
-              participants: d.data.participants
+              participants: d.data.participants,
             });
           }
         }
@@ -61,24 +61,20 @@ class RosterPage extends Component {
     };
     return f;
   };
-  closeSederAndPlay = history => {
-    const {
-      closeSeder,
-      confirmedRoomCode,
-      confirmedGameName,
-      chosenPath
-    } = this.props;
+  closeSederAndPlay = (history) => {
+    const { closeSeder, confirmedRoomCode, confirmedGameName, chosenPath } =
+      this.props;
     if (this._isMounted) this.setState({ thatsEveryonePressed: true });
-    closeSeder(confirmedRoomCode, confirmedGameName, chosenPath).then(d => {
+    closeSeder(confirmedRoomCode, confirmedGameName, chosenPath).then((d) => {
       if (!this._isMounted) return;
       if (d.status === 200) {
-        history.push('/let-them-press-button');
+        history.push("/let-them-press-button");
         return;
       }
       if (this._isMounted) {
         this.setState({
           thatsEveryonePressed: false,
-          thatsEveryoneFailed: true
+          thatsEveryoneFailed: true,
         });
       }
     });
@@ -91,7 +87,8 @@ class RosterPage extends Component {
       chosenPath,
       setConfirmedRoomCode,
       setConfirmedGameName,
-      setChosenPath
+      setChosenPath,
+      setWebSocket,
     } = this.props;
     let roomCode = confirmedRoomCode;
     let gameName = confirmedGameName;
@@ -100,29 +97,31 @@ class RosterPage extends Component {
       !roomCode &&
       !gameName &&
       !path &&
-      localStorage.getItem('roomCode') &&
-      localStorage.getItem('gameName') &&
-      localStorage.getItem('chosenPath')
+      localStorage.getItem("roomCode") &&
+      localStorage.getItem("gameName") &&
+      localStorage.getItem("chosenPath")
     ) {
-      roomCode = localStorage.getItem('roomCode');
+      roomCode = localStorage.getItem("roomCode");
       setConfirmedRoomCode(roomCode);
-      gameName = localStorage.getItem('gameName');
+      gameName = localStorage.getItem("gameName");
       setConfirmedGameName(gameName);
-      path = localStorage.getItem('chosenPath');
+      path = localStorage.getItem("chosenPath");
       setChosenPath(path);
     }
     this.fetchRoster(roomCode, gameName)();
+    const webSocket = new WebSocket('/ws/', 'ff');
+    setWebSocket(webSocket);
   }
   componentWillUnmount() {
     this._isMounted = false;
   }
-  onDialogClose = event => {
+  onDialogClose = (event) => {
     if (this._isMounted) this.setState({ dialogOpen: false });
   };
   openDialog = () => {
     if (this._isMounted) this.setState({ dialogOpen: true });
   };
-  setDialogButtonClicked = bool => {
+  setDialogButtonClicked = (bool) => {
     this.setState({ dialogButtonClicked: bool });
   };
   render() {
@@ -167,13 +166,13 @@ class RosterPage extends Component {
         </Typography>
         <div hidden={rosterLoading}>
           <Typography variant="h3" gutterBottom>
-            {paricipantCount} {paricipantCount === 1 ? 'person' : 'people'}
+            {paricipantCount} {paricipantCount === 1 ? "person" : "people"}
           </Typography>
           <div>
             <Typography component="p" paragraph gutterBottom>
               {paricipantCount === 1
-                ? 'has joined your seder (you):'
-                : 'have joined your seder, including you:'}
+                ? "has joined your seder (you):"
+                : "have joined your seder, including you:"}
             </Typography>
           </div>
         </div>
@@ -220,10 +219,10 @@ class RosterPage extends Component {
           <DialogTitle id="confirm-thats-everyone">Are you sure?</DialogTitle>
           <DialogContent>
             <DialogContentText id="confirm-get-script-dialog-description">
-              If you click Yes, no one but the {paricipantCount}{' '}
+              If you click Yes, no one but the {paricipantCount}{" "}
               {paricipantCount === 1
-                ? 'person listed (you)'
-                : 'people listed (including you)'}{' '}
+                ? "person listed (you)"
+                : "people listed (including you)"}{" "}
               will be able to join.
             </DialogContentText>
           </DialogContent>
@@ -253,7 +252,9 @@ RosterPage.propTypes = {
   closeSeder: PropTypes.func.isRequired,
   setConfirmedRoomCode: PropTypes.func.isRequired,
   setConfirmedGameName: PropTypes.func.isRequired,
-  setChosenPath: PropTypes.func.isRequired
+  setChosenPath: PropTypes.func.isRequired,
+  webSocket: PropTypes.object,
+  setWebSocket: PropTypes.func.isRequired,
 };
 
 export default withStyles(styles)(RosterPage);

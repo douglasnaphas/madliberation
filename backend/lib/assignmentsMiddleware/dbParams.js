@@ -18,7 +18,7 @@ function dbParams() {
       return res.status(400).send(responses.BAD_REQUEST);
     }
     const roomCode = req.query.roomcode;
-    const gameName = decodeURI(req.query.gamename);
+    const gameName = decodeURIComponent(req.query.gamename);
     res.locals.assigmentsDbParams = {
       ExpressionAttributeNames: {
         '#R': schema.PARTITION_KEY,

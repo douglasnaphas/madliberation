@@ -76,6 +76,17 @@ describe("connect", () => {
     const mockGet = jest.fn(() => {
       return {
         promise() {
+          console.log('in promise...')
+          const data = {
+            Item: {
+              lib_id:
+                "participant#a2fbc754b9ee1dc5a793eeb2c804c5e6cf962f680909050f28a69b6cdfdbab89",
+              room_code: "ZSMORM",
+              session_key: "VMSSHYCHBHJRUGHOMAIHNKTRECLNAL",
+              game_name: "Le",
+            },
+          };
+          return data;
           Promise.resolve({
             Item: {
               lib_id:
@@ -95,7 +106,7 @@ describe("connect", () => {
         },
       };
     });
-    
+
     jest.mock("aws-sdk/clients/dynamodb", () => {
       return {
         DocumentClient: jest.fn(() => {
@@ -106,7 +117,8 @@ describe("connect", () => {
         }),
       };
     });
-    const handler = require("./connect").handler
-    await handler(event);
+    const handler = require("./connect").handler;
+    const result = await handler(event);
+    console.log(result);
   });
 });

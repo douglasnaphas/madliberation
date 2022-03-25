@@ -26,7 +26,11 @@ exports.handler = async function (event, context, callback) {
   const gameName = decodeURIComponent(event.queryStringParameters.gamename);
   const hash = crypto.createHash("sha256");
   hash.update(gameName);
-  const gameNameHash = hash.digest("hex").substring(0, len).toLowerCase();
+  const GAME_NAME_HASH_LENGTH = 64;
+  const gameNameHash = hash
+    .digest("hex")
+    .substring(0, GAME_NAME_HASH_LENGTH)
+    .toLowerCase();
   if (!event.multiValueHeaders || !event.multiValueHeaders.Cookie) {
     logger.log("no cookies");
     return { statusCode: 400, body: "Bad request" };

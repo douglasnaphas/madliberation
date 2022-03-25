@@ -1,16 +1,7 @@
-beforeEach(() => {
-  jest.resetModules();
-});
+const DynamoDB = require("aws-sdk/clients/dynamodb");
 
-describe("connect handler", () => {
-  test("call handler", () => {
-    const connect = require("./connect");
-    const { handler } = connect;
-    handler();
-  });
-
-  test.skip("happy path", () => {
-    // This doesn't work. I don't know how to mock the AWS SDK.
+describe("connect", () => {
+  test("happy path", async () => {
     const event = {
       headers: {
         "Cache-Control": "no-cache",
@@ -84,8 +75,8 @@ describe("connect handler", () => {
     };
     const mockGet = jest.fn(() => {
       return {
-        promise: () => {
-          return {
+        promise() {
+          Promise.resolve({
             Item: {
               lib_id:
                 "participant#a2fbc754b9ee1dc5a793eeb2c804c5e6cf962f680909050f28a69b6cdfdbab89",
@@ -93,41 +84,29 @@ describe("connect handler", () => {
               session_key: "VMSSHYCHBHJRUGHOMAIHNKTRECLNAL",
               game_name: "Le",
             },
-          };
+          });
         },
       };
     });
     const mockPut = jest.fn(() => {
       return {
-        promise: () => {
-          return {
-            Item: {
-              lib_id:
-                "participant#a2fbc754b9ee1dc5a793eeb2c804c5e6cf962f680909050f28a69b6cdfdbab89",
-              room_code: "ZSMORM",
-              session_key: "VMSSHYCHBHJRUGHOMAIHNKTRECLNAL",
-              game_name: "Le",
-            },
-          };
+        promise() {
+          Promise.resolve({});
         },
       };
     });
-    class MockDocumentClient {
-      constructor() {
-        return {
-          get: mockGet,
-          put: mockPut,
-        };
-      }
-    }
-    jest.doMock("aws-sdk/clients/dynamodb", () => {
+    
+    jest.mock("aws-sdk/clients/dynamodb", () => {
       return {
-        DocumentClient: MockDocumentClient,
+        DocumentClient: jest.fn(() => {
+          return {
+            get: mockGet,
+            put: mockPut,
+          };
+        }),
       };
     });
-
-    const connect = require("./connect");
-    const { handler } = connect;
-    handler(event);
+    const handler = require("./connect").handler
+    await handler(event);
   });
 });

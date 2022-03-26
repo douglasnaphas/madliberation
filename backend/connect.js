@@ -37,9 +37,9 @@ exports.handler = async function (event, context, callback) {
   }
   logger.log("gameNameHash:");
   logger.log(gameNameHash);
-  const gameCookie = event.headers.Cookie.split(";").find((cookie) =>
-    new RegExp(`^${gameNameHash}=.`).test(cookie)
-  );
+  const gameCookie = event.headers.Cookie.split(";")
+    .map((cookie) => cookie.trim())
+    .find((cookie) => new RegExp(`^${gameNameHash}=.`).test(cookie));
   const RIGHT_HAND_SIDE = 1;
   const cookieSessionKey = gameCookie.split("=")[RIGHT_HAND_SIDE];
   if (!gameCookie || !cookieSessionKey) {

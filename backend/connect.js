@@ -35,7 +35,8 @@ exports.handler = async function (event, context, callback) {
     logger.log("no cookies");
     return { statusCode: 400, body: "Bad request" };
   }
-  const gameCookie = event.multiValueHeaders.Cookie.find((cookie) =>
+
+  const gameCookie = event.headers.Cookie.split(";").find((cookie) =>
     new RegExp(`^${gameNameHash}=.`).test(cookie)
   );
   const RIGHT_HAND_SIDE = 1;
@@ -88,7 +89,7 @@ exports.handler = async function (event, context, callback) {
     };
   } catch (e) {
     logger.log("error on put");
-    logger.log(e)
+    logger.log(e);
     return {
       statusCode: 500,
       body: "Server error",

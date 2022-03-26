@@ -1,5 +1,4 @@
 const DynamoDB = require("aws-sdk/clients/dynamodb");
-const { before } = require("lodash");
 const schema = require("./schema");
 
 const originalEnv = process.env;

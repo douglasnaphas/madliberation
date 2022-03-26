@@ -69,7 +69,7 @@ exports.handler = async function (event, context, callback) {
   var putParams = {
     TableName: process.env.TABLE_NAME,
     Item: {
-      [schema.PARTITION_KEY]: `CHECK?PARAMS`, // need to see if event has params
+      [schema.PARTITION_KEY]: `${roomCode}`,
       [schema.SORT_KEY]:
         `${schema.CONNECT}` +
         `${schema.SEPARATOR}` +
@@ -81,18 +81,17 @@ exports.handler = async function (event, context, callback) {
   };
 
   try {
-    // Insert incoming connection id in the db
     await db.put(putParams).promise();
-
     return {
       statusCode: 200,
       body: "Connected",
     };
   } catch (e) {
-    console.error("connect error!", e);
+    logger.log("error on put");
+    logger.log(e)
     return {
-      statusCode: 501,
-      body: "Failed to connect: " + JSON.stringify(e),
+      statusCode: 500,
+      body: "Server error",
     };
   }
 };

@@ -35,7 +35,8 @@ exports.handler = async function (event, context, callback) {
     logger.log("no cookies");
     return { statusCode: 400, body: "Bad request" };
   }
-
+  logger.log("gameNameHash:");
+  logger.log(gameNameHash);
   const gameCookie = event.headers.Cookie.split(";").find((cookie) =>
     new RegExp(`^${gameNameHash}=.`).test(cookie)
   );

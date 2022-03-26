@@ -428,6 +428,78 @@ describe("connect", () => {
       },
       expectedStatus: 200,
     },
+    // multiple game cookies - the right one is 2nd of 2
+    {
+      description: "happy path 2",
+      fakeTime: fakeTime2,
+      tableName: "you_know",
+      event: {
+        headers: {
+          Cookie:
+            `41e3d9a61dba1322a63b98798d5af58d5dace0a112c2984ea7716c2caf40ec35=BJIVMQIZTFRXXVSAWUXGFWBWGYLCPN` +
+            ";" +
+            `${(
+              "61D034473102D7DAC305902770471FD50F4C5B26F6831A56D" +
+              "D90B5184B3C30FC"
+            ).toLowerCase()}=SOMESESSIONKEYABCXYZ`,
+        },
+        multiValueHeaders: {
+          Cookie: [
+            `41e3d9a61dba1322a63b98798d5af58d5dace0a112c2984ea7716c2caf40ec35=BJIVMQIZTFRXXVSAWUXGFWBWGYLCPN` +
+              ";" +
+              `${(
+                "61D034473102D7DAC305902770471FD50F4C5B26F6831A56D" +
+                "D90B5184B3C30FC"
+              ).toLowerCase()}=SOMESESSIONKEYABCXYZ`,
+          ],
+        },
+        queryStringParameters: {
+          gamename: "some%20string",
+          roomcode: "XSMORM",
+        },
+        multiValueQueryStringParameters: {
+          gamename: ["some%20string"],
+          roomcode: ["XSMORM"],
+        },
+        requestContext: {
+          connectionId: "LaFr-fl2oAxCJf4=",
+        },
+      },
+      Item: {
+        lib_id: `participant#${(
+          "61D034473102D7DAC305902770471FD50F4C5B26F6831A56D" +
+          "D90B5184B3C30FC"
+        ).toLowerCase()}`,
+        room_code: "XSMORM",
+        session_key: "SOMESESSIONKEYABCXYZ",
+        game_name: "some%20string",
+      },
+      expectedGetParticipantParams: {
+        TableName: "you_know",
+        Key: {
+          [schema.PARTITION_KEY]: "XSMORM",
+          [schema.SORT_KEY]:
+            `${schema.PARTICIPANT_PREFIX}` +
+            `${schema.SEPARATOR}` +
+            `${(
+              "61D034473102D7DAC305902770471FD50F4C5B26F6831A56D" +
+              "D90B5184B3C30FC"
+            ).toLowerCase()}`,
+        },
+      },
+      expectedPutParams: {
+        TableName: "you_know",
+        Item: {
+          [schema.PARTITION_KEY]: `XSMORM`,
+          [schema.SORT_KEY]:
+            `${schema.CONNECT}` + `${schema.SEPARATOR}` + "LaFr-fl2oAxCJf4=",
+          [schema.CONNECTION_ID]: "LaFr-fl2oAxCJf4=",
+          [schema.DATE]: fakeTime2.toISOString(),
+          [schema.MS]: fakeTime2.getTime(),
+        },
+      },
+      expectedStatus: 200,
+    },
     // Item not found
     {
       description: "Item not found",

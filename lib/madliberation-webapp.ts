@@ -507,7 +507,8 @@ export class MadliberationWebapp extends Stack {
     );
     const deadLetterQueue = new sqs.Queue(this, "deadLetterQueue");
 
-    const wsHostname = webSocketApi.apiEndpoint.replace(/wss:[/][/]/, "");
+    const wsHostname =
+      webSocketApi.apiId + ".execute-api." + this.region + "." + this.urlSuffix;
     streamHandler.addEnvironment(
       "WS_ENDPOINT",
       `${wsHostname}/${wsStage.stageName}`

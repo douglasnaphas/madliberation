@@ -51,6 +51,7 @@ const handleJoin = async (record) => {
     queryData = await db.query(dbQueryParams).promise();
   } catch (e) {
     logger.log("error querying for connections");
+    logger.log(e);
     return { statusCode: 500, body: e.stack };
   }
   if (!queryData) {

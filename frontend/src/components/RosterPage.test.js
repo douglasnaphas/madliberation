@@ -2,13 +2,10 @@ import RosterPage from "./RosterPage";
 import React from "react";
 import { MemoryRouter } from "react-router-dom";
 import {
-  findByRole,
   findByText,
-  getByRole,
   render,
   screen,
   waitFor,
-  waitForElementToBeRemoved,
 } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import userEvent from "@testing-library/user-event";

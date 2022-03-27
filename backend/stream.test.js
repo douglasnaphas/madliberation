@@ -109,6 +109,7 @@ describe("stream", () => {
       const result = await handler(event);
     });
     test.each([
+      // happy path 1
       {
         description: "happy path 1",
         event: {

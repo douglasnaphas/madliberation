@@ -52,6 +52,7 @@ const handleJoin = async (record) => {
   } catch (e) {
     logger.log("error querying for connections");
     logger.log(e);
+    logger.log(JSON.stringify(dbQueryParams));
     return { statusCode: 500, body: e.stack };
   }
   if (!queryData) {

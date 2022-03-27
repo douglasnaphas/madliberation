@@ -507,11 +507,10 @@ export class MadliberationWebapp extends Stack {
     );
     const deadLetterQueue = new sqs.Queue(this, "deadLetterQueue");
 
+    const wsHostname = webSocketApi.apiEndpoint.replace(/wss:[/][/]/, "");
     streamHandler.addEnvironment(
       "WS_ENDPOINT",
-      `${webSocketApi.apiEndpoint.replace(/^wss:[/][/]/, "")}/${
-        wsStage.stageName
-      }`
+      `${wsHostname}/${wsStage.stageName}`
     );
 
     streamHandler.addEventSource(
@@ -568,5 +567,6 @@ export class MadliberationWebapp extends Stack {
     new CfnOutput(this, "WSAPIEndpoint", {
       value: webSocketApi.apiEndpoint,
     });
+    new CfnOutput(this, "WSHostname", { value: wsHostname });
   }
 }

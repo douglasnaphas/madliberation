@@ -507,7 +507,12 @@ export class MadliberationWebapp extends Stack {
     );
     const deadLetterQueue = new sqs.Queue(this, "deadLetterQueue");
 
-    streamHandler.addEnvironment("WS_ENDPOINT", webSocketApi.apiEndpoint);
+    streamHandler.addEnvironment(
+      "WS_ENDPOINT",
+      `${webSocketApi.apiEndpoint.replace(/^wss:[/][/]/, "")}/${
+        wsStage.stageName
+      }`
+    );
 
     streamHandler.addEventSource(
       new DynamoEventSource(sedersTable, {

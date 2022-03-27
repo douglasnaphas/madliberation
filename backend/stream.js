@@ -2,7 +2,7 @@
  * Let participants know when new participants join the seder.
  */
 const schema = require("./schema");
-const logger = require("./logger")
+const logger = require("./logger");
 const ApiGatewayManagementApi = require("aws-sdk/clients/apigatewaymanagementapi");
 const DynamoDB = require("aws-sdk/clients/dynamodb");
 const db = new DynamoDB.DocumentClient();
@@ -36,10 +36,47 @@ const isJoin = (record) => {
   logger.log(re.test(record.dynamodb.NewImage[schema.SORT_KEY].S));
   return re.test(record.dynamodb.NewImage[schema.SORT_KEY].S);
 };
-const handleJoin = () => {
+const handleJoin = async (record) => {
   logger.log("join");
-  // need to notify participants in this seder
-  // 
+  const dbQueryParams = {
+    TableName: process.env.TABLE_NAME,
+    KeyConditionExpression: `room_code = :rc and begins_with(lib_id, :prefix)`,
+    ExpressionAttributeValues: {
+      ":rc": record.dynamodb.NewImage[schema.PARTITION_KEY].S,
+      ":prefix": `${schema.CONNECT}${schema.SEPARATOR}`,
+    },
+  };
+  let queryData;
+  try {
+    queryData = await db.query(dbQueryParams).promise();
+  } catch (e) {
+    logger.log("error querying for connections");
+    return { statusCode: 500, body: e.stack };
+  }
+  if (!queryData) {
+    logger.log("no query data");
+    return { statusCode: 500, body: "no query data" };
+  }
+  if (!Array.isArray(queryData.Items)) {
+    logger.log("non-array Items, or missing Items");
+    return { statusCode: 500, body: "no query data" };
+  }
+  const connectionIds = queryData.Items.map(
+    (item) => item[schema.CONNECTION_ID]
+  );
+  for (let i = 0; i < connectionIds.length; i++) {
+    const postToConnectionParams = {
+      ConnectionId: connectionIds[i],
+      Data: Buffer.from(record.dynamodb.NewImage.game_name.S),
+    };
+    try {
+      await api.postToConnection(postToConnectionParams).promise();
+    } catch (e) {
+      logger.log("failed to postToConnection");
+      logger.log(e);
+      return { statusCode: 500, body: e.stack };
+    }
+  }
 };
 
 exports.handler = async function (event, context, callback) {
@@ -61,13 +98,9 @@ exports.handler = async function (event, context, callback) {
     }
     const record = event.Records[r];
     if (isJoin(record)) {
-      handleJoin();
+      await handleJoin(record);
+      continue;
     }
-  }
-
-  try {
-  } catch (e) {
-    return { statusCode: 500, body: e.stack };
   }
 
   try {

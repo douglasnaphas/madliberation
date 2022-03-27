@@ -517,6 +517,7 @@ export class MadliberationWebapp extends Stack {
         retryAttempts: 5,
       })
     );
+    sedersTable.grantReadData(streamHandler);
     wsStage.grantManagementApiAccess(streamHandler);
 
     const scriptsBucket = new MadLiberationBucket(this, "ScriptsBucket", {

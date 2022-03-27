@@ -67,7 +67,6 @@ class App extends Component {
       isRingleader: false,
       chosenPath: false,
       assignmentsData: false,
-      webSocket: null,
     };
   }
   _isMounted = false;
@@ -101,9 +100,6 @@ class App extends Component {
   componentWillUnmount() {
     window.removeEventListener("visibilitychange", this.handleVisibilityChange);
     window.removeEventListener("pagehide", this.persistState);
-    if (this.state.webSocket && this.state.webSocket.close) {
-      this.state.webSocket.close();
-    }
     this._isMounted = false;
   }
   setConfirmedRoomCode = (roomCode) => {
@@ -123,9 +119,6 @@ class App extends Component {
   };
   setUser = (user) => {
     this.setState({ user });
-  };
-  setWebSocket = (webSocket) => {
-    this.setState({ webSocket });
   };
 
   render() {
@@ -278,8 +271,6 @@ class App extends Component {
                       setConfirmedRoomCode={this.setConfirmedRoomCode}
                       setConfirmedGameName={this.setConfirmedGameName}
                       setChosenPath={this.setChosenPath}
-                      webSocket={this.state.webSocket}
-                      setWebSocket={this.setWebSocket}
                     />
                   )}
                 />

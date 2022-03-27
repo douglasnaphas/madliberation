@@ -1,12 +1,7 @@
 import RosterPage from "./RosterPage";
 import React from "react";
 import { MemoryRouter } from "react-router-dom";
-import {
-  findByText,
-  render,
-  screen,
-  waitFor,
-} from "@testing-library/react";
+import { findByText, render, screen, waitFor } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import userEvent from "@testing-library/user-event";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
@@ -22,14 +17,22 @@ const theme = createTheme({ palette: { primary: { main: "#81181f" } } });
 describe("RosterPage", () => {
   test("roster function is called on page load", async () => {
     let mockWebSocketConstructorCalls = 0;
-    const mockWebSocket = {};
-    class WebSocket {
+    const mockWebSocket = {
+      addEventListener: jest.fn(),
+    };
+    class MockWebSocket {
       constructor(server, protocol) {
         mockWebSocketConstructorCalls++;
+        // expect server to be correct
+        expect(server).toEqual(
+          `wss://${window.location.hostname}/ws/?` +
+            `roomcode=${confirmedRoomCode}&` +
+            `gamename=${encodeURIComponent(confirmedGameName)}`
+        );
         return mockWebSocket;
       }
     }
-    global.WebSocket = WebSocket;
+    global.WebSocket = MockWebSocket;
     const confirmedRoomCode = "TESTIN";
     const confirmedGameName = "Je Teste";
     const roster = jest.fn(async () => {
@@ -39,7 +42,6 @@ describe("RosterPage", () => {
     const setConfirmedRoomCode = jest.fn();
     const setConfirmedGameName = jest.fn();
     const setChosenPath = jest.fn();
-    const setWebSocket = jest.fn();
     render(
       <ThemeProvider theme={theme}>
         <MemoryRouter>
@@ -51,7 +53,6 @@ describe("RosterPage", () => {
             setConfirmedGameName={setConfirmedGameName}
             setConfirmedRoomCode={setConfirmedRoomCode}
             setChosenPath={setChosenPath}
-            setWebSocket={setWebSocket}
           ></RosterPage>
         </MemoryRouter>
       </ThemeProvider>
@@ -60,14 +61,22 @@ describe("RosterPage", () => {
   });
   test("participants from initial roster are displayed", async () => {
     let mockWebSocketConstructorCalls = 0;
-    const mockWebSocket = {};
-    class WebSocket {
+    const mockWebSocket = {
+      addEventListener: jest.fn(),
+    };
+    class MockWebSocket {
       constructor(server, protocol) {
         mockWebSocketConstructorCalls++;
+        // expect server to be correct
+        expect(server).toEqual(
+          `wss://${window.location.hostname}/ws/?` +
+            `roomcode=${confirmedRoomCode}&` +
+            `gamename=${encodeURIComponent(confirmedGameName)}`
+        );
         return mockWebSocket;
       }
     }
-    global.WebSocket = WebSocket;
+    global.WebSocket = MockWebSocket;
     const confirmedRoomCode = "TESTIN";
     const confirmedGameName = "Je Teste";
     const roster = jest.fn(async () => {
@@ -77,7 +86,6 @@ describe("RosterPage", () => {
     const setConfirmedRoomCode = jest.fn();
     const setConfirmedGameName = jest.fn();
     const setChosenPath = jest.fn();
-    const setWebSocket = jest.fn();
     render(
       <ThemeProvider theme={theme}>
         <MemoryRouter>
@@ -89,7 +97,6 @@ describe("RosterPage", () => {
             setConfirmedGameName={setConfirmedGameName}
             setConfirmedRoomCode={setConfirmedRoomCode}
             setChosenPath={setChosenPath}
-            setWebSocket={setWebSocket}
           ></RosterPage>
         </MemoryRouter>
       </ThemeProvider>
@@ -102,14 +109,22 @@ describe("RosterPage", () => {
   });
   test("participants from subsequent roster calls are displayed", async () => {
     let mockWebSocketConstructorCalls = 0;
-    const mockWebSocket = {};
-    class WebSocket {
+    const mockWebSocket = {
+      addEventListener: jest.fn(),
+    };
+    class MockWebSocket {
       constructor(server, protocol) {
         mockWebSocketConstructorCalls++;
+        // expect server to be correct
+        expect(server).toEqual(
+          `wss://${window.location.hostname}/ws/?` +
+            `roomcode=${confirmedRoomCode}&` +
+            `gamename=${encodeURIComponent(confirmedGameName)}`
+        );
         return mockWebSocket;
       }
     }
-    global.WebSocket = WebSocket;
+    global.WebSocket = MockWebSocket;
     const confirmedRoomCode = "TESTIN";
     const confirmedGameName = "Je Teste";
     function* participantsGenerator() {
@@ -124,7 +139,6 @@ describe("RosterPage", () => {
     const setConfirmedRoomCode = jest.fn();
     const setConfirmedGameName = jest.fn();
     const setChosenPath = jest.fn();
-    const setWebSocket = jest.fn();
     render(
       <ThemeProvider theme={theme}>
         <MemoryRouter>
@@ -136,7 +150,6 @@ describe("RosterPage", () => {
             setConfirmedGameName={setConfirmedGameName}
             setConfirmedRoomCode={setConfirmedRoomCode}
             setChosenPath={setChosenPath}
-            setWebSocket={setWebSocket}
           ></RosterPage>
         </MemoryRouter>
       </ThemeProvider>
@@ -154,8 +167,10 @@ describe("RosterPage", () => {
   });
   test("WebSocket initialization", async () => {
     let mockWebSocketConstructorCalls = 0;
-    const mockWebSocket = {};
-    class WebSocket {
+    const mockWebSocket = {
+      addEventListener: jest.fn(),
+    };
+    class MockWebSocket {
       constructor(server, protocol) {
         mockWebSocketConstructorCalls++;
         // expect server to be correct
@@ -167,7 +182,7 @@ describe("RosterPage", () => {
         return mockWebSocket;
       }
     }
-    global.WebSocket = WebSocket;
+    global.WebSocket = MockWebSocket;
 
     const confirmedRoomCode = "TESTIN";
     const confirmedGameName = "Je Teste";
@@ -183,7 +198,6 @@ describe("RosterPage", () => {
     const setConfirmedRoomCode = jest.fn();
     const setConfirmedGameName = jest.fn();
     const setChosenPath = jest.fn();
-    const setWebSocket = jest.fn();
     render(
       <ThemeProvider theme={theme}>
         <MemoryRouter>
@@ -195,15 +209,10 @@ describe("RosterPage", () => {
             setConfirmedGameName={setConfirmedGameName}
             setConfirmedRoomCode={setConfirmedRoomCode}
             setChosenPath={setChosenPath}
-            setWebSocket={setWebSocket}
-            webSocket={null}
           ></RosterPage>
         </MemoryRouter>
       </ThemeProvider>
     );
-    expect(setWebSocket).toHaveBeenCalledWith(mockWebSocket);
-  });
-  test("WebSocket passed in as prop", () => {
-    // WebSocket constructor should not be called
+    expect(mockWebSocketConstructorCalls).toEqual(1);
   });
 });

@@ -24,6 +24,7 @@ const styles = (theme) => ({
     display: "none",
   },
 });
+let webSocket;
 
 class RosterPage extends Component {
   state = {
@@ -88,7 +89,6 @@ class RosterPage extends Component {
       setConfirmedRoomCode,
       setConfirmedGameName,
       setChosenPath,
-      setWebSocket,
     } = this.props;
     let roomCode = confirmedRoomCode;
     let gameName = confirmedGameName;
@@ -109,14 +109,17 @@ class RosterPage extends Component {
       setChosenPath(path);
     }
     this.fetchRoster(roomCode, gameName)();
-    const webSocket = new WebSocket(
+    webSocket = new WebSocket(
       `wss://${window.location.hostname}/ws/?` +
         `roomcode=${roomCode}&` +
         `gamename=${encodeURIComponent(gameName)}`
     );
-    setWebSocket(webSocket);
+    webSocket.addEventListener("message", () => {});
   }
   componentWillUnmount() {
+    if (webSocket && webSocket.close) {
+      webSocket.close();
+    }
     this._isMounted = false;
   }
   onDialogClose = (event) => {
@@ -257,8 +260,6 @@ RosterPage.propTypes = {
   setConfirmedRoomCode: PropTypes.func.isRequired,
   setConfirmedGameName: PropTypes.func.isRequired,
   setChosenPath: PropTypes.func.isRequired,
-  webSocket: PropTypes.object,
-  setWebSocket: PropTypes.func.isRequired,
 };
 
 export default withStyles(styles)(RosterPage);

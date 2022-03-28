@@ -69,7 +69,9 @@ const handleJoin = async (record) => {
   for (let i = 0; i < connectionIds.length; i++) {
     const postToConnectionParams = {
       ConnectionId: connectionIds[i],
-      Data: Buffer.from(record.dynamodb.NewImage.game_name.S),
+      Data: Buffer.from(
+        JSON.stringify({ newParticipant: record.dynamodb.NewImage.game_name.S })
+      ),
     };
     try {
       await api.postToConnection(postToConnectionParams).promise();

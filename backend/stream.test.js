@@ -178,7 +178,7 @@ describe("stream", () => {
         },
         expectedPostToConnectionParams: {
           ConnectionId: "PktBLdr_IAMCJxA=",
-          Data: Buffer.from("Le"),
+          Data: Buffer.from(JSON.stringify({ newParticipant: "Le" })),
         },
         postToConnectionData: {},
         expectedStatusCode: 200,
@@ -227,11 +227,13 @@ describe("stream", () => {
           return MockApiGatewayManagementApi;
         });
         process.env.TABLE_NAME = TABLE_NAME;
-        process.env.WS_ENDPOINT = WS_ENDPOINT
+        process.env.WS_ENDPOINT = WS_ENDPOINT;
         const handler = require("./stream").handler;
         const result = await handler(event);
         expect(result.statusCode).toEqual(expectedStatusCode);
-        expect(MockApiGatewayManagementApi).toHaveBeenCalledWith({endpoint: WS_ENDPOINT})
+        expect(MockApiGatewayManagementApi).toHaveBeenCalledWith({
+          endpoint: WS_ENDPOINT,
+        });
         if (expectedDbQueryParams) {
           expect(mockQuery).toHaveBeenCalledWith(expectedDbQueryParams);
         }

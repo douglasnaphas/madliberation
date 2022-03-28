@@ -167,9 +167,13 @@ describe("RosterPage", () => {
   });
   test("WebSocket initialization", async () => {
     let mockWebSocketConstructorCalls = 0;
+    let messageEventHandler;
     const mockWebSocket = {
-      addEventListener: jest.fn(),
+      addEventListener: jest.fn((eventType, cb) => {
+        messageEventHandler = cb;
+      }),
     };
+
     class MockWebSocket {
       constructor(server, protocol) {
         mockWebSocketConstructorCalls++;
@@ -214,5 +218,16 @@ describe("RosterPage", () => {
       </ThemeProvider>
     );
     expect(mockWebSocketConstructorCalls).toEqual(1);
+    const testMessage = new MessageEvent("message", {
+      data: { newParticipant: "Em Three" },
+    });
+    let table = await screen.findByRole("table");
+    await findByText(table, "Je Teste");
+    await findByText(table, "Moi Too");
+    expect(roster).toHaveBeenCalledTimes(1);
+    messageEventHandler(testMessage);
+    expect(mockWebSocket.addEventListener).toHaveBeenCalled();
+    await screen.findByText("Em Three");
+    await findByText(table, "Em Three");
   });
 });

@@ -114,7 +114,17 @@ class RosterPage extends Component {
         `roomcode=${roomCode}&` +
         `gamename=${encodeURIComponent(gameName)}`
     );
-    webSocket.addEventListener("message", () => {});
+    webSocket.addEventListener("message", (event) => {
+      if (event.data.newParticipant) {
+        this.setState((state, props) => {
+          return {
+            participants: state.participants.concat([
+              event.data.newParticipant,
+            ]),
+          };
+        });
+      }
+    });
   }
   componentWillUnmount() {
     if (webSocket && webSocket.close) {

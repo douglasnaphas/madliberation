@@ -129,6 +129,9 @@ class RosterPage extends Component {
         return;
       }
       this.setState((state, props) => {
+        if (state.participants.includes(eventData.newParticipant)) {
+          return;
+        }
         return {
           participants: state.participants.concat([eventData.newParticipant]),
         };

@@ -165,7 +165,7 @@ describe("RosterPage", () => {
     await findByText(table, "Moi Too");
     await findByText(table, "Em Three");
   });
-  test("WebSocket initialization", async () => {
+  test("New participant from a WebSocket message is displayed", async () => {
     let mockWebSocketConstructorCalls = 0;
     let messageEventHandler;
     const mockWebSocket = {
@@ -229,5 +229,67 @@ describe("RosterPage", () => {
     expect(mockWebSocket.addEventListener).toHaveBeenCalled();
     await screen.findByText("Em Three");
     await findByText(table, "Em Three");
+  });
+  test("Duplicate participant from WebSocket", async () => {
+    let mockWebSocketConstructorCalls = 0;
+    let messageEventHandler;
+    const mockWebSocket = {
+      addEventListener: jest.fn((eventType, cb) => {
+        messageEventHandler = cb;
+      }),
+    };
+
+    class MockWebSocket {
+      constructor(server, protocol) {
+        mockWebSocketConstructorCalls++;
+        // expect server to be correct
+        expect(server).toEqual(
+          `wss://${window.location.hostname}/ws/?` +
+            `roomcode=${confirmedRoomCode}&` +
+            `gamename=${encodeURIComponent(confirmedGameName)}`
+        );
+        return mockWebSocket;
+      }
+    }
+    global.WebSocket = MockWebSocket;
+
+    const confirmedRoomCode = "TESTIN";
+    const confirmedGameName = "Je Teste";
+    function* participantsGenerator() {
+      yield ["Je Teste"];
+    }
+    const pGen = participantsGenerator();
+    const roster = jest.fn(async () => {
+      return { status: 200, data: { participants: pGen.next().value } };
+    });
+    const closeSeder = jest.fn();
+    const setConfirmedRoomCode = jest.fn();
+    const setConfirmedGameName = jest.fn();
+    const setChosenPath = jest.fn();
+    render(
+      <ThemeProvider theme={theme}>
+        <MemoryRouter>
+          <RosterPage
+            confirmedRoomCode={confirmedRoomCode}
+            confirmedGameName={confirmedGameName}
+            roster={roster}
+            closeSeder={closeSeder}
+            setConfirmedGameName={setConfirmedGameName}
+            setConfirmedRoomCode={setConfirmedRoomCode}
+            setChosenPath={setChosenPath}
+          ></RosterPage>
+        </MemoryRouter>
+      </ThemeProvider>
+    );
+    expect(mockWebSocketConstructorCalls).toEqual(1);
+    const testMessage = new MessageEvent("message", {
+      data: `{"newParticipant":"Je Teste"}`,
+    });
+    let table = await screen.findByRole("table");
+    await findByText(table, "Je Teste");
+    expect(roster).toHaveBeenCalledTimes(1);
+    messageEventHandler(testMessage);
+    expect(mockWebSocket.addEventListener).toHaveBeenCalled();
+    await findByText(table, "Je Teste");
   });
 });

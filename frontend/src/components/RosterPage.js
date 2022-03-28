@@ -115,15 +115,24 @@ class RosterPage extends Component {
         `gamename=${encodeURIComponent(gameName)}`
     );
     webSocket.addEventListener("message", (event) => {
-      if (event.data.newParticipant) {
-        this.setState((state, props) => {
-          return {
-            participants: state.participants.concat([
-              event.data.newParticipant,
-            ]),
-          };
-        });
+      if (!event) {
+        return;
       }
+      if (!event.data) {
+        return;
+      }
+      const eventData = JSON.parse(event.data);
+      if (!eventData) {
+        return;
+      }
+      if (!eventData.newParticipant) {
+        return;
+      }
+      this.setState((state, props) => {
+        return {
+          participants: state.participants.concat([eventData.newParticipant]),
+        };
+      });
     });
   }
   componentWillUnmount() {

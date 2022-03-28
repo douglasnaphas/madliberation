@@ -219,7 +219,7 @@ describe("RosterPage", () => {
     );
     expect(mockWebSocketConstructorCalls).toEqual(1);
     const testMessage = new MessageEvent("message", {
-      data: { newParticipant: "Em Three" },
+      data: `{"newParticipant":"Em Three"}`,
     });
     let table = await screen.findByRole("table");
     await findByText(table, "Je Teste");

@@ -16,6 +16,8 @@ function sortParticipants() {
     }
     let participants = res.locals.dbData.Items.map(item => item.game_name);
     res.locals.participants = participants.sort((a, b) => {
+      if(new String(a).toLowerCase() < new String(b).toLowerCase()) return -1;
+      if(new String(a).toLowerCase() > new String(b).toLowerCase()) return 1;
       if(a < b) return -1;
       if(a > b) return 1;
       return 0;

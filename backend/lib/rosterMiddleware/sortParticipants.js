@@ -9,17 +9,20 @@
  */
 function sortParticipants() {
   const middleware = (req, res, next) => {
-    const responses = require('../../responses');
-    if(!res.locals.dbData || !res.locals.dbData.Items || !Array.isArray(
-      res.locals.dbData.Items)) {
+    const responses = require("../../responses");
+    if (
+      !res.locals.dbData ||
+      !res.locals.dbData.Items ||
+      !Array.isArray(res.locals.dbData.Items)
+    ) {
       return res.status(500).send(responses.SERVER_ERROR);
     }
-    let participants = res.locals.dbData.Items.map(item => item.game_name);
+    let participants = res.locals.dbData.Items.map((item) => item.game_name);
     res.locals.participants = participants.sort((a, b) => {
-      if(new String(a).toLowerCase() < new String(b).toLowerCase()) return -1;
-      if(new String(a).toLowerCase() > new String(b).toLowerCase()) return 1;
-      if(a < b) return -1;
-      if(a > b) return 1;
+      if (new String(a).toLowerCase() < new String(b).toLowerCase()) return -1;
+      if (new String(a).toLowerCase() > new String(b).toLowerCase()) return 1;
+      if (a < b) return -1;
+      if (a > b) return 1;
       return 0;
     });
     return next();

@@ -80,6 +80,39 @@ class RosterPage extends Component {
       }
     });
   };
+  messageHandler = (event) => {
+    if (!event) {
+      return;
+    }
+    if (!event.data) {
+      return;
+    }
+    const eventData = JSON.parse(event.data);
+    if (!eventData) {
+      return;
+    }
+    if (!eventData.newParticipant) {
+      return;
+    }
+    this.setState((state, props) => {
+      if (state.participants.includes(eventData.newParticipant)) {
+        return;
+      }
+      return {
+        participants: state.participants
+          .concat([eventData.newParticipant])
+          .sort((a, b) => {
+            if (new String(a).toLowerCase() < new String(b).toLowerCase())
+              return -1;
+            if (new String(a).toLowerCase() > new String(b).toLowerCase())
+              return 1;
+            if (a < b) return -1;
+            if (a > b) return 1;
+            return 0;
+          }),
+      };
+    });
+  };
   componentDidMount() {
     this._isMounted = true;
     const {
@@ -114,29 +147,7 @@ class RosterPage extends Component {
         `roomcode=${roomCode}&` +
         `gamename=${encodeURIComponent(gameName)}`
     );
-    webSocket.addEventListener("message", (event) => {
-      if (!event) {
-        return;
-      }
-      if (!event.data) {
-        return;
-      }
-      const eventData = JSON.parse(event.data);
-      if (!eventData) {
-        return;
-      }
-      if (!eventData.newParticipant) {
-        return;
-      }
-      this.setState((state, props) => {
-        if (state.participants.includes(eventData.newParticipant)) {
-          return;
-        }
-        return {
-          participants: state.participants.concat([eventData.newParticipant]),
-        };
-      });
-    });
+    webSocket.addEventListener("message", this.messageHandler);
   }
   componentWillUnmount() {
     if (webSocket && webSocket.close) {

@@ -1,7 +1,13 @@
 import RosterPage from "./RosterPage";
 import React from "react";
 import { MemoryRouter } from "react-router-dom";
-import { findByText, render, screen, waitFor } from "@testing-library/react";
+import {
+  findByText,
+  getAllByRole,
+  render,
+  screen,
+  waitFor,
+} from "@testing-library/react";
 import "@testing-library/jest-dom";
 import userEvent from "@testing-library/user-event";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
@@ -292,4 +298,78 @@ describe("RosterPage", () => {
     expect(mockWebSocket.addEventListener).toHaveBeenCalled();
     await findByText(table, "Je Teste");
   });
+  // new participant shows up in the right order
+  test("New participant shows up in the right order", async () => {
+    let mockWebSocketConstructorCalls = 0;
+    let messageEventHandler;
+    const mockWebSocket = {
+      addEventListener: jest.fn((eventType, cb) => {
+        messageEventHandler = cb;
+      }),
+    };
+
+    class MockWebSocket {
+      constructor(server, protocol) {
+        mockWebSocketConstructorCalls++;
+        // expect server to be correct
+        expect(server).toEqual(
+          `wss://${window.location.hostname}/ws/?` +
+            `roomcode=${confirmedRoomCode}&` +
+            `gamename=${encodeURIComponent(confirmedGameName)}`
+        );
+        return mockWebSocket;
+      }
+    }
+    global.WebSocket = MockWebSocket;
+
+    const confirmedRoomCode = "TESTIN";
+    const confirmedGameName = "car";
+    function* participantsGenerator() {
+      yield ["ABx", "car", "castle", "Kastle", "Lill", "munoria"];
+    }
+    const pGen = participantsGenerator();
+    const roster = jest.fn(async () => {
+      return { status: 200, data: { participants: pGen.next().value } };
+    });
+    const closeSeder = jest.fn();
+    const setConfirmedRoomCode = jest.fn();
+    const setConfirmedGameName = jest.fn();
+    const setChosenPath = jest.fn();
+    render(
+      <ThemeProvider theme={theme}>
+        <MemoryRouter>
+          <RosterPage
+            confirmedRoomCode={confirmedRoomCode}
+            confirmedGameName={confirmedGameName}
+            roster={roster}
+            closeSeder={closeSeder}
+            setConfirmedGameName={setConfirmedGameName}
+            setConfirmedRoomCode={setConfirmedRoomCode}
+            setChosenPath={setChosenPath}
+          ></RosterPage>
+        </MemoryRouter>
+      </ThemeProvider>
+    );
+    expect(mockWebSocketConstructorCalls).toEqual(1);
+    const testMessage = new MessageEvent("message", {
+      data: `{"newParticipant":"Draw"}`,
+    });
+    let table = await screen.findByRole("table");
+    await findByText(table, "ABx");
+    expect(roster).toHaveBeenCalledTimes(1);
+    messageEventHandler(testMessage);
+    expect(mockWebSocket.addEventListener).toHaveBeenCalled();
+    await findByText(table, "car");
+    const cells = screen.getAllByRole("cell");
+    expect(cells.map((cell) => cell.innerHTML)).toEqual([
+      "ABx",
+      "car",
+      "castle",
+      "Draw",
+      "Kastle",
+      "Lill",
+      "munoria",
+    ]);
+  });
+  // removeEventListener is called
 });

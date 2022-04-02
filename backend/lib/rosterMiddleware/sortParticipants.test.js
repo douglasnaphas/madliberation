@@ -88,15 +88,15 @@ describe('rosterMiddleware/sortParticipants', () => {
       }
     };
     const expectedParticipants = [
-      'Crybaby',
-      'The Code',
-      'Zyman',
-      'Zyman',
       'a duplicate was found',
       'bryn athyn',
+      'Crybaby',
       'my 400',
+      'The Code',
       'the code',
-      'yolavassa'
+      'yolavassa',
+      'Zyman',
+      'Zyman',
     ];
     runTest({res: res, expectNext: true, expectedParticipants:
       expectedParticipants});

@@ -41,7 +41,7 @@ describe('assignmentsMiddleware/dbParams', () => {
   test('should 400 on missing Room Code', () => {
     const req = {
       query: {
-        gamename: encodeURI('but no room code')
+        gamename: encodeURIComponent('but no room code')
       }
     };
     runTest({req: req, expect400: true});
@@ -60,7 +60,7 @@ describe('assignmentsMiddleware/dbParams', () => {
     const req = {
       query: {
         roomcode: roomCode,
-        gamename: encodeURI(gameName)
+        gamename: encodeURIComponent(gameName)
       }
     };
     const expectedDbParams = {
@@ -84,7 +84,7 @@ describe('assignmentsMiddleware/dbParams', () => {
     const req = {
       query: {
         roomcode: roomCode,
-        gamename: encodeURI(gameName)
+        gamename: encodeURIComponent(gameName)
       }
     };
     const expectedDbParams = {

@@ -122,7 +122,6 @@ class ReadRoster extends React.Component {
         <div>
           <Button
             variant="contained"
-            color="secondary"
             onClick={this.confirmRequestScript}
             disabled={this.state.rosterLoading}
           >

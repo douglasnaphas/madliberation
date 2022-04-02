@@ -46,7 +46,7 @@ describe('gameNameCookieCheckMidWare/getRoomCode', () => {
   });
   test('game name in query', () => {
     const expectedGameName = 'From, the, Que-ry--';
-    const gameName = encodeURI(expectedGameName);
+    const gameName = encodeURIComponent(expectedGameName);
     const req = {
       body: {},
       query: {}
@@ -56,7 +56,7 @@ describe('gameNameCookieCheckMidWare/getRoomCode', () => {
   });
   test('same in query and body', () => {
     const expectedGameName = 'From, the, Que-ry--';
-    const gameName = encodeURI(expectedGameName);
+    const gameName = encodeURIComponent(expectedGameName);
     const req = {
       body: {},
       query: {}

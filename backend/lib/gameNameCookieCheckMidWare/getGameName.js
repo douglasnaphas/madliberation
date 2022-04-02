@@ -17,11 +17,11 @@ function getGameName() {
     if(req.body[api.POST_BODY_PARAMS.GAME_NAME] &&
       req.query[api.URL_QUERY_PARAMS.GAME_NAME] &&
       req.body[api.POST_BODY_PARAMS.GAME_NAME] !=
-      decodeURI(req.query[api.URL_QUERY_PARAMS.GAME_NAME])) {
+      decodeURIComponent(req.query[api.URL_QUERY_PARAMS.GAME_NAME])) {
       return res.status(403).send(responses.FORBIDDEN);  
     }
     res.locals.gameName = req.body[api.POST_BODY_PARAMS.GAME_NAME] ||
-      decodeURI(req.query[api.URL_QUERY_PARAMS.GAME_NAME]);
+      decodeURIComponent(req.query[api.URL_QUERY_PARAMS.GAME_NAME]);
     return next();
   };
   return middleware;

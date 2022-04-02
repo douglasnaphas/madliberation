@@ -54,6 +54,14 @@ const schema = {
   OPAQUE_COOKIE_EXPIRATION_MILLISECONDS: "cookie_expiration_ms",
   OPAQUE_COOKIE_ISSUED_DATE: "cookie_issued_date",
   OPAQUE_COOKIE_EXPIRATION_DATE: "cookie_expiration_date",
+  // WebSockets
+  CONNECTION: "connection",
+  EVENT: "event", // CONNECT or DISCONNECT
+  CONNECT: "connect",
+  DISCONNECT: "disconnect",
+  DATE: "date",
+  MS: "ms",
+  CONNECTION_ID: "connection_id"
 };
 
 module.exports = schema;

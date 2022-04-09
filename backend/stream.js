@@ -78,7 +78,6 @@ const handleJoin = async (record) => {
     } catch (e) {
       logger.log("failed to postToConnection");
       logger.log(e);
-      return { statusCode: 500, body: e.stack };
     }
   }
 };

@@ -53,15 +53,15 @@ const handleJoin = async (record) => {
     logger.log("error querying for connections");
     logger.log(e);
     logger.log(JSON.stringify(dbQueryParams));
-    return { statusCode: 500, body: e.stack };
+    return;
   }
   if (!queryData) {
     logger.log("no query data");
-    return { statusCode: 500, body: "no query data" };
+    return;
   }
   if (!Array.isArray(queryData.Items)) {
     logger.log("non-array Items, or missing Items");
-    return { statusCode: 500, body: "no query data" };
+    return;
   }
   const connectionIds = queryData.Items.map(
     (item) => item[schema.CONNECTION_ID]

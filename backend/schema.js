@@ -61,7 +61,8 @@ const schema = {
   DISCONNECT: "disconnect",
   DATE: "date",
   MS: "ms",
-  CONNECTION_ID: "connection_id"
+  CONNECTION_ID: "connection_id",
+  WAIT: "wait" // wait page, ws-wait WS API
 };
 
 module.exports = schema;

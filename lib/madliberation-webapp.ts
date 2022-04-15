@@ -525,9 +525,7 @@ export class MadliberationWebapp extends Stack {
     const cfnStreamMapping = streamMapping.node
       .defaultChild as lambda.CfnEventSourceMapping;
     cfnStreamMapping.addPropertyOverride("FilterCriteria", {
-      Filters: [
-        JSON.stringify({ Pattern: { dynamodb: { eventName: ["INSERT"] } } }),
-      ],
+      Filters: [JSON.stringify({ dynamodb: { eventName: ["INSERT"] } })],
     });
 
     sedersTable.grantStreamRead(streamHandler);

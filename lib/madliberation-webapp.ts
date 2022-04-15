@@ -529,7 +529,12 @@ export class MadliberationWebapp extends Stack {
         {
           Pattern: JSON.stringify({
             eventName: ["INSERT"],
-            dynamodb: { NewImage: { game_name: { S: [{ exists: true }] } } },
+            dynamodb: {
+              NewImage: {
+                game_name: { S: [{ exists: true }] },
+                lib_id: { S: [{ prefix: "participant#" }] },
+              },
+            },
           }),
         },
       ],

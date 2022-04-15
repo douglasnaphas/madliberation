@@ -514,14 +514,23 @@ export class MadliberationWebapp extends Stack {
       `${wsHostname}/${wsStage.stageName}`
     );
 
-    streamHandler.addEventSource(
-      new DynamoEventSource(sedersTable, {
-        startingPosition: lambda.StartingPosition.TRIM_HORIZON,
-        bisectBatchOnError: true,
-        onFailure: new SqsDlq(deadLetterQueue),
-        retryAttempts: 5,
-      })
-    );
+    const streamMapping = new lambda.EventSourceMapping(this, "StreamMapping", {
+      target: streamHandler,
+      eventSourceArn: sedersTable.tableStreamArn,
+      startingPosition: lambda.StartingPosition.TRIM_HORIZON,
+      bisectBatchOnError: true,
+      onFailure: new SqsDlq(deadLetterQueue),
+      retryAttempts: 5,
+    });
+    const cfnStreamMapping = streamMapping.node
+      .defaultChild as lambda.CfnEventSourceMapping;
+    cfnStreamMapping.addPropertyOverride("FilterCriteria", {
+      Filters: [
+        JSON.stringify({ Pattern: { dynamodb: { eventName: ["INSERT"] } } }),
+      ],
+    });
+
+    sedersTable.grantStreamRead(streamHandler);
     sedersTable.grantReadData(streamHandler);
     wsStage.grantManagementApiAccess(streamHandler);
 

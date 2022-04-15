@@ -551,7 +551,7 @@ export class MadliberationWebapp extends Stack {
     });
     const cfnAssignMapping = assignMapping.node
       .defaultChild as lambda.CfnEventSourceMapping;
-    cfnStreamMapping.addPropertyOverride("FilterCriteria", {
+    cfnAssignMapping.addPropertyOverride("FilterCriteria", {
       Filters: [
         {
           Pattern: JSON.stringify({

@@ -448,6 +448,7 @@ export class MadliberationWebapp extends Stack {
     const disconnectHandler = makeHandler("Disconnect");
     const defaultHandler = makeHandler("Default");
     const streamHandler = makeHandler("Stream");
+    const assignHandler = makeHandler("Assign");
     [connectHandler, disconnectHandler, defaultHandler].forEach((handler) => {
       sedersTable.grantReadWriteData(handler);
     });
@@ -540,9 +541,42 @@ export class MadliberationWebapp extends Stack {
       ],
     });
 
-    sedersTable.grantStreamRead(streamHandler);
-    sedersTable.grantReadData(streamHandler);
-    wsStage.grantManagementApiAccess(streamHandler);
+    const assignMapping = new lambda.EventSourceMapping(this, "AssignMapping", {
+      target: assignHandler,
+      eventSourceArn: sedersTable.tableStreamArn,
+      startingPosition: lambda.StartingPosition.TRIM_HORIZON,
+      bisectBatchOnError: true,
+      onFailure: new SqsDlq(deadLetterQueue),
+      retryAttempts: 5,
+    });
+    const cfnAssignMapping = assignMapping.node
+      .defaultChild as lambda.CfnEventSourceMapping;
+    cfnStreamMapping.addPropertyOverride("FilterCriteria", {
+      Filters: [
+        {
+          Pattern: JSON.stringify({
+            eventName: ["MODIFY"],
+            dynamodb: {
+              NewImage: {
+                game_name: { S: [{ exists: true }] },
+                lib_id: { S: [{ prefix: "participant#" }] },
+              },
+              OldImage: {
+                assignments: {
+                  L: [{ exists: false }],
+                },
+              },
+            },
+          }),
+        },
+      ],
+    });
+
+    [streamHandler, assignHandler].forEach((handler) => {
+      sedersTable.grantStreamRead(handler);
+      sedersTable.grantReadData(handler);
+      wsStage.grantManagementApiAccess(handler);
+    });
 
     const scriptsBucket = new MadLiberationBucket(this, "ScriptsBucket", {
       versioned: true,

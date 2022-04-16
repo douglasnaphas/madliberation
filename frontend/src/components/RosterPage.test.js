@@ -31,7 +31,7 @@ describe("RosterPage", () => {
         mockWebSocketConstructorCalls++;
         // expect server to be correct
         expect(server).toEqual(
-          `wss://${window.location.hostname}/ws/?` +
+          `wss://${window.location.hostname}/ws-roster/?` +
             `roomcode=${confirmedRoomCode}&` +
             `gamename=${encodeURIComponent(confirmedGameName)}`
         );
@@ -75,7 +75,7 @@ describe("RosterPage", () => {
         mockWebSocketConstructorCalls++;
         // expect server to be correct
         expect(server).toEqual(
-          `wss://${window.location.hostname}/ws/?` +
+          `wss://${window.location.hostname}/ws-roster/?` +
             `roomcode=${confirmedRoomCode}&` +
             `gamename=${encodeURIComponent(confirmedGameName)}`
         );
@@ -123,7 +123,7 @@ describe("RosterPage", () => {
         mockWebSocketConstructorCalls++;
         // expect server to be correct
         expect(server).toEqual(
-          `wss://${window.location.hostname}/ws/?` +
+          `wss://${window.location.hostname}/ws-roster/?` +
             `roomcode=${confirmedRoomCode}&` +
             `gamename=${encodeURIComponent(confirmedGameName)}`
         );
@@ -185,7 +185,7 @@ describe("RosterPage", () => {
         mockWebSocketConstructorCalls++;
         // expect server to be correct
         expect(server).toEqual(
-          `wss://${window.location.hostname}/ws/?` +
+          `wss://${window.location.hostname}/ws-roster/?` +
             `roomcode=${confirmedRoomCode}&` +
             `gamename=${encodeURIComponent(confirmedGameName)}`
         );
@@ -250,7 +250,7 @@ describe("RosterPage", () => {
         mockWebSocketConstructorCalls++;
         // expect server to be correct
         expect(server).toEqual(
-          `wss://${window.location.hostname}/ws/?` +
+          `wss://${window.location.hostname}/ws-roster/?` +
             `roomcode=${confirmedRoomCode}&` +
             `gamename=${encodeURIComponent(confirmedGameName)}`
         );
@@ -313,7 +313,7 @@ describe("RosterPage", () => {
         mockWebSocketConstructorCalls++;
         // expect server to be correct
         expect(server).toEqual(
-          `wss://${window.location.hostname}/ws/?` +
+          `wss://${window.location.hostname}/ws-roster/?` +
             `roomcode=${confirmedRoomCode}&` +
             `gamename=${encodeURIComponent(confirmedGameName)}`
         );

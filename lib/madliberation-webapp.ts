@@ -448,12 +448,12 @@ export class MadliberationWebapp extends Stack {
     const connectWaitHandler = makeHandler("Connect-Wait");
     const disconnectHandler = makeHandler("Disconnect");
     const defaultHandler = makeHandler("Default");
-    const streamHandler = makeHandler("Stream");
+    const joinHandler = makeHandler("Join");
     const assignHandler = makeHandler("Assign");
     [connectHandler, disconnectHandler, defaultHandler].forEach((handler) => {
       sedersTable.grantReadWriteData(handler);
     });
-    const webSocketApi = new apigwv2.WebSocketApi(this, "WSAPI", {
+    const wsRosterApi = new apigwv2.WebSocketApi(this, "WSRosterAPI", {
       connectRouteOptions: {
         integration: new apigwv2i.WebSocketLambdaIntegration(
           "ConnectIntegration",
@@ -473,10 +473,10 @@ export class MadliberationWebapp extends Stack {
         ),
       },
     });
-    const stageName = "ws";
-    const wsStage = new apigwv2.WebSocketStage(this, "WSStage", {
-      stageName,
-      webSocketApi,
+    const wsRosterStageName = "ws-roster";
+    const wsRosterStage = new apigwv2.WebSocketStage(this, "WSRosterStage", {
+      stageName: wsRosterStageName,
+      webSocketApi: wsRosterApi,
       autoDeploy: true,
     });
     const wsWaitApi = new apigwv2.WebSocketApi(this, "WSWaitAPI", {
@@ -521,9 +521,9 @@ export class MadliberationWebapp extends Stack {
       }
     );
     distro.addBehavior(
-      `/${stageName}/*`,
+      `/${wsRosterStageName}/*`,
       new origins.HttpOrigin(
-        `${webSocketApi.apiId}.execute-api.${this.region}.${this.urlSuffix}`,
+        `${wsRosterApi.apiId}.execute-api.${this.region}.${this.urlSuffix}`,
         {
           protocolPolicy: cloudfront.OriginProtocolPolicy.HTTPS_ONLY,
         }
@@ -554,29 +554,29 @@ export class MadliberationWebapp extends Stack {
     const deadLetterQueue = new sqs.Queue(this, "deadLetterQueue");
 
     const wsHostname =
-      webSocketApi.apiId + ".execute-api." + this.region + "." + this.urlSuffix;
+      wsRosterApi.apiId + ".execute-api." + this.region + "." + this.urlSuffix;
     const wsWaitHostname =
       wsWaitApi.apiId + ".execute-api." + this.region + "." + this.urlSuffix;
-    streamHandler.addEnvironment(
+    joinHandler.addEnvironment(
       "WS_ENDPOINT",
-      `${wsHostname}/${wsStage.stageName}`
+      `${wsHostname}/${wsRosterStage.stageName}`
     );
     assignHandler.addEnvironment(
       "WS_ENDPOINT",
       `${wsWaitHostname}/${wsWaitStage.stageName}`
     );
 
-    const streamMapping = new lambda.EventSourceMapping(this, "StreamMapping", {
-      target: streamHandler,
+    const joinMapping = new lambda.EventSourceMapping(this, "JoinMapping", {
+      target: joinHandler,
       eventSourceArn: sedersTable.tableStreamArn,
       startingPosition: lambda.StartingPosition.TRIM_HORIZON,
       bisectBatchOnError: true,
       onFailure: new SqsDlq(deadLetterQueue),
       retryAttempts: 5,
     });
-    const cfnStreamMapping = streamMapping.node
+    const cfnJoinMapping = joinMapping.node
       .defaultChild as lambda.CfnEventSourceMapping;
-    cfnStreamMapping.addPropertyOverride("FilterCriteria", {
+    cfnJoinMapping.addPropertyOverride("FilterCriteria", {
       Filters: [
         {
           Pattern: JSON.stringify({
@@ -623,11 +623,11 @@ export class MadliberationWebapp extends Stack {
       ],
     });
 
-    [streamHandler, assignHandler].forEach((handler) => {
+    [joinHandler, assignHandler].forEach((handler) => {
       sedersTable.grantStreamRead(handler);
       sedersTable.grantReadData(handler);
     });
-    wsStage.grantManagementApiAccess(streamHandler);
+    wsRosterStage.grantManagementApiAccess(joinHandler);
     wsWaitStage.grantManagementApiAccess(assignHandler);
 
     const scriptsBucket = new MadLiberationBucket(this, "ScriptsBucket", {
@@ -670,8 +670,8 @@ export class MadliberationWebapp extends Stack {
       value: scriptsBucket.bucketName,
     });
     new CfnOutput(this, "TableName", { value: sedersTable.tableName });
-    new CfnOutput(this, "WSAPIEndpoint", {
-      value: webSocketApi.apiEndpoint,
+    new CfnOutput(this, "WSRosterEndpoint", {
+      value: wsRosterApi.apiEndpoint,
     });
     new CfnOutput(this, "WSHostname", { value: wsHostname });
   }

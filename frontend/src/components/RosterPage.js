@@ -143,7 +143,7 @@ class RosterPage extends Component {
     }
     this.fetchRoster(roomCode, gameName)();
     webSocket = new WebSocket(
-      `wss://${window.location.hostname}/ws/?` +
+      `wss://${window.location.hostname}/ws-roster/?` +
         `roomcode=${roomCode}&` +
         `gamename=${encodeURIComponent(gameName)}`
     );

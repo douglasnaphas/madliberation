@@ -104,7 +104,7 @@ describe("join", () => {
       return f;
     });
     process.env.TABLE_NAME = "mad_liberation_table";
-    const handler = require("./stream").handler;
+    const handler = require("./join").handler;
     const result = await handler(event);
   });
   test.each([
@@ -525,7 +525,7 @@ describe("join", () => {
       jest.mock("aws-sdk/clients/apigatewaymanagementapi", () => {
         return MockApiGatewayManagementApi;
       });
-      const handler = require("./stream").handler;
+      const handler = require("./join").handler;
       const result = await handler(event);
       expect(result.statusCode).toEqual(expectedStatusCode);
       expect(MockApiGatewayManagementApi).toHaveBeenCalledWith({

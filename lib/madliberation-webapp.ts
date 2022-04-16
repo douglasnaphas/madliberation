@@ -444,20 +444,20 @@ export class MadliberationWebapp extends Stack {
         },
         timeout: Duration.seconds(20),
       });
-    const connectHandler = makeHandler("Connect");
+    const connectRosterHandler = makeHandler("Connect-Roster");
     const connectWaitHandler = makeHandler("Connect-Wait");
     const disconnectHandler = makeHandler("Disconnect");
     const defaultHandler = makeHandler("Default");
     const joinHandler = makeHandler("Join");
     const assignHandler = makeHandler("Assign");
-    [connectHandler, disconnectHandler, defaultHandler].forEach((handler) => {
+    [connectRosterHandler, disconnectHandler, defaultHandler].forEach((handler) => {
       sedersTable.grantReadWriteData(handler);
     });
     const wsRosterApi = new apigwv2.WebSocketApi(this, "WSRosterAPI", {
       connectRouteOptions: {
         integration: new apigwv2i.WebSocketLambdaIntegration(
           "ConnectIntegration",
-          connectHandler
+          connectRosterHandler
         ),
       },
       disconnectRouteOptions: {

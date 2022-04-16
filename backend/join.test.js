@@ -152,7 +152,7 @@ describe("join", () => {
           },
         ],
       },
-      WS_ENDPOINT: "100abc.execute-api.us-east-1.amazonaws.com/ws",
+      WS_ENDPOINT: "100abc.execute-api.us-east-1.amazonaws.com/ws-roster",
       TABLE_NAME: "the_1_table",
       expectedDbQueryParams: {
         TableName: "the_1_table",
@@ -227,7 +227,7 @@ describe("join", () => {
           },
         ],
       },
-      WS_ENDPOINT: "100abc.execute-api.us-east-1.amazonaws.com/ws",
+      WS_ENDPOINT: "100abc.execute-api.us-east-1.amazonaws.com/ws-roster",
       TABLE_NAME: "the_1_table",
       expectedDbQueryParams: {
         TableName: "the_1_table",
@@ -302,7 +302,7 @@ describe("join", () => {
           },
         ],
       },
-      WS_ENDPOINT: "100abc.execute-api.us-east-1.amazonaws.com/ws",
+      WS_ENDPOINT: "100abc.execute-api.us-east-1.amazonaws.com/ws-roster",
       TABLE_NAME: "the_1_table",
       expectedDbQueryParams: {
         TableName: "the_1_table",
@@ -401,7 +401,7 @@ describe("join", () => {
           },
         ],
       },
-      WS_ENDPOINT: "100abc.execute-api.us-east-1.amazonaws.com/ws",
+      WS_ENDPOINT: "100abc.execute-api.us-east-1.amazonaws.com/ws-roster",
       TABLE_NAME: "the_1_table",
       expectedDbQueryParams: {
         TableName: "the_1_table",

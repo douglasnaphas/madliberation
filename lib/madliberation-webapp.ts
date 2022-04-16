@@ -433,7 +433,7 @@ export class MadliberationWebapp extends Stack {
     }
 
     const makeHandler = (prefix: string) =>
-      new lambda.Function(this, `${prefix}Handler`, {
+      new lambda.Function(this, `${prefix.replace(/-/g, "")}Handler`, {
         runtime: lambda.Runtime.NODEJS_14_X,
         handler: `${prefix.toLowerCase()}.handler`,
         code: lambda.Code.fromAsset("backend"),
@@ -445,9 +445,11 @@ export class MadliberationWebapp extends Stack {
         timeout: Duration.seconds(20),
       });
     const connectHandler = makeHandler("Connect");
+    const connectWaitHandler = makeHandler("Connect-Wait");
     const disconnectHandler = makeHandler("Disconnect");
     const defaultHandler = makeHandler("Default");
     const streamHandler = makeHandler("Stream");
+    const assignHandler = makeHandler("Assign");
     [connectHandler, disconnectHandler, defaultHandler].forEach((handler) => {
       sedersTable.grantReadWriteData(handler);
     });
@@ -477,6 +479,47 @@ export class MadliberationWebapp extends Stack {
       webSocketApi,
       autoDeploy: true,
     });
+    const wsWaitApi = new apigwv2.WebSocketApi(this, "WSWaitAPI", {
+      connectRouteOptions: {
+        integration: new apigwv2i.WebSocketLambdaIntegration(
+          "ConnectWaitIntegration",
+          connectWaitHandler
+        ),
+      },
+      disconnectRouteOptions: {
+        integration: new apigwv2i.WebSocketLambdaIntegration(
+          "DisconnectIntegration",
+          disconnectHandler
+        ),
+      },
+      defaultRouteOptions: {
+        integration: new apigwv2i.WebSocketLambdaIntegration(
+          "DefaultIntegration",
+          defaultHandler
+        ),
+      },
+    });
+    const wsWaitStageName = "ws-wait";
+    const wsWaitStage = new apigwv2.WebSocketStage(this, "WSWaitStage", {
+      stageName: wsWaitStageName,
+      webSocketApi: wsWaitApi,
+      autoDeploy: true,
+    });
+
+    // for all WebSocket behaviors
+    const wsOrp = new cloudfront.OriginRequestPolicy(
+      this,
+      "WSOriginRequestPolicy",
+      {
+        headerBehavior: cloudfront.OriginRequestHeaderBehavior.allowList(
+          "Sec-WebSocket-Extensions",
+          "Sec-WebSocket-Key",
+          "Sec-WebSocket-Version"
+        ),
+        cookieBehavior: cloudfront.OriginRequestCookieBehavior.all(),
+        queryStringBehavior: cloudfront.OriginRequestQueryStringBehavior.all(),
+      }
+    );
     distro.addBehavior(
       `/${stageName}/*`,
       new origins.HttpOrigin(
@@ -489,41 +532,103 @@ export class MadliberationWebapp extends Stack {
         allowedMethods: cloudfront.AllowedMethods.ALLOW_ALL,
         cachePolicy: cloudfront.CachePolicy.CACHING_DISABLED,
         viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
-        originRequestPolicy: new cloudfront.OriginRequestPolicy(
-          this,
-          "WSOriginRequestPolicy",
-          {
-            headerBehavior: cloudfront.OriginRequestHeaderBehavior.allowList(
-              "Sec-WebSocket-Extensions",
-              "Sec-WebSocket-Key",
-              "Sec-WebSocket-Version"
-            ),
-            cookieBehavior: cloudfront.OriginRequestCookieBehavior.all(),
-            queryStringBehavior:
-              cloudfront.OriginRequestQueryStringBehavior.all(),
-          }
-        ),
+        originRequestPolicy: wsOrp,
       }
     );
+    distro.addBehavior(
+      `/${wsWaitStageName}/*`,
+      new origins.HttpOrigin(
+        `${wsWaitApi.apiId}.execute-api.${this.region}.${this.urlSuffix}`,
+        {
+          protocolPolicy: cloudfront.OriginProtocolPolicy.HTTPS_ONLY,
+        }
+      ),
+      {
+        allowedMethods: cloudfront.AllowedMethods.ALLOW_ALL,
+        cachePolicy: cloudfront.CachePolicy.CACHING_DISABLED,
+        viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
+        originRequestPolicy: wsOrp,
+      }
+    );
+
     const deadLetterQueue = new sqs.Queue(this, "deadLetterQueue");
 
     const wsHostname =
       webSocketApi.apiId + ".execute-api." + this.region + "." + this.urlSuffix;
+    const wsWaitHostname =
+      wsWaitApi.apiId + ".execute-api." + this.region + "." + this.urlSuffix;
     streamHandler.addEnvironment(
       "WS_ENDPOINT",
       `${wsHostname}/${wsStage.stageName}`
     );
-
-    streamHandler.addEventSource(
-      new DynamoEventSource(sedersTable, {
-        startingPosition: lambda.StartingPosition.TRIM_HORIZON,
-        bisectBatchOnError: true,
-        onFailure: new SqsDlq(deadLetterQueue),
-        retryAttempts: 5,
-      })
+    assignHandler.addEnvironment(
+      "WS_ENDPOINT",
+      `${wsWaitHostname}/${wsWaitStage.stageName}`
     );
-    sedersTable.grantReadData(streamHandler);
+
+    const streamMapping = new lambda.EventSourceMapping(this, "StreamMapping", {
+      target: streamHandler,
+      eventSourceArn: sedersTable.tableStreamArn,
+      startingPosition: lambda.StartingPosition.TRIM_HORIZON,
+      bisectBatchOnError: true,
+      onFailure: new SqsDlq(deadLetterQueue),
+      retryAttempts: 5,
+    });
+    const cfnStreamMapping = streamMapping.node
+      .defaultChild as lambda.CfnEventSourceMapping;
+    cfnStreamMapping.addPropertyOverride("FilterCriteria", {
+      Filters: [
+        {
+          Pattern: JSON.stringify({
+            eventName: ["INSERT"],
+            dynamodb: {
+              NewImage: {
+                game_name: { S: [{ exists: true }] },
+                lib_id: { S: [{ prefix: "participant#" }] },
+              },
+            },
+          }),
+        },
+      ],
+    });
+
+    const assignMapping = new lambda.EventSourceMapping(this, "AssignMapping", {
+      target: assignHandler,
+      eventSourceArn: sedersTable.tableStreamArn,
+      startingPosition: lambda.StartingPosition.TRIM_HORIZON,
+      bisectBatchOnError: true,
+      onFailure: new SqsDlq(deadLetterQueue),
+      retryAttempts: 5,
+    });
+    const cfnAssignMapping = assignMapping.node
+      .defaultChild as lambda.CfnEventSourceMapping;
+    cfnAssignMapping.addPropertyOverride("FilterCriteria", {
+      Filters: [
+        {
+          Pattern: JSON.stringify({
+            eventName: ["MODIFY"],
+            dynamodb: {
+              NewImage: {
+                game_name: { S: [{ exists: true }] },
+                lib_id: { S: [{ prefix: "participant#" }] },
+              },
+              OldImage: {
+                assignments: {
+                  L: [{ exists: false }],
+                },
+              },
+            },
+          }),
+        },
+      ],
+    });
+
+    [streamHandler, assignHandler].forEach((handler) => {
+      sedersTable.grantStreamRead(handler);
+      sedersTable.grantReadData(handler);
+    });
     wsStage.grantManagementApiAccess(streamHandler);
+    wsWaitStage.grantManagementApiAccess(assignHandler);
 
     const scriptsBucket = new MadLiberationBucket(this, "ScriptsBucket", {
       versioned: true,

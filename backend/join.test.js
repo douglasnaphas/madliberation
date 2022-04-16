@@ -104,7 +104,7 @@ describe("join", () => {
       return f;
     });
     process.env.TABLE_NAME = "mad_liberation_table";
-    const handler = require("./stream").handler;
+    const handler = require("./join").handler;
     const result = await handler(event);
   });
   test.each([
@@ -152,7 +152,7 @@ describe("join", () => {
           },
         ],
       },
-      WS_ENDPOINT: "100abc.execute-api.us-east-1.amazonaws.com/ws",
+      WS_ENDPOINT: "100abc.execute-api.us-east-1.amazonaws.com/ws-roster",
       TABLE_NAME: "the_1_table",
       expectedDbQueryParams: {
         TableName: "the_1_table",
@@ -227,7 +227,7 @@ describe("join", () => {
           },
         ],
       },
-      WS_ENDPOINT: "100abc.execute-api.us-east-1.amazonaws.com/ws",
+      WS_ENDPOINT: "100abc.execute-api.us-east-1.amazonaws.com/ws-roster",
       TABLE_NAME: "the_1_table",
       expectedDbQueryParams: {
         TableName: "the_1_table",
@@ -302,7 +302,7 @@ describe("join", () => {
           },
         ],
       },
-      WS_ENDPOINT: "100abc.execute-api.us-east-1.amazonaws.com/ws",
+      WS_ENDPOINT: "100abc.execute-api.us-east-1.amazonaws.com/ws-roster",
       TABLE_NAME: "the_1_table",
       expectedDbQueryParams: {
         TableName: "the_1_table",
@@ -401,7 +401,7 @@ describe("join", () => {
           },
         ],
       },
-      WS_ENDPOINT: "100abc.execute-api.us-east-1.amazonaws.com/ws",
+      WS_ENDPOINT: "100abc.execute-api.us-east-1.amazonaws.com/ws-roster",
       TABLE_NAME: "the_1_table",
       expectedDbQueryParams: {
         TableName: "the_1_table",
@@ -525,7 +525,7 @@ describe("join", () => {
       jest.mock("aws-sdk/clients/apigatewaymanagementapi", () => {
         return MockApiGatewayManagementApi;
       });
-      const handler = require("./stream").handler;
+      const handler = require("./join").handler;
       const result = await handler(event);
       expect(result.statusCode).toEqual(expectedStatusCode);
       expect(MockApiGatewayManagementApi).toHaveBeenCalledWith({

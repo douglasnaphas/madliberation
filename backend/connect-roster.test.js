@@ -120,7 +120,7 @@ describe("connect", () => {
       };
     });
     process.env.TABLE_NAME = "the_table";
-    const handler = require("./connect").handler;
+    const handler = require("./connect-roster").handler;
     const result = await handler(event);
     expect(result.statusCode).toEqual(200);
     expect(mockGet).toHaveBeenCalledTimes(1);
@@ -180,7 +180,7 @@ describe("connect", () => {
         }),
       };
     });
-    const handler = require("./connect").handler;
+    const handler = require("./connect-roster").handler;
     const result = await handler(event);
     expect(result.statusCode).toEqual(500);
   });
@@ -290,7 +290,7 @@ describe("connect", () => {
       };
     });
     process.env.TABLE_NAME = "the_table";
-    const handler = require("./connect").handler;
+    const handler = require("./connect-roster").handler;
     const result = await handler(event);
     expect(result.statusCode).toEqual(500);
     expect(mockGet).toHaveBeenCalledTimes(1);
@@ -690,7 +690,7 @@ describe("connect", () => {
       process.env.TABLE_NAME = tableName || "default_table_name";
       jest.useFakeTimers("modern");
       jest.setSystemTime(fakeTime);
-      const handler = require("./connect").handler;
+      const handler = require("./connect-roster").handler;
       const result = await handler(event);
       expect(result.statusCode).toEqual(expectedStatus);
       if (expectedGetParticipantParams) {

@@ -10,32 +10,6 @@ const api = new ApiGatewayManagementApi({
   endpoint: process.env.WS_ENDPOINT,
 });
 
-const isJoin = (record) => {
-  if (!record.dynamodb) {
-    logger.log("no record.dynamodb");
-    return false;
-  }
-  if (record.dynamodb.OldImage) {
-    logger.log("record.dynamodb.OldImage");
-    return false;
-  }
-  if (!record.dynamodb.NewImage) {
-    logger.log("no record.dynamodb.NewImage");
-    return false;
-  }
-  if (!record.dynamodb.NewImage[schema.SORT_KEY]) {
-    logger.log(`no record.dynamodb.NewImage["${schema.SORT_KEY}"]`);
-    return false;
-  }
-  if (!record.dynamodb.NewImage[schema.SORT_KEY].S) {
-    logger.log(`no record.dynamodb.NewImage["${schema.SORT_KEY}"].S`);
-    return false;
-  }
-  const re = new RegExp(`^${schema.PARTICIPANT_PREFIX}${schema.SEPARATOR}`);
-  logger.log("re.test says:");
-  logger.log(re.test(record.dynamodb.NewImage[schema.SORT_KEY].S));
-  return re.test(record.dynamodb.NewImage[schema.SORT_KEY].S);
-};
 const handleJoin = async (record) => {
   logger.log("join");
   const dbQueryParams = {
@@ -83,7 +57,6 @@ const handleJoin = async (record) => {
 };
 
 exports.handler = async function (event, context, callback) {
-  let connections;
   logger.log("event:");
   logger.log(JSON.stringify(event));
   logger.log("context:");
@@ -100,15 +73,7 @@ exports.handler = async function (event, context, callback) {
       continue;
     }
     const record = event.Records[r];
-    if (isJoin(record)) {
-      await handleJoin(record);
-      continue;
-    }
-  }
-
-  try {
-  } catch (e) {
-    return { statusCode: 500, body: e.stack };
+    await handleJoin(record);
   }
 
   return { statusCode: 200, body: "Event sent." };

@@ -555,9 +555,15 @@ export class MadliberationWebapp extends Stack {
 
     const wsHostname =
       webSocketApi.apiId + ".execute-api." + this.region + "." + this.urlSuffix;
+    const wsWaitHostname =
+      wsWaitApi.apiId + ".execute-api." + this.region + "." + this.urlSuffix;
     streamHandler.addEnvironment(
       "WS_ENDPOINT",
       `${wsHostname}/${wsStage.stageName}`
+    );
+    assignHandler.addEnvironment(
+      "WS_ENDPOINT",
+      `${wsWaitHostname}/${wsWaitStage.stageName}`
     );
 
     const streamMapping = new lambda.EventSourceMapping(this, "StreamMapping", {
@@ -620,8 +626,9 @@ export class MadliberationWebapp extends Stack {
     [streamHandler, assignHandler].forEach((handler) => {
       sedersTable.grantStreamRead(handler);
       sedersTable.grantReadData(handler);
-      wsStage.grantManagementApiAccess(handler);
     });
+    wsStage.grantManagementApiAccess(streamHandler);
+    wsWaitStage.grantManagementApiAccess(assignHandler);
 
     const scriptsBucket = new MadLiberationBucket(this, "ScriptsBucket", {
       versioned: true,

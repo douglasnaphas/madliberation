@@ -10,40 +10,20 @@ const api = new ApiGatewayManagementApi({
   endpoint: process.env.WS_ENDPOINT,
 });
 
-const isJoin = (record) => {
-  if (!record.dynamodb) {
-    logger.log("no record.dynamodb");
-    return false;
+const handleAssign = async (record) => {
+  const gameName = record.dynamodb.NewImage.game_name.S;
+  if (!gameName) {
+    logger.log("assign: no game name");
+    return;
   }
-  if (record.dynamodb.OldImage) {
-    logger.log("record.dynamodb.OldImage");
-    return false;
-  }
-  if (!record.dynamodb.NewImage) {
-    logger.log("no record.dynamodb.NewImage");
-    return false;
-  }
-  if (!record.dynamodb.NewImage[schema.SORT_KEY]) {
-    logger.log(`no record.dynamodb.NewImage["${schema.SORT_KEY}"]`);
-    return false;
-  }
-  if (!record.dynamodb.NewImage[schema.SORT_KEY].S) {
-    logger.log(`no record.dynamodb.NewImage["${schema.SORT_KEY}"].S`);
-    return false;
-  }
-  const re = new RegExp(`^${schema.PARTICIPANT_PREFIX}${schema.SEPARATOR}`);
-  logger.log("re.test says:");
-  logger.log(re.test(record.dynamodb.NewImage[schema.SORT_KEY].S));
-  return re.test(record.dynamodb.NewImage[schema.SORT_KEY].S);
-};
-const handleJoin = async (record) => {
-  logger.log("join");
   const dbQueryParams = {
     TableName: process.env.TABLE_NAME,
     KeyConditionExpression: `room_code = :rc and begins_with(lib_id, :prefix)`,
     ExpressionAttributeValues: {
       ":rc": record.dynamodb.NewImage[schema.PARTITION_KEY].S,
-      ":prefix": `${schema.CONNECT}${schema.SEPARATOR}`,
+      ":prefix":
+        `${schema.CONNECT}${schema.SEPARATOR}${schema.WAIT}` +
+        `${schema.SEPARATOR}${gameName}${schema.SEPARATOR}`,
     },
   };
   let queryData;
@@ -70,7 +50,7 @@ const handleJoin = async (record) => {
     const postToConnectionParams = {
       ConnectionId: connectionIds[i],
       Data: Buffer.from(
-        JSON.stringify({ newParticipant: record.dynamodb.NewImage.game_name.S })
+        "assignments_ready"
       ),
     };
     try {
@@ -94,21 +74,8 @@ exports.handler = async function (event, context, callback) {
 
   for (let r = 0; r < event.Records.length; r++) {
     logger.log("checking record...");
-    if (!event.Records[r].dynamodb.NewImage) {
-      logger.log("stream: no NewImage in record");
-      logger.log(JSON.stringify(event));
-      continue;
-    }
     const record = event.Records[r];
-    if (isJoin(record)) {
-      await handleJoin(record);
-      continue;
-    }
-  }
-
-  try {
-  } catch (e) {
-    return { statusCode: 500, body: e.stack };
+    await handleAssign(record);
   }
 
   return { statusCode: 200, body: "Event sent." };

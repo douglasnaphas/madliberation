@@ -169,6 +169,32 @@ const submitAllLibs = async (page, prefix) => {
   failTest("/play page", "never found a Submit Answers button");
 };
 
+const submitNoLibs = async (page) => {
+  const progressText = await itGetText({
+    page: page,
+    madliberationid: "lib-progress",
+  });
+  const progress = progressText.split("/").map((n) => parseInt(n.trim()));
+  if (progress.length < 2) {
+    failTest("/play page", "did not find X / Y showing lib progress");
+  }
+  const numLibs = progress[1];
+  for (let currentLib = progress[0]; currentLib <= numLibs; currentLib++) {
+    // If we're on the last lib, submit and return
+    if (currentLib === numLibs) {
+      await itClick({ page: page, madliberationid: "submit-answers" });
+      await itNavigate({
+        page: page,
+        madliberationid: "yes-submit-libs-button",
+      });
+      return;
+    }
+    // Click the Next button
+    await itClick({ page: page, madliberationid: "next-prompt" });
+  }
+  failTest("/play page", "never found a Submit Answers button");
+};
+
 (async () => {
   ////////////////////////////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////////////////////////
@@ -521,9 +547,42 @@ const submitAllLibs = async (page, prefix) => {
     page: page,
     madliberationid: "pc1",
   });
-  // Click No, Check Again. Players 1 and 2 should still be there
+
+  ////////////////////////////////////////////////////////////////////////////////
+  ////////////////////////////////////////////////////////////////////////////////
+  // Enter Player 3. Player 3 is needed so that one participant can validate Web
+  // Socket flows, starting with /ws-wait, while another validates the non-Web
+  // Socket options still work.
+  const browser3 = await puppeteer.launch(browserOptions);
+  browsers.push(browser3);
+  const page3 = await browser3.newPage();
+  await page3.goto(site);
+  await itNavigate({ page: page3, madliberationid: "join-a-seder-button" });
+  ////////////////////////////////////////////////////////////////////////////////
+  await itWait({ page: page3, madliberationid: "enter-room-code-page" });
+  const player3Name = "P3";
+  await itType({
+    page: page3,
+    madliberationid: "enter-room-code-text-field",
+    text: roomCode,
+  });
+  await itType({
+    page: page3,
+    madliberationid: "game-name-text-field",
+    text: player2Name, // so we can test the name-taken flow
+  });
+  await itType({
+    page: page3,
+    madliberationid: "game-name-text-field",
+    text: player3Name,
+  });
+
+  ////////////////////////////////////////////////////////////////////////////////
+  ////////////////////////////////////////////////////////////////////////////////
+
+  // Click No, Check Again. Players 1, 2, and 3 should be there
   await itClick({ page: page, madliberationid: "no-check-again-button" });
-  // Verify both players are on the roster
+  // Verify all players are on the roster
   const leaderNameFromTable = await itGetText({
     page: page,
     madliberationid: "pc0",
@@ -542,6 +601,16 @@ const submitAllLibs = async (page, prefix) => {
     failTest(
       "wrong name on roster",
       `expected ${player2Name}, got ` + `${p2NameFromTable}`
+    );
+  }
+  const p3NameFromTable = await itGetText({
+    page: page,
+    madliberationid: "pc2",
+  });
+  if (p3NameFromTable != player3Name) {
+    failTest(
+      "wrong name on roster",
+      `expected ${player3Name}, got ` + `${p3NameFromTable}`
     );
   }
 
@@ -636,13 +705,6 @@ const submitAllLibs = async (page, prefix) => {
       failTest("/read failure", `submitted lib not inserted in script: ${a}`);
     }
   });
-  if (leaderAnswers.length + p2Answers.length != libs.length) {
-    failTest(
-      "/read failure",
-      `submitted ${leaderAnswers.length + p2Answers.length} answers, ` +
-        `${libs.length} found in script`
-    );
-  }
 
   // Close browsers
   await browser.close();
@@ -719,7 +781,7 @@ const submitAllLibs = async (page, prefix) => {
   ////////////////////////////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////////////////////////
   // Clean up
-
+  await browser3.close();
   // test user
 
   // seder

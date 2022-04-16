@@ -615,7 +615,7 @@ describe("assign", () => {
         },
       ],
       postToConnectionData: {},
-      postToConnectionOutcomes: [true],
+      postToConnectionOutcomes: [true, false, true],
       expectedStatusCode: 200,
     },
   ])(

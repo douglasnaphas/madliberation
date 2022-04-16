@@ -63,7 +63,6 @@ const handleAssign = async (record) => {
 };
 
 exports.handler = async function (event, context, callback) {
-  let connections;
   logger.log("event:");
   logger.log(JSON.stringify(event));
   logger.log("context:");

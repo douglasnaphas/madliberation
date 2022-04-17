@@ -686,7 +686,10 @@ const submitNoLibs = async (page) => {
   ////////////////////////////////////////////////////////////////////////////////
   // Leader
 
-  await itClick({ page: page, madliberationid: "read-roster-check-again" });
+  await itClick({
+    page: page,
+    madliberationid: "read-roster-check-again-button",
+  });
 
   ////////////////////////////////////////////////////////////////////////////////
 

@@ -1,18 +1,18 @@
-import Button from '@mui/material/Button';
-import CircularProgress from '@mui/material/CircularProgress';
-import MenuAppBar from './MenuAppBar';
-import React, { Component } from 'react';
-import { Typography } from '@mui/material';
-import { withRouter } from 'react-router-dom';
-import withStyles from '@mui/styles/withStyles';
+import Button from "@mui/material/Button";
+import CircularProgress from "@mui/material/CircularProgress";
+import MenuAppBar from "./MenuAppBar";
+import React, { Component } from "react";
+import { Typography } from "@mui/material";
+import { withRouter } from "react-router-dom";
+import withStyles from "@mui/styles/withStyles";
 
-const styles = theme => ({
+const styles = (theme) => ({
   button: {
-    margin: theme.spacing(1)
+    margin: theme.spacing(1),
   },
   input: {
-    display: 'none'
-  }
+    display: "none",
+  },
 });
 
 class FetchingPromptsPage extends Component {
@@ -20,7 +20,7 @@ class FetchingPromptsPage extends Component {
     super(props);
     this.state = {
       fetchingPrompts: true,
-      failedFetch: false
+      failedFetch: false,
     };
   }
   _isMounted = false;
@@ -28,19 +28,19 @@ class FetchingPromptsPage extends Component {
     if (
       !confirmedRoomCode &&
       !confirmedGameName &&
-      localStorage.getItem('roomCode') &&
-      localStorage.getItem('gameName')
+      localStorage.getItem("roomCode") &&
+      localStorage.getItem("gameName")
     ) {
-      confirmedRoomCode = localStorage.getItem('roomCode');
-      confirmedGameName = localStorage.getItem('gameName');
+      confirmedRoomCode = localStorage.getItem("roomCode");
+      confirmedGameName = localStorage.getItem("gameName");
     }
     const { assignments, history, setAssignmentsData } = this.props;
     if (this._isMounted) this.setState({ fetchingPrompts: true });
-    assignments(confirmedRoomCode, confirmedGameName).then(d => {
+    assignments(confirmedRoomCode, confirmedGameName).then((d) => {
       if (d.status === 200) {
         if (this._isMounted && Array.isArray(d.data)) {
           setAssignmentsData(d.data);
-          history.push('/play');
+          history.push("/play");
         }
       } else {
         if (this._isMounted) {
@@ -61,11 +61,11 @@ class FetchingPromptsPage extends Component {
     if (
       !confirmedRoomCode &&
       !confirmedGameName &&
-      localStorage.getItem('roomCode') &&
-      localStorage.getItem('gameName')
+      localStorage.getItem("roomCode") &&
+      localStorage.getItem("gameName")
     ) {
-      confirmedRoomCode = localStorage.getItem('roomCode');
-      confirmedGameName = localStorage.getItem('gameName');
+      confirmedRoomCode = localStorage.getItem("roomCode");
+      confirmedGameName = localStorage.getItem("gameName");
       setConfirmedRoomCode(confirmedRoomCode);
       setConfirmedGameName(confirmedGameName);
     }

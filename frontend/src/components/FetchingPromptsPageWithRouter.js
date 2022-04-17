@@ -91,7 +91,10 @@ class FetchingPromptsPage extends Component {
           <br />
           <CircularProgress />
         </div>
-        <div hidden={!this.state.failedFetch}>
+        <div
+          hidden={!this.state.failedFetch}
+          madliberationid={"well-actually-fetching-prompts-failed"}
+        >
           <Typography component="p" gutterBottom>
             <b>
               <em>

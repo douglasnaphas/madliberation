@@ -106,7 +106,7 @@ class FetchingPromptsPage extends Component {
         <br />
         <div hidden={!this.state.fetchingPrompts}>
           <Typography variant="h4" gutterBottom>
-            Fetching your prompts, they'll be ready promptly...
+            Checking for your prompts, they'll be ready promptly...
           </Typography>
           <br />
           <CircularProgress />
@@ -116,13 +116,9 @@ class FetchingPromptsPage extends Component {
           madliberationid={"well-actually-fetching-prompts-failed"}
         >
           <Typography component="p" gutterBottom>
-            <b>
-              <em>
-                Well actually, fetching your prompts failed. Make sure the
-                person who started this virtual seder really wants you to click
-                this button, then try to
-              </em>
-            </b>
+            So your prompts aren't ready yet. Make sure the person who started
+            this Seder clicked <em>That's everyone</em> and then clicked{" "}
+            <em>Yes</em>. Then
           </Typography>
           <div>
             <Button
@@ -135,9 +131,7 @@ class FetchingPromptsPage extends Component {
           </div>
           <div>
             <Typography component="p">
-              <b>
-                <em>again to get your assignments.</em>
-              </b>
+              again, or wait until this page updates with your prompts.
             </Typography>
           </div>
         </div>

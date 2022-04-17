@@ -86,7 +86,8 @@ class YouHaveJoinedPage extends Component {
           </Typography>
           <Typography variant="h1">Wait</Typography>
           <Typography component="p" paragraph gutterBottom>
-            until your Sederator tells you to, and then
+            This page will probably update with your prompts after your Seder
+            leader says everyone is present. If you're bored, you can
           </Typography>
           <div>
             <Button
@@ -101,7 +102,7 @@ class YouHaveJoinedPage extends Component {
           </div>
           <br />
           <Typography component="p" paragraph gutterBottom>
-            to get your assignments.
+            to check for your prompts now.
           </Typography>
         </div>
       </div>

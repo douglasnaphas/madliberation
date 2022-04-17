@@ -626,6 +626,7 @@ const submitNoLibs = async (page) => {
   await itNavigate({
     page: page3,
     madliberationid: "player-click-this-button",
+    expectedLandingPage: `${site}/#/fetching-prompts`
   });
 
   ////////////////////////////////////////////////////////////////////////////////

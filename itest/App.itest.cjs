@@ -643,10 +643,7 @@ const submitNoLibs = async (page) => {
   ////////////////////////////////////////////////////////////////////////////////
 
   // Player 2: get assignments, complete them, and submit
-  await itNavigate({
-    page: page2,
-    madliberationid: "player-click-this-button",
-  });
+  // state change should be pushed to take us off the Wait page
 
   ////////////////////////////////////////////////////////////////////////////////
 
@@ -675,10 +672,7 @@ const submitNoLibs = async (page) => {
   ////////////////////////////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////////////////////////
   // P3
-  await itNavigate({
-    page: page3,
-    madliberationid: "player-click-this-button",
-  });
+  // state change should be pushed to take us off the Wait page
   await itWait({ page: page3, madliberationid: "lib-progress" });
   await submitNoLibs(page3);
 

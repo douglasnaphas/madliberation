@@ -235,8 +235,10 @@ class PlayPage extends Component {
                 this.state.submitButtonPressed
               }
             >
-              <Typography component="p" color="secondary">
-                Couldn't submit your answers, please try again.
+              <Typography component="p">
+                <b>
+                  <em>Couldn't submit your answers, please try again.</em>
+                </b>
               </Typography>
             </div>
           </div>

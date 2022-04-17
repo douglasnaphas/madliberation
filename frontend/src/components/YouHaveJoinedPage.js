@@ -1,37 +1,39 @@
-import Button from '@mui/material/Button';
-import { Link } from 'react-router-dom';
-import MenuAppBar from './MenuAppBar';
-import React, { Component } from 'react';
-import { Typography } from '@mui/material';
-import withStyles from '@mui/styles/withStyles';
+import Button from "@mui/material/Button";
+import { Link } from "react-router-dom";
+import MenuAppBar from "./MenuAppBar";
+import React, { Component } from "react";
+import { Typography } from "@mui/material";
+import withStyles from "@mui/styles/withStyles";
+import { withRouter } from "react-router-dom";
 
-import { madLiberationStyles } from '../madLiberationStyles';
+import { madLiberationStyles } from "../madLiberationStyles";
 
-const styles = theme => ({
+const styles = (theme) => ({
   button: {
-    margin: theme.spacing(1)
+    margin: theme.spacing(1),
   },
   input: {
-    display: 'none'
-  }
+    display: "none",
+  },
 });
 
-class EnterRoomCodePage extends Component {
+class YouHaveJoinedPage extends Component {
   componentDidMount() {
     let {
       confirmedRoomCode,
       confirmedGameName,
       setConfirmedRoomCode,
-      setConfirmedGameName
+      setConfirmedGameName,
+      history,
     } = this.props;
     if (
       !confirmedRoomCode &&
       !confirmedGameName &&
-      localStorage.getItem('roomCode') &&
-      localStorage.getItem('gameName')
+      localStorage.getItem("roomCode") &&
+      localStorage.getItem("gameName")
     ) {
-      setConfirmedRoomCode(localStorage.getItem('roomCode'));
-      setConfirmedGameName(localStorage.getItem('gameName'));
+      setConfirmedRoomCode(localStorage.getItem("roomCode"));
+      setConfirmedGameName(localStorage.getItem("gameName"));
     }
   }
   render() {
@@ -45,11 +47,11 @@ class EnterRoomCodePage extends Component {
         <br />
         <div>
           <Typography component="p" paragraph>
-            You have joined Seder{' '}
+            You have joined Seder{" "}
             <span style={madLiberationStyles.lightGrayBackround}>
               {confirmedRoomCode}
-            </span>{' '}
-            as{' '}
+            </span>{" "}
+            as{" "}
             <span style={madLiberationStyles.lightGrayBackround}>
               {confirmedGameName}
             </span>
@@ -80,4 +82,4 @@ class EnterRoomCodePage extends Component {
   }
 }
 
-export default withStyles(styles)(EnterRoomCodePage);
+export default withRouter(withStyles(styles)(YouHaveJoinedPage));

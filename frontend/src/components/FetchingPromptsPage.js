@@ -14,6 +14,7 @@ const styles = (theme) => ({
   },
 });
 
+let webSocket;
 class FetchingPromptsPage extends Component {
   constructor(props) {
     super(props);
@@ -23,6 +24,15 @@ class FetchingPromptsPage extends Component {
     };
   }
   _isMounted = false;
+  messageHandler = (event) => {
+    const roomCode = this.props.confirmedRoomCode;
+    const gameName = this.props.confirmedGameName;
+    if (!event) return;
+    if (!event.data) return;
+    if (event.data == "assignments_ready") {
+      this.fetchAssignments(roomCode, gameName);
+    }
+  };
   fetchAssignments = (confirmedRoomCode, confirmedGameName) => {
     if (
       !confirmedRoomCode &&
@@ -69,8 +79,19 @@ class FetchingPromptsPage extends Component {
       setConfirmedGameName(confirmedGameName);
     }
     this.fetchAssignments(confirmedRoomCode, confirmedGameName);
+    if (confirmedRoomCode && confirmedGameName) {
+      webSocket = new WebSocket(
+        `wss://${window.location.hostname}/ws-wait/?` +
+          `roomcode=${confirmedRoomCode}&` +
+          `gamename=${encodeURIComponent(confirmedGameName)}`
+      );
+      webSocket.addEventListener("message", this.messageHandler);
+    }
   }
   componentWillUnmount() {
+    if (webSocket && webSocket.close) {
+      webSocket.close();
+    }
     this._isMounted = false;
   }
 

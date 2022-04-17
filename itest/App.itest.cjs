@@ -571,11 +571,17 @@ const submitNoLibs = async (page) => {
     madliberationid: "game-name-text-field",
     text: player2Name, // so we can test the name-taken flow
   });
+  await itClick({ page: page3, madliberationid: "join-this-seder-button" });
+  await itWait({page: page3, madliberationid: "name-taken-message"})
+  await itClick({ page: page3, madliberationid: "game-name-text-field" });
+  await page3.keyboard.press('Backspace');
+  await page3.keyboard.press('Backspace');
   await itType({
     page: page3,
     madliberationid: "game-name-text-field",
     text: player3Name,
   });
+  await itNavigate({ page: page3, madliberationid: "join-this-seder-button" });
 
   ////////////////////////////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////////////////////////

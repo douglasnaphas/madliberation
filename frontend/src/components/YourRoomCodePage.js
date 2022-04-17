@@ -5,7 +5,7 @@ import MenuAppBar from "./MenuAppBar";
 import PropTypes from "prop-types";
 import TextField from "@mui/material/TextField";
 import { Typography } from "@mui/material";
-import withStyles from '@mui/styles/withStyles';
+import withStyles from "@mui/styles/withStyles";
 import { madLiberationStyles } from "../madLiberationStyles";
 
 import ThatsMyNameButtonWithRouter from "./ThatsMyNameButtonWithRouter";
@@ -137,8 +137,10 @@ class YourRoomCodePage extends Component {
             !this.state.failedAttempt || this.state.thatsMyNameButtonPressed
           }
         >
-          <Typography component="p" color="secondary">
-            {this.state.failureMessage}
+          <Typography component="p">
+            <b>
+              <em>{this.state.failureMessage}</em>
+            </b>
           </Typography>
         </div>
       </div>

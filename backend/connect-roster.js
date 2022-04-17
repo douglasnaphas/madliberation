@@ -63,7 +63,8 @@ exports.handler = async function (event, context, callback) {
       return { statusCode: 400, body: "Bad request" };
     }
   } catch (e) {
-    logger.log("error getting participant data", e);
+    logger.log("error getting participant data");
+    logger.log(e);
     return { statusCode: 500, body: "Server error" };
   }
 

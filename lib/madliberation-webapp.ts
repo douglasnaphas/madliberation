@@ -450,7 +450,12 @@ export class MadliberationWebapp extends Stack {
     const defaultHandler = makeHandler("Default");
     const joinHandler = makeHandler("Join");
     const assignHandler = makeHandler("Assign");
-    [connectRosterHandler, disconnectHandler, defaultHandler].forEach((handler) => {
+    [
+      connectRosterHandler,
+      connectWaitHandler,
+      disconnectHandler,
+      defaultHandler,
+    ].forEach((handler) => {
       sedersTable.grantReadWriteData(handler);
     });
     const wsRosterApi = new apigwv2.WebSocketApi(this, "WSRosterAPI", {

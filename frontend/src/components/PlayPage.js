@@ -1,23 +1,23 @@
-import Button from '@mui/material/Button';
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle';
-import Lib from './Lib';
-import MenuAppBar from './MenuAppBar';
-import React, { Component } from 'react';
-import { Typography } from '@mui/material';
-import withStyles from '@mui/styles/withStyles';
-import YesSubmitLibsButtonWithRouter from './YesSubmitLibsButtonWithRouter';
+import Button from "@mui/material/Button";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
+import Lib from "./Lib";
+import MenuAppBar from "./MenuAppBar";
+import React, { Component } from "react";
+import { Typography } from "@mui/material";
+import withStyles from "@mui/styles/withStyles";
+import YesSubmitLibsButtonWithRouter from "./YesSubmitLibsButtonWithRouter";
 
-const styles = theme => ({
+const styles = (theme) => ({
   button: {
-    margin: theme.spacing(1)
+    margin: theme.spacing(1),
   },
   input: {
-    display: 'none'
-  }
+    display: "none",
+  },
 });
 
 class PlayPage extends Component {
@@ -32,23 +32,23 @@ class PlayPage extends Component {
       !confirmedRoomCode &&
       !confirmedGameName &&
       !assignmentsData &&
-      localStorage.getItem('roomCode') &&
-      localStorage.getItem('gameName') &&
-      localStorage.getItem('assignmentsData')
+      localStorage.getItem("roomCode") &&
+      localStorage.getItem("gameName") &&
+      localStorage.getItem("assignmentsData")
     ) {
-      confirmedRoomCode = localStorage.getItem('roomCode');
-      confirmedGameName = localStorage.getItem('gameName');
-      assignmentsData = JSON.parse(localStorage.getItem('assignmentsData'));
+      confirmedRoomCode = localStorage.getItem("roomCode");
+      confirmedGameName = localStorage.getItem("gameName");
+      assignmentsData = JSON.parse(localStorage.getItem("assignmentsData"));
     }
     const answers =
-      getIndexAndAnswersFromStorage && localStorage.getItem('answers')
-        ? JSON.parse(localStorage.getItem('answers'))
-        : assignmentsData.map(a => {
+      getIndexAndAnswersFromStorage && localStorage.getItem("answers")
+        ? JSON.parse(localStorage.getItem("answers"))
+        : assignmentsData.map((a) => {
             return { id: a.id };
           });
     const libIndex =
-      getIndexAndAnswersFromStorage && localStorage.getItem('libIndex')
-        ? parseInt(localStorage.getItem('libIndex'))
+      getIndexAndAnswersFromStorage && localStorage.getItem("libIndex")
+        ? parseInt(localStorage.getItem("libIndex"))
         : 0;
     this.state = {
       libIndex: libIndex,
@@ -57,14 +57,14 @@ class PlayPage extends Component {
       submitButtonPressed: false,
       failedSubmitAttempt: false,
       confirmedRoomCode: confirmedRoomCode,
-      confirmedGameName: confirmedGameName
+      confirmedGameName: confirmedGameName,
     };
   }
   _isMounted = false;
   incrementLibIndex = () => {
     if (this._isMounted && this.state.answers.length > 0) {
       this.setState({
-        libIndex: (this.state.libIndex + 1) % this.state.answers.length
+        libIndex: (this.state.libIndex + 1) % this.state.answers.length,
       });
     }
   };
@@ -77,15 +77,15 @@ class PlayPage extends Component {
       }
     }
   };
-  submitAllClick = event => {
+  submitAllClick = (event) => {
     if (this._isMounted) this.setState({ dialogOpen: true });
   };
-  onDialogClose = event => {
+  onDialogClose = (event) => {
     if (this._isMounted) this.setState({ dialogOpen: false });
   };
   setAnswer = (answer, index) => {
     if (this._isMounted) {
-      this.setState(state => {
+      this.setState((state) => {
         const newAnswers = state.answers.map((a, i) => {
           if (i === index) {
             return { answer: answer, id: a.id };
@@ -94,7 +94,7 @@ class PlayPage extends Component {
           }
         });
         return {
-          answers: newAnswers
+          answers: newAnswers,
         };
       });
     }
@@ -108,28 +108,28 @@ class PlayPage extends Component {
       return acc;
     }, this.state.answers.length);
   };
-  submitLibsAndGoToSubmittedPage = history => {
+  submitLibsAndGoToSubmittedPage = (history) => {
     const { confirmedRoomCode, confirmedGameName, submitLibs } = this.props;
     if (this._isMounted) this.setState({ submitButtonPressed: true });
     submitLibs(confirmedRoomCode, confirmedGameName, this.state.answers).then(
-      d => {
+      (d) => {
         if (!this._isMounted) return;
         if (d.status === 200) {
-          history.push('/submitted');
+          history.push("/submitted");
           return;
         }
         this.setState({
           submitButtonPressed: false,
           failedSubmitAttempt: true,
-          dialogOpen: false
+          dialogOpen: false,
         });
       }
     );
   };
   persistState = () => {
-    localStorage.setItem('libIndex', this.state.libIndex);
+    localStorage.setItem("libIndex", this.state.libIndex);
     if (Array.isArray(this.state.answers) && this.state.answers.length > 0) {
-      localStorage.setItem('answers', JSON.stringify(this.state.answers));
+      localStorage.setItem("answers", JSON.stringify(this.state.answers));
     }
   };
   handleVisibilityChange = () => {
@@ -139,45 +139,42 @@ class PlayPage extends Component {
   };
   componentDidMount() {
     this._isMounted = true;
-    window.addEventListener('visibilitychange', this.handleVisibilityChange);
-    window.addEventListener('pagehide', this.persistState);
+    window.addEventListener("visibilitychange", this.handleVisibilityChange);
+    window.addEventListener("pagehide", this.persistState);
     const {
       setConfirmedRoomCode,
       setConfirmedGameName,
       setAssignmentsData,
       confirmedRoomCode,
       confirmedGameName,
-      assignmentsData
+      assignmentsData,
     } = this.props;
     if (confirmedRoomCode && confirmedGameName && assignmentsData) {
-      localStorage.removeItem('libIndex');
-      localStorage.removeItem('answers');
+      localStorage.removeItem("libIndex");
+      localStorage.removeItem("answers");
     }
     if (
       !confirmedRoomCode &&
       !confirmedGameName &&
       !assignmentsData &&
-      localStorage.getItem('roomCode') &&
-      localStorage.getItem('gameName') &&
-      localStorage.getItem('assignmentsData')
+      localStorage.getItem("roomCode") &&
+      localStorage.getItem("gameName") &&
+      localStorage.getItem("assignmentsData")
     ) {
-      setConfirmedRoomCode(localStorage.getItem('roomCode'));
-      setConfirmedGameName(localStorage.getItem('gameName'));
-      setAssignmentsData(JSON.parse(localStorage.getItem('assignmentsData')));
+      setConfirmedRoomCode(localStorage.getItem("roomCode"));
+      setConfirmedGameName(localStorage.getItem("gameName"));
+      setAssignmentsData(JSON.parse(localStorage.getItem("assignmentsData")));
     }
   }
   componentWillUnmount() {
-    window.removeEventListener('visibilitychange', this.handleVisibilityChange);
-    window.removeEventListener('pagehide', this.persistState);
+    window.removeEventListener("visibilitychange", this.handleVisibilityChange);
+    window.removeEventListener("pagehide", this.persistState);
     this._isMounted = false;
   }
 
   render() {
-    const {
-      confirmedRoomCode,
-      confirmedGameName,
-      assignmentsData
-    } = this.props;
+    const { confirmedRoomCode, confirmedGameName, assignmentsData } =
+      this.props;
     return (
       <div>
         <MenuAppBar
@@ -238,8 +235,10 @@ class PlayPage extends Component {
                 this.state.submitButtonPressed
               }
             >
-              <Typography component="p" color="secondary">
-                Couldn't submit your answers, please try again.
+              <Typography component="p">
+                <b>
+                  <em>Couldn't submit your answers, please try again.</em>
+                </b>
               </Typography>
             </div>
           </div>

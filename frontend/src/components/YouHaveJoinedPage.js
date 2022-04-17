@@ -1,38 +1,67 @@
-import Button from '@mui/material/Button';
-import { Link } from 'react-router-dom';
-import MenuAppBar from './MenuAppBar';
-import React, { Component } from 'react';
-import { Typography } from '@mui/material';
-import withStyles from '@mui/styles/withStyles';
+import Button from "@mui/material/Button";
+import { Link } from "react-router-dom";
+import MenuAppBar from "./MenuAppBar";
+import React, { Component } from "react";
+import { Typography } from "@mui/material";
+import withStyles from "@mui/styles/withStyles";
 
-import { madLiberationStyles } from '../madLiberationStyles';
+import { madLiberationStyles } from "../madLiberationStyles";
 
-const styles = theme => ({
+const styles = (theme) => ({
   button: {
-    margin: theme.spacing(1)
+    margin: theme.spacing(1),
   },
   input: {
-    display: 'none'
-  }
+    display: "none",
+  },
 });
 
-class EnterRoomCodePage extends Component {
+let webSocket;
+class YouHaveJoinedPage extends Component {
+  _isMounted = false;
+  messageHandler = (event) => {
+    if (!event) return;
+    if (!event.data) return;
+    if (event.data == "assignments_ready") {
+      this.props.history.push("/fetching-prompts");
+    }
+  };
   componentDidMount() {
+    this._isMounted = true;
     let {
       confirmedRoomCode,
       confirmedGameName,
       setConfirmedRoomCode,
-      setConfirmedGameName
+      setConfirmedGameName,
+      history,
     } = this.props;
+    let roomCode = confirmedRoomCode;
+    let gameName = confirmedGameName;
     if (
       !confirmedRoomCode &&
       !confirmedGameName &&
-      localStorage.getItem('roomCode') &&
-      localStorage.getItem('gameName')
+      localStorage.getItem("roomCode") &&
+      localStorage.getItem("gameName")
     ) {
-      setConfirmedRoomCode(localStorage.getItem('roomCode'));
-      setConfirmedGameName(localStorage.getItem('gameName'));
+      roomCode = localStorage.getItem("roomCode");
+      gameName = localStorage.getItem("gameName");
+      setConfirmedRoomCode(roomCode);
+      setConfirmedGameName(gameName);
     }
+    if (roomCode && gameName) {
+      webSocket = new WebSocket(
+        `wss://${window.location.hostname}/ws-wait/?` +
+          `roomcode=${roomCode}&` +
+          `gamename=${encodeURIComponent(gameName)}`
+      );
+      webSocket.addEventListener("message", this.messageHandler);
+    }
+  }
+  componentWillUnmount() {
+    if (webSocket && webSocket.close) {
+      webSocket.close();
+    }
+    this._isMounted = false;
   }
   render() {
     let { confirmedRoomCode, confirmedGameName } = this.props;
@@ -45,11 +74,11 @@ class EnterRoomCodePage extends Component {
         <br />
         <div>
           <Typography component="p" paragraph>
-            You have joined Seder{' '}
+            You have joined Seder{" "}
             <span style={madLiberationStyles.lightGrayBackround}>
               {confirmedRoomCode}
-            </span>{' '}
-            as{' '}
+            </span>{" "}
+            as{" "}
             <span style={madLiberationStyles.lightGrayBackround}>
               {confirmedGameName}
             </span>
@@ -57,7 +86,8 @@ class EnterRoomCodePage extends Component {
           </Typography>
           <Typography variant="h1">Wait</Typography>
           <Typography component="p" paragraph gutterBottom>
-            until your Sederator tells you to, and then
+            This page will probably update with your prompts after your Seder
+            leader says everyone is present. If you're bored, you can
           </Typography>
           <div>
             <Button
@@ -72,7 +102,7 @@ class EnterRoomCodePage extends Component {
           </div>
           <br />
           <Typography component="p" paragraph gutterBottom>
-            to get your assignments.
+            to check for your prompts now.
           </Typography>
         </div>
       </div>
@@ -80,4 +110,4 @@ class EnterRoomCodePage extends Component {
   }
 }
 
-export default withStyles(styles)(EnterRoomCodePage);
+export default withStyles(styles)(YouHaveJoinedPage);

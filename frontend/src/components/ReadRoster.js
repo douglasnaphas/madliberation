@@ -114,6 +114,7 @@ class ReadRoster extends React.Component {
             variant="contained"
             onClick={this.fetchRoster(confirmedRoomCode, confirmedGameName)}
             disabled={this.state.rosterLoading}
+            madliberationid="read-roster-check-again-button"
           >
             Check again
           </Button>

@@ -249,9 +249,13 @@ class RosterPage extends Component {
           </Button>
         </div>
         <div hidden={!this.state.thatsEveryoneFailed}>
-          <Typography component="p" color="secondary">
-            There was an unexplained problem, please try again or accept our
-            apologies and make a new seder after trying again many times
+          <Typography component="p">
+            <b>
+              <em>
+                There was an unexplained problem, please try again or accept our
+                apologies and make a new seder after trying again many times
+              </em>
+            </b>
           </Typography>
         </div>
         <div />

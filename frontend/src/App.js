@@ -25,7 +25,7 @@ import { readRoster } from "./lib/readRoster";
 import { script } from "./lib/script";
 import GeneratingRoomCodePageWithRouter from "./components/GeneratingRoomCodePageWithRouter";
 import EnterRoomCodePageWithRouter from "./components/EnterRoomCodePageWithRouter";
-import YouHaveJoinedPage from "./components/YouHaveJoinedPage";
+import YouHaveJoinedPage from "./components/YouHaveJoinedPageWithRouter";
 import {
   ThemeProvider,
   StyledEngineProvider,

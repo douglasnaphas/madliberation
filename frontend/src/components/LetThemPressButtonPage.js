@@ -1,17 +1,17 @@
-import Button from '@mui/material/Button';
-import { Link } from 'react-router-dom';
-import MenuAppBar from './MenuAppBar';
-import React, { Component } from 'react';
-import { Typography } from '@mui/material';
-import withStyles from '@mui/styles/withStyles';
+import Button from "@mui/material/Button";
+import { Link } from "react-router-dom";
+import MenuAppBar from "./MenuAppBar";
+import React, { Component } from "react";
+import { Typography } from "@mui/material";
+import withStyles from "@mui/styles/withStyles";
 
-const styles = theme => ({
+const styles = (theme) => ({
   button: {
-    margin: theme.spacing(1)
+    margin: theme.spacing(1),
   },
   input: {
-    display: 'none'
-  }
+    display: "none",
+  },
 });
 
 class LetThemPressButtonPage extends Component {
@@ -23,16 +23,16 @@ class LetThemPressButtonPage extends Component {
       confirmedRoomCode,
       confirmedGameName,
       setConfirmedRoomCode,
-      setConfirmedGameName
+      setConfirmedGameName,
     } = this.props;
     if (
       !confirmedRoomCode &&
       !confirmedGameName &&
-      localStorage.getItem('roomCode') &&
-      localStorage.getItem('gameName')
+      localStorage.getItem("roomCode") &&
+      localStorage.getItem("gameName")
     ) {
-      setConfirmedRoomCode(localStorage.getItem('roomCode'));
-      setConfirmedGameName(localStorage.getItem('gameName'));
+      setConfirmedRoomCode(localStorage.getItem("roomCode"));
+      setConfirmedGameName(localStorage.getItem("gameName"));
     }
   }
   componentWillUnmount() {
@@ -49,14 +49,16 @@ class LetThemPressButtonPage extends Component {
         <br />
         <div hidden={!this.state.fetchingPrompts}>
           <Typography variant="h4" gutterBottom>
-            Tell them to press their buttons!
+            Everyone should have their prompts now!
           </Typography>
           <Typography component="p" paragraph gutterBottom>
             The time has come to supply funny answers to leading questions.
+            Everyone else at your Seder should see screens telling them to fill
+            in the blanks.
           </Typography>
           <Typography component="p" paragraph gutterBottom>
-            Tell everyone at your seder to click the button on their phone that
-            says "Click this button."
+            If anyone doesn't see that, tell them to click the button that says{" "}
+            <em>Click this button</em>.
           </Typography>
           <Typography component="p" paragraph gutterBottom>
             Now you, personally,
@@ -74,7 +76,7 @@ class LetThemPressButtonPage extends Component {
           </div>
           <br />
           <Typography component="p" paragraph gutterBottom>
-            to get YOUR assignments.
+            to get YOUR prompts.
           </Typography>
         </div>
       </div>

@@ -572,10 +572,10 @@ const submitNoLibs = async (page) => {
     text: player2Name, // so we can test the name-taken flow
   });
   await itClick({ page: page3, madliberationid: "join-this-seder-button" });
-  await itWait({page: page3, madliberationid: "name-taken-message"})
+  await itWait({ page: page3, madliberationid: "name-taken-message" });
   await itClick({ page: page3, madliberationid: "game-name-text-field" });
-  await page3.keyboard.press('Backspace');
-  await page3.keyboard.press('Backspace');
+  await page3.keyboard.press("Backspace");
+  await page3.keyboard.press("Backspace");
   await itType({
     page: page3,
     madliberationid: "game-name-text-field",
@@ -671,6 +671,22 @@ const submitNoLibs = async (page) => {
 
   // Leader: confirm both players' submissions appeared in the script
   await itNavigate({ page: page, madliberationid: "i-want-the-script-button" });
+
+  ////////////////////////////////////////////////////////////////////////////////
+  ////////////////////////////////////////////////////////////////////////////////
+  // P3
+  await itNavigate({
+    page: page3,
+    madliberationid: "player-click-this-button",
+  });
+  await itWait({ page: page3, madliberationid: "lib-progress" });
+  await submitNoLibs(page3);
+
+  ////////////////////////////////////////////////////////////////////////////////
+  ////////////////////////////////////////////////////////////////////////////////
+  // Leader
+
+  await itClick({ page: page, madliberationid: "read-roster-check-again" });
 
   ////////////////////////////////////////////////////////////////////////////////
 

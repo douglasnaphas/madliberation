@@ -4,7 +4,6 @@ import MenuAppBar from "./MenuAppBar";
 import React, { Component } from "react";
 import { Typography } from "@mui/material";
 import withStyles from "@mui/styles/withStyles";
-import { withRouter } from "react-router-dom";
 
 import { madLiberationStyles } from "../madLiberationStyles";
 
@@ -17,8 +16,18 @@ const styles = (theme) => ({
   },
 });
 
+let webSocket;
 class YouHaveJoinedPage extends Component {
+  _isMounted = false;
+  messageHandler = (event) => {
+    if (!event) return;
+    if (!event.data) return;
+    if (event.data == "assignments_ready") {
+      this.props.history.push("/fetching-prompts");
+    }
+  };
   componentDidMount() {
+    this._isMounted = true;
     let {
       confirmedRoomCode,
       confirmedGameName,
@@ -26,15 +35,33 @@ class YouHaveJoinedPage extends Component {
       setConfirmedGameName,
       history,
     } = this.props;
+    let roomCode = confirmedRoomCode;
+    let gameName = confirmedGameName;
     if (
       !confirmedRoomCode &&
       !confirmedGameName &&
       localStorage.getItem("roomCode") &&
       localStorage.getItem("gameName")
     ) {
-      setConfirmedRoomCode(localStorage.getItem("roomCode"));
-      setConfirmedGameName(localStorage.getItem("gameName"));
+      roomCode = localStorage.getItem("roomCode");
+      gameName = localStorage.getItem("gameName");
+      setConfirmedRoomCode(roomCode);
+      setConfirmedGameName(gameName);
     }
+    if (roomCode && gameName) {
+      webSocket = new WebSocket(
+        `wss://${window.location.hostname}/ws-wait/?` +
+          `roomcode=${roomCode}&` +
+          `gamename=${encodeURIComponent(gameName)}`
+      );
+      webSocket.addEventListener("message", this.messageHandler);
+    }
+  }
+  componentWillUnmount() {
+    if (webSocket && webSocket.close) {
+      webSocket.close();
+    }
+    this._isMounted = false;
   }
   render() {
     let { confirmedRoomCode, confirmedGameName } = this.props;
@@ -82,4 +109,4 @@ class YouHaveJoinedPage extends Component {
   }
 }
 
-export default withRouter(withStyles(styles)(YouHaveJoinedPage));
+export default withStyles(styles)(YouHaveJoinedPage);

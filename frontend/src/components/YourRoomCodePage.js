@@ -137,8 +137,10 @@ class YourRoomCodePage extends Component {
             !this.state.failedAttempt || this.state.thatsMyNameButtonPressed
           }
         >
-          <Typography component="p" color="secondary">
-            {this.state.failureMessage}
+          <Typography component="p">
+            <b>
+              <em>{this.state.failureMessage}</em>
+            </b>
           </Typography>
         </div>
       </div>

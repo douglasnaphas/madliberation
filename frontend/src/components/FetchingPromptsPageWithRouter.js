@@ -92,10 +92,14 @@ class FetchingPromptsPage extends Component {
           <CircularProgress />
         </div>
         <div hidden={!this.state.failedFetch}>
-          <Typography component="p" color="secondary" gutterBottom>
-            Well actually, fetching your prompts failed. Make sure the person
-            who started this virtual seder really wants you to click this
-            button, then try to
+          <Typography component="p" gutterBottom>
+            <b>
+              <em>
+                Well actually, fetching your prompts failed. Make sure the
+                person who started this virtual seder really wants you to click
+                this button, then try to
+              </em>
+            </b>
           </Typography>
           <div>
             <Button
@@ -107,8 +111,10 @@ class FetchingPromptsPage extends Component {
             </Button>
           </div>
           <div>
-            <Typography component="p" color="secondary">
-              again to get your assignments.
+            <Typography component="p">
+              <b>
+                <em>again to get your assignments.</em>
+              </b>
             </Typography>
           </div>
         </div>

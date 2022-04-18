@@ -737,7 +737,6 @@ const submitNoLibs = async (page) => {
     }
   });
 
-  // Close browsers
   await browser.close();
 
   // Test some login-logout behaviors

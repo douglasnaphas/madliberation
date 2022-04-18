@@ -1,19 +1,19 @@
-import { Button } from '@mui/material';
-import CircularProgress from '@mui/material/CircularProgress';
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle';
-import React from 'react';
-import withStyles from '@mui/styles/withStyles';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableRow from '@mui/material/TableRow';
-import { Typography } from '@mui/material';
+import { Button } from "@mui/material";
+import CircularProgress from "@mui/material/CircularProgress";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
+import React from "react";
+import withStyles from "@mui/styles/withStyles";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableRow from "@mui/material/TableRow";
+import { Typography } from "@mui/material";
 
-const styles = theme => ({});
+const styles = (theme) => ({});
 
 class ReadRoster extends React.Component {
   state = { rosterLoading: true, done: [], notDone: [], dialogOpen: false };
@@ -22,7 +22,7 @@ class ReadRoster extends React.Component {
     return () => {
       const { roster, requestScript } = this.props;
       if (this._isMounted) this.setState({ rosterLoading: true });
-      roster(roomCode, gameName).then(d => {
+      roster(roomCode, gameName).then((d) => {
         if (d.status === 200) {
           if (this._isMounted) {
             if (d.data.notDone.length < 1) {
@@ -32,14 +32,14 @@ class ReadRoster extends React.Component {
             this.setState({
               rosterLoading: false,
               done: d.data.done,
-              notDone: d.data.notDone
+              notDone: d.data.notDone,
             });
           }
         }
       });
     };
   };
-  onDialogClose = event => {
+  onDialogClose = (event) => {
     if (this._isMounted) this.setState({ dialogOpen: false });
   };
   confirmRequestScript = () => {
@@ -52,10 +52,8 @@ class ReadRoster extends React.Component {
   }
   componentDidUpdate(prevProps) {
     const { confirmedRoomCode, confirmedGameName } = this.props;
-    const {
-      confirmedRoomCode: prevCode,
-      confirmedGameName: prevName
-    } = prevProps;
+    const { confirmedRoomCode: prevCode, confirmedGameName: prevName } =
+      prevProps;
     if (confirmedRoomCode === prevCode && confirmedGameName === prevName)
       return;
     this.fetchRoster(confirmedRoomCode, confirmedGameName)();
@@ -73,7 +71,12 @@ class ReadRoster extends React.Component {
     for (let i = 0; i < done.length; i++) {
       doneRows.push(
         <TableRow key={`doneRow${done[i]}`}>
-          <TableCell key={`doneCell${done[i]}`}>{done[i]}</TableCell>
+          <TableCell
+            key={`doneCell${done[i]}`}
+            madliberationid={`doneCell${i}`}
+          >
+            {done[i]}
+          </TableCell>
         </TableRow>
       );
     }
@@ -81,7 +84,12 @@ class ReadRoster extends React.Component {
     for (let i = 0; i < notDone.length; i++) {
       notDoneRows.push(
         <TableRow key={`notDoneRow${notDone[i]}`}>
-          <TableCell key={`notDoneCell${notDone[i]}`}>{notDone[i]}</TableCell>
+          <TableCell
+            key={`notDoneCell${notDone[i]}`}
+            madliberationid={`notDoneCell${i}`}
+          >
+            {notDone[i]}
+          </TableCell>
         </TableRow>
       );
     }

@@ -675,6 +675,21 @@ const submitNoLibs = async (page) => {
 
   await itWait({ page: page2, madliberationid: "done-not-reading-page" });
 
+  // Actually, they are, so we can test refresh on the read roster
+  await itNavigate({
+    page: page2,
+    madliberationid: "wait-maybe-i-do-button",
+  });
+  await itWait({
+    page: page2,
+    madliberationid: "read-roster-check-again-button",
+  });
+  await page2.reload();
+  await itWait({
+    page: page2,
+    madliberationid: "read-roster-check-again-button",
+  });
+
   ////////////////////////////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////////////////////////
   // Leader
@@ -702,10 +717,17 @@ const submitNoLibs = async (page) => {
   // roster
 
   ////////////////////////////////////////////////////////////////////////////////
+  ////////////////////////////////////////////////////////////////////////////////
+  // P2: should get pushed to the script
+  await itWait({ page: page2, madliberationid: "pass-this-device" });
+  ////////////////////////////////////////////////////////////////////////////////
+  ////////////////////////////////////////////////////////////////////////////////
+  // Leader: should get pushed to the script
+  await itWait({ page: page, madliberationid: "pass-this-device" });
   // Confirm both players' submissions appeared in the script
   // Wait until the Read page shows, then click the button to get to the first
   // reader, then get all the displayed libs
-  await itWait({ page: page, madliberationid: "pass-this-device" });
+
   const libs = [];
   // loop through script pages, adding to libs
   while (true) {

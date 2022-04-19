@@ -26,6 +26,8 @@ const handleSubmit = async (record) => {
         `${schema.SEPARATOR}${gameName}${schema.SEPARATOR}`,
     },
   };
+  logger.log("dbQueryParams:");
+  logger.log(JSON.stringify(dbQueryParams));
   let queryData;
   try {
     queryData = await db.query(dbQueryParams).promise();
@@ -39,6 +41,8 @@ const handleSubmit = async (record) => {
     logger.log("no query data");
     return;
   }
+  logger.log("queryData:");
+  logger.log(JSON.stringify(queryData));
   if (!Array.isArray(queryData.Items)) {
     logger.log("non-array Items, or missing Items");
     return;
@@ -46,11 +50,15 @@ const handleSubmit = async (record) => {
   const connectionIds = queryData.Items.map(
     (item) => item[schema.CONNECTION_ID]
   );
+  logger.log("connectionIds:");
+  logger.log(JSON.stringify(connectionIds));
   for (let i = 0; i < connectionIds.length; i++) {
     const postToConnectionParams = {
       ConnectionId: connectionIds[i],
       Data: Buffer.from("read_roster_update"),
     };
+    logger.log("postToConnectionParams:");
+    logger.log(JSON.stringify(postToConnectionParams));
     try {
       await api.postToConnection(postToConnectionParams).promise();
     } catch (e) {

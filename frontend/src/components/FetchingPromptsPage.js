@@ -64,6 +64,7 @@ class FetchingPromptsPage extends Component {
     };
   };
   componentDidMount() {
+    console.log("FetchingPromptsPage: componentDidMount called " + Date());
     this._isMounted = true;
     let { confirmedRoomCode, confirmedGameName } = this.props;
     const { setConfirmedRoomCode, setConfirmedGameName } = this.props;
@@ -89,6 +90,7 @@ class FetchingPromptsPage extends Component {
     }
   }
   componentWillUnmount() {
+    console.log("FetchingPromptsPage: componentWillUnmount called " + Date());
     if (webSocket && webSocket.close) {
       webSocket.close();
     }

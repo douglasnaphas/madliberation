@@ -27,7 +27,7 @@ class ReadRoster extends React.Component {
     if (!roomCode) return;
     if (!gameName) return;
     if (event.data == "read_roster_update") {
-      this.fetchRoster(roomCode, gameName);
+      this.fetchRoster(roomCode, gameName)();
     }
   };
   fetchRoster = (roomCode, gameName) => {

@@ -62,7 +62,8 @@ const schema = {
   DATE: "date",
   MS: "ms",
   CONNECTION_ID: "connection_id",
-  WAIT: "wait" // wait page, ws-wait WS API
+  WAIT: "wait", // wait page, ws-wait WS API
+  READ_ROSTER: "read-roster"
 };
 
 module.exports = schema;

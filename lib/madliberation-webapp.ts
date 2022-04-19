@@ -446,13 +446,16 @@ export class MadliberationWebapp extends Stack {
       });
     const connectRosterHandler = makeHandler("Connect-Roster");
     const connectWaitHandler = makeHandler("Connect-Wait");
+    const connectReadRosterHandler = makeHandler("Connect-Read-Roster");
     const disconnectHandler = makeHandler("Disconnect");
     const defaultHandler = makeHandler("Default");
     const joinHandler = makeHandler("Join");
     const assignHandler = makeHandler("Assign");
+    const submitHandler = makeHandler("Submit");
     [
       connectRosterHandler,
       connectWaitHandler,
+      connectReadRosterHandler,
       disconnectHandler,
       defaultHandler,
     ].forEach((handler) => {
@@ -510,6 +513,36 @@ export class MadliberationWebapp extends Stack {
       webSocketApi: wsWaitApi,
       autoDeploy: true,
     });
+    const wsReadRosterApi = new apigwv2.WebSocketApi(this, "WSReadRosterAPI", {
+      connectRouteOptions: {
+        integration: new apigwv2i.WebSocketLambdaIntegration(
+          "ConnectRRIntegration",
+          connectReadRosterHandler
+        ),
+      },
+      disconnectRouteOptions: {
+        integration: new apigwv2i.WebSocketLambdaIntegration(
+          "DisconnectRRIntegration",
+          disconnectHandler
+        ),
+      },
+      defaultRouteOptions: {
+        integration: new apigwv2i.WebSocketLambdaIntegration(
+          "DefaultRRIntegration",
+          defaultHandler
+        ),
+      },
+    });
+    const wsReadRosterStageName = "ws-read-roster";
+    const wsReadRosterStage = new apigwv2.WebSocketStage(
+      this,
+      "WSReadRosterStage",
+      {
+        stageName: wsReadRosterStageName,
+        webSocketApi: wsReadRosterApi,
+        autoDeploy: true,
+      }
+    );
 
     // for all WebSocket behaviors
     const wsOrp = new cloudfront.OriginRequestPolicy(
@@ -555,20 +588,45 @@ export class MadliberationWebapp extends Stack {
         originRequestPolicy: wsOrp,
       }
     );
+    distro.addBehavior(
+      `/${wsReadRosterStageName}/*`,
+      new origins.HttpOrigin(
+        `${wsReadRosterApi.apiId}.execute-api.${this.region}.${this.urlSuffix}`,
+        {
+          protocolPolicy: cloudfront.OriginProtocolPolicy.HTTPS_ONLY,
+        }
+      ),
+      {
+        allowedMethods: cloudfront.AllowedMethods.ALLOW_ALL,
+        cachePolicy: cloudfront.CachePolicy.CACHING_DISABLED,
+        viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
+        originRequestPolicy: wsOrp,
+      }
+    );
 
     const deadLetterQueue = new sqs.Queue(this, "deadLetterQueue");
 
-    const wsHostname =
+    const wsRosterHostname =
       wsRosterApi.apiId + ".execute-api." + this.region + "." + this.urlSuffix;
     const wsWaitHostname =
       wsWaitApi.apiId + ".execute-api." + this.region + "." + this.urlSuffix;
+    const wsReadRosterHostname =
+      wsReadRosterApi.apiId +
+      ".execute-api." +
+      this.region +
+      "." +
+      this.urlSuffix;
     joinHandler.addEnvironment(
       "WS_ENDPOINT",
-      `${wsHostname}/${wsRosterStage.stageName}`
+      `${wsRosterHostname}/${wsRosterStage.stageName}`
     );
     assignHandler.addEnvironment(
       "WS_ENDPOINT",
       `${wsWaitHostname}/${wsWaitStage.stageName}`
+    );
+    submitHandler.addEnvironment(
+      "WS_ENDPOINT",
+      `${wsReadRosterHostname}/${wsReadRosterStage.stageName}`
     );
 
     const joinMapping = new lambda.EventSourceMapping(this, "JoinMapping", {
@@ -628,12 +686,46 @@ export class MadliberationWebapp extends Stack {
       ],
     });
 
-    [joinHandler, assignHandler].forEach((handler) => {
+    const submitMapping = new lambda.EventSourceMapping(this, "SubmitMapping", {
+      target: submitHandler,
+      eventSourceArn: sedersTable.tableStreamArn,
+      startingPosition: lambda.StartingPosition.TRIM_HORIZON,
+      bisectBatchOnError: true,
+      onFailure: new SqsDlq(deadLetterQueue),
+      retryAttempts: 5,
+    });
+    const cfnSubmitMapping = submitMapping.node
+      .defaultChild as lambda.CfnEventSourceMapping;
+    cfnSubmitMapping.addPropertyOverride("FilterCriteria", {
+      Filters: [
+        {
+          Pattern: JSON.stringify({
+            eventName: ["MODIFY"],
+            dynamodb: {
+              NewImage: {
+                game_name: { S: [{ exists: true }] },
+                lib_id: { S: [{ prefix: "participant#" }] },
+                answers: { L: [{ exists: true }] },
+              },
+              OldImage: {
+                assignments: {
+                  L: [{ exists: true }],
+                },
+                answers: { L: [{ exists: false }] },
+              },
+            },
+          }),
+        },
+      ],
+    });
+
+    [joinHandler, assignHandler, submitHandler].forEach((handler) => {
       sedersTable.grantStreamRead(handler);
       sedersTable.grantReadData(handler);
     });
     wsRosterStage.grantManagementApiAccess(joinHandler);
     wsWaitStage.grantManagementApiAccess(assignHandler);
+    wsReadRosterStage.grantManagementApiAccess(submitHandler);
 
     const scriptsBucket = new MadLiberationBucket(this, "ScriptsBucket", {
       versioned: true,
@@ -678,6 +770,6 @@ export class MadliberationWebapp extends Stack {
     new CfnOutput(this, "WSRosterEndpoint", {
       value: wsRosterApi.apiEndpoint,
     });
-    new CfnOutput(this, "WSHostname", { value: wsHostname });
+    new CfnOutput(this, "WSHostname", { value: wsRosterHostname });
   }
 }

@@ -15,9 +15,19 @@ import { Typography } from "@mui/material";
 
 const styles = (theme) => ({});
 
+let webSocket;
 class ReadRoster extends React.Component {
   state = { rosterLoading: true, done: [], notDone: [], dialogOpen: false };
   _isMounted = false;
+  messageHandler = (event) => {
+    const { requestScript } = this.props;
+    if (!requestScript) return;
+    if (!event) return;
+    if (!event.data) return;
+    if (event.data == "read_roster_update") {
+      requestScript();
+    }
+  };
   fetchRoster = (roomCode, gameName) => {
     return () => {
       const { roster, requestScript } = this.props;
@@ -48,6 +58,14 @@ class ReadRoster extends React.Component {
   componentDidMount() {
     this._isMounted = true;
     const { confirmedRoomCode, confirmedGameName } = this.props;
+    if (confirmedRoomCode && confirmedGameName) {
+      webSocket = new WebSocket(
+        `wss://${window.location.hostname}/ws-read-roster/?` +
+          `roomcode=${confirmedRoomCode}&` +
+          `gamename=${encodeURIComponent(confirmedGameName)}`
+      );
+      webSocket.addEventListener("message", this.messageHandler);
+    }
     this.fetchRoster(confirmedRoomCode, confirmedGameName)();
   }
   componentDidUpdate(prevProps) {
@@ -57,6 +75,12 @@ class ReadRoster extends React.Component {
     if (confirmedRoomCode === prevCode && confirmedGameName === prevName)
       return;
     this.fetchRoster(confirmedRoomCode, confirmedGameName)();
+  }
+  componentWillUnmount() {
+    if (webSocket && webSocket.close) {
+      webSocket.close();
+    }
+    this._isMounted = false;
   }
   render() {
     const { requestScript, confirmedRoomCode, confirmedGameName } = this.props;

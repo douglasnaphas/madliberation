@@ -170,6 +170,11 @@ class Page extends React.Component {
           >
             Ready to read
           </Button>
+          <div>
+            <Typography variant="h2" gutterBottom>
+              Prepare for Page {pageIndex + 1}
+            </Typography>
+          </div>
         </div>
       );
     } else {

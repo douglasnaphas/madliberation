@@ -159,6 +159,11 @@ class Page extends React.Component {
       }
       return (
         <div madliberationid="pass-this-device" mlnoncontent="true">
+          <div>
+            <Typography variant="h2" gutterBottom>
+              Prepare for Page {pageIndex + 1}
+            </Typography>
+          </div>
           <Typography variant="h5" gutterBottom>
             Pick {passTo}, then click:
           </Typography>
@@ -170,11 +175,6 @@ class Page extends React.Component {
           >
             Ready to read
           </Button>
-          <div>
-            <Typography variant="h2" gutterBottom>
-              Prepare for Page {pageIndex + 1}
-            </Typography>
-          </div>
         </div>
       );
     } else {

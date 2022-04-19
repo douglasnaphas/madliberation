@@ -92,6 +92,7 @@ class FetchingPromptsPage extends Component {
   componentWillUnmount() {
     console.log("FetchingPromptsPage: componentWillUnmount called " + Date());
     if (webSocket && webSocket.close) {
+      webSocket.removeEventListener("message", this.messageHandler);
       webSocket.close();
     }
     this._isMounted = false;

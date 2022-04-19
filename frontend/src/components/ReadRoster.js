@@ -83,6 +83,7 @@ class ReadRoster extends React.Component {
   componentWillUnmount() {
     console.log("ReadRosterPage: componentWillUnmount called " + Date());
     if (webSocket && webSocket.close) {
+      webSocket.removeEventListener("message", this.messageHandler);
       webSocket.close();
     }
     this._isMounted = false;

@@ -292,7 +292,7 @@ describe("submit", () => {
         KeyConditionExpression: `room_code = :rc and begins_with(lib_id, :prefix)`,
         ExpressionAttributeValues: {
           ":rc": "HGKYIQ",
-          ":prefix": "connect#read-roster#Le#",
+          ":prefix": "connect#read-roster#",
         },
       },
       queryData: {
@@ -472,7 +472,7 @@ describe("submit", () => {
         KeyConditionExpression: `room_code = :rc and begins_with(lib_id, :prefix)`,
         ExpressionAttributeValues: {
           ":rc": "BBKYIQ",
-          ":prefix": "connect#read-roster#Me Sir#",
+          ":prefix": "connect#read-roster#",
         },
       },
       queryData: {
@@ -660,7 +660,7 @@ describe("submit", () => {
           KeyConditionExpression: `room_code = :rc and begins_with(lib_id, :prefix)`,
           ExpressionAttributeValues: {
             ":rc": "BBKYIQ",
-            ":prefix": "connect#read-roster#Me Sir#",
+            ":prefix": "connect#read-roster#",
           },
         },
         {
@@ -668,7 +668,7 @@ describe("submit", () => {
           KeyConditionExpression: `room_code = :rc and begins_with(lib_id, :prefix)`,
           ExpressionAttributeValues: {
             ":rc": "CCKYIQ",
-            ":prefix": "connect#read-roster#Me3Sir#",
+            ":prefix": "connect#read-roster#",
           },
         },
       ],

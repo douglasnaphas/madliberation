@@ -11,11 +11,6 @@ const api = new ApiGatewayManagementApi({
 });
 
 const handleSubmit = async (record) => {
-  const gameName = record.dynamodb.NewImage.game_name.S;
-  if (!gameName) {
-    logger.log("submit: no game name");
-    return;
-  }
   const dbQueryParams = {
     TableName: process.env.TABLE_NAME,
     KeyConditionExpression: `room_code = :rc and begins_with(lib_id, :prefix)`,
@@ -23,7 +18,7 @@ const handleSubmit = async (record) => {
       ":rc": record.dynamodb.NewImage[schema.PARTITION_KEY].S,
       ":prefix":
         `${schema.CONNECT}${schema.SEPARATOR}${schema.READ_ROSTER}` +
-        `${schema.SEPARATOR}${gameName}${schema.SEPARATOR}`,
+        `${schema.SEPARATOR}`,
     },
   };
   logger.log("dbQueryParams:");

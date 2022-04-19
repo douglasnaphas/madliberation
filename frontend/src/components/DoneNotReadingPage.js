@@ -1,27 +1,27 @@
-import MenuAppBar from './MenuAppBar';
-import React from 'react';
-import { Typography } from '@mui/material';
-import withStyles from '@mui/styles/withStyles';
-import Button from '@mui/material/Button';
-import { Link } from 'react-router-dom';
+import MenuAppBar from "./MenuAppBar";
+import React from "react";
+import { Typography } from "@mui/material";
+import withStyles from "@mui/styles/withStyles";
+import Button from "@mui/material/Button";
+import { Link } from "react-router-dom";
 
-const styles = theme => ({});
+const styles = (theme) => ({});
 class DoneNotReadingPage extends React.Component {
   componentDidMount() {
     const {
       confirmedRoomCode,
       confirmedGameName,
       setConfirmedRoomCode,
-      setConfirmedGameName
+      setConfirmedGameName,
     } = this.props;
     if (
       !confirmedRoomCode &&
       !confirmedGameName &&
-      localStorage.getItem('roomCode') &&
-      localStorage.getItem('gameName')
+      localStorage.getItem("roomCode") &&
+      localStorage.getItem("gameName")
     ) {
-      setConfirmedRoomCode(localStorage.getItem('roomCode'));
-      setConfirmedGameName(localStorage.getItem('gameName'));
+      setConfirmedRoomCode(localStorage.getItem("roomCode"));
+      setConfirmedGameName(localStorage.getItem("gameName"));
     }
   }
   render() {
@@ -43,7 +43,12 @@ class DoneNotReadingPage extends React.Component {
             Enjoy the haggadah that you and your friends and family have made
             together.
           </Typography>
-          <Button variant="contained" component={Link} to="/submitted">
+          <Button
+            variant="contained"
+            component={Link}
+            to="/submitted"
+            madliberationid={"wait-maybe-i-do-button"}
+          >
             Wait, maybe I do want the script
           </Button>
         </div>

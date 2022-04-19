@@ -626,7 +626,7 @@ const submitNoLibs = async (page) => {
   await itNavigate({
     page: page3,
     madliberationid: "player-click-this-button",
-    expectedLandingPage: `${site}/#/fetching-prompts`
+    expectedLandingPage: `${site}/#/fetching-prompts`,
   });
 
   ////////////////////////////////////////////////////////////////////////////////
@@ -675,11 +675,38 @@ const submitNoLibs = async (page) => {
 
   await itWait({ page: page2, madliberationid: "done-not-reading-page" });
 
-  ////////////////////////////////////////////////////////////////////////////////
-  ////////////////////////////////////////////////////////////////////////////////
+  // Actually, they are, so we can test refresh on the read roster
+  await itNavigate({
+    page: page2,
+    madliberationid: "wait-maybe-i-do-button",
+  });
+  await itNavigate({
+    page: page2,
+    madliberationid: "i-want-the-script-button",
+  });
+  await itWait({
+    page: page2,
+    madliberationid: "read-roster-check-again-button",
+  });
+  await page2.reload();
+  await itWait({
+    page: page2,
+    madliberationid: "read-roster-check-again-button",
+  });
 
-  // Leader: confirm both players' submissions appeared in the script
+  ////////////////////////////////////////////////////////////////////////////////
+  ////////////////////////////////////////////////////////////////////////////////
+  // Leader
+
   await itNavigate({ page: page, madliberationid: "i-want-the-script-button" });
+  // leader and p2 should show as submitted, p3 should show as un-submitted
+  await itClick({
+    page: page,
+    madliberationid: "read-roster-check-again-button",
+  });
+  await itWait({ page: page, madliberationid: "doneCell0" });
+  await itWait({ page: page, madliberationid: "doneCell1" });
+  await itWait({ page: page, madliberationid: "notDoneCell0" });
 
   ////////////////////////////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////////////////////////
@@ -690,18 +717,21 @@ const submitNoLibs = async (page) => {
 
   ////////////////////////////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////////////////////////
-  // Leader
-
-  await itClick({
-    page: page,
-    madliberationid: "read-roster-check-again-button",
-  });
+  // Leader: now state change should be pushed to take the leader off the read
+  // roster
 
   ////////////////////////////////////////////////////////////////////////////////
-
+  ////////////////////////////////////////////////////////////////////////////////
+  // P2: should get pushed to the script
+  await itWait({ page: page2, madliberationid: "pass-this-device" });
+  ////////////////////////////////////////////////////////////////////////////////
+  ////////////////////////////////////////////////////////////////////////////////
+  // Leader: should get pushed to the script
+  await itWait({ page: page, madliberationid: "pass-this-device" });
+  // Confirm both players' submissions appeared in the script
   // Wait until the Read page shows, then click the button to get to the first
   // reader, then get all the displayed libs
-  await itWait({ page: page, madliberationid: "pass-this-device" });
+
   const libs = [];
   // loop through script pages, adding to libs
   while (true) {
@@ -737,7 +767,6 @@ const submitNoLibs = async (page) => {
     }
   });
 
-  // Close browsers
   await browser.close();
 
   // Test some login-logout behaviors

@@ -20,12 +20,14 @@ class ReadRoster extends React.Component {
   state = { rosterLoading: true, done: [], notDone: [], dialogOpen: false };
   _isMounted = false;
   messageHandler = (event) => {
-    const { requestScript } = this.props;
-    if (!requestScript) return;
+    const roomCode = this.props.confirmedRoomCode;
+    const gameName = this.props.confirmedGameName;
     if (!event) return;
     if (!event.data) return;
+    if (!roomCode) return;
+    if (!gameName) return;
     if (event.data == "read_roster_update") {
-      requestScript();
+      this.fetchRoster(roomCode, gameName);
     }
   };
   fetchRoster = (roomCode, gameName) => {

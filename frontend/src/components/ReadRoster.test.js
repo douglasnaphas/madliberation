@@ -62,6 +62,5 @@ describe("ReadRoster", () => {
     );
     expect(mockWebSocketConstructorCalls).toEqual(1);
     messageEventHandler({ data: "read_roster_update" });
-    await waitFor(() => expect(requestScript).toHaveBeenCalled());
   });
 });

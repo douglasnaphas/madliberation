@@ -674,9 +674,6 @@ export class MadliberationWebapp extends Stack {
               NewImage: {
                 game_name: { S: [{ exists: true }] },
                 lib_id: { S: [{ prefix: "participant#" }] },
-                assignments: {
-                  L: [{ exists: true }],
-                },
               },
               OldImage: {
                 assignments: {
@@ -708,12 +705,8 @@ export class MadliberationWebapp extends Stack {
               NewImage: {
                 game_name: { S: [{ exists: true }] },
                 lib_id: { S: [{ prefix: "participant#" }] },
-                answers: { L: [{ exists: true }] },
               },
               OldImage: {
-                assignments: {
-                  L: [{ exists: true }],
-                },
                 answers: { L: [{ exists: false }] },
               },
             },

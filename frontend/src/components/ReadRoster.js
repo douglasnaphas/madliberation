@@ -58,7 +58,6 @@ class ReadRoster extends React.Component {
     if (this._isMounted) this.setState({ dialogOpen: true });
   };
   componentDidMount() {
-    console.log("ReadRosterPage: componentDidMount called " + Date());
     this._isMounted = true;
     const { confirmedRoomCode, confirmedGameName } = this.props;
     if (confirmedRoomCode && confirmedGameName) {
@@ -72,7 +71,6 @@ class ReadRoster extends React.Component {
     this.fetchRoster(confirmedRoomCode, confirmedGameName)();
   }
   componentDidUpdate(prevProps) {
-    console.log("ReadRosterPage: componentDidUpdate called " + Date());
     const { confirmedRoomCode, confirmedGameName } = this.props;
     const { confirmedRoomCode: prevCode, confirmedGameName: prevName } =
       prevProps;
@@ -90,7 +88,6 @@ class ReadRoster extends React.Component {
     this.fetchRoster(confirmedRoomCode, confirmedGameName)();
   }
   componentWillUnmount() {
-    console.log("ReadRosterPage: componentWillUnmount called " + Date());
     if (webSocket && webSocket.close) {
       webSocket.removeEventListener("message", this.messageHandler);
       webSocket.close();

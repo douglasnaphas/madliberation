@@ -27,7 +27,6 @@ class YouHaveJoinedPage extends Component {
     }
   };
   componentDidMount() {
-    console.log("YouHaveJoinedPage: componentDidMount called " + Date());
     this._isMounted = true;
     let {
       confirmedRoomCode,
@@ -59,7 +58,6 @@ class YouHaveJoinedPage extends Component {
     }
   }
   componentWillUnmount() {
-    console.log("YouHaveJoinedPage: componentWillUnmount called " + Date());
     if (webSocket && webSocket.close) {
       webSocket.removeEventListener("message", this.messageHandler);
       webSocket.close();

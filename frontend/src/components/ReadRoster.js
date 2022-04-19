@@ -78,6 +78,15 @@ class ReadRoster extends React.Component {
       prevProps;
     if (confirmedRoomCode === prevCode && confirmedGameName === prevName)
       return;
+    if (!confirmedRoomCode || !confirmedGameName) return;
+    if (!webSocket) {
+      webSocket = new WebSocket(
+        `wss://${window.location.hostname}/ws-read-roster/?` +
+          `roomcode=${confirmedRoomCode}&` +
+          `gamename=${encodeURIComponent(confirmedGameName)}`
+      );
+      webSocket.addEventListener("message", this.messageHandler);
+    }
     this.fetchRoster(confirmedRoomCode, confirmedGameName)();
   }
   componentWillUnmount() {

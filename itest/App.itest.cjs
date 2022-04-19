@@ -680,6 +680,10 @@ const submitNoLibs = async (page) => {
     page: page2,
     madliberationid: "wait-maybe-i-do-button",
   });
+  await itNavigate({
+    page: page2,
+    madliberationid: "i-want-the-script-button",
+  });
   await itWait({
     page: page2,
     madliberationid: "read-roster-check-again-button",

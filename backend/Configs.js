@@ -8,7 +8,7 @@ class Configs {
   }
 
   static loginCookieExpirationDate(issuedDate) {
-    const DAYS = 3;
+    const DAYS = 10;
     const MILLISECONDS_PER_DAY = 1000 * 60 * 60 * 24;
     return new Date(issuedDate.getTime() + DAYS * MILLISECONDS_PER_DAY);
   }

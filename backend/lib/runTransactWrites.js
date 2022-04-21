@@ -13,6 +13,7 @@
  * next, or sends 500 if res.locals[paramsName] is not defined
  */
 function runTransactWrites(awsSdk, paramsName) {
+  const Logger = require("./Logger");
   const middleware = async (req, res, next) => {
     const responses = require("../responses");
     if (!res.locals[paramsName] || !Array.isArray(res.locals[paramsName])) {
@@ -28,12 +29,16 @@ function runTransactWrites(awsSdk, paramsName) {
           resolve({ err: err, data: data });
         });
       });
+      Logger.log("runTransactWrites: dbResponse:");
+      Logger.log(JSON.stringify(dbResponse));
       dbErrors.push(dbResponse.err);
       dbDatas.push(dbResponse.data);
     }
 
     res.locals.dbError = dbErrors;
     res.locals.dbData = dbDatas;
+    Logger.log("runTransactWrites: res.locals:");
+    Logger.log(JSON.stringify(res.locals));
     return next();
   };
   return middleware;

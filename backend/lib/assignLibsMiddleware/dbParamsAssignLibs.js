@@ -79,8 +79,8 @@ function dbParams() {
         );
       }
     );
-    Logger.log("dbParamsAssignLibs: res.locals:");
-    Logger.log(JSON.stringify(res.locals));
+    Logger.log({ message: "dbParamsAssignLibs: res.locals:" });
+    Logger.log({ message: JSON.stringify(res.locals) });
     return next();
   };
   return middleware;

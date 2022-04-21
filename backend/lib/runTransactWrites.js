@@ -29,16 +29,16 @@ function runTransactWrites(awsSdk, paramsName) {
           resolve({ err: err, data: data });
         });
       });
-      Logger.log("runTransactWrites: dbResponse:");
-      Logger.log(JSON.stringify(dbResponse));
+      Logger.log({ message: "runTransactWrites: dbResponse:" });
+      Logger.log({ message: JSON.stringify(dbResponse) });
       dbErrors.push(dbResponse.err);
       dbDatas.push(dbResponse.data);
     }
 
     res.locals.dbError = dbErrors;
     res.locals.dbData = dbDatas;
-    Logger.log("runTransactWrites: res.locals:");
-    Logger.log(JSON.stringify(res.locals));
+    Logger.log({ message: "runTransactWrites: res.locals:" });
+    Logger.log({ message: JSON.stringify(res.locals) });
     return next();
   };
   return middleware;

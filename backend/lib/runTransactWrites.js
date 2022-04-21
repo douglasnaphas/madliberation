@@ -14,24 +14,24 @@
  */
 function runTransactWrites(awsSdk, paramsName) {
   const middleware = async (req, res, next) => {
-    const responses = require('../responses');
-    if(!res.locals[paramsName] || !Array.isArray(res.locals[paramsName])) {
+    const responses = require("../responses");
+    if (!res.locals[paramsName] || !Array.isArray(res.locals[paramsName])) {
       return res.status(500).send(responses.SERVER_ERROR);
     }
     const dynamodb = new awsSdk.DynamoDB.DocumentClient();
     let dbResponse;
     const dbErrors = [];
     const dbDatas = [];
-    for(let i = 0; i < res.locals[paramsName].length; i++) {
+    for (let i = 0; i < res.locals[paramsName].length; i++) {
       dbResponse = await new Promise((resolve, reject) => {
         dynamodb.transactWrite(res.locals[paramsName][i], (err, data) => {
-          resolve({err: err, data: data});
+          resolve({ err: err, data: data });
         });
       });
       dbErrors.push(dbResponse.err);
       dbDatas.push(dbResponse.data);
     }
-    
+
     res.locals.dbError = dbErrors;
     res.locals.dbData = dbDatas;
     return next();

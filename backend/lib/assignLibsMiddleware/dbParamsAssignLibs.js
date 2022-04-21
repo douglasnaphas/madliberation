@@ -13,19 +13,22 @@
  * sets, in groups of 10.
  */
 function dbParams() {
-  const schema = require('../../schema');
-  const responses = require('../../responses');
-  const Logger = require('../../lib/Logger');
+  const schema = require("../../schema");
+  const responses = require("../../responses");
+  const Logger = require("../../lib/Logger");
   const middleware = (req, res, next) => {
-    if(!req.body.roomCode ||
-       !res.locals.scriptVersion ||
-       !res.locals.participants ||
-       !Array.isArray(res.locals.participants) ||
-       res.locals.participants.length < 1)
-    {
-      Logger.log({status: 500, event: 'assignLibsMiddleware/dbParamsAssignLibs',
-        roomCode: req.body.roomCode, ob: [res.locals.scriptVersion,
-        Array.isArray(res.locals.participants)]
+    if (
+      !req.body.roomCode ||
+      !res.locals.scriptVersion ||
+      !res.locals.participants ||
+      !Array.isArray(res.locals.participants) ||
+      res.locals.participants.length < 1
+    ) {
+      Logger.log({
+        status: 500,
+        event: "assignLibsMiddleware/dbParamsAssignLibs",
+        roomCode: req.body.roomCode,
+        ob: [res.locals.scriptVersion, Array.isArray(res.locals.participants)],
       });
       return res.status(500).send(responses.SERVER_ERROR);
     }
@@ -36,43 +39,46 @@ function dbParams() {
             Update: {
               TableName: schema.TABLE_NAME,
               Key: {},
-              UpdateExpression: 'SET #V = :v',
-              ExpressionAttributeNames: {'#V': schema.SCRIPT_VERSION},
-              ExpressionAttributeValues: {':v': res.locals.scriptVersion},
-              ReturnValuesOnConditionCheckFailure: 'ALL_OLD'
-            }
-          }
-        ]
-      }
+              UpdateExpression: "SET #V = :v",
+              ExpressionAttributeNames: { "#V": schema.SCRIPT_VERSION },
+              ExpressionAttributeValues: { ":v": res.locals.scriptVersion },
+              ReturnValuesOnConditionCheckFailure: "ALL_OLD",
+            },
+          },
+        ],
+      },
     ];
-    res.locals.assignLibsDbParams[0].TransactItems[0].Update.Key
-      [`${schema.PARTITION_KEY}`] = req.body.roomCode;
-    res.locals.assignLibsDbParams[0].TransactItems[0].Update.Key
-      [`${schema.SORT_KEY}`] = schema.SEDER_PREFIX;
+    res.locals.assignLibsDbParams[0].TransactItems[0].Update.Key[
+      `${schema.PARTITION_KEY}`
+    ] = req.body.roomCode;
+    res.locals.assignLibsDbParams[0].TransactItems[0].Update.Key[
+      `${schema.SORT_KEY}`
+    ] = schema.SEDER_PREFIX;
     const paramsNeeded = 1 + Math.floor(res.locals.participants.length / 10);
-    for(let i = 1; i < paramsNeeded; i++) {
-      res.locals.assignLibsDbParams.push({TransactItems: []});
+    for (let i = 1; i < paramsNeeded; i++) {
+      res.locals.assignLibsDbParams.push({ TransactItems: [] });
     }
     // update each participant Item
-    const participantUpdates = res.locals.participants.forEach((participant,
-      index) => {
-      const updateItem = {
-        Update: {
-          TableName: schema.TABLE_NAME,
-          Key: {},
-          UpdateExpression: 'SET #A = :a',
-          ExpressionAttributeNames: {'#A': schema.ASSIGNMENTS},
-          ExpressionAttributeValues: { ':a':
-            participant.libs
+    const participantUpdates = res.locals.participants.forEach(
+      (participant, index) => {
+        const updateItem = {
+          Update: {
+            TableName: schema.TABLE_NAME,
+            Key: {},
+            UpdateExpression: "SET #A = :a",
+            ExpressionAttributeNames: { "#A": schema.ASSIGNMENTS },
+            ExpressionAttributeValues: { ":a": participant.libs },
+            ReturnValuesOnConditionCheckFailure: "ALL_OLD",
           },
-          ReturnValuesOnConditionCheckFailure: 'ALL_OLD'
-        }
-      };
-      updateItem.Update.Key[`${schema.PARTITION_KEY}`] = req.body.roomCode;
-      updateItem.Update.Key[`${schema.SORT_KEY}`] = participant.lib_id;
-      const paramsIndex = Math.floor((index + 1) / 10);
-      res.locals.assignLibsDbParams[paramsIndex].TransactItems.push(updateItem);
-    });
+        };
+        updateItem.Update.Key[`${schema.PARTITION_KEY}`] = req.body.roomCode;
+        updateItem.Update.Key[`${schema.SORT_KEY}`] = participant.lib_id;
+        const paramsIndex = Math.floor((index + 1) / 10);
+        res.locals.assignLibsDbParams[paramsIndex].TransactItems.push(
+          updateItem
+        );
+      }
+    );
     return next();
   };
   return middleware;

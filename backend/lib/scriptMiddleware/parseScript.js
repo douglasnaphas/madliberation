@@ -11,7 +11,7 @@ function parseScript() {
     if(!res.locals.s3Data) {
       return res.status(500).send(responses.SERVER_ERROR);
     }
-    const buf = new Buffer(res.locals.s3Data.Body);
+    const buf = Buffer.from(res.locals.s3Data.Body);
     res.locals.script = JSON.parse(buf.toString('utf8'));
     return next();
   };

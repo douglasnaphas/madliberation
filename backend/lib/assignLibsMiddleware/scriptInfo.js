@@ -15,7 +15,7 @@ function scriptInfo() {
     }
     res.locals.scriptVersion = res.locals.s3Data.VersionId;
     const libs = [];
-    const buf = new Buffer(res.locals.s3Data.Body);
+    const buf = Buffer.from(res.locals.s3Data.Body);
     const script = JSON.parse(buf.toString('utf8'));
     if(!Array.isArray(script.pages)) return next();
     let id = 1;

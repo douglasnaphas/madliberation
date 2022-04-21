@@ -79,6 +79,7 @@ function dbParams() {
         );
       }
     );
+    Logger.log(JSON.stringify(res.locals));
     return next();
   };
   return middleware;

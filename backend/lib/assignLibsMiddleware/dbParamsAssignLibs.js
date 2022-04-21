@@ -66,6 +66,7 @@ function dbParams() {
             TableName: schema.TABLE_NAME,
             Key: {},
             UpdateExpression: "SET #A = :a",
+            ConditionExpression: "attribute_not_exists(#A)",
             ExpressionAttributeNames: { "#A": schema.ASSIGNMENTS },
             ExpressionAttributeValues: { ":a": participant.libs },
             ReturnValuesOnConditionCheckFailure: "ALL_OLD",

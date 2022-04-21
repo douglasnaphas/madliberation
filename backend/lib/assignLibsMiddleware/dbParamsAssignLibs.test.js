@@ -95,6 +95,7 @@ describe("assignLibsMiddleware/dbParamsAssignLibs", () => {
               TableName: schema.TABLE_NAME,
               Key: {},
               UpdateExpression: "SET #A = :a",
+              ConditionExpression: "attribute_not_exists(#A)",
               ExpressionAttributeNames: { "#A": schema.ASSIGNMENTS },
               ExpressionAttributeValues: {
                 ":a": res.locals.participants[0].libs,
@@ -177,6 +178,7 @@ describe("assignLibsMiddleware/dbParamsAssignLibs", () => {
               TableName: schema.TABLE_NAME,
               Key: {},
               UpdateExpression: "SET #A = :a",
+              ConditionExpression: "attribute_not_exists(#A)",
               ExpressionAttributeNames: { "#A": schema.ASSIGNMENTS },
               ExpressionAttributeValues: {
                 ":a": res.locals.participants[0].libs,
@@ -342,6 +344,7 @@ describe("assignLibsMiddleware/dbParamsAssignLibs", () => {
           TableName: schema.TABLE_NAME,
           Key: {},
           UpdateExpression: "SET #A = :a",
+          ConditionExpression: "attribute_not_exists(#A)",
           ExpressionAttributeNames: { "#A": schema.ASSIGNMENTS },
           ExpressionAttributeValues: { ":a": participant.libs },
           ReturnValuesOnConditionCheckFailure: "ALL_OLD",
@@ -553,6 +556,7 @@ describe("assignLibsMiddleware/dbParamsAssignLibs", () => {
           TableName: schema.TABLE_NAME,
           Key: {},
           UpdateExpression: "SET #A = :a",
+          ConditionExpression: "attribute_not_exists(#A)",
           ExpressionAttributeNames: { "#A": schema.ASSIGNMENTS },
           ExpressionAttributeValues: { ":a": participant.libs },
           ReturnValuesOnConditionCheckFailure: "ALL_OLD",

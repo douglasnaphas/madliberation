@@ -331,9 +331,11 @@ describe("assignLibsMiddleware/dbParamsAssignLibs", () => {
       roomCode;
     expectedDbParams[0].TransactItems[0].Update.Key[`${schema.SORT_KEY}`] =
       schema.SEDER_PREFIX;
-    const paramsNeeded = 1 + Math.floor(res.locals.participants.length / Configs.ITEMS_PER_TX());
-    // 1 participant -> 1 params obj; 10 -> 2; 19 -> 2; 20 -> 3
-    // 10 TransactItems are allowed per Dynamo transactWrite call
+    const paramsNeeded =
+      1 + Math.floor(res.locals.participants.length / Configs.ITEMS_PER_TX());
+    // 1 participant -> 1 params obj; 25 -> 2; 19 -> 1; 50 -> 3
+    // 25 TransactItems are allowed per Dynamo transactWrite call
+    // there is 1 of overhead in the first write
     for (let i = 1; i < paramsNeeded; i++) {
       expectedDbParams.push({ TransactItems: [] });
     }
@@ -543,9 +545,11 @@ describe("assignLibsMiddleware/dbParamsAssignLibs", () => {
       roomCode;
     expectedDbParams[0].TransactItems[0].Update.Key[`${schema.SORT_KEY}`] =
       schema.SEDER_PREFIX;
-    const paramsNeeded = 1 + Math.floor(res.locals.participants.length / Configs.ITEMS_PER_TX());
-    // 1 participant -> 1 params obj; 10 -> 2; 19 -> 2; 20 -> 3
-    // 10 TransactItems are allowed per Dynamo transactWrite call
+    const paramsNeeded =
+      1 + Math.floor(res.locals.participants.length / Configs.ITEMS_PER_TX());
+    // 1 participant -> 1 params obj; 25 -> 2; 19 -> 1; 50 -> 3
+    // 25 TransactItems are allowed per Dynamo transactWrite call
+    // there is 1 of overhead in the first write
     for (let i = 1; i < paramsNeeded; i++) {
       expectedDbParams.push({ TransactItems: [] });
     }
@@ -572,6 +576,256 @@ describe("assignLibsMiddleware/dbParamsAssignLibs", () => {
       expectedDbParams: expectedDbParams,
       expectNext: true,
     });
+  });
+  test("assign libs to 25 participants (2 transact-writes)", () => {
+    const roomCode = "AABBCC";
+    const req = {
+      body: {
+        roomCode: roomCode,
+      },
+    };
+    const res = {
+      locals: {
+        scriptVersion: "donotforgetthescriptversion",
+        participants: [
+          {
+            lib_id: "participant#111111111",
+            libs: [
+              { id: 1, prompt: "please lib" },
+              { id: 2, prompt: "no example, sentence, or default in this lib" },
+            ],
+          },
+          {
+            lib_id: "participant#2222222222",
+            libs: [
+              {
+                id: 3,
+                prompt: "this has all props",
+                sentence: "You are a _",
+                defaultAnswer: "some default",
+              },
+              {
+                id: 4,
+                prompt: "It will be",
+                sentence: "tiring as _",
+                defaultAnswer: "to enter all these participants",
+              },
+            ],
+          },
+          {
+            lib_id: "participant#333333333",
+            libs: [
+              {
+                id: 5,
+                prompt: "and libs",
+                sentence: "but oh _",
+                defaultAnswer: "it must be done",
+              },
+              { id: 6, prompt: "six" },
+            ],
+          },
+          {
+            lib_id: "participant#444444444",
+            libs: [
+              { id: 7, prompt: "sev" },
+              { id: 8, prompt: "one, I mean eight" },
+            ],
+          },
+          {
+            lib_id: "participant#55555",
+            libs: [
+              { id: 9, prompt: "nine" },
+              { id: 10, prompt: "ten" },
+            ],
+          },
+          {
+            lib_id: "participant#666666",
+            libs: [
+              { id: 11, prompt: "elves" },
+              { id: 12, prompt: "twelves" },
+            ],
+          },
+          {
+            lib_id: "participant#7777777",
+            libs: [
+              { id: 13, prompt: "dirty thirteen" },
+              { id: 14, prompt: "fuerte fourteen" },
+            ],
+          },
+          {
+            lib_id: "participant#8888888",
+            libs: [
+              { id: 15, prompt: "nyfty fyftyn" },
+              { id: 16, prompt: "gil faizan" },
+            ],
+          },
+          {
+            lib_id: "participant#9999999",
+            libs: [
+              { id: 17, prompt: "seventeen" },
+              { id: 18, prompt: "vote" },
+            ],
+          },
+          {
+            lib_id: "participant#1010101010",
+            libs: [
+              { id: 19, prompt: "betes" },
+              { id: 20, prompt: "rachel" },
+            ],
+          },
+          {
+            lib_id: "participant#11e11e11e",
+            libs: [{ id: 21, prompt: "boats" }],
+          },
+          {
+            lib_id: "participant#1212121212",
+            libs: [{ id: 22, prompt: "ships" }],
+          },
+          {
+            lib_id: "participant#1313131313",
+            libs: [
+              { id: 23, prompt: "shipsies" },
+              { id: 24, prompt: "running" },
+            ],
+          },
+          {
+            lib_id: "participant#1414141414",
+            libs: [
+              { id: 25, prompt: "fourteenth" },
+              { id: 26, prompt: "guy of 20" },
+            ],
+          },
+          {
+            lib_id: "participant#1515151515",
+            libs: [
+              { id: 27, prompt: "you know" },
+              { id: 28, prompt: "like 15" },
+            ],
+          },
+          {
+            lib_id: "participant#1616161616",
+            libs: [
+              { id: 29, prompt: "is fine" },
+              { id: 30, prompt: "any thing" },
+            ],
+          },
+          {
+            lib_id: "participant#1717171717",
+            libs: [
+              { id: 31, prompt: "package" },
+              { id: 32, prompt: "that" },
+            ],
+          },
+          {
+            lib_id: "participant#1818181818",
+            libs: [
+              { id: 33, prompt: "yum" },
+              { id: 34, prompt: "install" },
+            ],
+          },
+          {
+            lib_id: "participant#1919191919",
+            libs: [
+              { id: 35, prompt: "the 19th" },
+              { id: 36, prompt: "shall get the 36th" },
+            ],
+          },
+          {
+            lib_id: "participant#2020202020",
+            libs: [
+              { id: 37, prompt: "the 37th" },
+              { id: 38, prompt: "for the 20th" },
+            ],
+          },
+          {
+            lib_id: "participant#2121212121",
+            libs: [
+              { id: 39, prompt: "the 39th" },
+              { id: 40, prompt: "for the 20th" },
+            ],
+          },
+          {
+            lib_id: "participant#20000022222",
+            libs: [
+              { id: 41, prompt: "the 41st" },
+              { id: 42, prompt: "for the 20th" },
+            ],
+          },
+          {
+            lib_id: "participant#2323232323",
+            libs: [
+              { id: 43, prompt: "the 43rd" },
+              { id: 44, prompt: "for the 20th" },
+            ],
+          },
+          {
+            lib_id: "participant#2424242424",
+            libs: [
+              { id: 45, prompt: "the 45th" },
+              { id: 46, prompt: "for the 20th" },
+            ],
+          },
+          {
+            lib_id: "participant#2525252525",
+            libs: [
+              { id: 47, prompt: "the 47th" },
+              { id: 48, prompt: "for the 20th" },
+            ],
+          },
+        ],
+      },
+    };
+    const expectedDbParams = [];
+    expectedDbParams.push({
+      TransactItems: [
+        {
+          Update: {
+            TableName: schema.TABLE_NAME,
+            Key: {},
+            UpdateExpression: "SET #V = :v",
+            ExpressionAttributeNames: { "#V": schema.SCRIPT_VERSION },
+            ExpressionAttributeValues: { ":v": res.locals.scriptVersion },
+            ReturnValuesOnConditionCheckFailure: "ALL_OLD",
+          },
+        },
+      ],
+    });
+    expectedDbParams[0].TransactItems[0].Update.Key[`${schema.PARTITION_KEY}`] =
+      roomCode;
+    expectedDbParams[0].TransactItems[0].Update.Key[`${schema.SORT_KEY}`] =
+      schema.SEDER_PREFIX;
+    const paramsNeeded =
+      1 + Math.floor(res.locals.participants.length / Configs.ITEMS_PER_TX());
+    // 1 participant -> 1 params obj; 25 -> 2; 19 -> 1; 50 -> 3
+    // 25 TransactItems are allowed per Dynamo transactWrite call
+    // there is 1 of overhead in the first write
+    for (let i = 1; i < paramsNeeded; i++) {
+      expectedDbParams.push({ TransactItems: [] });
+    }
+    res.locals.participants.forEach((participant, index) => {
+      const paramsIndex = Math.floor((index + 1) / Configs.ITEMS_PER_TX());
+      const updateItem = {
+        Update: {
+          TableName: schema.TABLE_NAME,
+          Key: {},
+          UpdateExpression: "SET #A = :a",
+          ConditionExpression: "attribute_not_exists(#A)",
+          ExpressionAttributeNames: { "#A": schema.ASSIGNMENTS },
+          ExpressionAttributeValues: { ":a": participant.libs },
+          ReturnValuesOnConditionCheckFailure: "ALL_OLD",
+        },
+      };
+      updateItem.Update.Key[`${schema.PARTITION_KEY}`] = roomCode;
+      updateItem.Update.Key[`${schema.SORT_KEY}`] = participant.lib_id;
+      expectedDbParams[paramsIndex].TransactItems.push(updateItem);
+    });
+    runTest({
+      req: req,
+      res: res,
+      expectedDbParams: expectedDbParams,
+      expectNext: true,
+    });
+    expect(expectedDbParams.length).toEqual(2);
   });
   test("some participants have an empty libs array, skip them", () => {});
   test("some participants have no libs property, skip them", () => {});

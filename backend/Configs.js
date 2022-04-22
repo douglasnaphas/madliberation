@@ -97,7 +97,7 @@ class Configs {
   }
 
   static ITEMS_PER_TX() {
-    return 10;
+    return 25;
   }
 }
 

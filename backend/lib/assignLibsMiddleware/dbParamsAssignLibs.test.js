@@ -1,6 +1,6 @@
 /* globals expect */
 const dbParams = require("./dbParamsAssignLibs");
-const configs = require("../../Configs");
+const Configs = require("../../Configs");
 const schema = require("../../schema");
 const responses = require("../../responses");
 describe("assignLibsMiddleware/dbParamsAssignLibs", () => {
@@ -331,14 +331,14 @@ describe("assignLibsMiddleware/dbParamsAssignLibs", () => {
       roomCode;
     expectedDbParams[0].TransactItems[0].Update.Key[`${schema.SORT_KEY}`] =
       schema.SEDER_PREFIX;
-    const paramsNeeded = 1 + Math.floor(res.locals.participants.length / 10);
+    const paramsNeeded = 1 + Math.floor(res.locals.participants.length / Configs.ITEMS_PER_TX());
     // 1 participant -> 1 params obj; 10 -> 2; 19 -> 2; 20 -> 3
     // 10 TransactItems are allowed per Dynamo transactWrite call
     for (let i = 1; i < paramsNeeded; i++) {
       expectedDbParams.push({ TransactItems: [] });
     }
     res.locals.participants.forEach((participant, index) => {
-      const paramsIndex = Math.floor((index + 1) / 10);
+      const paramsIndex = Math.floor((index + 1) / Configs.ITEMS_PER_TX());
       const updateItem = {
         Update: {
           TableName: schema.TABLE_NAME,
@@ -543,14 +543,14 @@ describe("assignLibsMiddleware/dbParamsAssignLibs", () => {
       roomCode;
     expectedDbParams[0].TransactItems[0].Update.Key[`${schema.SORT_KEY}`] =
       schema.SEDER_PREFIX;
-    const paramsNeeded = 1 + Math.floor(res.locals.participants.length / 10);
+    const paramsNeeded = 1 + Math.floor(res.locals.participants.length / Configs.ITEMS_PER_TX());
     // 1 participant -> 1 params obj; 10 -> 2; 19 -> 2; 20 -> 3
     // 10 TransactItems are allowed per Dynamo transactWrite call
     for (let i = 1; i < paramsNeeded; i++) {
       expectedDbParams.push({ TransactItems: [] });
     }
     res.locals.participants.forEach((participant, index) => {
-      const paramsIndex = Math.floor((index + 1) / 10);
+      const paramsIndex = Math.floor((index + 1) / Configs.ITEMS_PER_TX());
       const updateItem = {
         Update: {
           TableName: schema.TABLE_NAME,

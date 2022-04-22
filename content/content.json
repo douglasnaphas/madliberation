@@ -132,7 +132,7 @@
     },
     {
       "haggadah_description": {
-        "S": "The latest script, from 2021."
+        "S": "The Haggadah of 2021, for video Seders."
       },
       "lib_id": {
         "S": "script#010"
@@ -155,9 +155,35 @@
       "script_number": {
         "N": "5"
       }
+    },
+    {
+      "haggadah_description": {
+        "S": "The latest Haggadah, from 2022. For in-person Seders."
+      },
+      "lib_id": {
+        "S": "script#011"
+      },
+      "haggadah_short_desc": {
+        "S": "2022 Script"
+      },
+      "room_code": {
+        "S": "script#AAAAAK"
+      },
+      "path": {
+        "S": "011-2022_Script"
+      },
+      "is_script": {
+        "N": "1"
+      },
+      "haggadah_name": {
+        "S": "0011 - 2022 Script"
+      },
+      "script_number": {
+        "N": "6"
+      }
     }
   ],
-  "Count": 6,
-  "ScannedCount": 6,
+  "Count": 7,
+  "ScannedCount": 7,
   "ConsumedCapacity": null
 }

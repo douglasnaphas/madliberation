@@ -95,6 +95,10 @@ class Configs {
   static roomCodeRetries() {
     return 10;
   }
+
+  static ITEMS_PER_TX() {
+    return 25;
+  }
 }
 
 module.exports = Configs;

@@ -16,6 +16,7 @@ function dbParams() {
   const schema = require("../../schema");
   const responses = require("../../responses");
   const Logger = require("../../lib/Logger");
+  const Configs = require("../../Configs");
   const middleware = (req, res, next) => {
     if (
       !req.body.roomCode ||
@@ -54,7 +55,8 @@ function dbParams() {
     res.locals.assignLibsDbParams[0].TransactItems[0].Update.Key[
       `${schema.SORT_KEY}`
     ] = schema.SEDER_PREFIX;
-    const paramsNeeded = 1 + Math.floor(res.locals.participants.length / 10);
+    const paramsNeeded =
+      1 + Math.floor(res.locals.participants.length / Configs.ITEMS_PER_TX());
     for (let i = 1; i < paramsNeeded; i++) {
       res.locals.assignLibsDbParams.push({ TransactItems: [] });
     }
@@ -74,7 +76,7 @@ function dbParams() {
         };
         updateItem.Update.Key[`${schema.PARTITION_KEY}`] = req.body.roomCode;
         updateItem.Update.Key[`${schema.SORT_KEY}`] = participant.lib_id;
-        const paramsIndex = Math.floor((index + 1) / 10);
+        const paramsIndex = Math.floor((index + 1) / Configs.ITEMS_PER_TX());
         res.locals.assignLibsDbParams[paramsIndex].TransactItems.push(
           updateItem
         );

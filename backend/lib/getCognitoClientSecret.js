@@ -1,4 +1,5 @@
 const Configs = require("../Configs");
+const Logger = require("../Logger");
 
 /**
  * @return middleware satisfying:
@@ -11,13 +12,14 @@ const Configs = require("../Configs");
  */
 function getCognitoClientSecret(awsSdk, local) {
   const middleware = async (req, res, next) => {
-    if(local && !res.locals[local]) return next();
+    if (local && !res.locals[local]) return next();
     const responses = require("../responses");
     const params = {
       ClientId: Configs.CognitoClientID(),
-      UserPoolId: Configs.CognitoUserPoolID()
+      UserPoolId: Configs.CognitoUserPoolID(),
     };
-    const cognitoidentityserviceprovider = new awsSdk.CognitoIdentityServiceProvider();
+    const cognitoidentityserviceprovider =
+      new awsSdk.CognitoIdentityServiceProvider();
 
     const response = await new Promise((resolve, reject) => {
       cognitoidentityserviceprovider.describeUserPoolClient(
@@ -33,11 +35,13 @@ function getCognitoClientSecret(awsSdk, local) {
       return next();
     }
     if (err) {
-      console.log("getCognitoClientSecret: error getting client secret");
-      console.log(err);
+      Logger.log({
+        message: "getCognitoClientSecret: error getting client secret",
+      });
+      Logger.log({ message: err });
       return res.status(500).send(responses.SERVER_ERROR);
     }
-    console.log("getCognitoClientSecret: no data, no error");
+    Logger.log({ message: "getCognitoClientSecret: no data, no error" });
     return res.status(500).send(responses.SERVER_ERROR);
   };
   return middleware;

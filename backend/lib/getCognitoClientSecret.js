@@ -1,5 +1,5 @@
 const Configs = require("../Configs");
-const Logger = require("../Logger");
+const Logger = require("../lib/Logger");
 
 /**
  * @return middleware satisfying:

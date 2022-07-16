@@ -9,7 +9,6 @@ import ListItem from "@mui/material/ListItem";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import ChevronRight from "@mui/icons-material/ChevronRight";
-import withStyles from "@mui/styles/withStyles";
 import StageDirection from "./StageDirection";
 import Answer from "./Answer";
 
@@ -158,4 +157,4 @@ class ExplainPage extends Component {
   }
 }
 
-export default withStyles(styles)(ExplainPage);
+export default ExplainPage;

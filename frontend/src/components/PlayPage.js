@@ -8,7 +8,7 @@ import Lib from "./Lib";
 import MenuAppBar from "./MenuAppBar";
 import React, { Component } from "react";
 import { Typography } from "@mui/material";
-import withStyles from "@mui/styles/withStyles";
+// import withStyles from "@mui/styles/withStyles";
 import YesSubmitLibsButtonWithRouter from "./YesSubmitLibsButtonWithRouter";
 
 const styles = (theme) => ({
@@ -247,4 +247,4 @@ class PlayPage extends Component {
     );
   }
 }
-export default withStyles(styles)(PlayPage);
+export default /*withStyles(styles)(*/PlayPage/*)*/;

@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import MenuAppBar from "./MenuAppBar";
-import withStyles from '@mui/styles/withStyles';
+// import withStyles from '@mui/styles/withStyles';
 
 const styles = (theme) => ({
   button: {
@@ -585,4 +585,4 @@ class TermsOfService extends Component {
   }
 }
 
-export default withStyles(styles)(TermsOfService);
+export default /*withStyles(styles)(*/TermsOfService/*)*/;

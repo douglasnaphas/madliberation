@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import { Button, Typography } from "@mui/material";
-import withStyles from "@mui/styles/withStyles";
+// import withStyles from "@mui/styles/withStyles";
 import RedSeaImage from "../background-red-sea.jpg";
 import MadLiberationLogo from "../mad-liberation-logo.png";
 import VeryAwesomePassoverLogo from "../VAPLogo-white.png";
@@ -181,4 +181,4 @@ HomePage.propTypes = {
   storage: PropTypes.shape({ removeItem: PropTypes.func }).isRequired,
 };
 
-export default withStyles(styles)(HomePage);
+export default /*withStyles(styles)(*/HomePage/*)*/;

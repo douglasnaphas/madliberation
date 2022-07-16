@@ -4,10 +4,7 @@ import MenuAppBar from "./MenuAppBar";
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { Typography } from "@mui/material";
-import withStyles from "@mui/styles/withStyles";
 import { Link } from "react-router-dom";
-
-const styles = (theme) => ({});
 
 class GeneratingRoomCodePage extends Component {
   constructor(props) {
@@ -112,4 +109,4 @@ GeneratingRoomCodePage.propTypes = {
   }),
 };
 
-export default withStyles(styles)(GeneratingRoomCodePage);
+export default GeneratingRoomCodePage;

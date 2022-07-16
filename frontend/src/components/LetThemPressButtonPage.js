@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 import MenuAppBar from "./MenuAppBar";
 import React, { Component } from "react";
 import { Typography } from "@mui/material";
-import withStyles from "@mui/styles/withStyles";
 
 const styles = (theme) => ({
   button: {
@@ -83,4 +82,4 @@ class LetThemPressButtonPage extends Component {
     );
   }
 }
-export default withStyles(styles)(LetThemPressButtonPage);
+export default LetThemPressButtonPage;

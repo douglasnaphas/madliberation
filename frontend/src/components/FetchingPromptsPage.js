@@ -3,7 +3,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 import MenuAppBar from "./MenuAppBar";
 import React, { Component } from "react";
 import { Typography } from "@mui/material";
-import withStyles from "@mui/styles/withStyles";
+// import withStyles from "@mui/styles/withStyles";
 
 const styles = (theme) => ({
   button: {
@@ -140,4 +140,4 @@ class FetchingPromptsPage extends Component {
     );
   }
 }
-export default withStyles(styles)(FetchingPromptsPage);
+export default /*withStyles(styles)(*/FetchingPromptsPage/*)*/;

@@ -6,14 +6,11 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import React from "react";
-import withStyles from "@mui/styles/withStyles";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
 import TableRow from "@mui/material/TableRow";
 import { Typography } from "@mui/material";
-
-const styles = (theme) => ({});
 
 let webSocket;
 class ReadRoster extends React.Component {
@@ -195,4 +192,4 @@ class ReadRoster extends React.Component {
   }
 }
 
-export default withStyles(styles)(ReadRoster);
+export default ReadRoster;

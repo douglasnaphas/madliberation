@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import MenuAppBar from "./MenuAppBar";
 import Typography from "@mui/material/Typography";
-import withStyles from '@mui/styles/withStyles';
 
 const styles = (theme) => ({
   button: {
@@ -55,4 +54,4 @@ class ContactUs extends Component {
   }
 }
 
-export default withStyles(styles)(ContactUs);
+export default ContactUs;

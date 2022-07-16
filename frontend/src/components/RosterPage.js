@@ -9,7 +9,6 @@ import TableCell from "@mui/material/TableCell";
 import TableRow from "@mui/material/TableRow";
 import ThatsEveryoneButtonWithRouter from "./ThatsEveryoneButtonWithRouter";
 import { Typography } from "@mui/material";
-import withStyles from "@mui/styles/withStyles";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
@@ -302,4 +301,4 @@ RosterPage.propTypes = {
   setChosenPath: PropTypes.func.isRequired,
 };
 
-export default withStyles(styles)(RosterPage);
+export default RosterPage;

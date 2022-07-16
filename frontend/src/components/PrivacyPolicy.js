@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import MenuAppBar from './MenuAppBar';
-import withStyles from '@mui/styles/withStyles';
 
 const styles = theme => ({
   button: {
@@ -4665,4 +4664,4 @@ class PrivacyPolicy extends Component {
   }
 }
 
-export default withStyles(styles)(PrivacyPolicy);
+export default PrivacyPolicy;

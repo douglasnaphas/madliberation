@@ -1,7 +1,6 @@
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import React from "react";
 import PropTypes from "prop-types";
-import withStyles from '@mui/styles/withStyles';
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
@@ -174,4 +173,4 @@ MenuAppBar.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(MenuAppBar);
+export default MenuAppBar;

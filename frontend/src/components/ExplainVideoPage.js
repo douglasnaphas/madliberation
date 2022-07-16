@@ -4,7 +4,6 @@ import MenuAppBar from "./MenuAppBar";
 import { Button } from "@mui/material";
 import { madLiberationStyles } from "../madLiberationStyles";
 import { Typography } from "@mui/material";
-import withStyles from '@mui/styles/withStyles';
 import StageDirection from "./StageDirection";
 
 const styles = () => {
@@ -144,4 +143,4 @@ class ExplainVideoPage extends Component {
   }
 }
 
-export default withStyles(styles)(ExplainVideoPage);
+export default ExplainVideoPage;

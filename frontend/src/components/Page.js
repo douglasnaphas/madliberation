@@ -2,7 +2,6 @@ import Button from "@mui/material/Button";
 import { madLiberationStyles } from "../madLiberationStyles";
 import React from "react";
 import { Typography } from "@mui/material";
-import withStyles from "@mui/styles/withStyles";
 import Answer from "./Answer";
 import StageDirection from "./StageDirection";
 
@@ -215,4 +214,4 @@ class Page extends React.Component {
     }
   }
 }
-export default withStyles(styles)(Page);
+export default Page;

@@ -8,7 +8,6 @@ import TableCell from '@mui/material/TableCell';
 import TableRow from '@mui/material/TableRow';
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
-import withStyles from '@mui/styles/withStyles';
 
 // takes in JSON collection of scripts, and a function it will call to set
 // its parent's state when a selection is made
@@ -117,4 +116,4 @@ ScriptTable.propTypes = {
   ).isRequired
 };
 
-export default withStyles(styles)(ScriptTable);
+export default ScriptTable;

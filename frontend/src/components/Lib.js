@@ -4,7 +4,6 @@ import Paper from '@mui/material/Paper';
 import React, { Component } from 'react';
 import TextField from '@mui/material/TextField';
 import { Typography } from '@mui/material';
-import withStyles from '@mui/styles/withStyles';
 
 const styles = theme => madLiberationStyles;
 
@@ -130,4 +129,4 @@ class Lib extends Component {
     );
   }
 }
-export default withStyles(styles)(Lib);
+export default Lib;

@@ -23,7 +23,6 @@
     "@emotion/styled": "^11.9.3",
     "@mui/icons-material": "^5.8.4",
     "@mui/material": "^5.9.0",
-    "@mui/styles": "^5.4.4",
     "acorn": "^7.4.1",
     "babel-preset-react-app": "^9.1.2",
     "browserslist": "^4.16.6",

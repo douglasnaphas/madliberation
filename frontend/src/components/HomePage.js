@@ -43,13 +43,13 @@ class HomePage extends Component {
     const { classes, user, setUser, storage } = this.props;
 
     return (
-      <div className={classes.homePageBackground}>
+      <div /* className={classes.homePageBackground}*/ >
         <div>
           <div>
             <img
               alt="Mad Liberation: Let My People LOL"
               src={MadLiberationLogo}
-              className={classes.madliberationLogo}
+              /* className={classes.madliberationLogo}*/ 
             />
           </div>
           <div>
@@ -93,7 +93,7 @@ class HomePage extends Component {
           <br />
           {!user && (
             <div id="login-container">
-              <a href={Configs.loginUrl()} className={classes.loginLink}>
+              <a href={Configs.loginUrl()} /* className={classes.loginLink}*/ >
                 <Button
                   madliberationid="login-button"
                   title="Log in"
@@ -162,7 +162,7 @@ class HomePage extends Component {
           <img
             alt="Very Awesome Passover"
             src={VeryAwesomePassoverLogo}
-            className={classes.veryAwesomePassoverLogo}
+            /* className={classes.veryAwesomePassoverLogo}*/ 
           />
           <br />
           <br />

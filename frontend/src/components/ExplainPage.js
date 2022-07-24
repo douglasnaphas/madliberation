@@ -25,13 +25,12 @@ const styles = () => {
 
 class ExplainPage extends Component {
   render() {
-    const { classes } = this.props;
     return (
       <div madliberationid="explain-page">
         <MenuAppBar />
         <div>
           <br />
-          <div className={classes.bordered}>
+          <div /*className={classes.bordered}*/>
             <Typography component="p" paragraph>
               <StageDirection>
                 Read this aloud to everyone at your seder to explain what's

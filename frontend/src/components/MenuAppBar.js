@@ -46,7 +46,7 @@ class MenuAppBar extends React.Component {
   };
 
   render() {
-    const { user, classes, confirmedRoomCode, confirmedGameName } = this.props;
+    const { user, /*classes,*/ confirmedRoomCode, confirmedGameName } = this.props;
     const { anchorEl, leftAnchorEl } = this.state;
     const open = Boolean(anchorEl);
     const leftOpen = Boolean(leftAnchorEl);
@@ -54,7 +54,7 @@ class MenuAppBar extends React.Component {
       <div>
         <IconButton
           madliberationid="app-bar-menu-icon-button"
-          className={classes.menuButton}
+          /*className={classes.menuButton}*/
           color="inherit"
           aria-label="Menu"
           onClick={this.handleLeftMenu}
@@ -152,11 +152,11 @@ class MenuAppBar extends React.Component {
     );
 
     return (
-      <div className={classes.root}>
+      <div /*className={classes.root}*/>
         <AppBar position="fixed">
           <Toolbar>
             {leftContent}
-            <Typography variant="h6" color="inherit" className={classes.grow}>
+            <Typography variant="h6" color="inherit" /* className={classes.grow}*/ >
               Mad Liberation
             </Typography>
             {rightContent}
@@ -170,7 +170,7 @@ class MenuAppBar extends React.Component {
 }
 
 MenuAppBar.propTypes = {
-  classes: PropTypes.object.isRequired,
+  classes: PropTypes.object,
 };
 
 export default MenuAppBar;

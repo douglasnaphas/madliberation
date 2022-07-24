@@ -34,7 +34,7 @@ class Answer extends Component {
     return (
       <span>
         <span
-          className={classes.answer}
+          /* className={classes.answer}*/ 
           onClick={this.handleClick}
           madliberationid={mlid}
           madliberationanswer="true"
@@ -42,7 +42,7 @@ class Answer extends Component {
           {children}
         </span>
         <Popover open={open} anchorEl={anchorEl} onClose={this.handleClose}>
-          <Typography className={classes.typography}>{prompt}</Typography>
+          <Typography /* className={classes.typography}*/ >{prompt}</Typography>
         </Popover>
       </span>
     );

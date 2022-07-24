@@ -75,7 +75,7 @@ class ScriptTable extends React.Component {
           <Button
             madliberationid="pick-this-script-button"
             variant="contained"
-            className={classes.button}
+            /* className={classes.button}*/ 
             component={Link}
             onClick={e => {
               setChosenPath(this.state.selectedScript.path);

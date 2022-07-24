@@ -19,13 +19,12 @@ const styles = () => {
 
 class ExplainVideoPage extends Component {
   render() {
-    const { classes } = this.props;
     return (
       <div madliberationid="explain-page">
         <MenuAppBar />
         <div>
           <br />
-          <div className={classes.bordered}>
+          <div /*className={classes.bordered}*/>
             <Typography variant="h1" component="h2" gutterBottom>
               Order! Order! Order!
             </Typography>

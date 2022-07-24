@@ -38,7 +38,7 @@ class Lib extends Component {
             Enter a word or phrase to replace...
           </Typography>
           <div>
-            <Paper className={classes.paper}>
+            <Paper /* className={classes.paper}*/ >
               <Typography variant="h5">
                 <label htmlFor={`prompt-${libIndex}`}>
                   {lib ? lib.prompt : ''}
@@ -60,7 +60,7 @@ class Lib extends Component {
               <br />
               <Typography component="span">
                 Your answer should complete the sentence:{' '}
-                <span className={classes.blueItalic}>
+                <span /* className={classes.blueItalic}*/ >
                   {lib.sentence.replace(/_/, '__')}
                 </span>
               </Typography>
@@ -73,7 +73,7 @@ class Lib extends Component {
               <br />
               <Typography component="span">
                 For example, you could write:{' '}
-                <span className={classes.blueItalic}>{lib.example}</span>
+                <span /* className={classes.blueItalic}*/ >{lib.example}</span>
               </Typography>
             </div>
           ) : (

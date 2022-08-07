@@ -12,6 +12,8 @@
     "test": "jest",
     "synth": "npx cdk synth --no-staging",
     "diff": "npx cdk diff",
+    "deploy-webapp": "bash scripts/deploy-webapp.sh",
+    "deploy-frontend": "bash scripts/deploy-frontend.sh",
     "itest": "bash scripts/itest.sh",
     "smoke": "bash scripts/smoke.sh"
   },

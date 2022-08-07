@@ -12,6 +12,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
+    "dev": "",
     "test": "react-scripts test --env=jsdom",
     "build": "react-scripts build",
     "audit-prod": "npm audit --production"

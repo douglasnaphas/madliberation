@@ -103,9 +103,7 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.TEST_AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: "us-east-1"
         run: |
-          npx cdk bootstrap
-          STACKNAME=$(npx @cdk-turnkey/stackname@1.2.0 --suffix webapp)
-          npx cdk deploy --require-approval never ${STACKNAME}
+          npm run deploy-webapp
 
       - name: Deploy to the frontend bucket (test account)
         env:
@@ -113,7 +111,7 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.TEST_AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: "us-east-1"
         run: |
-          bash scripts/deploy-frontend.sh
+          npm run deploy-frontend
 
       - name: Deploy content (test account)
         working-directory: content
@@ -122,7 +120,7 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.TEST_AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: "us-east-1"
         run: |
-          bash deploy-content.sh
+          npm run deploy
 
       - name: Install itest
         working-directory: itest
@@ -154,9 +152,7 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.PROD_AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: "us-east-1"
         run: |
-          npx cdk bootstrap
-          STACKNAME=$(npx @cdk-turnkey/stackname@1.2.0 --suffix webapp)
-          npx cdk deploy --require-approval never ${STACKNAME}
+          npm run deploy-webapp
 
       - name: Deploy to the frontend bucket (prod account)
         env:
@@ -164,7 +160,7 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.PROD_AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: "us-east-1"
         run: |
-          bash scripts/deploy-frontend.sh
+          npm run deploy-frontend
 
       - name: Deploy content (prod account)
         working-directory: content
@@ -173,7 +169,7 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.PROD_AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: "us-east-1"
         run: |
-          bash deploy-content.sh
+          npm run deploy
 
       - name: Run integration tests, prod account
         working-directory: scripts
@@ -200,9 +196,7 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.PROD2_AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: "us-east-1"
         run: |
-          npx cdk bootstrap
-          STACKNAME=$(npx @cdk-turnkey/stackname@1.2.0 --suffix webapp)
-          npx cdk deploy --require-approval never ${STACKNAME}
+          npm run deploy-webapp
 
       - name: Deploy to the frontend bucket (prod2 account)
         env:
@@ -210,7 +204,7 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.PROD2_AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: "us-east-1"
         run: |
-          bash scripts/deploy-frontend.sh
+          npm run deploy-frontend
 
       - name: Deploy content (prod2 account)
         working-directory: content
@@ -219,7 +213,7 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.PROD2_AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: "us-east-1"
         run: |
-          bash deploy-content.sh
+          npm run deploy
 
       - name: Run integration tests, prod2 account
         working-directory: scripts

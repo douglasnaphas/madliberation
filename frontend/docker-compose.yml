@@ -1,0 +1,25 @@
+version: '3'
+services:
+  frontend:
+    image: frontend
+    ports:
+      - 3002:3000
+    volumes:
+      - .:/app
+  backend0:
+    image: nginx
+    ports:
+      - 3003:80
+    volumes:
+      - ./backend:/usr/share/nginx/html
+  revprox:
+    image: nginx
+    ports:
+      - 3004:80
+      - 3005:8081
+    volumes:
+      - ./revprox/0:/usr/share/nginx/html/0
+      - ./revprox/1/index.html:/usr/share/nginx/html/1/index.html
+      - ./revprox/revprox.conf:/etc/nginx/conf.d/revprox.conf
+
+  

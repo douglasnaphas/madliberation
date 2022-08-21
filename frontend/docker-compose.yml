@@ -18,10 +18,13 @@ services:
       - 3004:80
       - 3005:8081
       - 3006:8082
+      - 443:8082
     volumes:
       - ./revprox/0:/usr/share/nginx/html/0
       - ./revprox/1/index.html:/usr/share/nginx/html/1/index.html
       - ./revprox/revprox.conf:/etc/nginx/conf.d/revprox.conf
       - ./revprox/revprox2.conf:/etc/nginx/conf.d/revprox2.conf
+      - ./localhost.pem:/etc/ssl/localhost.pem
+      - ./localhost-key.pem:/etc/ssl/localhost-key.pem
 
   

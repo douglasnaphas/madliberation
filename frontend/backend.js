@@ -13,6 +13,13 @@ const server = http.createServer((req, res) => {
 				product_name: "NginX injector",
 			})
 		);
+	} else if (urlPath === "/prod/room-code" || urlPath === "/prod/room-code/") {
+		res.writeHead(200, { "Content-Type": "application/json" });
+		res.end(
+			JSON.stringify({
+				"roomCode": "LOLCAL"
+			})
+		);
 	} else {
 		console.log("backend.js got a request");
 		res.end("Successfully started a server");

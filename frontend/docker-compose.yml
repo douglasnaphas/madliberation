@@ -12,6 +12,14 @@ services:
       - 3003:80
     volumes:
       - ./backend:/usr/share/nginx/html
+      # - ./backend.conf:/etc/nginx/conf.d/backend.conf
+  backend-posts:
+    image: node
+    ports:
+      - 3008:3007
+    volumes:
+      - ./backend.js:/backend.js
+    command: node /backend.js
   revprox:
     image: nginx
     ports:

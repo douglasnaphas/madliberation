@@ -13,6 +13,14 @@ services:
     volumes:
       - ./backend.js:/backend.js
     command: node /backend.js
+  ws:
+    image: node
+    volumes:
+      - ./ws.js:/ws.js
+      - ./run-ws.sh:/run-ws.sh
+      - ./localhost.pem:/etc/ssl/localhost.pem
+      - ./localhost-key.pem:/etc/ssl/localhost-key.pem
+    command: bash /run-ws.sh
   revprox:
     image: nginx
     ports:

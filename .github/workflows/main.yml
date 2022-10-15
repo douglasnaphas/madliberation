@@ -6,6 +6,28 @@ on:
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 jobs:
+  create-a:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create file
+        run: |
+          echo -n 'the date is: ' >> a.txt
+          date >> a.txt
+      - name: Save a.txt
+        uses: actions/upload-artifact@v3
+        with:
+          name: the_file_a.txt
+          path: a.txt
+  consume-a:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get the_file_a.txt from a previous job
+        uses: actions/download-artifact@v3
+        with:
+          name: the_file_a.txt
+      - name: Display the file from a previous job
+        run: |
+          ls -a
   build:
     runs-on: ubuntu-latest
     steps:

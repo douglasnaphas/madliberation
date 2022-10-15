@@ -29,6 +29,7 @@ jobs:
       - name: Display the file from a previous job
         run: |
           ls -a
+          cat a.txt
   build:
     runs-on: ubuntu-latest
     steps:

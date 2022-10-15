@@ -19,6 +19,7 @@ jobs:
           name: the_file_a.txt
           path: a.txt
   consume-a:
+    needs: create-a
     runs-on: ubuntu-latest
     steps:
       - name: Get the_file_a.txt from a previous job

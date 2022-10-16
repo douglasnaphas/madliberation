@@ -213,3 +213,45 @@ jobs:
           AWS_REGION: "us-east-1"
         run: |
           npm run itest
+  deploy-test:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: placeholder
+        run: |
+          true
+  itest-test:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: placeholder
+        run: |
+          true
+  deploy-prod:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: placeholder
+        run: |
+          true
+  itest-prod:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: placeholder
+        run: |
+          true
+  deploy-prod2:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: placeholder
+        run: |
+          true
+  itest-prod2:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: placeholder
+        run: |
+          true

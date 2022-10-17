@@ -207,7 +207,7 @@ jobs:
         run: |
           true
   deploy-prod:
-    needs: build
+    needs: itest-test
     runs-on: ubuntu-latest
     steps:
       - name: placeholder
@@ -232,7 +232,7 @@ jobs:
         run: |
           npm run itest
   deploy-prod2:
-    needs: build
+    needs: itest-test
     runs-on: ubuntu-latest
     steps:
       - name: placeholder

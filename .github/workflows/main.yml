@@ -221,7 +221,7 @@ jobs:
         run: |
           true
   itest-test:
-    needs: build
+    needs: deploy-test
     runs-on: ubuntu-latest
     steps:
       - name: placeholder
@@ -235,7 +235,7 @@ jobs:
         run: |
           true
   itest-prod:
-    needs: build
+    needs: deploy-prod
     runs-on: ubuntu-latest
     steps:
       - name: placeholder
@@ -249,7 +249,7 @@ jobs:
         run: |
           true
   itest-prod2:
-    needs: build
+    needs: deploy-prod2
     runs-on: ubuntu-latest
     steps:
       - name: placeholder

@@ -117,7 +117,6 @@ jobs:
           npm install
 
       - name: Run integration tests, test account
-        working-directory: scripts
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.TEST_AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.TEST_AWS_SECRET_ACCESS_KEY }}
@@ -248,7 +247,6 @@ jobs:
         run: |
           npm install
       - name: Run integration tests, prod2 account
-        working-directory: scripts
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.PROD2_AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.PROD2_AWS_SECRET_ACCESS_KEY }}

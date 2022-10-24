@@ -27,3 +27,6 @@ cdk.out
 .vscode
 
 itest/screenlog*
+
+# mkcert
+*.pem

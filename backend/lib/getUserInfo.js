@@ -1,3 +1,4 @@
+const logger = require("../logger");
 /**
  * @return middleware satisfying:
  *   pre: res.locals.id_token is set to a JWT
@@ -7,20 +8,20 @@
 const getUserInfo = (jwt) => {
   const middleware = (req, res, next) => {
     try {
-      console.log("******** getUserInfo: id_token *********");
-      console.log(res.locals.id_token);
+      logger.log("******** getUserInfo: id_token *********");
+      logger.log(res.locals.id_token);
       const decodedJot = jwt.decode(res.locals.id_token, { complete: true });
-      console.log("********* getUserInfo: decodedJot:");
-      console.log(decodedJot);
+      logger.log("********* getUserInfo: decodedJot:");
+      logger.log(decodedJot);
       res.locals.nickname = decodedJot.payload.nickname;
       res.locals.email = decodedJot.payload.email;
       res.locals.sub = decodedJot.payload.sub;
       res.locals["cognito:username"] = decodedJot.payload["cognito:username"];
     } catch (err) {
-      console.log(
+      logger.log(
         "getUserInfo: unable to get nickname/email/sub/" + "cognito:username"
       );
-      console.log(err);
+      logger.log(err);
       return res.sendStatus(500);
     }
     if (
@@ -29,13 +30,13 @@ const getUserInfo = (jwt) => {
       !res.locals.sub ||
       !res.locals["cognito:username"]
     ) {
-      console.log(
+      logger.log(
         "getUserInfo: invalid nickname, email, sub, or " + "cognito:username:"
       );
-      console.log(res.locals.nickname);
-      console.log(res.locals.email);
-      console.log(res.locals.sub);
-      console.log(res.locals["cognito:username"]);
+      logger.log(res.locals.nickname);
+      logger.log(res.locals.email);
+      logger.log(res.locals.sub);
+      logger.log(res.locals["cognito:username"]);
       return res.sendStatus(500);
     }
     return next();

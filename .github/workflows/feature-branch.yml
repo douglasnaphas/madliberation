@@ -33,6 +33,7 @@ jobs:
         working-directory: frontend-plan-seder
         run: |
           npx next build
+          ls
 
       - name: Install backend
         working-directory: backend

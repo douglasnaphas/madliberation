@@ -47,7 +47,8 @@ jobs:
         run: |
           npm test
 
-      - name: Build
+      - name: Build infra
+        working-directory: infra
         run: |
           npm run build
 

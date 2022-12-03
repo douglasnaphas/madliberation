@@ -28,7 +28,7 @@ import {
 } from "aws-cdk-lib/aws-lambda-event-sources";
 import * as apigwv2 from "@aws-cdk/aws-apigatewayv2-alpha";
 import * as apigwv2i from "@aws-cdk/aws-apigatewayv2-integrations-alpha";
-const schema = require("../backend/schema");
+const schema = require("../../backend/schema");
 
 export interface MadLiberationWebappProps extends StackProps {
   fromAddress?: string;

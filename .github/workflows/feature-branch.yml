@@ -34,6 +34,7 @@ jobs:
         run: |
           npx next build
           ls
+          ls pages
 
       - name: Install backend
         working-directory: backend

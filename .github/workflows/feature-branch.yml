@@ -24,6 +24,11 @@ jobs:
         run: |
           npm install
 
+      - name: Install frontend-plan
+        working-directory: frontend-plan-seder
+        run: |
+          npm install
+
       - name: Install backend
         working-directory: backend
         run: |

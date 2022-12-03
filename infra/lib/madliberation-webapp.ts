@@ -331,7 +331,7 @@ export class MadliberationWebapp extends Stack {
     const backendHandler = new lambda.Function(this, "BackendHandler", {
       runtime: lambda.Runtime.NODEJS_14_X,
       handler: "index.handler",
-      code: lambda.Code.fromAsset("backend"),
+      code: lambda.Code.fromAsset("../backend"),
       memorySize: 3000,
       environment: {
         NODE_ENV: "production",
@@ -436,7 +436,7 @@ export class MadliberationWebapp extends Stack {
       new lambda.Function(this, `${prefix.replace(/-/g, "")}Handler`, {
         runtime: lambda.Runtime.NODEJS_14_X,
         handler: `${prefix.toLowerCase()}.handler`,
-        code: lambda.Code.fromAsset("backend"),
+        code: lambda.Code.fromAsset("../backend"),
         memorySize: 3000,
         environment: {
           NODE_ENV: "production",

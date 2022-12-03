@@ -15,7 +15,8 @@ jobs:
           submodules: true
           persist-credentials: false
 
-      - name: Install
+      - name: Install infra
+        working-directory: infra
         run: |
           npm install
 

@@ -17,7 +17,7 @@ const styles = {
   ".hotPinkText": {
     color: "hotpink !important",
   },
-  homePageBackground: {
+  ".homePageBackground": {
     backgroundImage: `url(${RedSeaImage})`,
     minHeight: "100%",
     width: "100%",
@@ -28,13 +28,13 @@ const styles = {
     backgroundPosition: "center",
     backgroundSize: "cover",
   },
-  madliberationLogo: {
+  ".madliberationLogo": {
     height: "200px",
   },
-  veryAwesomePassoverLogo: {
+  ".veryAwesomePassoverLogo": {
     height: "70px",
   },
-  loginLink: {
+  ".loginLink": {
     textDecoration: "none",
     color: "black",
   },
@@ -72,7 +72,7 @@ class HomePage extends Component {
               <img
                 alt="Mad Liberation: Let My People LOL"
                 src={MadLiberationLogo}
-                /* className={classes.madliberationLogo}*/
+                className="madliberationLogo"
               />
             </div>
             <div>
@@ -116,7 +116,7 @@ class HomePage extends Component {
             <br />
             {!user && (
               <div id="login-container">
-                <a href={Configs.loginUrl()} /* className={classes.loginLink}*/>
+                <a href={Configs.loginUrl()} className="loginLink">
                   <Button
                     madliberationid="login-button"
                     title="Log in"
@@ -185,7 +185,7 @@ class HomePage extends Component {
             <img
               alt="Very Awesome Passover"
               src={VeryAwesomePassoverLogo}
-              /* className={classes.veryAwesomePassoverLogo}*/
+              className="veryAwesomePassoverLogo"
             />
             <br />
             <br />

@@ -60,5 +60,5 @@ then
 else
   SLOW_ARG=
 fi
-node itest/Smoke.cjs \
+node Smoke.cjs \
   --site ${APP_URL} ${SLOW_ARG}

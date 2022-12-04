@@ -82,7 +82,7 @@ then
 else
   SLOW_ARG=
 fi
-node itest/App.itest.cjs \
+node App.itest.cjs \
   --site ${APP_URL} \
   --idp-url "${IDP_URL}" \
   --user-pool-id ${USER_POOL_ID} ${SLOW_ARG}

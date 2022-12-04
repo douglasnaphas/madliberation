@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import { Button, Typography } from "@mui/material";
 // import withStyles from "@mui/styles/withStyles";
+import { Global, css } from "@emotion/react";
 import RedSeaImage from "../background-red-sea.jpg";
 import MadLiberationLogo from "../mad-liberation-logo.png";
 import VeryAwesomePassoverLogo from "../VAPLogo-white.png";
@@ -43,13 +44,30 @@ class HomePage extends Component {
     const { classes, user, setUser, storage } = this.props;
 
     return (
-      <div /* className={classes.homePageBackground}*/ >
+      <div /* className={classes.homePageBackground}*/>
+        <div>
+          <Global
+            styles={css`
+              .some-class {
+                color: hotpink !important;
+              }
+            `}
+          />
+          <Global
+            styles={{
+              ".some-class": {
+                fontSize: 50,
+                textAlign: "center",
+              },
+            }}
+          />
+        </div>
         <div>
           <div>
             <img
               alt="Mad Liberation: Let My People LOL"
               src={MadLiberationLogo}
-              /* className={classes.madliberationLogo}*/ 
+              /* className={classes.madliberationLogo}*/
             />
           </div>
           <div>
@@ -93,7 +111,7 @@ class HomePage extends Component {
           <br />
           {!user && (
             <div id="login-container">
-              <a href={Configs.loginUrl()} /* className={classes.loginLink}*/ >
+              <a href={Configs.loginUrl()} /* className={classes.loginLink}*/>
                 <Button
                   madliberationid="login-button"
                   title="Log in"
@@ -162,7 +180,7 @@ class HomePage extends Component {
           <img
             alt="Very Awesome Passover"
             src={VeryAwesomePassoverLogo}
-            /* className={classes.veryAwesomePassoverLogo}*/ 
+            /* className={classes.veryAwesomePassoverLogo}*/
           />
           <br />
           <br />
@@ -181,4 +199,4 @@ HomePage.propTypes = {
   storage: PropTypes.shape({ removeItem: PropTypes.func }).isRequired,
 };
 
-export default /*withStyles(styles)(*/HomePage/*)*/;
+export default /*withStyles(styles)(*/ HomePage /*)*/;

@@ -11,8 +11,7 @@ import { madLiberationStyles } from "../madLiberationStyles";
 import Paper from "@mui/material/Paper";
 import PropTypes from "prop-types";
 
-const styles = () => {
-  return {
+const styles = {
     ...madLiberationStyles,
     homePageBackground: {
       backgroundImage: `url(${RedSeaImage})`,
@@ -35,7 +34,6 @@ const styles = () => {
       textDecoration: "none",
       color: "black",
     },
-  };
 };
 
 class HomePage extends Component {
@@ -47,19 +45,7 @@ class HomePage extends Component {
       <div /* className={classes.homePageBackground}*/>
         <div>
           <Global
-            styles={css`
-              .some-class {
-                color: hotpink !important;
-              }
-            `}
-          />
-          <Global
-            styles={{
-              ".some-class": {
-                fontSize: 50,
-                textAlign: "center",
-              },
-            }}
+            styles
           />
         </div>
         <div>

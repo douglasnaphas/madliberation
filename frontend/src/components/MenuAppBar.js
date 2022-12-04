@@ -1,3 +1,4 @@
+/** @jsxImportSource @emotion/react */
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import React from "react";
 import PropTypes from "prop-types";
@@ -9,15 +10,16 @@ import { Link } from "react-router-dom";
 import MenuIcon from "@mui/icons-material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import Menu from "@mui/material/Menu";
+import { Global, css } from "@emotion/react";
 
 const styles = {
-  root: {
+  ".root": {
     flexGrow: 1,
   },
-  grow: {
+  ".grow": {
     flexGrow: 1,
   },
-  menuButton: {
+  ".menuButton": {
     marginLeft: -12,
     marginRight: 20,
   },
@@ -46,7 +48,7 @@ class MenuAppBar extends React.Component {
   };
 
   render() {
-    const { user, /*classes,*/ confirmedRoomCode, confirmedGameName } = this.props;
+    const { user, confirmedRoomCode, confirmedGameName } = this.props;
     const { anchorEl, leftAnchorEl } = this.state;
     const open = Boolean(anchorEl);
     const leftOpen = Boolean(leftAnchorEl);
@@ -54,11 +56,12 @@ class MenuAppBar extends React.Component {
       <div>
         <IconButton
           madliberationid="app-bar-menu-icon-button"
-          /*className={classes.menuButton}*/
+          className="menuButton"
           color="inherit"
           aria-label="Menu"
           onClick={this.handleLeftMenu}
-          size="large">
+          size="large"
+        >
           <MenuIcon />
         </IconButton>
         <Menu
@@ -128,7 +131,8 @@ class MenuAppBar extends React.Component {
           aria-haspopup="true"
           onClick={this.handleMenu}
           color="inherit"
-          size="large">
+          size="large"
+        >
           <AccountCircle />
         </IconButton>
         {user.nickname}
@@ -152,18 +156,23 @@ class MenuAppBar extends React.Component {
     );
 
     return (
-      <div /*className={classes.root}*/>
-        <AppBar position="fixed">
-          <Toolbar>
-            {leftContent}
-            <Typography variant="h6" color="inherit" /* className={classes.grow}*/ >
-              Mad Liberation
-            </Typography>
-            {rightContent}
-          </Toolbar>
-        </AppBar>
-        <br />
-        <br />
+      <div>
+        <div>
+          <Global styles={styles} />
+        </div>
+        <div className="root">
+          <AppBar position="fixed">
+            <Toolbar>
+              {leftContent}
+              <Typography variant="h6" color="inherit" className="grow">
+                Mad Liberation
+              </Typography>
+              {rightContent}
+            </Toolbar>
+          </AppBar>
+          <br />
+          <br />
+        </div>
       </div>
     );
   }

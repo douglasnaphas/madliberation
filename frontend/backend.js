@@ -20,6 +20,15 @@ const server = http.createServer((req, res) => {
 				"roomCode": "LOLCAL"
 			})
 		);
+	} else if (urlPath === "/prod/join-seder" || urlPath === "/prod/join-seder/") {
+		res.writeHead(200, { "Content-Type": "application/json" });
+		res.end(
+			JSON.stringify({
+				"gameName":"Locala",
+				"roomCode":"LOLCAL",
+				"result":"success"
+			})
+		);
 	} else {
 		console.log("backend.js got a request");
 		res.end("Successfully started a server");

@@ -1,3 +1,4 @@
+/** @jsxImportSource @emotion/react */
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import { Button, Typography } from "@mui/material";
@@ -14,7 +15,7 @@ import PropTypes from "prop-types";
 const styles = {
   ...madLiberationStyles,
   ".hotPinkText": {
-    color: "hotpink !important"
+    color: "hotpink !important",
   },
   homePageBackground: {
     backgroundImage: `url(${RedSeaImage})`,
@@ -47,15 +48,23 @@ class HomePage extends Component {
     return (
       <div /* className={classes.homePageBackground}*/>
         <div>
-          <Global styles />
+          <Global styles={styles} />
         </div>
         <div>
-          <h1 className="hotPinkText">
-            Testing CSS
-          </h1>
-          <h2 css={css`
-            color: red
-          `}>Testing CSS 2</h2>
+          <h1 className="hotPinkText">Testing CSS</h1>
+          <div
+            css={css`
+              color: #20b2aa;
+            `}
+          >
+            <h2
+              css={css`
+                color: #20b2aa;
+              `}
+            >
+              Testing CSS 2
+            </h2>
+          </div>
         </div>
         <div className="homePageBackground">
           <div>

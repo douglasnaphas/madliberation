@@ -1,6 +1,8 @@
-import React, { Component } from 'react';
-import Popover from '@mui/material/Popover';
-import { Typography } from '@mui/material';
+/** @jsxImportSource @emotion/react */
+import React, { Component } from "react";
+import Popover from "@mui/material/Popover";
+import { Typography } from "@mui/material";
+import { Global, css } from "@emotion/react";
 // TODO: Use styled components or the makeStyles hook instead of withStyles,
 // or forego the custom formatting here
 // import withStyles from '@mui/styles/withStyles';
@@ -16,11 +18,19 @@ import { Typography } from '@mui/material';
 //   }
 // });
 
+const styles = {
+  ".answer": {
+    paddingLeft: "4px",
+    paddingRight: "4px",
+    backgroundColor: "lightgray",
+  },
+};
+
 class Answer extends Component {
   state = {
-    anchorEl: null
+    anchorEl: null,
   };
-  handleClick = event => {
+  handleClick = (event) => {
     this.setState({ anchorEl: event.currentTarget });
   };
   handleClose = () => {
@@ -34,7 +44,12 @@ class Answer extends Component {
     return (
       <span>
         <span
-          /* className={classes.answer}*/ 
+          /* className={classes.answer}*/
+          css={css`
+            padding-left: 4px;
+            padding-right: 4px;
+            background-color: lightgray;
+          `}
           onClick={this.handleClick}
           madliberationid={mlid}
           madliberationanswer="true"
@@ -42,7 +57,7 @@ class Answer extends Component {
           {children}
         </span>
         <Popover open={open} anchorEl={anchorEl} onClose={this.handleClose}>
-          <Typography /* className={classes.typography}*/ >{prompt}</Typography>
+          <Typography /* className={classes.typography}*/>{prompt}</Typography>
         </Popover>
       </span>
     );

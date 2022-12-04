@@ -46,7 +46,7 @@ class HomePage extends Component {
     const { classes, user, setUser, storage } = this.props;
 
     return (
-      <div /* className={classes.homePageBackground}*/>
+      <div>
         <div>
           <Global styles={styles} />
         </div>

@@ -2,7 +2,6 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import { Button, Typography } from "@mui/material";
-// import withStyles from "@mui/styles/withStyles";
 import { Global, css } from "@emotion/react";
 import RedSeaImage from "../background-red-sea.jpg";
 import MadLiberationLogo from "../mad-liberation-logo.png";

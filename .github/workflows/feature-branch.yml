@@ -93,6 +93,7 @@ jobs:
           echo ${AWS_DEFAULT_REGION} | sed 's/-/+/g'
 
       - name: Deploy the webapp stack to dev account
+        working-directory: infra
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.DEV_AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.DEV_AWS_SECRET_ACCESS_KEY }}
@@ -101,12 +102,13 @@ jobs:
           npm run deploy-webapp
 
       - name: Deploy to the frontend bucket (dev account)
+        working-directory: frontend
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.DEV_AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.DEV_AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: "us-east-1"
         run: |
-          npm run deploy-frontend
+          npm run deploy
 
       - name: Deploy content (dev account)
         working-directory: content
@@ -123,6 +125,7 @@ jobs:
           npm install
 
       - name: Run smoke test (dev account)
+        working-directory: itest
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.DEV_AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.DEV_AWS_SECRET_ACCESS_KEY }}

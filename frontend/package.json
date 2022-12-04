@@ -16,7 +16,8 @@
     "dev-stop": "docker-compose down",
     "test": "react-scripts test --env=jsdom",
     "build": "react-scripts build",
-    "audit-prod": "npm audit --production"
+    "audit-prod": "npm audit --production",
+    "deploy": "bash scripts/deploy-frontend.sh"
   },
   "dependencies": {
     "@emotion/react": "^11.9.3",

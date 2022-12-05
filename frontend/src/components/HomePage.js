@@ -13,9 +13,6 @@ import PropTypes from "prop-types";
 
 const styles = {
   ...madLiberationStyles,
-  ".hotPinkText": {
-    color: "hotpink !important",
-  },
   ".homePageBackground": {
     backgroundImage: `url(${RedSeaImage})`,
     minHeight: "100%",
@@ -48,22 +45,6 @@ class HomePage extends Component {
       <div>
         <div>
           <Global styles={styles} />
-        </div>
-        <div>
-          <h1 className="hotPinkText">Testing CSS</h1>
-          <div
-            css={css`
-              color: #20b2aa;
-            `}
-          >
-            <h2
-              css={css`
-                color: #20b2aa;
-              `}
-            >
-              Testing CSS 2
-            </h2>
-          </div>
         </div>
         <div className="homePageBackground">
           <div>

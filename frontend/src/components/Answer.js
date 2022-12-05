@@ -57,7 +57,12 @@ class Answer extends Component {
           {children}
         </span>
         <Popover open={open} anchorEl={anchorEl} onClose={this.handleClose}>
-          <Typography /* className={classes.typography}*/>{prompt}</Typography>
+          <Typography css={css`
+            margin-block-start: 8px;
+            margin-block-end: 8px;
+            margin-inline-start: 8px;
+            margin-inline-end: 8px;
+          `}>{prompt}</Typography>
         </Popover>
       </span>
     );

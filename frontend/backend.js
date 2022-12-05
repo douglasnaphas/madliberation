@@ -29,6 +29,20 @@ const server = http.createServer((req, res) => {
 				"result":"success"
 			})
 		);
+	} else if (urlPath === "/prod/close-seder" || urlPath === "/prod/close-seder/") {
+		res.writeHead(200, {"Content-Type": "application/json"});
+		res.end(
+			JSON.stringify({
+				result: "success"
+			})
+		);
+	} else if (urlPath === "/prod/submit-libs" || urlPath === "/prod/submit-libs/") {
+		res.writeHead(200, { "Content-Type": "application/json" });
+		res.end(
+			JSON.stringify({
+				result: "ok"
+			})
+		);
 	} else {
 		console.log("backend.js got a request");
 		res.end("Successfully started a server");

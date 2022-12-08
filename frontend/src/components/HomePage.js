@@ -39,7 +39,7 @@ const styles = {
 class HomePage extends Component {
   state = { logoutClicked: false };
   render() {
-    const { classes, user, setUser, storage } = this.props;
+    const { user, setUser, storage } = this.props;
 
     return (
       <div>
@@ -185,4 +185,4 @@ HomePage.propTypes = {
   storage: PropTypes.shape({ removeItem: PropTypes.func }).isRequired,
 };
 
-export default /*withStyles(styles)(*/ HomePage /*)*/;
+export default HomePage;

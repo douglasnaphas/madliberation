@@ -2,29 +2,7 @@
 import React, { Component } from "react";
 import Popover from "@mui/material/Popover";
 import { Typography } from "@mui/material";
-import { Global, css } from "@emotion/react";
-// TODO: Use styled components or the makeStyles hook instead of withStyles,
-// or forego the custom formatting here
-// import withStyles from '@mui/styles/withStyles';
-
-// const styles = theme => ({
-//   typography: {
-//     margin: theme.spacing(1)
-//   },
-//   answer: {
-//     paddingLeft: '4px',
-//     paddingRight: '4px',
-//     backgroundColor: 'lightgray'
-//   }
-// });
-
-const styles = {
-  ".answer": {
-    paddingLeft: "4px",
-    paddingRight: "4px",
-    backgroundColor: "lightgray",
-  },
-};
+import { css } from "@emotion/react";
 
 class Answer extends Component {
   state = {
@@ -37,14 +15,13 @@ class Answer extends Component {
     this.setState({ anchorEl: null });
   };
   render() {
-    const { children, prompt, classes, mlid } = this.props;
+    const { children, prompt, mlid } = this.props;
     const { anchorEl } = this.state;
     const open = Boolean(anchorEl);
 
     return (
       <span>
         <span
-          /* className={classes.answer}*/
           css={css`
             padding-left: 4px;
             padding-right: 4px;

@@ -5,17 +5,7 @@ import { Button } from "@mui/material";
 import { madLiberationStyles } from "../madLiberationStyles";
 import { Typography } from "@mui/material";
 import StageDirection from "./StageDirection";
-
-const styles = () => {
-  return {
-    bordered: {
-      paddingRight: "20px",
-      paddingLeft: "20px",
-      paddingTop: "10px",
-      paddingBottom: "10px",
-    },
-  };
-};
+import { css } from "@emotion/react";
 
 class ExplainVideoPage extends Component {
   render() {
@@ -24,7 +14,14 @@ class ExplainVideoPage extends Component {
         <MenuAppBar />
         <div>
           <br />
-          <div /*className={classes.bordered}*/>
+          <div
+            css={css`
+              padding-right: 20px;
+              padding-left: 20px;
+              padding-top: 10px;
+              padding-bottom: 10px;
+            `}
+          >
             <Typography variant="h1" component="h2" gutterBottom>
               Order! Order! Order!
             </Typography>

@@ -2,15 +2,6 @@ import React, { Component } from "react";
 import MenuAppBar from "./MenuAppBar";
 import Typography from "@mui/material/Typography";
 
-const styles = (theme) => ({
-  button: {
-    margin: theme.spacing(1),
-  },
-  input: {
-    display: "none",
-  },
-});
-
 class ContactUs extends Component {
   render() {
     return (

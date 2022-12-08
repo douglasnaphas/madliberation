@@ -1,12 +1,18 @@
-import React, { Component } from 'react';
-import { madLiberationStyles } from '../madLiberationStyles';
+import React, { Component } from "react";
+import { css } from "@emotion/react";
 
 class StageDirection extends Component {
   render() {
     const { children, sayStageDirection } = this.props;
     return (
-      <span style={madLiberationStyles.boldItalicLightBlueBackground}>
-        {(sayStageDirection ? "[Don't read this]:" : '') + children}
+      <span
+        css={css`
+          background-color: lightblue;
+          font-style: italic;
+          font-weight: bold;
+        `}
+      >
+        {(sayStageDirection ? "[Don't read this]:" : "") + children}
       </span>
     );
   }

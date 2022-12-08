@@ -7,15 +7,6 @@ import { withRouter } from "react-router-dom";
 
 import { Configs } from "../Configs";
 
-const styles = (theme) => ({
-  button: {
-    margin: theme.spacing(1),
-  },
-  input: {
-    display: "none",
-  },
-});
-
 class EnterRoomCodePage extends Component {
   state = {
     tentativeRoomCode: false,

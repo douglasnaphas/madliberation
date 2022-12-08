@@ -137,7 +137,13 @@ class Page extends React.Component {
       if (line.type === "stageDirection") {
         lines.push(
           <Typography component="p" key={`line-${lineIndex}`}>
-            <span style={madLiberationStyles.boldItalicLightBlueBackground}>
+            <span
+              css={css`
+                background-color: lightblue;
+                font-style: italic;
+                font-weight: bold;
+              `}
+            >
               {segments}
             </span>
           </Typography>

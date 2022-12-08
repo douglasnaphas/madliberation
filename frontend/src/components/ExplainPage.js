@@ -11,17 +11,7 @@ import ListItemText from "@mui/material/ListItemText";
 import ChevronRight from "@mui/icons-material/ChevronRight";
 import StageDirection from "./StageDirection";
 import Answer from "./Answer";
-
-const styles = () => {
-  return {
-    bordered: {
-      paddingRight: "20px",
-      paddingLeft: "20px",
-      paddingTop: "10px",
-      paddingBottom: "10px",
-    },
-  };
-};
+import { css } from "@emotion/react";
 
 class ExplainPage extends Component {
   render() {
@@ -30,7 +20,12 @@ class ExplainPage extends Component {
         <MenuAppBar />
         <div>
           <br />
-          <div /*className={classes.bordered}*/>
+          <div css={css`
+            padding-right: 20px;
+            padding-left: 20px;
+            padding-top: 10px;
+            padding-bottom: 10px;
+          `}>
             <Typography component="p" paragraph>
               <StageDirection>
                 Read this aloud to everyone at your seder to explain what's

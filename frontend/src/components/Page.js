@@ -1,3 +1,4 @@
+/** @jsxImportSource @emotion/react */
 import Button from "@mui/material/Button";
 import { madLiberationStyles } from "../madLiberationStyles";
 import React from "react";

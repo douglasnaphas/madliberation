@@ -2,15 +2,6 @@ import React, { Component } from 'react';
 import MenuAppBar from './MenuAppBar';
 import { Typography } from '@mui/material';
 
-const styles = theme => ({
-  button: {
-    margin: theme.spacing(1)
-  },
-  input: {
-    display: 'none'
-  }
-});
-
 class HowToPlay extends Component {
   render() {
     return (

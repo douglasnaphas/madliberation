@@ -1,16 +1,18 @@
-import Button from '@mui/material/Button';
-import { madLiberationStyles } from '../madLiberationStyles';
-import Paper from '@mui/material/Paper';
-import React, { Component } from 'react';
-import TextField from '@mui/material/TextField';
-import { Typography } from '@mui/material';
+/** @jsxImportSource @emotion/react */
+import Button from "@mui/material/Button";
+import { madLiberationStyles } from "../madLiberationStyles";
+import Paper from "@mui/material/Paper";
+import React, { Component } from "react";
+import TextField from "@mui/material/TextField";
+import { Typography } from "@mui/material";
+import { Global } from "@emotion/react";
 
-const styles = theme => madLiberationStyles;
+const styles = { ...madLiberationStyles };
 
 class Lib extends Component {
   state = {};
   _isMounted = false;
-  onAnswerChange = event => {
+  onAnswerChange = (event) => {
     const { setAnswer, libIndex } = this.props;
     setAnswer(event.target.value, libIndex);
   };
@@ -24,24 +26,26 @@ class Lib extends Component {
   render() {
     const {
       lib,
-      classes,
       libIndex,
       libCount,
       incrementLibIndex,
       decrementLibIndex,
-      answer
+      answer,
     } = this.props;
     return (
       <div>
+        <div>
+          <Global styles={styles} />
+        </div>
         <div>
           <Typography component="p" paragraph gutterBottom>
             Enter a word or phrase to replace...
           </Typography>
           <div>
-            <Paper /* className={classes.paper}*/ >
+            <Paper className="paper">
               <Typography variant="h5">
                 <label htmlFor={`prompt-${libIndex}`}>
-                  {lib ? lib.prompt : ''}
+                  {lib ? lib.prompt : ""}
                 </label>
               </Typography>
             </Paper>
@@ -53,31 +57,31 @@ class Lib extends Component {
             fullWidth
             onChange={this.onAnswerChange}
             id={`prompt-${libIndex}`}
-            value={answer && answer.answer ? answer.answer : ''}
+            value={answer && answer.answer ? answer.answer : ""}
           />
           {lib && lib.sentence ? (
             <div>
               <br />
               <Typography component="span">
-                Your answer should complete the sentence:{' '}
-                <span /* className={classes.blueItalic}*/ >
-                  {lib.sentence.replace(/_/, '__')}
+                Your answer should complete the sentence:{" "}
+                <span className="blueItalic">
+                  {lib.sentence.replace(/_/, "__")}
                 </span>
               </Typography>
             </div>
           ) : (
-            ''
+            ""
           )}
           {lib && lib.example ? (
             <div>
               <br />
               <Typography component="span">
-                For example, you could write:{' '}
-                <span /* className={classes.blueItalic}*/ >{lib.example}</span>
+                For example, you could write:{" "}
+                <span className="blueItalic">{lib.example}</span>
               </Typography>
             </div>
           ) : (
-            ''
+            ""
           )}
         </div>
         <br />

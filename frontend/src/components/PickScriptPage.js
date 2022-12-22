@@ -3,9 +3,6 @@ import React, { Component } from 'react';
 import MenuAppBar from './MenuAppBar';
 import ScriptTable from './ScriptTable';
 import { Typography } from '@mui/material';
-import withStyles from '@mui/styles/withStyles';
-
-const styles = theme => ({});
 
 class PickScriptPage extends Component {
   state = { isMounting: true };
@@ -52,4 +49,4 @@ class PickScriptPage extends Component {
   }
 }
 
-export default withStyles(styles)(PickScriptPage);
+export default PickScriptPage;

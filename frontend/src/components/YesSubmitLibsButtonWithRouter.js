@@ -1,16 +1,6 @@
 import Button from '@mui/material/Button';
 import React from 'react';
 import { withRouter } from 'react-router-dom';
-import withStyles from '@mui/styles/withStyles';
-
-const styles = theme => ({
-  button: {
-    margin: theme.spacing(1)
-  },
-  input: {
-    display: 'none'
-  }
-});
 
 class YesSubmitLibsButton extends React.Component {
   render() {
@@ -33,4 +23,4 @@ class YesSubmitLibsButton extends React.Component {
   }
 }
 const YesSubmitLibsButtonWithRouter = withRouter(YesSubmitLibsButton);
-export default withStyles(styles)(YesSubmitLibsButtonWithRouter);
+export default YesSubmitLibsButtonWithRouter;

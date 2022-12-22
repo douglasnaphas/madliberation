@@ -1,32 +1,28 @@
+/** @jsxImportSource @emotion/react */
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import MenuAppBar from "./MenuAppBar";
 import { Button } from "@mui/material";
 import { madLiberationStyles } from "../madLiberationStyles";
 import { Typography } from "@mui/material";
-import withStyles from '@mui/styles/withStyles';
 import StageDirection from "./StageDirection";
-
-const styles = () => {
-  return {
-    bordered: {
-      paddingRight: "20px",
-      paddingLeft: "20px",
-      paddingTop: "10px",
-      paddingBottom: "10px",
-    },
-  };
-};
+import { css } from "@emotion/react";
 
 class ExplainVideoPage extends Component {
   render() {
-    const { classes } = this.props;
     return (
       <div madliberationid="explain-page">
         <MenuAppBar />
         <div>
           <br />
-          <div className={classes.bordered}>
+          <div
+            css={css`
+              padding-right: 20px;
+              padding-left: 20px;
+              padding-top: 10px;
+              padding-bottom: 10px;
+            `}
+          >
             <Typography variant="h1" component="h2" gutterBottom>
               Order! Order! Order!
             </Typography>
@@ -144,4 +140,4 @@ class ExplainVideoPage extends Component {
   }
 }
 
-export default withStyles(styles)(ExplainVideoPage);
+export default ExplainVideoPage;

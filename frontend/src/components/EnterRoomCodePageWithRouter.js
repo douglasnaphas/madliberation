@@ -3,19 +3,9 @@ import MenuAppBar from "./MenuAppBar";
 import React, { Component } from "react";
 import TextField from "@mui/material/TextField";
 import { Typography } from "@mui/material";
-import withStyles from "@mui/styles/withStyles";
 import { withRouter } from "react-router-dom";
 
 import { Configs } from "../Configs";
-
-const styles = (theme) => ({
-  button: {
-    margin: theme.spacing(1),
-  },
-  input: {
-    display: "none",
-  },
-});
 
 class EnterRoomCodePage extends Component {
   state = {
@@ -170,4 +160,4 @@ class EnterRoomCodePage extends Component {
   }
 }
 const EnterRoomCodePageWithRouter = withRouter(EnterRoomCodePage);
-export default withStyles(styles)(EnterRoomCodePageWithRouter);
+export default EnterRoomCodePageWithRouter;

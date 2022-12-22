@@ -1,13 +1,12 @@
 import { MemoryRouter } from "react-router-dom";
 import React from "react";
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import "@testing-library/jest-dom";
-
-import { Configs } from "../Configs";
 import GeneratingRoomCodePage from "./GeneratingRoomCodePage";
+import { act } from "react-dom/test-utils";
 
 describe("GeneratingRoomCodePageWithRouter", () => {
-  test("should display a spinner before fetch returns", () => {
+  test("should display a spinner before fetch returns", async () => {
     const mockSuccessResponse = {};
     const mockJsonPromise = Promise.resolve(mockSuccessResponse);
     const mockFetchPromise = Promise.resolve({
@@ -34,10 +33,10 @@ describe("GeneratingRoomCodePageWithRouter", () => {
     );
     screen.getByText("Generating a Room Code...");
     const circles = document.getElementsByTagName("circle");
-    expect(circles.length).toBeGreaterThan(0);
-    expect(global.fetch).toHaveBeenCalled();
+    await waitFor(() => expect(circles.length).toBeGreaterThan(0));
+    await waitFor(() => expect(global.fetch).toHaveBeenCalled());
   });
-  test("should fetch /room-code, user present", (done) => {
+  test("should fetch /room-code, user present", async () => {
     const mockSuccessResponse = {};
     const mockJsonPromise = Promise.resolve(mockSuccessResponse);
     const mockFetchPromise = Promise.resolve({
@@ -66,23 +65,21 @@ describe("GeneratingRoomCodePageWithRouter", () => {
         ></GeneratingRoomCodePage>
       </MemoryRouter>
     );
-    expect(global.fetch).toHaveBeenCalled();
-    expect(global.fetch).toHaveBeenCalledTimes(1);
-    expect(global.fetch).toHaveBeenCalledWith("/prod/room-code", {
-      method: "POST",
-      body: JSON.stringify({
-        path: chosenPath,
-        email: "mrseff@f.com",
-      }),
-      headers: { "Content-Type": "application/json" },
-      credentials: "include",
-    });
-    process.nextTick(() => {
-      global.fetch.mockClear();
-      done();
-    });
+    await waitFor(() => expect(global.fetch).toHaveBeenCalled());
+    await waitFor(() => expect(global.fetch).toHaveBeenCalledTimes(1));
+    await waitFor(() =>
+      expect(global.fetch).toHaveBeenCalledWith("/prod/room-code", {
+        method: "POST",
+        body: JSON.stringify({
+          path: chosenPath,
+          email: "mrseff@f.com",
+        }),
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+      })
+    );
   });
-  test("should fetch /room-code, no user present", (done) => {
+  test("should fetch /room-code, no user present", async () => {
     const mockSuccessResponse = {};
     const mockJsonPromise = Promise.resolve(mockSuccessResponse);
     const mockFetchPromise = Promise.resolve({
@@ -107,19 +104,17 @@ describe("GeneratingRoomCodePageWithRouter", () => {
         ></GeneratingRoomCodePage>
       </MemoryRouter>
     );
-    expect(global.fetch).toHaveBeenCalled();
-    expect(global.fetch).toHaveBeenCalledTimes(1);
-    expect(global.fetch).toHaveBeenCalledWith("/prod/room-code", {
-      method: "POST",
-      body: JSON.stringify({
-        path: chosenPath,
-      }),
-      headers: { "Content-Type": "application/json" },
-    });
-    process.nextTick(() => {
-      global.fetch.mockClear();
-      done();
-    });
+    await waitFor(() => expect(global.fetch).toHaveBeenCalled());
+    await waitFor(() => expect(global.fetch).toHaveBeenCalledTimes(1));
+    await waitFor(() =>
+      expect(global.fetch).toHaveBeenCalledWith("/prod/room-code", {
+        method: "POST",
+        body: JSON.stringify({
+          path: chosenPath,
+        }),
+        headers: { "Content-Type": "application/json" },
+      })
+    );
   });
   test("should set confirmedRoomCode on successful fetch", (done) => {
     const mockSuccessResponse = { roomCode: "SUCCES" };
@@ -226,7 +221,7 @@ describe("GeneratingRoomCodePageWithRouter", () => {
       done();
     });
   });
-  test("chosenPath should be hydrated if not supplied, but present in storage, user present", (done) => {
+  test("chosenPath should be hydrated if not supplied, but present in storage, user present", async () => {
     const mockSuccessResponse = { roomCode: "LOCALS" };
     const mockJsonPromise = Promise.resolve(mockSuccessResponse);
     const mockFetchPromise = Promise.resolve({
@@ -246,36 +241,35 @@ describe("GeneratingRoomCodePageWithRouter", () => {
       .mockImplementation(() => {
         return "script/path/from/storage";
       });
-
-    render(
-      <MemoryRouter>
-        <GeneratingRoomCodePage
-          history={history}
-          setChosenPath={setChosenPath}
-          chosenPath={chosenPath}
-          setConfirmedRoomCode={setConfirmedRoomCode}
-          user={{
-            nickname: "God of Fun",
-            email: "sumslummy@raw.raw",
-          }}
-        ></GeneratingRoomCodePage>
-      </MemoryRouter>
+    act(() => {
+      render(
+        <MemoryRouter>
+          <GeneratingRoomCodePage
+            history={history}
+            setChosenPath={setChosenPath}
+            chosenPath={chosenPath}
+            setConfirmedRoomCode={setConfirmedRoomCode}
+            user={{
+              nickname: "God of Fun",
+              email: "sumslummy@raw.raw",
+            }}
+          ></GeneratingRoomCodePage>
+        </MemoryRouter>
+      );
+    });
+    await waitFor(() => expect(global.fetch).toHaveBeenCalledTimes(1));
+    await waitFor(() =>
+      expect(global.fetch).toHaveBeenCalledWith("/prod/room-code", {
+        method: "POST",
+        body: JSON.stringify({
+          path: "script/path/from/storage",
+          email: "sumslummy@raw.raw",
+        }),
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+      })
     );
-    expect(global.fetch).toHaveBeenCalledTimes(1);
-    expect(global.fetch).toHaveBeenCalledWith("/prod/room-code", {
-      method: "POST",
-      body: JSON.stringify({
-        path: "script/path/from/storage",
-        email: "sumslummy@raw.raw",
-      }),
-      headers: { "Content-Type": "application/json" },
-      credentials: "include",
-    });
     Storage.prototype.getItem.mockClear();
-    process.nextTick(() => {
-      global.fetch.mockClear();
-      done();
-    });
   });
   test("chosenPath not received or in localStorage", (done) => {
     done();
@@ -295,16 +289,18 @@ describe("GeneratingRoomCodePageWithRouter", () => {
     const setChosenPath = jest.fn();
     const setConfirmedRoomCode = jest.fn();
     const chosenPath = "a/b/c";
-    render(
-      <MemoryRouter>
-        <GeneratingRoomCodePage
-          history={history}
-          setChosenPath={setChosenPath}
-          chosenPath={chosenPath}
-          setConfirmedRoomCode={setConfirmedRoomCode}
-        ></GeneratingRoomCodePage>
-      </MemoryRouter>
-    );
+    await act(async () => {
+      render(
+        <MemoryRouter>
+          <GeneratingRoomCodePage
+            history={history}
+            setChosenPath={setChosenPath}
+            chosenPath={chosenPath}
+            setConfirmedRoomCode={setConfirmedRoomCode}
+          ></GeneratingRoomCodePage>
+        </MemoryRouter>
+      );
+    });
     expect(global.fetch).toHaveBeenCalledTimes(1);
     await screen.findByText(
       /So sorry, but a Room Code could not be generated./

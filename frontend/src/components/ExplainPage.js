@@ -1,3 +1,4 @@
+/** @jsxImportSource @emotion/react */
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import MenuAppBar from "./MenuAppBar";
@@ -9,30 +10,23 @@ import ListItem from "@mui/material/ListItem";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import ChevronRight from "@mui/icons-material/ChevronRight";
-import withStyles from "@mui/styles/withStyles";
 import StageDirection from "./StageDirection";
 import Answer from "./Answer";
-
-const styles = () => {
-  return {
-    bordered: {
-      paddingRight: "20px",
-      paddingLeft: "20px",
-      paddingTop: "10px",
-      paddingBottom: "10px",
-    },
-  };
-};
+import { css } from "@emotion/react";
 
 class ExplainPage extends Component {
   render() {
-    const { classes } = this.props;
     return (
       <div madliberationid="explain-page">
         <MenuAppBar />
         <div>
           <br />
-          <div className={classes.bordered}>
+          <div css={css`
+            padding-right: 20px;
+            padding-left: 20px;
+            padding-top: 10px;
+            padding-bottom: 10px;
+          `}>
             <Typography component="p" paragraph>
               <StageDirection>
                 Read this aloud to everyone at your seder to explain what's
@@ -158,4 +152,4 @@ class ExplainPage extends Component {
   }
 }
 
-export default withStyles(styles)(ExplainPage);
+export default ExplainPage;

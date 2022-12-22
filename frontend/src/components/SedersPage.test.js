@@ -10,6 +10,7 @@ import {
 } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import userEvent from "@testing-library/user-event";
+import { act } from "react-dom/test-utils";
 
 let globalFetch = global.fetch;
 
@@ -78,16 +79,18 @@ describe("SedersPage", () => {
         }
       });
       const history = { push: jest.fn() };
-      render(
-        <MemoryRouter>
-          <SedersPage
-            history={history}
-            user={user}
-            setConfirmedRoomCode={setConfirmedRoomCode}
-            setChosenPath={setChosenPath}
-          ></SedersPage>
-        </MemoryRouter>
-      );
+      await act(async () => {
+        render(
+          <MemoryRouter>
+            <SedersPage
+              history={history}
+              user={user}
+              setConfirmedRoomCode={setConfirmedRoomCode}
+              setChosenPath={setChosenPath}
+            ></SedersPage>
+          </MemoryRouter>
+        );
+      });
       expect(global.fetch).toHaveBeenCalled();
       const resumeSederButton = (
         await screen.findByText("Resume seder")
@@ -232,17 +235,19 @@ describe("SedersPage", () => {
         });
       });
       const history = { push: jest.fn() };
-      render(
-        <MemoryRouter>
-          <SedersPage
-            history={history}
-            user={user}
-            setConfirmedRoomCode={setConfirmedRoomCode}
-            setChosenPath={setChosenPath}
-            setConfirmedGameName={setConfirmedGameName}
-          ></SedersPage>
-        </MemoryRouter>
-      );
+      await act(async () => {
+        render(
+          <MemoryRouter>
+            <SedersPage
+              history={history}
+              user={user}
+              setConfirmedRoomCode={setConfirmedRoomCode}
+              setChosenPath={setChosenPath}
+              setConfirmedGameName={setConfirmedGameName}
+            ></SedersPage>
+          </MemoryRouter>
+        );
+      });
       await waitFor(() => expect(global.fetch).toHaveBeenCalled());
       const resumeSederButton = (
         await screen.findByText("Resume seder")
@@ -391,17 +396,19 @@ describe("SedersPage", () => {
         });
       });
       const history = { push: jest.fn() };
-      render(
-        <MemoryRouter>
-          <SedersPage
-            history={history}
-            user={user}
-            setConfirmedRoomCode={setConfirmedRoomCode}
-            setChosenPath={setChosenPath}
-            setConfirmedGameName={setConfirmedGameName}
-          ></SedersPage>
-        </MemoryRouter>
-      );
+      await act(async () => {
+        render(
+          <MemoryRouter>
+            <SedersPage
+              history={history}
+              user={user}
+              setConfirmedRoomCode={setConfirmedRoomCode}
+              setChosenPath={setChosenPath}
+              setConfirmedGameName={setConfirmedGameName}
+            ></SedersPage>
+          </MemoryRouter>
+        );
+      });
       await waitFor(() => expect(global.fetch).toHaveBeenCalled());
       const resumeSederButton = (
         await screen.findByText("Resume seder")
@@ -567,17 +574,19 @@ describe("SedersPage", () => {
         });
       });
       const history = { push: jest.fn() };
-      render(
-        <MemoryRouter>
-          <SedersPage
-            history={history}
-            user={user}
-            setConfirmedRoomCode={setConfirmedRoomCode}
-            setChosenPath={setChosenPath}
-            setConfirmedGameName={setConfirmedGameName}
-          ></SedersPage>
-        </MemoryRouter>
-      );
+      await act(async () => {
+        render(
+          <MemoryRouter>
+            <SedersPage
+              history={history}
+              user={user}
+              setConfirmedRoomCode={setConfirmedRoomCode}
+              setChosenPath={setChosenPath}
+              setConfirmedGameName={setConfirmedGameName}
+            ></SedersPage>
+          </MemoryRouter>
+        );
+      });
       await waitFor(() => expect(global.fetch).toHaveBeenCalled());
       const resumeSederButton = (
         await screen.findByText("Resume seder")
@@ -698,17 +707,19 @@ describe("SedersPage", () => {
         });
       });
       const history = { push: jest.fn() };
-      render(
-        <MemoryRouter>
-          <SedersPage
-            history={history}
-            user={user}
-            setConfirmedRoomCode={setConfirmedRoomCode}
-            setChosenPath={setChosenPath}
-            setConfirmedGameName={setConfirmedGameName}
-          ></SedersPage>
-        </MemoryRouter>
-      );
+      await act(async () => {
+        render(
+          <MemoryRouter>
+            <SedersPage
+              history={history}
+              user={user}
+              setConfirmedRoomCode={setConfirmedRoomCode}
+              setChosenPath={setChosenPath}
+              setConfirmedGameName={setConfirmedGameName}
+            ></SedersPage>
+          </MemoryRouter>
+        );
+      });
       await waitFor(() => expect(global.fetch).toHaveBeenCalled());
       const resumeSederButton = (
         await screen.findByText("Resume seder")
@@ -891,18 +902,20 @@ describe("SedersPage", () => {
       });
       const history = { push: jest.fn() };
       const setAssignmentsData = jest.fn();
-      render(
-        <MemoryRouter>
-          <SedersPage
-            history={history}
-            user={user}
-            setConfirmedRoomCode={setConfirmedRoomCode}
-            setChosenPath={setChosenPath}
-            setConfirmedGameName={setConfirmedGameName}
-            setAssignmentsData={setAssignmentsData}
-          ></SedersPage>
-        </MemoryRouter>
-      );
+      await act(async () => {
+        render(
+          <MemoryRouter>
+            <SedersPage
+              history={history}
+              user={user}
+              setConfirmedRoomCode={setConfirmedRoomCode}
+              setChosenPath={setChosenPath}
+              setConfirmedGameName={setConfirmedGameName}
+              setAssignmentsData={setAssignmentsData}
+            ></SedersPage>
+          </MemoryRouter>
+        );
+      });
       await waitFor(() => expect(global.fetch).toHaveBeenCalled());
       const resumeSederButton = (
         await screen.findByText("Resume seder")
@@ -1095,18 +1108,20 @@ describe("SedersPage", () => {
       });
       const history = { push: jest.fn() };
       const setAssignmentsData = jest.fn();
-      render(
-        <MemoryRouter>
-          <SedersPage
-            history={history}
-            user={user}
-            setConfirmedRoomCode={setConfirmedRoomCode}
-            setChosenPath={setChosenPath}
-            setConfirmedGameName={setConfirmedGameName}
-            setAssignmentsData={setAssignmentsData}
-          ></SedersPage>
-        </MemoryRouter>
-      );
+      await act(async () => {
+        render(
+          <MemoryRouter>
+            <SedersPage
+              history={history}
+              user={user}
+              setConfirmedRoomCode={setConfirmedRoomCode}
+              setChosenPath={setChosenPath}
+              setConfirmedGameName={setConfirmedGameName}
+              setAssignmentsData={setAssignmentsData}
+            ></SedersPage>
+          </MemoryRouter>
+        );
+      });
 
       await waitFor(() => expect(global.fetch).toHaveBeenCalled());
       const resumeSederButton = (
@@ -1197,16 +1212,20 @@ describe("SedersPage", () => {
       }
     });
     const history = { push: jest.fn() };
-    render(
-      <MemoryRouter>
-        <SedersPage
-          history={history}
-          user={user}
-          setConfirmedRoomCode={setConfirmedRoomCode}
-          setChosenPath={setChosenPath}
-        ></SedersPage>
-      </MemoryRouter>
-    );
+    await act(async () => {
+      await act(async () => {
+        render(
+          <MemoryRouter>
+            <SedersPage
+              history={history}
+              user={user}
+              setConfirmedRoomCode={setConfirmedRoomCode}
+              setChosenPath={setChosenPath}
+            ></SedersPage>
+          </MemoryRouter>
+        );
+      });
+    });
     await waitFor(() => expect(global.fetch).toHaveBeenCalled());
     const resumeSederButton = (await screen.findByText("Resume seder")).closest(
       "button"

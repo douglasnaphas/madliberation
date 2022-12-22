@@ -3,16 +3,6 @@ import { Link } from "react-router-dom";
 import MenuAppBar from "./MenuAppBar";
 import React, { Component } from "react";
 import { Typography } from "@mui/material";
-import withStyles from "@mui/styles/withStyles";
-
-const styles = (theme) => ({
-  button: {
-    margin: theme.spacing(1),
-  },
-  input: {
-    display: "none",
-  },
-});
 
 class LetThemPressButtonPage extends Component {
   state = { fetchingPrompts: true };
@@ -83,4 +73,4 @@ class LetThemPressButtonPage extends Component {
     );
   }
 }
-export default withStyles(styles)(LetThemPressButtonPage);
+export default LetThemPressButtonPage;

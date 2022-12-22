@@ -9,23 +9,13 @@ import TableCell from "@mui/material/TableCell";
 import TableRow from "@mui/material/TableRow";
 import ThatsEveryoneButtonWithRouter from "./ThatsEveryoneButtonWithRouter";
 import { Typography } from "@mui/material";
-import withStyles from "@mui/styles/withStyles";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 
-const styles = (theme) => ({
-  button: {
-    margin: theme.spacing(1),
-  },
-  input: {
-    display: "none",
-  },
-});
 let webSocket;
-
 class RosterPage extends Component {
   state = {
     rosterLoading: true,
@@ -302,4 +292,4 @@ RosterPage.propTypes = {
   setChosenPath: PropTypes.func.isRequired,
 };
 
-export default withStyles(styles)(RosterPage);
+export default RosterPage;

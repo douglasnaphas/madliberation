@@ -1,10 +1,9 @@
 import { Configs } from "../Configs";
 
-function getScriptsFromApi() {
+async function getScriptsFromApi() {
   const scriptsUrl = new URL("./scripts", Configs.apiUrl());
-  return fetch(scriptsUrl).then((r) => {
-    return r.json();
-  });
+  const r = await fetch(scriptsUrl);
+  return await r.json();
 }
 
 export { getScriptsFromApi };

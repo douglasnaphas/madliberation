@@ -1,11 +1,9 @@
 import MenuAppBar from "./MenuAppBar";
 import React from "react";
 import { Typography } from "@mui/material";
-import withStyles from "@mui/styles/withStyles";
 import Button from "@mui/material/Button";
 import { Link } from "react-router-dom";
 
-const styles = (theme) => ({});
 class DoneNotReadingPage extends React.Component {
   componentDidMount() {
     const {
@@ -56,4 +54,4 @@ class DoneNotReadingPage extends React.Component {
     );
   }
 }
-export default withStyles(styles)(DoneNotReadingPage);
+export default DoneNotReadingPage;

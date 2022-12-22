@@ -2,7 +2,12 @@ import { MemoryRouter } from "react-router-dom";
 import React from "react";
 import { getByRole, getByText, render, screen } from "@testing-library/react";
 import "@testing-library/jest-dom";
-import { ThemeProvider, createTheme } from "@mui/material/styles";
+import {
+  ThemeProvider,
+  StyledEngineProvider,
+  createTheme,
+} from "@mui/material/styles";
+import { act } from "react-dom/test-utils";
 
 import PickScriptPage from "./PickScriptPage";
 
@@ -120,16 +125,20 @@ describe("<PickScriptPage />", () => {
   };
   const theme = createTheme({ palette: { primary: { main: "#81181f" } } });
   test("JSON from getScripts should be displayed in a table", async () => {
-    render(
-      <ThemeProvider theme={theme}>
-        <MemoryRouter>
-          <PickScriptPage
-            getScripts={getFourScripts}
-            setChosenPath={jest.fn()}
-          />
-        </MemoryRouter>
-      </ThemeProvider>
-    );
+    await act(async () => {
+      render(
+        <StyledEngineProvider injectFirst>
+          <ThemeProvider theme={theme}>
+            <MemoryRouter>
+              <PickScriptPage
+                getScripts={getFourScripts}
+                setChosenPath={jest.fn()}
+              />
+            </MemoryRouter>
+          </ThemeProvider>
+        </StyledEngineProvider>
+      );
+    });
     const fourScripts = await getFourScripts();
     fourScripts.scripts.Items.forEach((script) => {
       const row = screen.getByText(script.haggadah_short_desc).closest("tr");
@@ -139,16 +148,18 @@ describe("<PickScriptPage />", () => {
     });
   });
   test("JSON from getScripts should be displayed in a table 2", async () => {
-    render(
-      <ThemeProvider theme={theme}>
-        <MemoryRouter>
-          <PickScriptPage
-            getScripts={getFourDifferentScripts}
-            setChosenPath={jest.fn()}
-          />
-        </MemoryRouter>
-      </ThemeProvider>
-    );
+    await act(async () => {
+      render(
+        <ThemeProvider theme={theme}>
+          <MemoryRouter>
+            <PickScriptPage
+              getScripts={getFourDifferentScripts}
+              setChosenPath={jest.fn()}
+            />
+          </MemoryRouter>
+        </ThemeProvider>
+      );
+    });
     const fourScripts = await getFourDifferentScripts();
     fourScripts.scripts.Items.forEach((script) => {
       const row = screen.getByText(script.haggadah_short_desc).closest("tr");

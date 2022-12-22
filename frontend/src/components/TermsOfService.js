@@ -1,15 +1,5 @@
 import React, { Component } from "react";
 import MenuAppBar from "./MenuAppBar";
-import withStyles from '@mui/styles/withStyles';
-
-const styles = (theme) => ({
-  button: {
-    margin: theme.spacing(1),
-  },
-  input: {
-    display: "none",
-  },
-});
 
 class TermsOfService extends Component {
   render() {
@@ -585,4 +575,4 @@ class TermsOfService extends Component {
   }
 }
 
-export default withStyles(styles)(TermsOfService);
+export default TermsOfService;

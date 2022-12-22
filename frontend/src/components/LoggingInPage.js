@@ -1,17 +1,6 @@
 import React, { useEffect } from "react";
 import MenuAppBar from "./MenuAppBar";
 import Typography from "@mui/material/Typography";
-import withStyles from "@mui/styles/withStyles";
-import { Configs } from "../Configs";
-
-const styles = (theme) => ({
-  button: {
-    margin: theme.spacing(1),
-  },
-  input: {
-    display: "none",
-  },
-});
 
 function LoggingInPage({ history, setUser, browserWindow, storage }) {
   useEffect(() => {
@@ -41,6 +30,4 @@ function LoggingInPage({ history, setUser, browserWindow, storage }) {
     </>
   );
 }
-export default withStyles(styles)(LoggingInPage);
-// TODO: Get the user info (nickname and email) from the URL query params.
-// Remove the call to /id.
+export default LoggingInPage;

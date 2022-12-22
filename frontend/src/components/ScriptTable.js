@@ -8,22 +8,9 @@ import TableCell from '@mui/material/TableCell';
 import TableRow from '@mui/material/TableRow';
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
-import withStyles from '@mui/styles/withStyles';
 
 // takes in JSON collection of scripts, and a function it will call to set
 // its parent's state when a selection is made
-
-const styles = theme => ({
-  root: {
-    display: 'flex'
-  },
-  formControl: {
-    margin: theme.spacing(3)
-  },
-  group: {
-    margin: theme.spacing(1)
-  }
-});
 
 class ScriptTable extends React.Component {
   state = {
@@ -76,7 +63,6 @@ class ScriptTable extends React.Component {
           <Button
             madliberationid="pick-this-script-button"
             variant="contained"
-            className={classes.button}
             component={Link}
             onClick={e => {
               setChosenPath(this.state.selectedScript.path);
@@ -117,4 +103,4 @@ ScriptTable.propTypes = {
   ).isRequired
 };
 
-export default withStyles(styles)(ScriptTable);
+export default ScriptTable;

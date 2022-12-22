@@ -5,19 +5,8 @@ import MenuAppBar from "./MenuAppBar";
 import PropTypes from "prop-types";
 import TextField from "@mui/material/TextField";
 import { Typography } from "@mui/material";
-import withStyles from "@mui/styles/withStyles";
 import { madLiberationStyles } from "../madLiberationStyles";
-
 import ThatsMyNameButtonWithRouter from "./ThatsMyNameButtonWithRouter";
-
-const styles = (theme) => ({
-  button: {
-    margin: theme.spacing(1),
-  },
-  input: {
-    display: "none",
-  },
-});
 
 class YourRoomCodePage extends Component {
   state = {
@@ -164,4 +153,4 @@ YourRoomCodePage.propTypes = {
     .isRequired,
 };
 
-export default withStyles(styles)(YourRoomCodePage);
+export default YourRoomCodePage;

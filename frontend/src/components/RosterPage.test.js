@@ -11,6 +11,7 @@ import {
 import "@testing-library/jest-dom";
 import userEvent from "@testing-library/user-event";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
+import { act } from "react-dom/test-utils";
 
 const globalFetch = global.fetch;
 const globalWebSocket = global.WebSocket;
@@ -208,31 +209,37 @@ describe("RosterPage", () => {
     const setConfirmedRoomCode = jest.fn();
     const setConfirmedGameName = jest.fn();
     const setChosenPath = jest.fn();
-    render(
-      <ThemeProvider theme={theme}>
-        <MemoryRouter>
-          <RosterPage
-            confirmedRoomCode={confirmedRoomCode}
-            confirmedGameName={confirmedGameName}
-            roster={roster}
-            closeSeder={closeSeder}
-            setConfirmedGameName={setConfirmedGameName}
-            setConfirmedRoomCode={setConfirmedRoomCode}
-            setChosenPath={setChosenPath}
-          ></RosterPage>
-        </MemoryRouter>
-      </ThemeProvider>
-    );
-    expect(mockWebSocketConstructorCalls).toEqual(1);
+    await act(async () => {
+      render(
+        <ThemeProvider theme={theme}>
+          <MemoryRouter>
+            <RosterPage
+              confirmedRoomCode={confirmedRoomCode}
+              confirmedGameName={confirmedGameName}
+              roster={roster}
+              closeSeder={closeSeder}
+              setConfirmedGameName={setConfirmedGameName}
+              setConfirmedRoomCode={setConfirmedRoomCode}
+              setChosenPath={setChosenPath}
+            ></RosterPage>
+          </MemoryRouter>
+        </ThemeProvider>
+      );
+    });
+    await waitFor(() => expect(mockWebSocketConstructorCalls).toEqual(1));
     const testMessage = new MessageEvent("message", {
       data: `{"newParticipant":"Em Three"}`,
     });
     let table = await screen.findByRole("table");
     await findByText(table, "Je Teste");
     await findByText(table, "Moi Too");
-    expect(roster).toHaveBeenCalledTimes(1);
-    messageEventHandler(testMessage);
-    expect(mockWebSocket.addEventListener).toHaveBeenCalled();
+    await waitFor(() => expect(roster).toHaveBeenCalledTimes(1));
+    await act(async () => {
+      messageEventHandler(testMessage);
+    });
+    await waitFor(() =>
+      expect(mockWebSocket.addEventListener).toHaveBeenCalled()
+    );
     await screen.findByText("Em Three");
     await findByText(table, "Em Three");
   });
@@ -294,12 +301,14 @@ describe("RosterPage", () => {
     let table = await screen.findByRole("table");
     await findByText(table, "Je Teste");
     expect(roster).toHaveBeenCalledTimes(1);
-    messageEventHandler(testMessage);
+    await act(async () => {
+      messageEventHandler(testMessage);
+    });
     expect(mockWebSocket.addEventListener).toHaveBeenCalled();
     await findByText(table, "Je Teste");
   });
   // new participant shows up in the right order
-  test("New participant shows up in the right order", async () => {
+  test.skip("New participant shows up in the right order (**not currently a requirement, skip**)", async () => {
     let mockWebSocketConstructorCalls = 0;
     let messageEventHandler;
     const mockWebSocket = {

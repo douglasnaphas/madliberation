@@ -2,10 +2,8 @@ import CircularProgress from '@mui/material/CircularProgress';
 import Page from './Page';
 import React from 'react';
 import { Typography } from '@mui/material';
-import withStyles from '@mui/styles/withStyles';
 import Button from '@mui/material/Button';
 
-const styles = theme => ({});
 class Script extends React.Component {
   constructor(props) {
     super(props);
@@ -122,4 +120,4 @@ class Script extends React.Component {
     return <div />;
   }
 }
-export default withStyles(styles)(Script);
+export default Script;

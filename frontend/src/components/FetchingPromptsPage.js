@@ -3,16 +3,6 @@ import CircularProgress from "@mui/material/CircularProgress";
 import MenuAppBar from "./MenuAppBar";
 import React, { Component } from "react";
 import { Typography } from "@mui/material";
-import withStyles from "@mui/styles/withStyles";
-
-const styles = (theme) => ({
-  button: {
-    margin: theme.spacing(1),
-  },
-  input: {
-    display: "none",
-  },
-});
 
 let webSocket;
 class FetchingPromptsPage extends Component {
@@ -140,4 +130,4 @@ class FetchingPromptsPage extends Component {
     );
   }
 }
-export default withStyles(styles)(FetchingPromptsPage);
+export default FetchingPromptsPage;

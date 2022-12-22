@@ -1,12 +1,12 @@
+/** @jsxImportSource @emotion/react */
 import Button from "@mui/material/Button";
 import { madLiberationStyles } from "../madLiberationStyles";
 import React from "react";
 import { Typography } from "@mui/material";
-import withStyles from "@mui/styles/withStyles";
 import Answer from "./Answer";
 import StageDirection from "./StageDirection";
+import { css } from "@emotion/react";
 
-const styles = (theme) => ({});
 class Page extends React.Component {
   state = {
     readyForContent: false,
@@ -138,7 +138,13 @@ class Page extends React.Component {
       if (line.type === "stageDirection") {
         lines.push(
           <Typography component="p" key={`line-${lineIndex}`}>
-            <span style={madLiberationStyles.boldItalicLightBlueBackground}>
+            <span
+              css={css`
+                background-color: lightblue;
+                font-style: italic;
+                font-weight: bold;
+              `}
+            >
               {segments}
             </span>
           </Typography>
@@ -215,4 +221,4 @@ class Page extends React.Component {
     }
   }
 }
-export default withStyles(styles)(Page);
+export default Page;

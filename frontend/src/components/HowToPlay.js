@@ -1,16 +1,6 @@
 import React, { Component } from 'react';
 import MenuAppBar from './MenuAppBar';
-import withStyles from '@mui/styles/withStyles';
 import { Typography } from '@mui/material';
-
-const styles = theme => ({
-  button: {
-    margin: theme.spacing(1)
-  },
-  input: {
-    display: 'none'
-  }
-});
 
 class HowToPlay extends Component {
   render() {
@@ -36,4 +26,4 @@ class HowToPlay extends Component {
   }
 }
 
-export default withStyles(styles)(HowToPlay);
+export default HowToPlay;

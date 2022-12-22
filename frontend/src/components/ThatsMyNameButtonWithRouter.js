@@ -1,16 +1,6 @@
 import Button from '@mui/material/Button';
 import React from 'react';
 import { withRouter } from 'react-router-dom';
-import withStyles from '@mui/styles/withStyles';
-
-const styles = theme => ({
-  button: {
-    margin: theme.spacing(1)
-  },
-  input: {
-    display: 'none'
-  }
-});
 
 class ThatsMyNameButton extends React.Component {
   render() {
@@ -40,4 +30,4 @@ class ThatsMyNameButton extends React.Component {
   }
 }
 const ThatsMyNameButtonWithRouter = withRouter(ThatsMyNameButton);
-export default withStyles(styles)(ThatsMyNameButtonWithRouter);
+export default ThatsMyNameButtonWithRouter;

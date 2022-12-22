@@ -1,16 +1,6 @@
 import Button from '@mui/material/Button';
 import React from 'react';
 import { withRouter } from 'react-router-dom';
-import withStyles from '@mui/styles/withStyles';
-
-const styles = theme => ({
-  button: {
-    margin: theme.spacing(1)
-  },
-  input: {
-    display: 'none'
-  }
-});
 
 class ThatsEveryoneButton extends React.Component {
   state = {
@@ -41,4 +31,4 @@ class ThatsEveryoneButton extends React.Component {
   }
 }
 const ThatsEveryoneButtonWithRouter = withRouter(ThatsEveryoneButton);
-export default withStyles(styles)(ThatsEveryoneButtonWithRouter);
+export default ThatsEveryoneButtonWithRouter;

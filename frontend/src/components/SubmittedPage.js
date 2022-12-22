@@ -3,16 +3,6 @@ import { Link } from "react-router-dom";
 import MenuAppBar from "./MenuAppBar";
 import React, { Component } from "react";
 import { Typography } from "@mui/material";
-import withStyles from "@mui/styles/withStyles";
-
-const styles = (theme) => ({
-  button: {
-    margin: theme.spacing(1),
-  },
-  input: {
-    display: "none",
-  },
-});
 
 class SubmittedPage extends Component {
   state = {};
@@ -97,4 +87,4 @@ class SubmittedPage extends Component {
     );
   }
 }
-export default withStyles(styles)(SubmittedPage);
+export default SubmittedPage;

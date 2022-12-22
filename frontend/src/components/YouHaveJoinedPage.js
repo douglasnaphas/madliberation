@@ -3,18 +3,8 @@ import { Link } from "react-router-dom";
 import MenuAppBar from "./MenuAppBar";
 import React, { Component } from "react";
 import { Typography } from "@mui/material";
-import withStyles from "@mui/styles/withStyles";
 
 import { madLiberationStyles } from "../madLiberationStyles";
-
-const styles = (theme) => ({
-  button: {
-    margin: theme.spacing(1),
-  },
-  input: {
-    display: "none",
-  },
-});
 
 let webSocket;
 class YouHaveJoinedPage extends Component {
@@ -111,4 +101,4 @@ class YouHaveJoinedPage extends Component {
   }
 }
 
-export default withStyles(styles)(YouHaveJoinedPage);
+export default YouHaveJoinedPage;

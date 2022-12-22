@@ -1,16 +1,6 @@
 import React, { Component } from "react";
 import MenuAppBar from "./MenuAppBar";
 import Typography from "@mui/material/Typography";
-import withStyles from '@mui/styles/withStyles';
-
-const styles = (theme) => ({
-  button: {
-    margin: theme.spacing(1),
-  },
-  input: {
-    display: "none",
-  },
-});
 
 class ContactUs extends Component {
   render() {
@@ -55,4 +45,4 @@ class ContactUs extends Component {
   }
 }
 
-export default withStyles(styles)(ContactUs);
+export default ContactUs;

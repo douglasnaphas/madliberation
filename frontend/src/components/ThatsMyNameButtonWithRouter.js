@@ -2,15 +2,6 @@ import Button from '@mui/material/Button';
 import React from 'react';
 import { withRouter } from 'react-router-dom';
 
-const styles = theme => ({
-  button: {
-    margin: theme.spacing(1)
-  },
-  input: {
-    display: 'none'
-  }
-});
-
 class ThatsMyNameButton extends React.Component {
   render() {
     const {

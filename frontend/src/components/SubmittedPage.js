@@ -4,15 +4,6 @@ import MenuAppBar from "./MenuAppBar";
 import React, { Component } from "react";
 import { Typography } from "@mui/material";
 
-const styles = (theme) => ({
-  button: {
-    margin: theme.spacing(1),
-  },
-  input: {
-    display: "none",
-  },
-});
-
 class SubmittedPage extends Component {
   state = {};
   _isMounted = false;

@@ -51,33 +51,33 @@ describe("GeneratingRoomCodePageWithRouter", () => {
     const setChosenPath = jest.fn();
     const setConfirmedRoomCode = jest.fn();
     const chosenPath = "a/b/c";
-    await act(async () => {
-      render(
-        <MemoryRouter>
-          <GeneratingRoomCodePage
-            history={history}
-            setChosenPath={setChosenPath}
-            chosenPath={chosenPath}
-            setConfirmedRoomCode={setConfirmedRoomCode}
-            user={{
-              email: "mrseff@f.com",
-              nickname: "Mrs. F",
-            }}
-          ></GeneratingRoomCodePage>
-        </MemoryRouter>
-      );
-    });
+    render(
+      <MemoryRouter>
+        <GeneratingRoomCodePage
+          history={history}
+          setChosenPath={setChosenPath}
+          chosenPath={chosenPath}
+          setConfirmedRoomCode={setConfirmedRoomCode}
+          user={{
+            email: "mrseff@f.com",
+            nickname: "Mrs. F",
+          }}
+        ></GeneratingRoomCodePage>
+      </MemoryRouter>
+    );
     await waitFor(() => expect(global.fetch).toHaveBeenCalled());
-    expect(global.fetch).toHaveBeenCalledTimes(1);
-    expect(global.fetch).toHaveBeenCalledWith("/prod/room-code", {
-      method: "POST",
-      body: JSON.stringify({
-        path: chosenPath,
-        email: "mrseff@f.com",
-      }),
-      headers: { "Content-Type": "application/json" },
-      credentials: "include",
-    });
+    await waitFor(() => expect(global.fetch).toHaveBeenCalledTimes(1));
+    await waitFor(() =>
+      expect(global.fetch).toHaveBeenCalledWith("/prod/room-code", {
+        method: "POST",
+        body: JSON.stringify({
+          path: chosenPath,
+          email: "mrseff@f.com",
+        }),
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+      })
+    );
   });
   test("should fetch /room-code, no user present", async () => {
     const mockSuccessResponse = {};

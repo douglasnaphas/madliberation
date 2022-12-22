@@ -147,8 +147,8 @@ describe("<PickScriptPage />", () => {
       expect(getByText(row, script.haggadah_description));
     });
   });
-  test.skip("JSON from getScripts should be displayed in a table 2", async () => {
-    act(() => {
+  test("JSON from getScripts should be displayed in a table 2", async () => {
+    await act(async () => {
       render(
         <ThemeProvider theme={theme}>
           <MemoryRouter>

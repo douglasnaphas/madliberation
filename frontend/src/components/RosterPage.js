@@ -15,16 +15,7 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 
-const styles = (theme) => ({
-  button: {
-    margin: theme.spacing(1),
-  },
-  input: {
-    display: "none",
-  },
-});
 let webSocket;
-
 class RosterPage extends Component {
   state = {
     rosterLoading: true,

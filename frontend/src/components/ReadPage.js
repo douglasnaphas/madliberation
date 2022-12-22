@@ -3,15 +3,6 @@ import ReadRoster from './ReadRoster';
 import MenuAppBar from './MenuAppBar';
 import Script from './Script';
 
-const styles = theme => ({
-  button: {
-    margin: theme.spacing(1)
-  },
-  input: {
-    display: 'none'
-  }
-});
-
 class ReadPage extends Component {
   constructor(props) {
     super(props);

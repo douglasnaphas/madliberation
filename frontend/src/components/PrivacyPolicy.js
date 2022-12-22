@@ -1,15 +1,6 @@
 import React, { Component } from 'react';
 import MenuAppBar from './MenuAppBar';
 
-const styles = theme => ({
-  button: {
-    margin: theme.spacing(1)
-  },
-  input: {
-    display: 'none'
-  }
-});
-
 class PrivacyPolicy extends Component {
   render() {
     return (

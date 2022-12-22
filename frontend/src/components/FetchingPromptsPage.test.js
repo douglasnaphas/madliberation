@@ -11,6 +11,7 @@ import {
 import "@testing-library/jest-dom";
 import userEvent from "@testing-library/user-event";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
+import { act } from "react-dom/test-utils";
 
 const globalWebSocket = global.WebSocket;
 afterEach(() => {
@@ -82,7 +83,9 @@ describe("FetchingPromptsPage", () => {
       </ThemeProvider>
     );
     expect(mockWebSocketConstructorCalls).toEqual(1);
-    messageEventHandler({ data: "assignments_ready" });
+    await act(async () => {
+      messageEventHandler({ data: "assignments_ready" });
+    });
     await waitFor(() => expect(history.push).toHaveBeenCalled());
   });
 });

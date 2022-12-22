@@ -11,6 +11,7 @@ import {
 import "@testing-library/jest-dom";
 import userEvent from "@testing-library/user-event";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
+import { act } from "react-dom/test-utils";
 
 const globalWebSocket = global.WebSocket;
 afterEach(() => {
@@ -61,6 +62,8 @@ describe("ReadRoster", () => {
       </ThemeProvider>
     );
     expect(mockWebSocketConstructorCalls).toEqual(1);
-    messageEventHandler({ data: "read_roster_update" });
+    await act(async () => {
+      messageEventHandler({ data: "read_roster_update" });
+    });
   });
 });

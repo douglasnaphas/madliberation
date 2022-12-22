@@ -79,7 +79,7 @@ describe("GeneratingRoomCodePageWithRouter", () => {
       })
     );
   });
-  test.only("should fetch /room-code, no user present", async () => {
+  test("should fetch /room-code, no user present", async () => {
     const mockSuccessResponse = {};
     const mockJsonPromise = Promise.resolve(mockSuccessResponse);
     const mockFetchPromise = Promise.resolve({
@@ -221,7 +221,7 @@ describe("GeneratingRoomCodePageWithRouter", () => {
       done();
     });
   });
-  test("chosenPath should be hydrated if not supplied, but present in storage, user present", (done) => {
+  test("chosenPath should be hydrated if not supplied, but present in storage, user present", async () => {
     const mockSuccessResponse = { roomCode: "LOCALS" };
     const mockJsonPromise = Promise.resolve(mockSuccessResponse);
     const mockFetchPromise = Promise.resolve({
@@ -257,21 +257,19 @@ describe("GeneratingRoomCodePageWithRouter", () => {
         </MemoryRouter>
       );
     });
-    expect(global.fetch).toHaveBeenCalledTimes(1);
-    expect(global.fetch).toHaveBeenCalledWith("/prod/room-code", {
-      method: "POST",
-      body: JSON.stringify({
-        path: "script/path/from/storage",
-        email: "sumslummy@raw.raw",
-      }),
-      headers: { "Content-Type": "application/json" },
-      credentials: "include",
-    });
+    await waitFor(() => expect(global.fetch).toHaveBeenCalledTimes(1));
+    await waitFor(() =>
+      expect(global.fetch).toHaveBeenCalledWith("/prod/room-code", {
+        method: "POST",
+        body: JSON.stringify({
+          path: "script/path/from/storage",
+          email: "sumslummy@raw.raw",
+        }),
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+      })
+    );
     Storage.prototype.getItem.mockClear();
-    process.nextTick(() => {
-      global.fetch.mockClear();
-      done();
-    });
   });
   test("chosenPath not received or in localStorage", (done) => {
     done();

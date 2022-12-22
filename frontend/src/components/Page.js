@@ -7,7 +7,6 @@ import Answer from "./Answer";
 import StageDirection from "./StageDirection";
 import { css } from "@emotion/react";
 
-const styles = (theme) => ({});
 class Page extends React.Component {
   state = {
     readyForContent: false,

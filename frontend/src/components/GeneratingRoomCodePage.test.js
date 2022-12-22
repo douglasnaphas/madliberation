@@ -36,7 +36,7 @@ describe("GeneratingRoomCodePageWithRouter", () => {
     await waitFor(() => expect(circles.length).toBeGreaterThan(0));
     await waitFor(() => expect(global.fetch).toHaveBeenCalled());
   });
-  test.only("should fetch /room-code, user present", async () => {
+  test("should fetch /room-code, user present", async () => {
     const mockSuccessResponse = {};
     const mockJsonPromise = Promise.resolve(mockSuccessResponse);
     const mockFetchPromise = Promise.resolve({
@@ -79,7 +79,7 @@ describe("GeneratingRoomCodePageWithRouter", () => {
       })
     );
   });
-  test("should fetch /room-code, no user present", async () => {
+  test.only("should fetch /room-code, no user present", async () => {
     const mockSuccessResponse = {};
     const mockJsonPromise = Promise.resolve(mockSuccessResponse);
     const mockFetchPromise = Promise.resolve({
@@ -104,15 +104,17 @@ describe("GeneratingRoomCodePageWithRouter", () => {
         ></GeneratingRoomCodePage>
       </MemoryRouter>
     );
-    expect(global.fetch).toHaveBeenCalled();
-    expect(global.fetch).toHaveBeenCalledTimes(1);
-    expect(global.fetch).toHaveBeenCalledWith("/prod/room-code", {
-      method: "POST",
-      body: JSON.stringify({
-        path: chosenPath,
-      }),
-      headers: { "Content-Type": "application/json" },
-    });
+    await waitFor(() => expect(global.fetch).toHaveBeenCalled());
+    await waitFor(() => expect(global.fetch).toHaveBeenCalledTimes(1));
+    await waitFor(() =>
+      expect(global.fetch).toHaveBeenCalledWith("/prod/room-code", {
+        method: "POST",
+        body: JSON.stringify({
+          path: chosenPath,
+        }),
+        headers: { "Content-Type": "application/json" },
+      })
+    );
   });
   test("should set confirmedRoomCode on successful fetch", (done) => {
     const mockSuccessResponse = { roomCode: "SUCCES" };

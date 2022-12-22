@@ -1,11 +1,12 @@
 import { MemoryRouter } from "react-router-dom";
 import React from "react";
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import GeneratingRoomCodePage from "./GeneratingRoomCodePage";
+import { act } from "react-dom/test-utils";
 
 describe("GeneratingRoomCodePageWithRouter", () => {
-  test("should display a spinner before fetch returns", () => {
+  test.only("should display a spinner before fetch returns", async () => {
     const mockSuccessResponse = {};
     const mockJsonPromise = Promise.resolve(mockSuccessResponse);
     const mockFetchPromise = Promise.resolve({
@@ -32,8 +33,8 @@ describe("GeneratingRoomCodePageWithRouter", () => {
     );
     screen.getByText("Generating a Room Code...");
     const circles = document.getElementsByTagName("circle");
-    expect(circles.length).toBeGreaterThan(0);
-    expect(global.fetch).toHaveBeenCalled();
+    await waitFor(() => expect(circles.length).toBeGreaterThan(0));
+    await waitFor(() => expect(global.fetch).toHaveBeenCalled());
   });
   test("should fetch /room-code, user present", (done) => {
     const mockSuccessResponse = {};
@@ -244,21 +245,22 @@ describe("GeneratingRoomCodePageWithRouter", () => {
       .mockImplementation(() => {
         return "script/path/from/storage";
       });
-
-    render(
-      <MemoryRouter>
-        <GeneratingRoomCodePage
-          history={history}
-          setChosenPath={setChosenPath}
-          chosenPath={chosenPath}
-          setConfirmedRoomCode={setConfirmedRoomCode}
-          user={{
-            nickname: "God of Fun",
-            email: "sumslummy@raw.raw",
-          }}
-        ></GeneratingRoomCodePage>
-      </MemoryRouter>
-    );
+    act(() => {
+      render(
+        <MemoryRouter>
+          <GeneratingRoomCodePage
+            history={history}
+            setChosenPath={setChosenPath}
+            chosenPath={chosenPath}
+            setConfirmedRoomCode={setConfirmedRoomCode}
+            user={{
+              nickname: "God of Fun",
+              email: "sumslummy@raw.raw",
+            }}
+          ></GeneratingRoomCodePage>
+        </MemoryRouter>
+      );
+    });
     expect(global.fetch).toHaveBeenCalledTimes(1);
     expect(global.fetch).toHaveBeenCalledWith("/prod/room-code", {
       method: "POST",
@@ -293,16 +295,18 @@ describe("GeneratingRoomCodePageWithRouter", () => {
     const setChosenPath = jest.fn();
     const setConfirmedRoomCode = jest.fn();
     const chosenPath = "a/b/c";
-    render(
-      <MemoryRouter>
-        <GeneratingRoomCodePage
-          history={history}
-          setChosenPath={setChosenPath}
-          chosenPath={chosenPath}
-          setConfirmedRoomCode={setConfirmedRoomCode}
-        ></GeneratingRoomCodePage>
-      </MemoryRouter>
-    );
+    await act(async () => {
+      render(
+        <MemoryRouter>
+          <GeneratingRoomCodePage
+            history={history}
+            setChosenPath={setChosenPath}
+            chosenPath={chosenPath}
+            setConfirmedRoomCode={setConfirmedRoomCode}
+          ></GeneratingRoomCodePage>
+        </MemoryRouter>
+      );
+    });
     expect(global.fetch).toHaveBeenCalledTimes(1);
     await screen.findByText(
       /So sorry, but a Room Code could not be generated./

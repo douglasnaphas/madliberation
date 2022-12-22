@@ -10,7 +10,7 @@ import { Link } from "react-router-dom";
 import MenuIcon from "@mui/icons-material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import Menu from "@mui/material/Menu";
-import { Global, css } from "@emotion/react";
+import { Global } from "@emotion/react";
 
 const styles = {
   ".root": {

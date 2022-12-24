@@ -178,12 +178,9 @@ export class MadliberationWebapp extends Stack {
     }
 
     const cff = new cloudfront.Function(this, "AllPathsToFrontend", {
-      code: cloudfront.FunctionCode.fromInline(
-        `function handler(event) {\n` +
-          `  var req = event.request;\n` +
-          `  return req;\n` +
-          `}`
-      ),
+      code: cloudfront.FunctionCode.fromFile({
+        filePath: "./AllPathsToFrontend.js",
+      }),
     });
     const distroProps: any = {
       logBucket: new MadLiberationBucket(this, "DistroLoggingBucket"),

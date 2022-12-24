@@ -181,7 +181,6 @@ export class MadliberationWebapp extends Stack {
       code: cloudfront.FunctionCode.fromInline(
         `function handler(event) {\n` +
           `  var req = event.request;\n` +
-          `  req.uri = "/";\n` +
           `  return req;\n` +
           `}`
       ),

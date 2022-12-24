@@ -179,7 +179,7 @@ export class MadliberationWebapp extends Stack {
 
     const cff = new cloudfront.Function(this, "AllPathsToFrontend", {
       code: cloudfront.FunctionCode.fromFile({
-        filePath: "./AllPathsToFrontend.js",
+        filePath: "./lib/AllPathsToFrontend.js",
       }),
     });
     const distroProps: any = {

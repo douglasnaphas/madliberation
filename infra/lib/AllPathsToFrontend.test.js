@@ -11,24 +11,28 @@ describe("AllPathsToFrontend", () => {
       expected: "/",
     },
     {
-      uri: "/seders/abcdef",
+      uri: "/seders/seder-abcdef",
       expected: "/"
     },
     {
-      uri: "/seders/abcdef/",
+      uri: "/seders/seder-abcdef/",
       expected: "/"
     },
     {
-      uri: "/seders/abcdef/styles.css",
+      uri: "/seders/seder-abcdef/styles.css",
       expected: "/styles.css"
     },
     {
-      uri: "/seders/ANYNUMBERANYCASE/anything.xyz",
+      uri: "/seders/seder-UPTOTWELVEAB/anything.xyz",
       expected: "/anything.xyz"
     },
     {
       uri: "/not/themagicword/main.js",
       expected: "/not/themagicword/main.js"
+    },
+    {
+      uri: "/seders/static/css/main.b05db709.css",
+      expected: "/static/css/main.b05db709.css"
     }
   ])("$uri -> $expected", ({ uri, expected }) => {
     expect(handler({ request: { uri } }).uri).toEqual(`${expected}`);

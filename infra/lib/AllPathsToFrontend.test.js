@@ -33,6 +33,14 @@ describe("AllPathsToFrontend", () => {
     {
       uri: "/seders/static/css/main.b05db709.css",
       expected: "/static/css/main.b05db709.css"
+    },
+    {
+      uri: "/seders",
+      expected: "/"
+    },
+    {
+      uri: "/seders/",
+      expected: "/"
     }
   ])("$uri -> $expected", ({ uri, expected }) => {
     expect(handler({ request: { uri } }).uri).toEqual(`${expected}`);

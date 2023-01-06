@@ -5,5 +5,8 @@ function handler(event) {
   if(req.uri === "") {
     req.uri = "/";
   }
+  if(req.uri === "/seders") {
+    req.uri = "/";
+  }
   return req;
 }

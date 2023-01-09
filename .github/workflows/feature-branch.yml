@@ -20,11 +20,6 @@ jobs:
         run: |
           npm install
 
-      - name: Install frontend
-        working-directory: frontend
-        run: |
-          npm install
-
       - name: Install frontend-plan
         working-directory: frontend-plan-seder
         run: |
@@ -51,16 +46,6 @@ jobs:
         working-directory: infra
         run: |
           npm run build
-
-      - name: Build frontend
-        working-directory: frontend
-        run: |
-          npm run build
-
-      - name: Test frontend
-        working-directory: frontend
-        run: |
-          npm test
 
       - name: Install content
         working-directory: content
@@ -101,6 +86,36 @@ jobs:
         run: |
           npm run deploy-webapp
 
+      - name: Deploy content (dev account)
+        working-directory: content
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.DEV_AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.DEV_AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: "us-east-1"
+        run: |
+          bash deploy-content.sh
+
+  frontend:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - uses: actions/checkout@v3
+    
+      - name: Install frontend
+        working-directory: frontend
+        run: |
+          npm install
+
+      - name: Build frontend
+        working-directory: frontend
+        run: |
+          npm run build
+
+      - name: Test frontend
+        working-directory: frontend
+        run: |
+          npm test
+
       - name: Deploy to the frontend bucket (dev account)
         working-directory: frontend
         env:
@@ -110,17 +125,9 @@ jobs:
         run: |
           npm run deploy
 
-      - name: Deploy content (dev account)
-        working-directory: content
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.DEV_AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.DEV_AWS_SECRET_ACCESS_KEY }}
-          AWS_DEFAULT_REGION: "us-east-1"
-        run: |
-          bash deploy-content.sh
   itest:
     runs-on: ubuntu-latest
-    needs: build
+    needs: frontend
     steps:
       - uses: actions/checkout@v3
 

@@ -93,7 +93,7 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.DEV_AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: "us-east-1"
         run: |
-          bash deploy-content.sh
+          npm run deploy
 
   frontend:
     runs-on: ubuntu-latest

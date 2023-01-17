@@ -4,6 +4,8 @@
 
 This is the source for Mad Liberation, the application which is live at https://passover.lol. Mad Liberation helps you make Haggadahs and run Seders with mad libs!
 
+Checkout the [promotional video](https://www.youtube.com/watch?v=rar6fN0qJbA&ab_channel=VeryAwesomeArts) from our launch in 2019.
+
 ## Quickstart guide
 
 This repo will deploy a web application, including all the AWS resources needed for it to be usable, if you do the following.

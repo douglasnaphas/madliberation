@@ -15,3 +15,5 @@ echo "${BUCKET}"
 
 source scripts/deploy-to-bucket.sh
 deploy-to-bucket ${BUCKET}
+
+bash scripts/tag-bucket.sh ${BUCKET}

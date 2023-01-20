@@ -1,5 +1,5 @@
 BUCKET=$1
-if [[ -z ${BUCKET }]]
+if [[ -z ${BUCKET} ]]
 then
   echo "BUCKET must be set, like bash tag-bucket.sh bucket-name"
   ARBITRARY_NONZERO_NUMBER=50

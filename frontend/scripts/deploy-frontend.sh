@@ -13,6 +13,8 @@ echo "${PARAM_NAME}"
 echo "BUCKET:"
 echo "${BUCKET}"
 
+git log -1
+
 source scripts/deploy-to-bucket.sh
 deploy-to-bucket ${BUCKET}
 

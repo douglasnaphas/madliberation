@@ -12,4 +12,6 @@ then
 else
   new_tagset=$(echo "${old_tagset}" | node -e 'const d = JSON.parse(require("fs").readFileSync(0, "utf-8")); const newTagSet = d.TagSet.map(e => {if(e.Name == "SHA") return {Name:"SHA",Value:"'${GITHUB_SHA}'"}; return e;}) ; console.log(JSON.stringify({TagSet: newTagSet}));')
 fi
+echo "new_tagset:"
+echo "${new_tagset}"
 aws s3api put-bucket-tagging --bucket ${BUCKET} --tagging "${new_tagset}"

@@ -15,6 +15,15 @@ echo "${BUCKET}"
 
 git log -1
 
+# get bucket SHA tag
+get-bucket-sha-tag() {
+  aws s3api get-bucket-tagging --bucket $BUCKET 2>/dev/null | node -e 'const d = JSON.parse(require("fs").readFileSync(0, "utf-8")); if(!d || !d.TagSet || !d.TagSet.forEach){process.exit(0);} d.TagSet.forEach(t => {if(t.Key == "SHA"){console.log(t.Value);process.exit(0);}})'
+}
+bucket_sha=$(get-bucket-sha-tag)
+# do SHA check, exit if no change
+if [[ ]]
+# install, build, test, deploy
+
 source scripts/deploy-to-bucket.sh
 deploy-to-bucket ${BUCKET}
 

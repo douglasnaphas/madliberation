@@ -22,7 +22,7 @@ get-bucket-sha-tag() {
 bucket_sha=$(get-bucket-sha-tag)
 echo ${bucket_sha}
 # do SHA check, exit if no change
-git diff --name-only ${bucket_sha}..@
+git diff --name-only ${bucket_sha} @
 # if [[ ]]
 # install, build, test, deploy
 npm install

@@ -9,7 +9,6 @@ import {
 } from "aws-cdk-lib";
 import { aws_lambda as lambda } from "aws-cdk-lib";
 import { aws_apigateway as apigw } from "aws-cdk-lib";
-import { aws_s3 as s3 } from "aws-cdk-lib";
 import { aws_cloudfront as cloudfront } from "aws-cdk-lib";
 import { aws_cloudfront_origins as origins } from "aws-cdk-lib";
 import { aws_ssm as ssm } from "aws-cdk-lib";

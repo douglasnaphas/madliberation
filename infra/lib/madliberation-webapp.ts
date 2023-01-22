@@ -30,7 +30,6 @@ import * as apigwv2i from "@aws-cdk/aws-apigatewayv2-integrations-alpha";
 import { AppBucket } from "./AppBucket";
 import { AppUserPool } from "./AppUserPool";
 
-
 export interface MadLiberationWebappProps extends StackProps {
   fromAddress?: string;
   domainName?: string;

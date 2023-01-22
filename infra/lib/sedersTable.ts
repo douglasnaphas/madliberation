@@ -1,7 +1,9 @@
 import { aws_dynamodb as dynamodb, RemovalPolicy } from "aws-cdk-lib";
 import { Construct } from "constructs";
 const schema = require("../../backend/schema");
-const sedersTable = (construct: Construct) => {
+const sedersTable: (construct: Construct) => dynamodb.Table = (
+  construct: Construct
+) => {
   const table = new dynamodb.Table(construct, "SedersTable", {
     partitionKey: {
       name: schema.PARTITION_KEY,
@@ -64,5 +66,6 @@ const sedersTable = (construct: Construct) => {
     },
     projectionType: dynamodb.ProjectionType.ALL,
   });
+  return table;
 };
 module.exports = sedersTable;

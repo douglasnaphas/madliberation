@@ -12,7 +12,7 @@ import { aws_apigateway as apigw } from "aws-cdk-lib";
 import { aws_cloudfront as cloudfront } from "aws-cdk-lib";
 import { aws_cloudfront_origins as origins } from "aws-cdk-lib";
 import { aws_ssm as ssm } from "aws-cdk-lib";
-import { aws_dynamodb as dynamodb } from "aws-cdk-lib";
+
 import { aws_cognito as cognito } from "aws-cdk-lib";
 const stackname = require("@cdk-turnkey/stackname");
 const crypto = require("crypto");
@@ -29,7 +29,7 @@ import * as apigwv2 from "@aws-cdk/aws-apigatewayv2-alpha";
 import * as apigwv2i from "@aws-cdk/aws-apigatewayv2-integrations-alpha";
 import { AppBucket } from "./AppBucket";
 import { AppUserPool } from "./AppUserPool";
-const schema = require("../../backend/schema");
+
 
 export interface MadLiberationWebappProps extends StackProps {
   fromAddress?: string;
@@ -59,68 +59,7 @@ export class MadliberationWebapp extends Stack {
       googleClientSecret,
     } = props;
 
-    const sedersTable = new dynamodb.Table(this, "SedersTable", {
-      partitionKey: {
-        name: schema.PARTITION_KEY,
-        type: dynamodb.AttributeType.STRING,
-      },
-      sortKey: { name: schema.SORT_KEY, type: dynamodb.AttributeType.STRING },
-      billingMode: dynamodb.BillingMode.PAY_PER_REQUEST,
-      removalPolicy: RemovalPolicy.DESTROY,
-      stream: dynamodb.StreamViewType.NEW_AND_OLD_IMAGES,
-    });
-    sedersTable.addGlobalSecondaryIndex({
-      indexName: schema.SCRIPTS_INDEX,
-      partitionKey: {
-        name: schema.SCRIPTS_PART_KEY,
-        type: dynamodb.AttributeType.NUMBER,
-      },
-      nonKeyAttributes: [
-        schema.HAGGADAH_DESCRIPTION,
-        schema.HAGGADAH_NAME,
-        schema.SORT_KEY,
-        schema.PARTITION_KEY,
-        schema.HAGGADAH_SHORT_DESC,
-        schema.PATH,
-      ],
-      projectionType: dynamodb.ProjectionType.INCLUDE,
-      sortKey: {
-        name: schema.SCRIPT_NUMBER,
-        type: dynamodb.AttributeType.NUMBER,
-      },
-    });
-    sedersTable.addGlobalSecondaryIndex({
-      indexName: schema.EMAIL_PATH_INDEX,
-      partitionKey: {
-        name: schema.USER_EMAIL,
-        type: dynamodb.AttributeType.STRING,
-      },
-      sortKey: {
-        name: schema.PATH,
-        type: dynamodb.AttributeType.STRING,
-      },
-      projectionType: dynamodb.ProjectionType.ALL,
-    });
-    sedersTable.addGlobalSecondaryIndex({
-      indexName: schema.EMAIL_GAME_NAME_INDEX,
-      partitionKey: {
-        name: schema.USER_EMAIL,
-        type: dynamodb.AttributeType.STRING,
-      },
-      sortKey: {
-        name: schema.GAME_NAME,
-        type: dynamodb.AttributeType.STRING,
-      },
-      projectionType: dynamodb.ProjectionType.ALL,
-    });
-    sedersTable.addGlobalSecondaryIndex({
-      indexName: schema.OPAQUE_COOKIE_INDEX,
-      partitionKey: {
-        name: schema.OPAQUE_COOKIE,
-        type: dynamodb.AttributeType.STRING,
-      },
-      projectionType: dynamodb.ProjectionType.ALL,
-    });
+    const sedersTable = require("./sedersTable")(this);
 
     const frontendBucket = new AppBucket(this, "FrontendBucket");
 

@@ -28,6 +28,7 @@ import {
 } from "aws-cdk-lib/aws-lambda-event-sources";
 import * as apigwv2 from "@aws-cdk/aws-apigatewayv2-alpha";
 import * as apigwv2i from "@aws-cdk/aws-apigatewayv2-integrations-alpha";
+import { AppBucket } from "./AppBucket";
 const schema = require("../../backend/schema");
 
 export interface MadLiberationWebappProps extends StackProps {
@@ -57,16 +58,6 @@ export class MadliberationWebapp extends Stack {
       googleClientId,
       googleClientSecret,
     } = props;
-
-    class MadLiberationBucket extends s3.Bucket {
-      constructor(scope: Construct, id: string, props: s3.BucketProps = {}) {
-        super(scope, id, {
-          removalPolicy: RemovalPolicy.DESTROY,
-          autoDeleteObjects: true,
-          ...props,
-        });
-      }
-    }
 
     class MadLiberationUserPool extends cognito.UserPool {
       constructor(
@@ -144,7 +135,7 @@ export class MadliberationWebapp extends Stack {
       projectionType: dynamodb.ProjectionType.ALL,
     });
 
-    const frontendBucket = new MadLiberationBucket(this, "FrontendBucket");
+    const frontendBucket = new AppBucket(this, "FrontendBucket");
 
     // This is so a script can find the bucket and deploy to it.
     // I can't wrap up the artifact at cdk-deploy time, because the CDK Level-3
@@ -183,7 +174,7 @@ export class MadliberationWebapp extends Stack {
       }),
     });
     const distroProps: any = {
-      logBucket: new MadLiberationBucket(this, "DistroLoggingBucket"),
+      logBucket: new AppBucket(this, "DistroLoggingBucket"),
       logFilePrefix: "distribution-access-logs/",
       logIncludesCookies: true,
       defaultBehavior: {
@@ -734,7 +725,7 @@ export class MadliberationWebapp extends Stack {
     wsWaitStage.grantManagementApiAccess(assignHandler);
     wsReadRosterStage.grantManagementApiAccess(submitHandler);
 
-    const scriptsBucket = new MadLiberationBucket(this, "ScriptsBucket", {
+    const scriptsBucket = new AppBucket(this, "ScriptsBucket", {
       versioned: true,
     });
     scriptsBucket.grantRead(backendHandler);

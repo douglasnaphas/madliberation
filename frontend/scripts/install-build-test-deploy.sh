@@ -22,8 +22,13 @@ get-bucket-sha-tag() {
 bucket_sha=$(get-bucket-sha-tag)
 echo ${bucket_sha}
 # do SHA check, exit if no change
-git diff --name-only ${bucket_sha} @
-# if [[ ]]
+if ! git diff --name-only ${bucket_sha} @ | grep '^frontend/' > /dev/null
+then
+  echo "no changes to frontend from ${bucket_sha} to ${GITHUB_SHA}"
+  echo "not going any further with frontend this build"
+  exit 0
+fi
+
 # install, build, test, deploy
 npm install
 npm run build

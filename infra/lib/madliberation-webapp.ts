@@ -28,6 +28,7 @@ import {
 import * as apigwv2 from "@aws-cdk/aws-apigatewayv2-alpha";
 import * as apigwv2i from "@aws-cdk/aws-apigatewayv2-integrations-alpha";
 import { AppBucket } from "./AppBucket";
+import { AppUserPool } from "./AppUserPool";
 const schema = require("../../backend/schema");
 
 export interface MadLiberationWebappProps extends StackProps {
@@ -57,19 +58,6 @@ export class MadliberationWebapp extends Stack {
       googleClientId,
       googleClientSecret,
     } = props;
-
-    class MadLiberationUserPool extends cognito.UserPool {
-      constructor(
-        scope: Construct,
-        id: string,
-        props: cognito.UserPoolProps = {}
-      ) {
-        super(scope, id, {
-          removalPolicy: RemovalPolicy.DESTROY,
-          ...props,
-        });
-      }
-    }
 
     const sedersTable = new dynamodb.Table(this, "SedersTable", {
       partitionKey: {
@@ -194,7 +182,7 @@ export class MadliberationWebapp extends Stack {
 
     const distro = new cloudfront.Distribution(this, "Distro", distroProps);
 
-    const userPool = new MadLiberationUserPool(this, "UserPool", {
+    const userPool = new AppUserPool(this, "UserPool", {
       selfSignUpEnabled: true,
       userVerification: {
         emailSubject: "Mad Liberation: verify your new account",

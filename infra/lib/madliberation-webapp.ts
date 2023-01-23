@@ -11,8 +11,6 @@ import { aws_lambda as lambda } from "aws-cdk-lib";
 import { aws_apigateway as apigw } from "aws-cdk-lib";
 import { aws_cloudfront as cloudfront } from "aws-cdk-lib";
 import { aws_cloudfront_origins as origins } from "aws-cdk-lib";
-import { aws_ssm as ssm } from "aws-cdk-lib";
-
 import { aws_cognito as cognito } from "aws-cdk-lib";
 const stackname = require("@cdk-turnkey/stackname");
 const crypto = require("crypto");

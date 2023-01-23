@@ -93,11 +93,6 @@ export class MadliberationWebapp extends Stack {
       domainNames = [domainName, wwwDomainName];
     }
 
-    const cff = new cloudfront.Function(this, "AllPathsToFrontend", {
-      code: cloudfront.FunctionCode.fromFile({
-        filePath: "./lib/AllPathsToFrontend.js",
-      }),
-    });
     const distroProps: any = {
       logBucket: new AppBucket(this, "DistroLoggingBucket"),
       logFilePrefix: "distribution-access-logs/",
@@ -106,12 +101,6 @@ export class MadliberationWebapp extends Stack {
         origin: new origins.S3Origin(frontendBucket),
         viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
         cachePolicy: cloudfront.CachePolicy.CACHING_DISABLED,
-        functionAssociations: [
-          {
-            function: cff,
-            eventType: cloudfront.FunctionEventType.VIEWER_REQUEST,
-          },
-        ],
       },
       defaultRootObject: "index.html",
       domainNames,

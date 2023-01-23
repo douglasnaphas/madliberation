@@ -62,21 +62,6 @@ export class MadliberationWebapp extends Stack {
 
     const frontendBucket = new AppBucket(this, "FrontendBucket");
 
-    // This is so a script can find the bucket and deploy to it.
-    // I can't wrap up the artifact at cdk-deploy time, because the CDK Level-3
-    // construct for doing so is still (last I checked) experimental
-    const frontendBucketNameParam = new ssm.StringParameter(
-      this,
-      "FrontendBucketNameParam",
-      {
-        description: "The name of the bucket where front-end assets go",
-        parameterName: stackname("FrontendBucketName"),
-        stringValue: frontendBucket.bucketName,
-        tier: ssm.ParameterTier.STANDARD,
-        type: ssm.ParameterType.STRING,
-      }
-    );
-
     let hostedZone, wwwDomainName, certificate, domainNames;
     if (domainName && zoneId) {
       hostedZone = route53.HostedZone.fromHostedZoneAttributes(
@@ -665,9 +650,6 @@ export class MadliberationWebapp extends Stack {
     });
     new CfnOutput(this, "FrontendBucketName", {
       value: frontendBucket.bucketName,
-    });
-    new CfnOutput(this, "FrontendBucketNameParamName", {
-      value: frontendBucketNameParam.parameterName,
     });
     new CfnOutput(this, "UserPoolId", {
       value: userPool.userPoolId,

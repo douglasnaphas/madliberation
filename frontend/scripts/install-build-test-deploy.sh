@@ -2,6 +2,7 @@
 
 set -e
 
+STACKNAME=$(npx @cdk-turnkey/stackname@1.2.0 --suffix webapp)
 BUCKET=$(aws cloudformation describe-stacks \
   --stack-name ${STACKNAME} | \
   jq '.Stacks[0].Outputs | map(select(.OutputKey == "FrontendBucketName"))[0].OutputValue' | \

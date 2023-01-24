@@ -5,7 +5,7 @@ set -e
 STACKNAME=$(npx @cdk-turnkey/stackname@1.2.0 --suffix webapp)
 BUCKET=$(aws cloudformation describe-stacks \
   --stack-name ${STACKNAME} | \
-  jq '.Stacks[0].Outputs | map(select(.OutputKey == "FrontendBucketName"))[0].OutputValue' | \
+  jq '.Stacks[0].Outputs | map(select(.OutputKey == "FrontendCreateHaggadahBucketName"))[0].OutputValue' | \
   tr -d \")
 
 echo "BUCKET:"
@@ -20,10 +20,10 @@ get-bucket-sha-tag() {
 bucket_sha=$(get-bucket-sha-tag)
 echo ${bucket_sha}
 # do SHA check, exit if no change
-if ! git diff --name-only ${bucket_sha} @ | grep '^frontend/' > /dev/null
+if ! git diff --name-only ${bucket_sha} @ | grep '^frontend-create-haggadah/' > /dev/null
 then
-  echo "no changes to frontend from ${bucket_sha} to ${GITHUB_SHA}"
-  echo "not going any further with frontend this build"
+  echo "no changes to frontend-create-haggadah from ${bucket_sha} to ${GITHUB_SHA}"
+  echo "not going any further with frontend-create-haggadah this build"
   exit 0
 fi
 

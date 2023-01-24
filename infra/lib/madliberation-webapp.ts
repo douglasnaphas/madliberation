@@ -25,7 +25,7 @@ import {
 } from "aws-cdk-lib/aws-lambda-event-sources";
 import * as apigwv2 from "@aws-cdk/aws-apigatewayv2-alpha";
 import * as apigwv2i from "@aws-cdk/aws-apigatewayv2-integrations-alpha";
-import { AppBucket } from "./AppBucket";
+const appBucket = require("./appBucket");
 import { AppUserPool } from "./AppUserPool";
 
 export interface MadLiberationWebappProps extends StackProps {
@@ -57,8 +57,8 @@ export class MadliberationWebapp extends Stack {
     } = props;
 
     const sedersTable = require("./sedersTable")(this);
-
-    const frontendBucket = new AppBucket(this, "FrontendBucket");
+    const frontendBucket = appBucket(this, "FrontendBucket");
+    const frontendCreateHaggadahBucket = appBucket(this, "FrontendCreateHaggadahBucket");
 
     let hostedZone, wwwDomainName, certificate, domainNames;
     if (domainName && zoneId) {
@@ -77,7 +77,7 @@ export class MadliberationWebapp extends Stack {
     }
 
     const distroProps: any = {
-      logBucket: new AppBucket(this, "DistroLoggingBucket"),
+      logBucket: appBucket(this, "DistroLoggingBucket"),
       logFilePrefix: "distribution-access-logs/",
       logIncludesCookies: true,
       defaultBehavior: {
@@ -91,6 +91,15 @@ export class MadliberationWebapp extends Stack {
     };
 
     const distro = new cloudfront.Distribution(this, "Distro", distroProps);
+
+    distro.addBehavior(
+      "/create-haggadah/*",
+      new origins.S3Origin(frontendCreateHaggadahBucket),
+      {
+        viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
+        cachePolicy: cloudfront.CachePolicy.CACHING_DISABLED,
+      }
+    )
 
     const userPool = new AppUserPool(this, "UserPool", {
       selfSignUpEnabled: true,
@@ -622,7 +631,7 @@ export class MadliberationWebapp extends Stack {
     wsWaitStage.grantManagementApiAccess(assignHandler);
     wsReadRosterStage.grantManagementApiAccess(submitHandler);
 
-    const scriptsBucket = new AppBucket(this, "ScriptsBucket", {
+    const scriptsBucket = appBucket(this, "ScriptsBucket", {
       versioned: true,
     });
     scriptsBucket.grantRead(backendHandler);
@@ -646,17 +655,11 @@ export class MadliberationWebapp extends Stack {
     new CfnOutput(this, "lambdaApi_url", {
       value: lambdaApi.url,
     });
-    new CfnOutput(this, "FrontendBucketName", {
-      value: frontendBucket.bucketName,
-    });
     new CfnOutput(this, "UserPoolId", {
       value: userPool.userPoolId,
     });
     new CfnOutput(this, "UserPoolClientId", {
       value: userPoolClient.userPoolClientId,
-    });
-    new CfnOutput(this, "ScriptsBucketName", {
-      value: scriptsBucket.bucketName,
     });
     new CfnOutput(this, "TableName", { value: sedersTable.tableName });
     new CfnOutput(this, "WSRosterEndpoint", {

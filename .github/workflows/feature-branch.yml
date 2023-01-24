@@ -120,14 +120,14 @@ jobs:
         with:
           fetch-depth: 0
 
-    - name: Deploy to the frontend-create-haggadah bucket (dev account)
-        working-directory: frontend-create-haggadah
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.DEV_AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.DEV_AWS_SECRET_ACCESS_KEY }}
-          AWS_DEFAULT_REGION: "us-east-1"
-        run: |
-          npm run install-build-test-deploy
+      - name: Deploy to the frontend-create-haggadah bucket   (dev account)
+          working-directory: frontend-create-haggadah
+          env:
+            AWS_ACCESS_KEY_ID: ${{ secrets.  DEV_AWS_ACCESS_KEY_ID }}
+            AWS_SECRET_ACCESS_KEY: ${{ secrets.  DEV_AWS_SECRET_ACCESS_KEY }}
+            AWS_DEFAULT_REGION: "us-east-1"
+          run: |
+            npm run install-build-test-deploy
 
   itest:
     runs-on: ubuntu-latest

@@ -12,13 +12,13 @@ deploy-to-bucket() {
     echo "error, deploy-to-bucket: unable to ls on s3://${BUCKET}"
     exit 1
   fi
-  aws s3 sync --content-type "text/html" --exclude "*" --include "*.html" --delete build/ s3://${BUCKET}/
-  aws s3 sync --content-type "text/css" --exclude "*" --include "*.css" --include "*.css.map" --delete build/ s3://${BUCKET}/
-  aws s3 sync --content-type "text/javascript" --exclude "*" --include "*.js" --include "*.js.map" --delete build/ s3://${BUCKET}/
-  aws s3 sync --content-type "application/json" --exclude "*" --include "*.json" --delete build/ s3://${BUCKET}/
-  aws s3 sync --content-type "image/x-icon" --exclude "*" --include "*.ico" --delete build/ s3://${BUCKET}/
-  aws s3 sync --content-type "image/svg+xml" --exclude "*" --include "*.svg" --delete build/ s3://${BUCKET}/
-  aws s3 sync --content-type "image/png" --exclude "*" --include "*.png" --delete build/ s3://${BUCKET}/
-  aws s3 sync --content-type "image/jpeg" --exclude "*" --include "*.jpg" --delete build/ s3://${BUCKET}/
+  aws s3 sync --content-type "text/html" --exclude "*" --include "*.html" --delete out/ s3://${BUCKET}/
+  aws s3 sync --content-type "text/css" --exclude "*" --include "*.css" --include "*.css.map" --delete out/ s3://${BUCKET}/
+  aws s3 sync --content-type "text/javascript" --exclude "*" --include "*.js" --include "*.js.map" --delete out/ s3://${BUCKET}/
+  aws s3 sync --content-type "application/json" --exclude "*" --include "*.json" --delete out/ s3://${BUCKET}/
+  aws s3 sync --content-type "image/x-icon" --exclude "*" --include "*.ico" --delete out/ s3://${BUCKET}/
+  aws s3 sync --content-type "image/svg+xml" --exclude "*" --include "*.svg" --delete out/ s3://${BUCKET}/
+  aws s3 sync --content-type "image/png" --exclude "*" --include "*.png" --delete out/ s3://${BUCKET}/
+  aws s3 sync --content-type "image/jpeg" --exclude "*" --include "*.jpg" --delete out/ s3://${BUCKET}/
 }
   

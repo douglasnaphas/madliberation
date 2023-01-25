@@ -12,6 +12,9 @@ deploy-to-bucket() {
     echo "error, deploy-to-bucket: unable to ls on s3://${BUCKET}"
     exit 1
   fi
+  mkdir tmp-out
+  mv out tmp-out/create-haggadah
+  mv tmp-out out
   aws s3 sync --content-type "text/html" --exclude "*" --include "*.html" --delete out/ s3://${BUCKET}/
   aws s3 sync --content-type "text/css" --exclude "*" --include "*.css" --include "*.css.map" --delete out/ s3://${BUCKET}/
   aws s3 sync --content-type "text/javascript" --exclude "*" --include "*.js" --include "*.js.map" --delete out/ s3://${BUCKET}/

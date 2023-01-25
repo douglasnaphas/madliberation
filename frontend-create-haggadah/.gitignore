@@ -36,3 +36,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# This frontend's build directory
+/create-haggadah/

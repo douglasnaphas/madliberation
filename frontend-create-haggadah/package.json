@@ -7,6 +7,7 @@
     "build": "next build && next export",
     "start": "next start",
     "lint": "next lint",
+    "test": "echo 'no tests yet'",
     "post-update": "echo \"codesandbox preview only, need an update\" && yarn upgrade --latest",
     "install-build-test-deploy": "bash scripts/install-build-test-deploy.sh"
   },

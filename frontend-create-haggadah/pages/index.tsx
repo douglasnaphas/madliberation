@@ -8,8 +8,8 @@ import Link from "../src/Link";
 import ProTip from "../src/ProTip";
 import Copyright from "../src/Copyright";
 import RedSeaImage from "../public/background-red-sea.jpg";
-import MadLiberationLogo from "../mad-liberation-logo.png";
-import VeryAwesomePassoverLogo from "../VAPLogo-white.png";
+import MadLiberationLogo from "../public/mad-liberation-logo.png";
+import VeryAwesomePassoverLogo from "../public/VAPLogo-white.png";
 import { Global, css, jsx } from "@emotion/react";
 
 const styles = {

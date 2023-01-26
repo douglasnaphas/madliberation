@@ -2,6 +2,7 @@
   "name": "nextjs-with-typescript",
   "version": "5.0.0",
   "private": true,
+  "homepage": ".",
   "scripts": {
     "mkcert": "mkcert -install && mkcert localhost",
     "docker-build": "docker build -t frontend-create-haggadah .",

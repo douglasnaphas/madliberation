@@ -12,7 +12,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "dev": "bash ./scripts/run-dev.sh",
+    "dev-start": "bash ./scripts/run-dev.sh",
     "dev-stop": "docker-compose down",
     "test": "react-scripts test --env=jsdom",
     "build": "react-scripts build",

@@ -47,38 +47,39 @@ export default function Home() {
         backgroundSize: "cover",
       }}*/
     >
-      <div style={{ backgroundImage: `url(${RedSeaImage.src})` }}>f</div>
-      <img src={`${MadLiberationLogo.src}`}></img>
-      <div
-        css={{
-          backgroundColor: "hotpink",
-          "&:hover": {
-            color: "lightgreen",
-          },
-        }}
-      >
-        This has a hotpink background.
-      </div>
-      <Container maxWidth="lg">
-        <Box
-          sx={{
-            my: 4,
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
-            alignItems: "center",
+      <div style={{ backgroundImage: `url(${RedSeaImage.src})` }}>
+        <img src={`${MadLiberationLogo.src}`}></img>
+        <div
+          css={{
+            backgroundColor: "hotpink",
+            "&:hover": {
+              color: "lightgreen",
+            },
           }}
         >
-          <Typography variant="h4" component="h1" gutterBottom>
-            MUI v5 + Next.js with TypeScript example
-          </Typography>
-          <Link href="/about" color="secondary">
-            Go to the about page
-          </Link>
-          <ProTip />
-          <Copyright />
-        </Box>
-      </Container>
+          This has a hotpink background.
+        </div>
+        <Container maxWidth="lg">
+          <Box
+            sx={{
+              my: 4,
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <Typography variant="h4" component="h1" gutterBottom>
+              MUI v5 + Next.js with TypeScript example
+            </Typography>
+            <Link href="/about" color="secondary">
+              Go to the about page
+            </Link>
+            <ProTip />
+            <Copyright />
+          </Box>
+        </Container>
+      </div>
     </div>
   );
 }

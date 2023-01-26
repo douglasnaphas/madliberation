@@ -11,6 +11,8 @@
     "react-scripts": "^5.0.1"
   },
   "scripts": {
+    "mkcert": "mkcert -install && mkcert localhost",
+    "docker-build": "docker build -t frontend .",
     "start": "react-scripts start",
     "dev-start": "bash ./scripts/run-dev.sh",
     "dev-stop": "docker-compose down",

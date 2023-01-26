@@ -34,7 +34,21 @@ const styles = {
 
 export default function Home() {
   return (
-    <div>
+    <div /*
+      css={{
+        backgroundImage: `url(${RedSeaImage})`,
+        minHeight: "100%",
+        width: "100%",
+        height: "auto",
+        position: "fixed",
+        top: 0,
+        left: 0,
+        backgroundPosition: "center",
+        backgroundSize: "cover",
+      }}*/
+    >
+      <div style={{ backgroundImage: `url(${RedSeaImage.src})` }}>f</div>
+      <img src={`../public/background-red-sea.jpg`}></img>
       <div
         css={{
           backgroundColor: "hotpink",

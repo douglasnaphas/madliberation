@@ -3,8 +3,12 @@
   "version": "5.0.0",
   "private": true,
   "scripts": {
+    "mkcert": "mkcert -install && mkcert localhost",
+    "docker-build": "docker build -t frontend-create-haggadah .",
     "dev": "next dev",
     "build": "next build && next export",
+    "dev-start": "bash ./scripts/run-dev.sh",
+    "dev-stop": "docker-compose down",
     "start": "next start",
     "lint": "next lint",
     "test": "echo 'no tests yet'",

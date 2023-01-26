@@ -39,3 +39,6 @@ next-env.d.ts
 
 # This frontend's build directory
 /create-haggadah/
+
+!ws.js
+!backend.js

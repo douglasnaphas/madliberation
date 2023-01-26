@@ -9,7 +9,7 @@ for MKCERT_FILE in localhost{,-key}.pem
 do
     if [[ ! -f ${MKCERT_FILE} ]]
     then
-        echo ${MKCERT_FILE} 'must exist in the frontend/ directory.'
+        echo ${MKCERT_FILE} 'must exist in the frontend-create-haggadah/ directory.'
         echo 'Make sure you have run `mkcert -install ; mkcert localhost`, to set'
         echo 'up TLS for localhost. See https://github.com/FiloSottile/mkcert.'
         exit 3

@@ -48,7 +48,7 @@ export default function Home() {
       }}*/
     >
       <div style={{ backgroundImage: `url(${RedSeaImage.src})` }}>f</div>
-      <img src={`url(${MadLiberationLogo.src})`}></img>
+      <img src={`${MadLiberationLogo.src}`}></img>
       <div
         css={{
           backgroundColor: "hotpink",

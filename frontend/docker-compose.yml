@@ -27,6 +27,10 @@ services:
     image: nginx
     ports:
       - 443:8082
+    depends_on:
+      - frontend
+      - backend0
+      - backend-posts
     volumes:
       - ./revprox/revprox2.conf:/etc/nginx/conf.d/revprox2.conf
       - ./localhost.pem:/etc/ssl/localhost.pem

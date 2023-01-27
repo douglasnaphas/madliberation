@@ -11,6 +11,7 @@ import RedSeaImage from "../public/background-red-sea.jpg";
 import MadLiberationLogo from "../public/mad-liberation-logo.png";
 import VeryAwesomePassoverLogo from "../public/VAPLogo-white.png";
 import { Global, css, jsx } from "@emotion/react";
+import { Paper } from "@mui/material";
 
 const styles = {
   ".homePageBackground": {
@@ -47,19 +48,31 @@ export default function Home() {
         backgroundSize: "cover",
       }}*/
     >
-      <div style={{ backgroundImage: `url(${RedSeaImage.src})` }}>
-        <img src={`${MadLiberationLogo.src}`}></img>
-        <div
-          css={{
-            backgroundColor: "hotpink",
-            "&:hover": {
-              color: "lightgreen",
-            },
-          }}
-        >
-          This has a hotpink background.
+      <div
+        style={{
+          backgroundImage: `url(${RedSeaImage.src})`,
+          minHeight: "100%",
+          width: "100%",
+          height: "auto",
+          position: "fixed",
+          top: 0,
+          left: 0,
+          backgroundPosition: "center",
+          backgroundSize: "cover",
+        }}
+      >
+        <div>
+          <img
+            css={{
+              height: "200px",
+              display: "block",
+              marginLeft: "auto",
+              marginRight: "auto",
+            }}
+            src={`${MadLiberationLogo.src}`}
+          ></img>
         </div>
-        <Container maxWidth="lg">
+        {/* <Container maxWidth="lg">
           <Box
             sx={{
               my: 4,
@@ -78,6 +91,9 @@ export default function Home() {
             <ProTip />
             <Copyright />
           </Box>
+        </Container> */}
+        <Container maxWidth="md">
+          <Paper>on paper</Paper>
         </Container>
       </div>
     </div>

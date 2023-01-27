@@ -16,8 +16,7 @@ import { madLiberationStyles } from "../madLiberationStyles";
 
 export default function Home() {
   return (
-    <div 
-    >
+    <div>
       <div
         style={{
           backgroundColor: "#81181f",
@@ -41,12 +40,17 @@ export default function Home() {
               variant="body1"
               component="p"
               gutterBottom
-              marginLeft={"20px"}
+              css={madLiberationStyles.typography}
             >
               on paper
             </Typography>
 
-            <Typography variant="body1" component="p" gutterBottom>
+            <Typography
+              variant="body1"
+              component="p"
+              gutterBottom
+              css={madLiberationStyles.typography}
+            >
               Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent
               nec ullamcorper orci. Morbi sodales dolor nec tortor ultricies,
               sit amet semper purus maximus. Duis tempor tincidunt mauris in
@@ -57,7 +61,12 @@ export default function Home() {
               condimentum felis, id tristique ligula egestas vitae.
             </Typography>
 
-            <Typography variant="body1" component="p" gutterBottom>
+            <Typography
+              variant="body1"
+              component="p"
+              gutterBottom
+              css={madLiberationStyles.typography}
+            >
               Mauris sit amet elit posuere, porta ex nec, egestas nulla. Quisque
               ac quam consequat, scelerisque leo sit amet, consequat nunc. Sed
               malesuada ligula ut malesuada pulvinar. Maecenas sit amet ante non
@@ -68,7 +77,12 @@ export default function Home() {
               quam. Quisque vel nulla nibh. Quisque ac blandit massa.
             </Typography>
 
-            <Typography variant="body1" component="p" gutterBottom>
+            <Typography
+              variant="body1"
+              component="p"
+              gutterBottom
+              css={madLiberationStyles.typography}
+            >
               Mauris sollicitudin venenatis nulla eu consequat. Pellentesque
               tristique leo magna, nec aliquet nulla rutrum vel. Donec sed dolor
               ut orci malesuada porttitor. In ut blandit lorem. Vestibulum
@@ -86,7 +100,12 @@ export default function Home() {
               ligula quis velit tincidunt porta.
             </Typography>
 
-            <Typography variant="body1" component="p" gutterBottom>
+            <Typography
+              variant="body1"
+              component="p"
+              gutterBottom
+              css={madLiberationStyles.typography}
+            >
               Sed hendrerit diam sed tincidunt malesuada. Pellentesque eu
               vehicula sapien. Cras sapien neque, ullamcorper placerat dignissim
               maximus, bibendum ac dui. Duis lorem est, egestas id est
@@ -99,7 +118,12 @@ export default function Home() {
               ultrices.
             </Typography>
 
-            <Typography variant="body1" component="p" gutterBottom>
+            <Typography
+              variant="body1"
+              component="p"
+              gutterBottom
+              css={madLiberationStyles.typography}
+            >
               Nunc dapibus magna eu massa vestibulum, sed ultricies lacus
               posuere. Proin nec finibus augue. Vestibulum ac pellentesque erat.
               Donec eu purus vitae eros dignissim dictum sit amet non nisi.
@@ -115,7 +139,12 @@ export default function Home() {
               dui. Sed vel pretium urna, eu porttitor dui.
             </Typography>
 
-            <Typography variant="body1" component="p" gutterBottom>
+            <Typography
+              variant="body1"
+              component="p"
+              gutterBottom
+              css={madLiberationStyles.typography}
+            >
               Maecenas sit amet neque pellentesque, laoreet elit aliquet,
               consectetur tellus. Fusce id pellentesque nulla. Aliquam luctus
               diam in mauris feugiat, at finibus urna rhoncus. Morbi vel justo
@@ -128,7 +157,12 @@ export default function Home() {
               libero vel dui venenatis sagittis.
             </Typography>
 
-            <Typography variant="body1" component="p" gutterBottom>
+            <Typography
+              variant="body1"
+              component="p"
+              gutterBottom
+              css={madLiberationStyles.typography}
+            >
               Phasellus placerat, ipsum quis tristique cursus, augue tortor
               bibendum dolor, et consectetur erat mauris in mi. Quisque vel
               tellus elit. Aliquam pretium, felis eget lacinia ultricies, felis
@@ -143,7 +177,12 @@ export default function Home() {
               vitae erat.
             </Typography>
 
-            <Typography variant="body1" component="p" gutterBottom>
+            <Typography
+              variant="body1"
+              component="p"
+              gutterBottom
+              css={madLiberationStyles.typography}
+            >
               Curabitur pulvinar lorem nisi, nec malesuada ante consequat eu.
               Maecenas neque lectus, ultricies sed semper ac, porta vitae metus.
               Nullam vel risus tortor. Praesent fringilla lectus ac nisl mollis,
@@ -152,7 +191,12 @@ export default function Home() {
               sed sodales dolor.
             </Typography>
 
-            <Typography variant="body1" component="p" gutterBottom>
+            <Typography
+              variant="body1"
+              component="p"
+              gutterBottom
+              css={madLiberationStyles.typography}
+            >
               Donec sed feugiat nisl, eu auctor erat. Donec nibh purus, bibendum
               bibendum ipsum vel, imperdiet tincidunt dolor. Donec urna risus,
               porttitor et orci eu, maximus eleifend eros. Proin eu lacinia
@@ -163,7 +207,12 @@ export default function Home() {
               blandit augue, tincidunt gravida odio rhoncus in.
             </Typography>
 
-            <Typography variant="body1" component="p" gutterBottom>
+            <Typography
+              variant="body1"
+              component="p"
+              gutterBottom
+              css={madLiberationStyles.typography}
+            >
               Nulla elementum turpis eu sapien molestie commodo. Donec nec ante
               consequat, elementum est ut, venenatis metus. Fusce leo augue,
               molestie a ex eget, sagittis posuere neque. Maecenas libero
@@ -174,7 +223,12 @@ export default function Home() {
               pharetra massa auctor sit amet.
             </Typography>
 
-            <Typography variant="body1" component="p" gutterBottom>
+            <Typography
+              variant="body1"
+              component="p"
+              gutterBottom
+              css={madLiberationStyles.typography}
+            >
               Vestibulum ante ipsum primis in faucibus orci luctus et ultrices
               posuere cubilia curae; Suspendisse auctor sem at lorem placerat
               gravida. Integer vitae dictum ex. Vestibulum imperdiet turpis sit
@@ -184,7 +238,12 @@ export default function Home() {
               vitae, maximus ligula. Duis ultricies aliquet faucibus.
             </Typography>
 
-            <Typography variant="body1" component="p" gutterBottom>
+            <Typography
+              variant="body1"
+              component="p"
+              gutterBottom
+              css={madLiberationStyles.typography}
+            >
               Nam blandit tincidunt porttitor. Etiam posuere arcu at felis
               sollicitudin faucibus. Interdum et malesuada fames ac ante ipsum
               primis in faucibus. Pellentesque dolor odio, egestas a est ac,
@@ -199,7 +258,12 @@ export default function Home() {
               convallis.
             </Typography>
 
-            <Typography variant="body1" component="p" gutterBottom>
+            <Typography
+              variant="body1"
+              component="p"
+              gutterBottom
+              css={madLiberationStyles.typography}
+            >
               Donec laoreet est dui, sed aliquet risus congue id. Mauris aliquam
               a justo ac lacinia. Donec in gravida eros. Donec condimentum sit
               amet nisi vitae egestas. Cras condimentum, libero sit amet
@@ -213,7 +277,12 @@ export default function Home() {
               nulla pellentesque eget.
             </Typography>
 
-            <Typography variant="body1" component="p" gutterBottom>
+            <Typography
+              variant="body1"
+              component="p"
+              gutterBottom
+              css={madLiberationStyles.typography}
+            >
               Pellentesque porttitor lacus sed lectus luctus scelerisque.
               Vivamus id turpis sit amet arcu rhoncus tempus. Vestibulum
               faucibus nulla nec erat euismod scelerisque. Fusce risus diam,
@@ -223,7 +292,12 @@ export default function Home() {
               facilisis magna purus, sit amet interdum nibh consequat et.
             </Typography>
 
-            <Typography variant="body1" component="p" gutterBottom>
+            <Typography
+              variant="body1"
+              component="p"
+              gutterBottom
+              css={madLiberationStyles.typography}
+            >
               Aliquam vitae ornare lorem. Etiam suscipit, ex sit amet laoreet
               viverra, mi orci congue risus, at sagittis nulla lacus id nunc. In
               dapibus felis eget libero dapibus, eu auctor eros pellentesque.
@@ -235,6 +309,15 @@ export default function Home() {
             </Typography>
           </Paper>
         </Container>
+        <img
+          css={{
+            height: "70px",
+            display: "block",
+            marginLeft: "auto",
+            marginRight: "auto",
+          }}
+          src={`${VeryAwesomePassoverLogo.src}`}
+        ></img>
       </div>
     </div>
   );

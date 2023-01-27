@@ -50,15 +50,7 @@ export default function Home() {
     >
       <div
         style={{
-          backgroundImage: `url(${RedSeaImage.src})`,
-          minHeight: "100%",
-          width: "100%",
-          height: "auto",
-          position: "fixed",
-          top: 0,
-          left: 0,
-          backgroundPosition: "center",
-          backgroundSize: "cover",
+          backgroundColor: "#81181f",
         }}
       >
         <div>

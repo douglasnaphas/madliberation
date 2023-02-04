@@ -90,6 +90,7 @@ export default function Home() {
       <div
         style={{
           backgroundColor: "#81181f",
+          height: "100%"
         }}
       >
         <div>

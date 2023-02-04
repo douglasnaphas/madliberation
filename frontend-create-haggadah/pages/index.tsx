@@ -22,22 +22,30 @@ import { madLiberationStyles } from "../madLiberationStyles";
 
 const steps = [
   {
+    order: 1,
     label: "Log in",
     body: {},
   },
   {
+    order: 2,
     label: "Pick script",
     body: {},
   },
   {
+    order: 3,
     label: "Guests",
     body: {},
   },
   {
+    order: 4,
     label: "Invites",
     body: {},
   },
-];
+].sort((a: any, b: any) => {
+  if (a.order === b.order) return 0;
+  if (a.order < b.order) return -1;
+  return a;
+});
 
 const Accordion = styled((props: AccordionProps) => (
   <MuiAccordion disableGutters elevation={0} square {...props} />
@@ -228,7 +236,7 @@ export default function Home() {
                 aria-controls="panel1d-content"
                 id="panel1d-header"
               >
-                <Typography>Collapsible Group Item #1</Typography>
+                <Typography>{steps[0].label}</Typography>
               </AccordionSummary>
               <AccordionDetails>
                 <Typography>
@@ -248,7 +256,7 @@ export default function Home() {
                 aria-controls="panel2d-content"
                 id="panel2d-header"
               >
-                <Typography>Collapsible Group Item #2</Typography>
+                <Typography>{steps[1].label}</Typography>
               </AccordionSummary>
               <AccordionDetails>
                 <Typography>
@@ -268,7 +276,7 @@ export default function Home() {
                 aria-controls="panel3d-content"
                 id="panel3d-header"
               >
-                <Typography>Collapsible Group Item #3</Typography>
+                <Typography>{steps[2].label}</Typography>
               </AccordionSummary>
               <AccordionDetails>
                 <Typography>

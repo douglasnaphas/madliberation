@@ -88,16 +88,11 @@ export default function Home() {
   const [completed, setCompleted] = React.useState<{
     [k: number]: boolean;
   }>({});
-  const [expanded, setExpanded] = React.useState<string | false>("panel1");
   const [accordionExpanded, setAccordionExpanded] = React.useState(
     steps.map(() => {
       return false;
     })
   );
-  const handleChange =
-    (panel: string) => (event: React.SyntheticEvent, newExpanded: boolean) => {
-      setExpanded(newExpanded ? panel : false);
-    };
 
   const totalSteps = () => {
     return steps.length;

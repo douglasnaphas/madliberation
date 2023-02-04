@@ -24,22 +24,31 @@ const steps = [
   {
     order: 1,
     label: "Log in",
-    body: {},
+    body: (
+      <Typography
+        variant="body1"
+        component="p"
+        gutterBottom
+        css={madLiberationStyles.typography}
+      >
+        You have to log in to create a Haggadah.
+      </Typography>
+    ),
   },
   {
     order: 2,
     label: "Pick script",
-    body: {},
+    body: <div></div>,
   },
   {
     order: 3,
     label: "Guests",
-    body: {},
+    body: <div></div>,
   },
   {
     order: 4,
     label: "Invites",
-    body: {},
+    body: <div></div>,
   },
 ].sort((a: any, b: any) => {
   if (a.order === b.order) return 0;
@@ -219,15 +228,6 @@ export default function Home() {
               )}
             </div>
           </Box>
-          <Typography
-            variant="body1"
-            component="p"
-            gutterBottom
-            css={madLiberationStyles.typography}
-          >
-            You have to log in to create a Haggadah.
-          </Typography>
-
           <div>
             {" "}
             {/* accordions from steps */}
@@ -248,6 +248,7 @@ export default function Home() {
                     }}
                   >
                     <AccordionSummary>{step.label}</AccordionSummary>
+                    <AccordionDetails>{step.body}</AccordionDetails>
                   </Accordion>
                 </div>
               );

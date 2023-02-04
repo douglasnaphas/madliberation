@@ -89,6 +89,11 @@ export default function Home() {
     [k: number]: boolean;
   }>({});
   const [expanded, setExpanded] = React.useState<string | false>("panel1");
+  const [accordionExpanded, setAccordionExpanded] = React.useState(
+    steps.map(() => {
+      return false;
+    })
+  );
   const handleChange =
     (panel: string) => (event: React.SyntheticEvent, newExpanded: boolean) => {
       setExpanded(newExpanded ? panel : false);
@@ -227,67 +232,31 @@ export default function Home() {
           >
             You have to log in to create a Haggadah.
           </Typography>
+
           <div>
-            <Accordion
-              expanded={expanded === "panel1"}
-              onChange={handleChange("panel1")}
-            >
-              <AccordionSummary
-                aria-controls="panel1d-content"
-                id="panel1d-header"
-              >
-                <Typography>{steps[0].label}</Typography>
-              </AccordionSummary>
-              <AccordionDetails>
-                <Typography>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                  Suspendisse malesuada lacus ex, sit amet blandit leo lobortis
-                  eget. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                  Suspendisse malesuada lacus ex, sit amet blandit leo lobortis
-                  eget.
-                </Typography>
-              </AccordionDetails>
-            </Accordion>
-            <Accordion
-              expanded={expanded === "panel2"}
-              onChange={handleChange("panel2")}
-            >
-              <AccordionSummary
-                aria-controls="panel2d-content"
-                id="panel2d-header"
-              >
-                <Typography>{steps[1].label}</Typography>
-              </AccordionSummary>
-              <AccordionDetails>
-                <Typography>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                  Suspendisse malesuada lacus ex, sit amet blandit leo lobortis
-                  eget. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                  Suspendisse malesuada lacus ex, sit amet blandit leo lobortis
-                  eget.
-                </Typography>
-              </AccordionDetails>
-            </Accordion>
-            <Accordion
-              expanded={expanded === "panel3"}
-              onChange={handleChange("panel3")}
-            >
-              <AccordionSummary
-                aria-controls="panel3d-content"
-                id="panel3d-header"
-              >
-                <Typography>{steps[2].label}</Typography>
-              </AccordionSummary>
-              <AccordionDetails>
-                <Typography>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                  Suspendisse malesuada lacus ex, sit amet blandit leo lobortis
-                  eget. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                  Suspendisse malesuada lacus ex, sit amet blandit leo lobortis
-                  eget.
-                </Typography>
-              </AccordionDetails>
-            </Accordion>
+            {" "}
+            {/* accordions from steps */}
+            {steps.map((step, index) => {
+              return (
+                <div>
+                  <Accordion
+                    expanded={accordionExpanded[index]}
+                    onChange={(event) => {
+                      setAccordionExpanded((oldAccordionExpanded) => {
+                        return oldAccordionExpanded.map((a, i) => {
+                          if (i === index) {
+                            return !a;
+                          }
+                          return a;
+                        });
+                      });
+                    }}
+                  >
+                    <AccordionSummary>{step.label}</AccordionSummary>
+                  </Accordion>
+                </div>
+              );
+            })}
           </div>
         </Paper>
       </Container>

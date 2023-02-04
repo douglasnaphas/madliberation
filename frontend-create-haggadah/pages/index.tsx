@@ -86,7 +86,6 @@ export default function Home() {
   };
 
   return (
-    <div>
       <div
         style={{
           backgroundColor: "#81181f",
@@ -182,6 +181,5 @@ export default function Home() {
           src={`${VeryAwesomePassoverLogo.src}`}
         ></img>
       </div>
-    </div>
   );
 }

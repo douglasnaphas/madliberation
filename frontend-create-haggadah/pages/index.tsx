@@ -88,18 +88,6 @@ export default function Home() {
         </div>
         <Container maxWidth="md">
           <Paper>
-            <Typography
-              variant="body1"
-              component="p"
-              gutterBottom
-              css={madLiberationStyles.typography}
-            >
-              You have to log in to create a Haggadah.
-            </Typography>
-
-
-
-
     <Box sx={{ width: '100%' }}>
       <Stepper nonLinear activeStep={activeStep}>
         {steps.map((label, index) => (
@@ -156,10 +144,14 @@ export default function Home() {
         )}
       </div>
     </Box>
-
-
-
-
+           <Typography
+              variant="body1"
+              component="p"
+              gutterBottom
+              css={madLiberationStyles.typography}
+            >
+              You have to log in to create a Haggadah.
+            </Typography>
           </Paper>
         </Container>
         <img

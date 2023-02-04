@@ -7,33 +7,32 @@ import MadLiberationLogo from "../public/mad-liberation-logo.png";
 import VeryAwesomePassoverLogo from "../public/VAPLogo-white.png";
 import { Global, css, jsx } from "@emotion/react";
 import { Box, Paper } from "@mui/material";
-import Stepper from '@mui/material/Stepper';
-import Step from '@mui/material/Step';
-import StepButton from '@mui/material/StepButton';
-import Button from '@mui/material/Button';
+import Stepper from "@mui/material/Stepper";
+import Step from "@mui/material/Step";
+import StepButton from "@mui/material/StepButton";
+import Button from "@mui/material/Button";
 import { madLiberationStyles } from "../madLiberationStyles";
 
 const steps = [
   {
-    label: 'Log in',
-    body: {}
+    label: "Log in",
+    body: {},
   },
   {
-    label: 'Pick script',
-    body: {}
+    label: "Pick script",
+    body: {},
   },
   {
-    label: 'Guests',
-    body: {}
+    label: "Guests",
+    body: {},
   },
   {
-    label: 'Invites',
-    body: {}
-  }
+    label: "Invites",
+    body: {},
+  },
 ];
 
 export default function Home() {
-
   const [activeStep, setActiveStep] = React.useState(0);
   const [completed, setCompleted] = React.useState<{
     [k: number]: boolean;
@@ -86,100 +85,103 @@ export default function Home() {
   };
 
   return (
-      <div
-        style={{
-          backgroundColor: "#81181f",
-          height: "100%"
-        }}
-      >
-        <div>
-          <img
-            css={{
-              height: "200px",
-              display: "block",
-              marginLeft: "auto",
-              marginRight: "auto",
-            }}
-            src={`${MadLiberationLogo.src}`}
-          ></img>
-        </div>
-        <Container maxWidth="md">
-          <Paper>
-    <Box sx={{ width: '100%' }}>
-      <Stepper nonLinear activeStep={activeStep}>
-        {steps.map((step, index) => (
-          <Step key={step.label} completed={completed[index]}>
-            <StepButton color="inherit" onClick={handleStep(index)}>
-              {step.label}
-            </StepButton>
-          </Step>
-        ))}
-      </Stepper>
+    <div
+      style={{
+        backgroundColor: "#81181f",
+        height: "100%",
+      }}
+    >
       <div>
-        {allStepsCompleted() ? (
-          <React.Fragment>
-            <Typography sx={{ mt: 2, mb: 1 }}>
-              All steps completed - you&apos;re finished
-            </Typography>
-            <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
-              <Box sx={{ flex: '1 1 auto' }} />
-              <Button onClick={handleReset}>Reset</Button>
-            </Box>
-          </React.Fragment>
-        ) : (
-          <React.Fragment>
-            <Typography sx={{ mt: 2, mb: 1, py: 1 }}>
-              Step {activeStep + 1}
-            </Typography>
-            <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
-              <Button
-                color="inherit"
-                disabled={activeStep === 0}
-                onClick={handleBack}
-                sx={{ mr: 1 }}
-              >
-                Back
-              </Button>
-              <Box sx={{ flex: '1 1 auto' }} />
-              <Button onClick={handleNext} sx={{ mr: 1 }}>
-                Next
-              </Button>
-              {activeStep !== steps.length &&
-                (completed[activeStep] ? (
-                  <Typography variant="caption" sx={{ display: 'inline-block' }}>
-                    Step {activeStep + 1} already completed
-                  </Typography>
-                ) : (
-                  <Button onClick={handleComplete}>
-                    {completedSteps() === totalSteps() - 1
-                      ? 'Finish'
-                      : 'Complete Step'}
-                  </Button>
-                ))}
-            </Box>
-          </React.Fragment>
-        )}
-      </div>
-    </Box>
-           <Typography
-              variant="body1"
-              component="p"
-              gutterBottom
-              css={madLiberationStyles.typography}
-            >
-              You have to log in to create a Haggadah.
-            </Typography>
-          </Paper>
-        </Container>
         <img
           css={{
-            height: "70px",
+            height: "200px",
             display: "block",
             marginLeft: "auto",
             marginRight: "auto",
           }}
-          src={`${VeryAwesomePassoverLogo.src}`}
+          src={`${MadLiberationLogo.src}`}
         ></img>
       </div>
+      <Container maxWidth="md">
+        <Paper>
+          <Box sx={{ width: "100%" }}>
+            <Stepper nonLinear activeStep={activeStep}>
+              {steps.map((step, index) => (
+                <Step key={step.label} completed={completed[index]}>
+                  <StepButton color="inherit" onClick={handleStep(index)}>
+                    {step.label}
+                  </StepButton>
+                </Step>
+              ))}
+            </Stepper>
+            <div>
+              {allStepsCompleted() ? (
+                <React.Fragment>
+                  <Typography sx={{ mt: 2, mb: 1 }}>
+                    All steps completed - you&apos;re finished
+                  </Typography>
+                  <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
+                    <Box sx={{ flex: "1 1 auto" }} />
+                    <Button onClick={handleReset}>Reset</Button>
+                  </Box>
+                </React.Fragment>
+              ) : (
+                <React.Fragment>
+                  <Typography sx={{ mt: 2, mb: 1, py: 1 }}>
+                    Step {activeStep + 1}
+                  </Typography>
+                  <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
+                    <Button
+                      color="inherit"
+                      disabled={activeStep === 0}
+                      onClick={handleBack}
+                      sx={{ mr: 1 }}
+                    >
+                      Back
+                    </Button>
+                    <Box sx={{ flex: "1 1 auto" }} />
+                    <Button onClick={handleNext} sx={{ mr: 1 }}>
+                      Next
+                    </Button>
+                    {activeStep !== steps.length &&
+                      (completed[activeStep] ? (
+                        <Typography
+                          variant="caption"
+                          sx={{ display: "inline-block" }}
+                        >
+                          Step {activeStep + 1} already completed
+                        </Typography>
+                      ) : (
+                        <Button onClick={handleComplete}>
+                          {completedSteps() === totalSteps() - 1
+                            ? "Finish"
+                            : "Complete Step"}
+                        </Button>
+                      ))}
+                  </Box>
+                </React.Fragment>
+              )}
+            </div>
+          </Box>
+          <Typography
+            variant="body1"
+            component="p"
+            gutterBottom
+            css={madLiberationStyles.typography}
+          >
+            You have to log in to create a Haggadah.
+          </Typography>
+        </Paper>
+      </Container>
+      <img
+        css={{
+          height: "70px",
+          display: "block",
+          marginLeft: "auto",
+          marginRight: "auto",
+        }}
+        src={`${VeryAwesomePassoverLogo.src}`}
+      ></img>
+    </div>
   );
 }

@@ -13,7 +13,24 @@ import StepButton from '@mui/material/StepButton';
 import Button from '@mui/material/Button';
 import { madLiberationStyles } from "../madLiberationStyles";
 
-const steps = ['Log in', 'Pick script', 'Guests', 'Invites'];
+const steps = [
+  {
+    label: 'Log in',
+    body: {}
+  },
+  {
+    label: 'Pick script',
+    body: {}
+  },
+  {
+    label: 'Guests',
+    body: {}
+  },
+  {
+    label: 'Invites',
+    body: {}
+  }
+];
 
 export default function Home() {
 
@@ -90,10 +107,10 @@ export default function Home() {
           <Paper>
     <Box sx={{ width: '100%' }}>
       <Stepper nonLinear activeStep={activeStep}>
-        {steps.map((label, index) => (
-          <Step key={label} completed={completed[index]}>
+        {steps.map((step, index) => (
+          <Step key={step.label} completed={completed[index]}>
             <StepButton color="inherit" onClick={handleStep(index)}>
-              {label}
+              {step.label}
             </StepButton>
           </Step>
         ))}

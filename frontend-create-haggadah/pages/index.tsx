@@ -24,23 +24,30 @@ const steps = [
   {
     order: 1,
     label: "Log in",
-    body: (<div>
-      <Typography
-        variant="body1"
-        component="p"
-        gutterBottom
-        css={madLiberationStyles.typography}
-      >
-        You have to log in to create a Haggadah.
-      </Typography>
-      <Typography
-        variant="body1"
-        component="p"
-        gutterBottom
-        css={madLiberationStyles.typography}
-      >
-        <a href="/prod/login?return-page=/create-haggadah/index.html">Log in or create an account</a>.
-      </Typography>
+    body: (
+      <div>
+        <Typography
+          variant="body1"
+          component="p"
+          gutterBottom
+          css={madLiberationStyles.typography}
+        >
+          You have to log in to create a Haggadah.
+        </Typography>
+        <Typography
+          variant="body1"
+          component="p"
+          gutterBottom
+          css={madLiberationStyles.typography}
+        >
+          <a
+            href="/prod/login?return-page=/create-haggadah/index.html"
+            target="_blank"
+          >
+            Log in or create an account
+          </a>
+          .
+        </Typography>
       </div>
     ),
   },

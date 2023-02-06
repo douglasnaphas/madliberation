@@ -4,6 +4,8 @@
 !frontend/**/*.js
 !backend/*.js
 !backend/**/*.js
+!backend-v2/*.js
+!backend-v2/**/*.js
 !eventFilters/*.js
 !eventFilters/**/*.js
 !itest/*.js

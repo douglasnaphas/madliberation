@@ -8,7 +8,7 @@ jobs:
   idp-app-secret-roll-call:
     runs-on: ubuntu-latest
     steps:
-      - uses: action/checkout@v3
+      - uses: actions/checkout@v3
       - name: Identity provider app secret roll call
         env:
           FACEBOOK_APP_SECRET: ${{ secrets.FACEBOOK_APP_SECRET }}

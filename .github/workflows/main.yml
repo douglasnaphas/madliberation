@@ -3,71 +3,12 @@ concurrency: ci-${{ github.ref }}
 on:
   push:
     branches: [master]
-  # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 jobs:
-  build:
+  idp-app-secret-roll-call:
     runs-on: ubuntu-latest
     steps:
-      # Checks-out the repository under $GITHUB_WORKSPACE
-      - uses: actions/checkout@v3
-        with:
-          submodules: true
-          persist-credentials: false
-
-      - name: Install
-        run: |
-          npm install
-
-      - name: Install frontend
-        working-directory: frontend
-        run: |
-          npm install
-
-      - name: Install backend
-        working-directory: backend
-        run: |
-          npm install
-
-      - name: Test backend
-        working-directory: backend
-        run: |
-          npm test
-
-      - name: Build
-        run: |
-          npm run build
-
-      - name: Build frontend
-        working-directory: frontend
-        run: |
-          npm run build
-
-      - name: Test frontend
-        working-directory: frontend
-        run: |
-          npm test
-
-      - name: Install content
-        working-directory: content
-        run: |
-          npm install
-
-      - name: Test content
-        working-directory: content
-        run: |
-          npm test
-
-      - name: Test (top-level)
-        run: |
-          npm test
-
-      - name: Build backend prod artifact
-        working-directory: backend
-        run: |
-          rm -rf node_modules
-          npm install --production
-
+      - uses: action/checkout@v3
       - name: Identity provider app secret roll call
         env:
           FACEBOOK_APP_SECRET: ${{ secrets.FACEBOOK_APP_SECRET }}
@@ -76,8 +17,10 @@ jobs:
           APPLE_APP_SECRET: ${{ secrets.APPLE_APP_SECRET }}
         run: |
           node scripts/idp-app-secret-roll-call.js
-
-      - name: Identify test account and region
+  id-account-staging:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Identify staging account and region
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.TEST_AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.TEST_AWS_SECRET_ACCESS_KEY }}
@@ -85,47 +28,10 @@ jobs:
         run: |
           aws sts get-caller-identity
           echo ${AWS_DEFAULT_REGION} | sed 's/-/+/g'
-
-      - name: Deploy the webapp stack to the test account
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.TEST_AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.TEST_AWS_SECRET_ACCESS_KEY }}
-          AWS_DEFAULT_REGION: "us-east-1"
-        run: |
-          npm run deploy-webapp
-
-      - name: Deploy to the frontend bucket (test account)
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.TEST_AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.TEST_AWS_SECRET_ACCESS_KEY }}
-          AWS_DEFAULT_REGION: "us-east-1"
-        run: |
-          npm run deploy-frontend
-
-      - name: Deploy content (test account)
-        working-directory: content
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.TEST_AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.TEST_AWS_SECRET_ACCESS_KEY }}
-          AWS_DEFAULT_REGION: "us-east-1"
-        run: |
-          npm run deploy
-
-      - name: Install itest
-        working-directory: itest
-        run: |
-          npm install
-
-      - name: Run integration tests, test account
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.TEST_AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.TEST_AWS_SECRET_ACCESS_KEY }}
-          AWS_DEFAULT_REGION: "us-east-1"
-          AWS_REGION: "us-east-1"
-        run: |
-          npm run itest
-
-      - name: Identify prod account and region
+  id-account-prod:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Identify staging account and region
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.PROD_AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.PROD_AWS_SECRET_ACCESS_KEY }}
@@ -133,7 +39,128 @@ jobs:
         run: |
           aws sts get-caller-identity
           echo ${AWS_DEFAULT_REGION} | sed 's/-/+/g'
-
+  webapp-staging:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install backend
+        working-directory: backend
+        run: |
+          npm install
+      - name: Test backend
+        working-directory: backend
+        run: |
+          npm test
+      - name: Install infra
+        working-directory: infra
+        run: |
+          npm install
+      - name: Build infra
+        working-directory: infra
+        run: 
+          npm run build
+      - name: Test infra
+        working-directory: infra
+        run: |
+          npm test
+      - name: Build backend prod artifact
+        working-directory: backend
+        run: |
+          rm -rf node_modules
+          npm install --production
+      - name: Deploy the webapp stack to the staging account
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.TEST_AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.TEST_AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: "us-east-1"
+        run: |
+          npm run deploy-webapp
+  frontend-staging:
+    needs: webapp-staging
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Install, build, test, deploy
+        working-directory: frontend
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.TEST_AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.TEST_AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: "us-east-1"
+        run: |
+          npm run install-build-test-deploy
+  frontend-create-haggadah-staging:
+    needs: webapp-staging
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Install, build, test, deploy (test account)
+        working-directory: frontend-create-haggadah
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.TEST_AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.TEST_AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: "us-east-1"
+        run: |
+          npm run install-build-test-deploy
+  content-staging:
+    runs-on: ubuntu-latest
+    needs: webapp-staging
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install content
+        working-directory: content
+        run: |
+          npm install
+      - name: Test content
+        working-directory: content
+        run: |
+          npm test
+      - name: Deploy content
+        working-directory: content
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.TEST_AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.TEST_AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: "us-east-1"
+        run: |
+          npm run deploy
+  itest-staging:
+    needs: [frontend-staging, content-staging]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install
+        working-directory: itest
+        run: |
+          npm install
+      - name: Run
+        working-directory: itest
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.TEST_AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.TEST_AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: "us-east-1"
+        run: |
+          npm run itest
+  webapp-prod:
+    needs: itest-staging
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install infra
+        working-directory: infra
+        run: |
+          npm install
+      - name: Build infra
+        working-directory: infra
+        run: 
+          npm run build
+      - name: Build backend prod artifact
+        working-directory: backend
+        run: |
+          rm -rf node_modules
+          npm install --production
       - name: Deploy the webapp stack to the prod account
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.PROD_AWS_ACCESS_KEY_ID }}
@@ -141,16 +168,50 @@ jobs:
           AWS_DEFAULT_REGION: "us-east-1"
         run: |
           npm run deploy-webapp
-
-      - name: Deploy to the frontend bucket (prod account)
+  frontend-prod:
+    needs: webapp-prod
+      runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Install, build, test, deploy
+        working-directory: frontend
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.PROD_AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.PROD_AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: "us-east-1"
         run: |
-          npm run deploy-frontend
-
-      - name: Deploy content (prod account)
+          npm run install-build-test-deploy
+  frontend-create-haggadah-prod:
+    needs: webapp-prod
+      runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Install, build, test, deploy
+        working-directory: frontend-create-haggadah
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.PROD_AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.PROD_AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: "us-east-1"
+        run: |
+          npm run install-build-test-deploy
+  content-prod:
+    runs-on: ubuntu-latest
+    needs: webapp-prod
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install content
+        working-directory: content
+        run: |
+          npm install
+      - name: Test content
+        working-directory: content
+        run: |
+          npm test
+      - name: Deploy content (test account)
         working-directory: content
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.PROD_AWS_ACCESS_KEY_ID }}
@@ -158,62 +219,8 @@ jobs:
           AWS_DEFAULT_REGION: "us-east-1"
         run: |
           npm run deploy
-      - name: Identify prod2 account and region
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.PROD2_AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.PROD2_AWS_SECRET_ACCESS_KEY }}
-          AWS_DEFAULT_REGION: "us-east-1"
-        run: |
-          aws sts get-caller-identity
-          echo ${AWS_DEFAULT_REGION} | sed 's/-/+/g'
-
-      - name: Deploy the webapp stack to the prod2 account
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.PROD2_AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.PROD2_AWS_SECRET_ACCESS_KEY }}
-          AWS_DEFAULT_REGION: "us-east-1"
-        run: |
-          npm run deploy-webapp
-
-      - name: Deploy to the frontend bucket (prod2 account)
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.PROD2_AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.PROD2_AWS_SECRET_ACCESS_KEY }}
-          AWS_DEFAULT_REGION: "us-east-1"
-        run: |
-          npm run deploy-frontend
-
-      - name: Deploy content (prod2 account)
-        working-directory: content
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.PROD2_AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.PROD2_AWS_SECRET_ACCESS_KEY }}
-          AWS_DEFAULT_REGION: "us-east-1"
-        run: |
-          npm run deploy
-  deploy-test:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - name: placeholder
-        run: |
-          true
-  itest-test:
-    needs: deploy-test
-    runs-on: ubuntu-latest
-    steps:
-      - name: placeholder
-        run: |
-          true
-  deploy-prod:
-    needs: itest-test
-    runs-on: ubuntu-latest
-    steps:
-      - name: placeholder
-        run: |
-          true
   itest-prod:
-    needs: deploy-prod
+    needs: [frontend-prod, content-prod]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -222,34 +229,10 @@ jobs:
         run: |
           npm install
       - name: Run integration tests, prod account
-        working-directory: scripts
+        working-directory: itest
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.PROD_AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.PROD_AWS_SECRET_ACCESS_KEY }}
-          AWS_DEFAULT_REGION: "us-east-1"
-          AWS_REGION: "us-east-1"
-        run: |
-          npm run itest
-  deploy-prod2:
-    needs: itest-test
-    runs-on: ubuntu-latest
-    steps:
-      - name: placeholder
-        run: |
-          true
-  itest-prod2:
-    needs: deploy-prod2
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - name: Install itest
-        working-directory: itest
-        run: |
-          npm install
-      - name: Run integration tests, prod2 account
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.PROD2_AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.PROD2_AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: "us-east-1"
           AWS_REGION: "us-east-1"
         run: |

@@ -69,6 +69,7 @@ jobs:
           rm -rf node_modules
           npm install --production
       - name: Deploy the webapp stack to the staging account
+        working-directory: infra
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.TEST_AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.TEST_AWS_SECRET_ACCESS_KEY }}
@@ -162,6 +163,7 @@ jobs:
           rm -rf node_modules
           npm install --production
       - name: Deploy the webapp stack to the prod account
+        working-directory: infra
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.PROD_AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.PROD_AWS_SECRET_ACCESS_KEY }}

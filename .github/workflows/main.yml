@@ -7,6 +7,7 @@ on:
 jobs:
   idp-app-secret-roll-call:
     runs-on: ubuntu-latest
+    working-directory: infra
     steps:
       - uses: actions/checkout@v3
       - name: Identity provider app secret roll call

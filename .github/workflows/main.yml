@@ -17,6 +17,7 @@ jobs:
           AMAZON_APP_SECRET: ${{ secrets.AMAZON_APP_SECRET }}
           APPLE_APP_SECRET: ${{ secrets.APPLE_APP_SECRET }}
         run: |
+          npm install
           npx ts-node scripts/idp-app-secret-roll-call.ts
   id-account-staging:
     runs-on: ubuntu-latest

@@ -185,7 +185,7 @@ jobs:
           npm run install-build-test-deploy
   frontend-create-haggadah-prod:
     needs: webapp-prod
-      runs-on: ubuntu-latest
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
         with:

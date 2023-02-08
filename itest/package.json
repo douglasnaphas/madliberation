@@ -9,7 +9,9 @@
     "App.itest.cjs"
   ],
   "scripts": {
-    "test": "jest --passWithNoTests && echo 'this script is the test'"
+    "test": "jest --passWithNoTests && echo 'this script is the test'",
+    "itest": "bash scripts/itest.sh",
+    "smoke": "bash scripts/smoke.sh"
   },
   "repository": {
     "type": "git",

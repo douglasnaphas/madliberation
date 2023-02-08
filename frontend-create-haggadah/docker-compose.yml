@@ -1,0 +1,39 @@
+version: '3'
+services:
+  frontend-create-haggadah:
+    image: frontend-create-haggadah
+    volumes:
+      - .:/app
+  backend0:
+    image: nginx
+    volumes:
+      - ./backend:/usr/share/nginx/html
+  backend-posts:
+    image: node
+    volumes:
+      - ./backend.js:/backend.js
+    command: node /backend.js
+  ws:
+    image: node
+    ports:
+      - 8085:8080
+    volumes:
+      - ./ws.js:/ws.js
+      - ./run-ws.sh:/run-ws.sh
+      - ./localhost.pem:/etc/ssl/localhost.pem
+      - ./localhost-key.pem:/etc/ssl/localhost-key.pem
+    command: bash /run-ws.sh
+  revprox:
+    image: nginx
+    ports:
+      - 443:8082
+    depends_on:
+      - frontend-create-haggadah
+      - backend0
+      - backend-posts
+    volumes:
+      - ./revprox/revprox2.conf:/etc/nginx/conf.d/revprox2.conf
+      - ./localhost.pem:/etc/ssl/localhost.pem
+      - ./localhost-key.pem:/etc/ssl/localhost-key.pem
+
+  

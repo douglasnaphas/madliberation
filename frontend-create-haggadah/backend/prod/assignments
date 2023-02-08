@@ -1,0 +1,64 @@
+[
+  {
+    "id": 12,
+    "sentence": "That day is __.",
+    "prompt": "a holiday"
+  },
+  {
+    "id": 1,
+    "sentence": "She _",
+    "prompt": "does something disruptive"
+  },
+  {
+    "id": 5,
+    "sentence": "I like to _",
+    "prompt": "verb"
+  },
+  {
+    "id": 9,
+    "sentence": "She would __",
+    "prompt": "take a conspicuous action",
+    "example": "quack like a duck"
+  },
+  {
+    "id": 4,
+    "sentence": "That is __.",
+    "prompt": "three-syllable person/place/thing that rhymes with “ay”",
+    "example": "my bidet"
+  },
+  {
+    "id": 6,
+    "sentence": "This is __.",
+    "prompt": "something non-informative"
+  },
+  {
+    "id": 3,
+    "sentence": "This is a _",
+    "prompt": "long thing"
+  },
+  {
+    "id": 7,
+    "sentence": "Let’s use __.",
+    "prompt": "archaic machines"
+  },
+  {
+    "id": 11,
+    "prompt": "a person who doesn’t know anything"
+  },
+  {
+    "id": 2,
+    "sentence": "This is _",
+    "prompt": "something fast and heavy"
+  },
+  {
+    "id": 8,
+    "sentence": "We will write on __.",
+    "prompt": "things you could technically write on",
+    "example": "bananas"
+  },
+  {
+    "id": 10,
+    "prompt": "tech buzz word",
+    "example": "Big Data"
+  }
+]

@@ -11,12 +11,15 @@
     "react-scripts": "^5.0.1"
   },
   "scripts": {
+    "mkcert": "mkcert -install && mkcert localhost",
+    "docker-build": "docker build -t frontend .",
     "start": "react-scripts start",
-    "dev": "bash ./scripts/run-dev.sh",
+    "dev-start": "bash ./scripts/run-dev.sh",
     "dev-stop": "docker-compose down",
     "test": "react-scripts test --env=jsdom",
     "build": "react-scripts build",
-    "audit-prod": "npm audit --production"
+    "audit-prod": "npm audit --production",
+    "install-build-test-deploy": "bash scripts/install-build-test-deploy.sh"
   },
   "dependencies": {
     "@emotion/react": "^11.9.3",
@@ -26,6 +29,7 @@
     "acorn": "^7.4.1",
     "babel-preset-react-app": "^9.1.2",
     "browserslist": "^4.16.6",
+    "next": "^13.1.0",
     "prop-types": "^15.7.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

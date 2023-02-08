@@ -1,0 +1,38 @@
+{
+  "name": "nextjs-with-typescript",
+  "version": "5.0.0",
+  "private": true,
+  "homepage": ".",
+  "scripts": {
+    "mkcert": "mkcert -install && mkcert localhost",
+    "docker-build": "docker build -t frontend-create-haggadah .",
+    "dev": "next dev",
+    "build": "next build && next export",
+    "dev-start": "bash ./scripts/run-dev.sh",
+    "dev-stop": "docker-compose down",
+    "start": "next start",
+    "lint": "next lint",
+    "test": "echo 'no tests yet'",
+    "post-update": "echo \"codesandbox preview only, need an update\" && yarn upgrade --latest",
+    "install-build-test-deploy": "bash scripts/install-build-test-deploy.sh"
+  },
+  "dependencies": {
+    "@emotion/cache": "latest",
+    "@emotion/react": "latest",
+    "@emotion/server": "latest",
+    "@emotion/styled": "latest",
+    "@mui/icons-material": "latest",
+    "@mui/material": "latest",
+    "@next/font": "latest",
+    "next": "latest",
+    "react": "latest",
+    "react-dom": "latest"
+  },
+  "devDependencies": {
+    "@types/node": "latest",
+    "@types/react": "latest",
+    "eslint": "latest",
+    "eslint-config-next": "latest",
+    "typescript": "latest"
+  }
+}

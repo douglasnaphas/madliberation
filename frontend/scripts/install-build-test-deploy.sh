@@ -20,7 +20,10 @@ get-bucket-sha-tag() {
 bucket_sha=$(get-bucket-sha-tag)
 echo ${bucket_sha}
 # do SHA check, exit if no change
-if ! git diff --name-only ${bucket_sha} @ | grep '^frontend/' > /dev/null
+if \
+  ! git diff --name-only ${bucket_sha} @ | grep '^frontend/' > /dev/null \
+  && \
+  echo "${bucket_sha}" | grep '[a-f0-9]' > /dev/null
 then
   echo "no changes to frontend from ${bucket_sha} to ${GITHUB_SHA}"
   echo "not going any further with frontend this build"

@@ -43,3 +43,4 @@ next-env.d.ts
 !ws.js
 !backend.js
 !next.config.js
+!scripts/makeNewTagset.js

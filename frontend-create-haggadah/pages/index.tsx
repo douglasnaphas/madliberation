@@ -20,46 +20,16 @@ import { madLiberationStyles } from "../madLiberationStyles";
 const steps = [
   {
     order: 1,
-    label: "Log in",
-    body: (
-      <div>
-        <Typography
-          variant="body1"
-          component="p"
-          gutterBottom
-          css={madLiberationStyles.typography}
-        >
-          You have to log in to create a Haggadah.
-        </Typography>
-        <Typography
-          variant="body1"
-          component="p"
-          gutterBottom
-          css={madLiberationStyles.typography}
-        >
-          <a
-            href="/prod/login?return-page=/create-haggadah/index.html"
-            target="_blank"
-          >
-            Log in or create an account
-          </a>
-          .
-        </Typography>
-      </div>
-    ),
-  },
-  {
-    order: 2,
     label: "Pick script",
     body: <div></div>,
   },
   {
-    order: 3,
+    order: 2,
     label: "Guests",
     body: <div></div>,
   },
   {
-    order: 4,
+    order: 3,
     label: "Invites",
     body: <div></div>,
   },

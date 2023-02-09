@@ -15,7 +15,7 @@ else
   const newTagMap = {
     ...d.TagSet.reduce((acc, curr) => {
       return {...acc, [`${curr.Key}`]: curr.Value};
-    }),
+    }, {}),
     SHA: "'${GITHUB_SHA}'"
   };
   const newTagSet = Object.keys(newTagMap).map(

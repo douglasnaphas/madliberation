@@ -18,7 +18,10 @@ get-bucket-sha-tag() {
   aws s3api get-bucket-tagging --bucket $BUCKET 2>/dev/null | node -e 'const d = JSON.parse(require("fs").readFileSync(0, "utf-8")); if(!d || !d.TagSet || !d.TagSet.forEach){process.exit(0);} d.TagSet.forEach(t => {if(t.Key == "SHA"){console.log(t.Value);process.exit(0);}})'
 }
 bucket_sha=$(get-bucket-sha-tag)
+echo "bucket_sha:"
 echo ${bucket_sha}
+echo "changes from bucket_sha:"
+git diff --name-only ${bucket_sha} @
 # do SHA check, exit if no change
 if \
   ! git diff --name-only ${bucket_sha} @ | grep '^frontend-create-haggadah/' > /dev/null \

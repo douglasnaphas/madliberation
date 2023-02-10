@@ -30,6 +30,16 @@ jobs:
         run: |
           npm test
 
+      - name: Install backend-v2
+        working-directory: backend-v2
+        run: |
+          npm install
+
+      - name: Test backend-v2
+        working-directory: backend-v2
+        run: |
+          npm test
+
       - name: Build infra
         working-directory: infra
         run: |
@@ -52,6 +62,12 @@ jobs:
 
       - name: Build backend prod artifact
         working-directory: backend
+        run: |
+          rm -rf node_modules
+          npm install --production
+
+      - name: Build backend-v2 prod artifact
+        working-directory: backend-v2
         run: |
           rm -rf node_modules
           npm install --production

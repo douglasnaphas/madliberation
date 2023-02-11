@@ -273,7 +273,7 @@ export class MadliberationWebapp extends Stack {
       timeout: Duration.seconds(20),
     });
 
-    const backendv2Handler = new lambda.Function(this, "Backendv2Handler", {
+    const backendV2Handler = new lambda.Function(this, "BackendV2Handler", {
       runtime: lambda.Runtime.NODEJS_14_X,
       handler: "index.handler",
       code: lambda.Code.fromAsset("../backend-v2"),
@@ -286,7 +286,7 @@ export class MadliberationWebapp extends Stack {
     });
 
     sedersTable.grantReadWriteData(backendHandler);
-    sedersTable.grantReadWriteData(backendv2Handler);
+    sedersTable.grantReadWriteData(backendV2Handler);
 
     backendHandler.addToRolePolicy(
       new iam.PolicyStatement({

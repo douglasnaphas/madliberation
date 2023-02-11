@@ -1,4 +1,3 @@
-import { Construct } from "constructs";
 import { Stack } from "aws-cdk-lib";
 import { aws_apigateway as apigw } from "aws-cdk-lib";
 import { aws_cloudfront as cloudfront } from "aws-cdk-lib";

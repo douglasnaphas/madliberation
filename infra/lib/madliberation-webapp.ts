@@ -27,6 +27,7 @@ import * as apigwv2 from "@aws-cdk/aws-apigatewayv2-alpha";
 import * as apigwv2i from "@aws-cdk/aws-apigatewayv2-integrations-alpha";
 const appBucket = require("./appBucket");
 import { AppUserPool } from "./AppUserPool";
+const addBackendBehavior = require("./addBackendBehavior");
 
 export interface MadLiberationWebappProps extends StackProps {
   fromAddress?: string;
@@ -298,36 +299,19 @@ export class MadliberationWebapp extends Stack {
       })
     );
 
-    const lambdaApi = new apigw.LambdaRestApi(this, "Endpoint", {
+    const backendApi = new apigw.LambdaRestApi(this, "Endpoint", {
       handler: backendHandler,
     });
-
-    const lambdaApiUrlConstructed =
-      lambdaApi.restApiId +
-      ".execute-api." +
-      this.region +
-      "." +
-      this.urlSuffix;
-    distro.addBehavior(
-      "/prod/*",
-      new origins.HttpOrigin(lambdaApiUrlConstructed, {
-        protocolPolicy: cloudfront.OriginProtocolPolicy.HTTPS_ONLY,
-      }),
-      {
-        allowedMethods: cloudfront.AllowedMethods.ALLOW_ALL,
-        viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
-        cachePolicy: cloudfront.CachePolicy.CACHING_DISABLED,
-        originRequestPolicy: new cloudfront.OriginRequestPolicy(
-          this,
-          "BackendORP",
-          {
-            cookieBehavior: cloudfront.OriginRequestCookieBehavior.all(),
-            queryStringBehavior:
-              cloudfront.OriginRequestQueryStringBehavior.all(),
-          }
-        ),
-      }
-    );
+    const backendV2Api = new apigw.LambdaRestApi(this, "EndpointV2", {
+      handler: backendHandler,
+    });
+    addBackendBehavior({
+      distro,
+      pathPattern: "/prod/*",
+      api: backendApi,
+      stack: this,
+      backendId: "Backend",
+    });
 
     if (domainName && wwwDomainName && hostedZone) {
       // point the domain name with an alias record to the distro
@@ -669,7 +653,7 @@ export class MadliberationWebapp extends Stack {
       value: distro.distributionDomainName,
     });
     new CfnOutput(this, "lambdaApi_url", {
-      value: lambdaApi.url,
+      value: backendApi.url,
     });
     new CfnOutput(this, "UserPoolId", {
       value: userPool.userPoolId,

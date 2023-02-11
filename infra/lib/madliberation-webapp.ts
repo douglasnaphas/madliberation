@@ -58,7 +58,10 @@ export class MadliberationWebapp extends Stack {
 
     const sedersTable = require("./sedersTable")(this);
     const frontendBucket = appBucket(this, "FrontendBucket");
-    const frontendCreateHaggadahBucket = appBucket(this, "FrontendCreateHaggadahBucket");
+    const frontendCreateHaggadahBucket = appBucket(
+      this,
+      "FrontendCreateHaggadahBucket"
+    );
 
     let hostedZone, wwwDomainName, certificate, domainNames;
     if (domainName && zoneId) {
@@ -99,7 +102,7 @@ export class MadliberationWebapp extends Stack {
         viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
         cachePolicy: cloudfront.CachePolicy.CACHING_DISABLED,
       }
-    )
+    );
 
     const userPool = new AppUserPool(this, "UserPool", {
       selfSignUpEnabled: true,
@@ -270,7 +273,7 @@ export class MadliberationWebapp extends Stack {
       timeout: Duration.seconds(20),
     });
 
-   const backendv2Handler = new lambda.Function(this, "Backendv2Handler", {
+    const backendv2Handler = new lambda.Function(this, "Backendv2Handler", {
       runtime: lambda.Runtime.NODEJS_14_X,
       handler: "index.handler",
       code: lambda.Code.fromAsset("../backend-v2"),

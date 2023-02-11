@@ -28,6 +28,7 @@ import * as apigwv2i from "@aws-cdk/aws-apigatewayv2-integrations-alpha";
 const appBucket = require("./appBucket");
 import { AppUserPool } from "./AppUserPool";
 const addBackendBehavior = require("./addBackendBehavior");
+const configureSocialIDPs = require("./configureSocialIDPs");
 
 export interface MadLiberationWebappProps extends StackProps {
   fromAddress?: string;
@@ -45,17 +46,7 @@ export class MadliberationWebapp extends Stack {
   constructor(scope: App, id: string, props: MadLiberationWebappProps = {}) {
     super(scope, id, props);
 
-    const {
-      fromAddress,
-      domainName,
-      zoneId,
-      facebookAppId,
-      facebookAppSecret,
-      amazonClientId,
-      amazonClientSecret,
-      googleClientId,
-      googleClientSecret,
-    } = props;
+    const { fromAddress, domainName, zoneId } = props;
 
     const sedersTable = require("./sedersTable")(this);
     const frontendBucket = appBucket(this, "FrontendBucket");
@@ -155,56 +146,7 @@ export class MadliberationWebapp extends Stack {
     });
     const webappDomainName = domainName || distro.distributionDomainName;
 
-    if (facebookAppId && facebookAppSecret) {
-      const userPoolIdentityProviderFacebook =
-        new cognito.UserPoolIdentityProviderFacebook(this, "Facebook", {
-          clientId: facebookAppId,
-          clientSecret: facebookAppSecret,
-          userPool,
-          scopes: ["public_profile", "email"],
-          /*
-          > Apps may ask for the following two permissions from any person
-          > without submitting for review by Facebook:
-          >
-          > public profile
-          > email
-
-          https://developers.facebook.com/docs/facebook-login/overview
-          */
-          attributeMapping: {
-            nickname: cognito.ProviderAttribute.FACEBOOK_NAME,
-            email: cognito.ProviderAttribute.FACEBOOK_EMAIL,
-          },
-        });
-      userPool.registerIdentityProvider(userPoolIdentityProviderFacebook);
-    }
-    if (amazonClientId && amazonClientSecret) {
-      const userPoolIdentityProviderAmazon =
-        new cognito.UserPoolIdentityProviderAmazon(this, "Amazon", {
-          clientId: amazonClientId,
-          clientSecret: amazonClientSecret,
-          userPool,
-          attributeMapping: {
-            nickname: cognito.ProviderAttribute.AMAZON_NAME,
-            email: cognito.ProviderAttribute.AMAZON_EMAIL,
-          },
-        });
-      userPool.registerIdentityProvider(userPoolIdentityProviderAmazon);
-    }
-    if (googleClientId && googleClientSecret) {
-      const userPoolIdentityProviderGoogle =
-        new cognito.UserPoolIdentityProviderGoogle(this, "Google", {
-          clientId: googleClientId,
-          clientSecret: googleClientSecret,
-          userPool,
-          scopes: ["profile", "email"],
-          attributeMapping: {
-            nickname: cognito.ProviderAttribute.GOOGLE_NAME,
-            email: cognito.ProviderAttribute.GOOGLE_EMAIL,
-          },
-        });
-      userPool.registerIdentityProvider(userPoolIdentityProviderGoogle);
-    }
+    configureSocialIDPs(this, props, userPool);
 
     const userPoolClient = userPool.addClient("UserPoolClient", {
       generateSecret: true,

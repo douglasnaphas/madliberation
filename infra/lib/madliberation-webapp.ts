@@ -245,7 +245,7 @@ export class MadliberationWebapp extends Stack {
       handler: backendHandler,
     });
     const backendV2Api = new apigw.LambdaRestApi(this, "EndpointV2", {
-      handler: backendHandler,
+      handler: backendV2Handler,
     });
     addBackendBehavior({
       distro,

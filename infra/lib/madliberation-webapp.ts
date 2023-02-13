@@ -261,6 +261,12 @@ export class MadliberationWebapp extends Stack {
       stack: this,
       backendId: "BackendV2",
     });
+    const v2Stage = new apigw.Stage(this, "StageV2", {
+      deployment: new apigw.Deployment(this, "DeploymentV2", {
+        api: backendV2Api,
+      }),
+      stageName: "v2",
+    });
 
     if (domainName && wwwDomainName && hostedZone) {
       // point the domain name with an alias record to the distro

@@ -27,16 +27,18 @@ const sedersJoined = require("./lib/sedersJoined");
 const rejoin = require("./lib/rejoin");
 const login = require("./lib/login/login");
 
-app.get("/login", login);
+const router = express.Router();
 
-app.use(function (req, res, next) {
+router.get("/login", login);
+
+router.use(function (req, res, next) {
   res.set({
     "Content-Type": "application/json",
   });
   next();
 });
 
-app.get("/logout", (req, res) => {
+router.get("/logout", (req, res) => {
   const expiredCookieValue = "expired-via-logout";
   res.cookie("id_token", expiredCookieValue, { expires: new Date(0) });
   res.cookie("access_token", expiredCookieValue, { expires: new Date(0) });
@@ -49,7 +51,7 @@ app.get("/logout", (req, res) => {
   return res.status(200).send({ message: "Logged out" });
 });
 
-app.get("/scripts", async function (req, res) {
+router.get("/scripts", async function (req, res) {
   console.log("in /scripts 1");
   const params = {
     TableName: schema.TABLE_NAME,
@@ -74,66 +76,60 @@ app.get("/scripts", async function (req, res) {
   return res.send({ scripts: dbResponse.data });
 });
 
-app.use(cookieParser());
+router.use(cookieParser());
 
-app.get("/", function (req, res) {
-  res.send({
-    Output: "Hello World!! ",
-  });
-});
-
-app.get("/v2/", function (req, res) {
+router.get("/", function (req, res) {
   res.send({
     Output: "This is /v2/ ... ",
   });
 });
 
-app.get("/v2/a", function (req, res) {
+router.get("/a", function (req, res) {
   res.send({
     Output: "This is /v2/a ... ",
   });
 });
 
-app.post("/", function (req, res) {
+router.post("/", function (req, res) {
   res.send({
     Output: "Hello World!! ",
   });
 });
 
-app.get("/public-endpoint", function (req, res) {
+router.get("/public-endpoint", function (req, res) {
   res.send({
     Output: "this endpoint is public",
   });
 });
 
-app.get("/get-cookies", getLoginCookies);
+router.get("/get-cookies", getLoginCookies);
 
-app.use(bodyParser.json());
+router.use(bodyParser.json());
 
-app.use(authenticate);
+router.use(authenticate);
 
-app.get("/playground", function (req, res, next) {
+router.get("/playground", function (req, res, next) {
   let authHeader;
   authHeader = req.get("authorization");
   authHeader = authHeader || "no auth header";
   res.send({ Authorization: authHeader });
 });
 
-app.use(blacklistPostParams);
+router.use(blacklistPostParams);
 
-app.post("/rejoin", rejoin);
+router.post("/rejoin", rejoin);
 
-app.use("/room-code", pathCheck());
-app.post("/room-code", roomCode(AWS, randomStringGenerator, Configs));
+router.use("/room-code", pathCheck());
+router.post("/room-code", roomCode(AWS, randomStringGenerator, Configs));
 
 const joinSederMiddleware = require("./lib/joinSederMiddleware/joinSederMiddleware.js");
-app.post("/join-seder", joinSederMiddleware);
+router.post("/join-seder", joinSederMiddleware);
 
 const rosterMiddleware = require("./lib/rosterMiddleware/rosterMiddleware.js");
-app.get("/roster", gameNameCookieCheckMidWare, rosterMiddleware);
+router.get("/roster", gameNameCookieCheckMidWare, rosterMiddleware);
 
 const closeSederMiddleware = require("./lib/closeSederMiddleware/closeSederMiddleware.js");
-app.post(
+router.post(
   "/close-seder",
   gameNameCookieCheckMidWare,
   closeSederMiddleware,
@@ -143,9 +139,9 @@ app.post(
   }
 );
 
-app.get("/assignments", gameNameCookieCheckMidWare, assignmentsMiddleware);
+router.get("/assignments", gameNameCookieCheckMidWare, assignmentsMiddleware);
 
-app.post(
+router.post(
   "/submit-libs",
   gameNameCookieCheckMidWare,
   submitLibsMiddleware,
@@ -154,7 +150,7 @@ app.post(
   }
 );
 
-app.get(
+router.get(
   "/read-roster",
   gameNameCookieCheckMidWare,
   readRosterMiddleware,
@@ -163,23 +159,24 @@ app.get(
   }
 );
 
-app.get("/script", gameNameCookieCheckMidWare, scriptMiddleware, (req, res) => {
+router.get("/script", gameNameCookieCheckMidWare, scriptMiddleware, (req, res) => {
   res.send(res.locals.script);
 });
 
-app.post("/play", readRosterMiddleware, (req, res) => {
+router.post("/play", readRosterMiddleware, (req, res) => {
   res.send({ err: res.locals.dbError, data: res.locals.dbData });
 });
-app.get("/play", scriptMiddleware, (req, res) => {
+router.get("/play", scriptMiddleware, (req, res) => {
   res.send(res.locals.script);
 });
 
-app.post("/seders", seders);
-app.get("/seders", seders);
-app.get("/seders-started", seders);
-app.get("/seders-joined", sedersJoined);
+router.post("/seders", seders);
+router.get("/seders", seders);
+router.get("/seders-started", seders);
+router.get("/seders-joined", sedersJoined);
 
-app.use(send500OnError);
+router.use(send500OnError);
+app.use("/v2", router);
 
 // Export your Express configuration so that it can be consumed by the Lambda handler
 module.exports = app;

@@ -82,6 +82,18 @@ app.get("/", function (req, res) {
   });
 });
 
+app.get("/v2/", function (req, res) {
+  res.send({
+    Output: "This is /v2/ ... ",
+  });
+});
+
+app.get("/v2/a", function (req, res) {
+  res.send({
+    Output: "This is /v2/a ... ",
+  });
+});
+
 app.post("/", function (req, res) {
   res.send({
     Output: "Hello World!! ",

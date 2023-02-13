@@ -258,6 +258,7 @@ export class MadliberationWebapp extends Stack {
     addBackendBehavior({
       distro,
       pathPattern: "/v2/*",
+      originPath: "/prod",
       api: backendV2Api,
       stack: this,
       backendId: "BackendV2",

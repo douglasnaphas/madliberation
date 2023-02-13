@@ -8,14 +8,16 @@ const apiUrl = (api: apigw.LambdaRestApi, stack: Stack) =>
 const addBackendBehavior: (props: {
   distro: cloudfront.Distribution;
   pathPattern: string;
+  originPath?: string;
   api: apigw.LambdaRestApi;
   stack: Stack;
   backendId: string;
-}) => void = ({ distro, pathPattern, api, stack, backendId }) => {
+}) => void = ({ distro, pathPattern, originPath, api, stack, backendId }) => {
   distro.addBehavior(
     pathPattern,
     new origins.HttpOrigin(apiUrl(api, stack), {
       protocolPolicy: cloudfront.OriginProtocolPolicy.HTTPS_ONLY,
+      originPath
     }),
     {
       allowedMethods: cloudfront.AllowedMethods.ALLOW_ALL,

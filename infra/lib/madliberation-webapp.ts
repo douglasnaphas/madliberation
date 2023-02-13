@@ -254,6 +254,13 @@ export class MadliberationWebapp extends Stack {
       stack: this,
       backendId: "Backend",
     });
+    addBackendBehavior({
+      distro,
+      pathPattern: "/v2/*",
+      api: backendV2Api,
+      stack: this,
+      backendId: "BackendV2",
+    });
 
     if (domainName && wwwDomainName && hostedZone) {
       // point the domain name with an alias record to the distro

@@ -188,6 +188,11 @@ jobs:
         run: |
           rm -rf node_modules
           npm install --production
+      - name: Build backend2 prod artifact
+        working-directory: backend-v2
+        run: |
+          rm -rf node_modules
+          npm install --production
       - name: Deploy the webapp stack to the prod2 account
         working-directory: infra
         env:

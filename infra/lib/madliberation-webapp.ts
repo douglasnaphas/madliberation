@@ -224,6 +224,7 @@ export class MadliberationWebapp extends Stack {
       environment: {
         NODE_ENV: "production",
         TABLE_NAME: sedersTable.tableName,
+        REGION: this.region,
       },
       timeout: Duration.seconds(20),
     });

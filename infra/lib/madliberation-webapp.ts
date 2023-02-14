@@ -258,15 +258,10 @@ export class MadliberationWebapp extends Stack {
     addBackendBehavior({
       distro,
       pathPattern: "/v2/*",
+      originPath: "/prod",
       api: backendV2Api,
       stack: this,
       backendId: "BackendV2",
-    });
-    const v2Stage = new apigw.Stage(this, "StageV2", {
-      deployment: new apigw.Deployment(this, "DeploymentV2", {
-        api: backendV2Api,
-      }),
-      stageName: "v2",
     });
 
     if (domainName && wwwDomainName && hostedZone) {

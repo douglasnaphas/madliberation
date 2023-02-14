@@ -20,8 +20,6 @@ get-bucket-sha-tag() {
 bucket_sha=$(get-bucket-sha-tag)
 echo "bucket_sha:"
 echo ${bucket_sha}
-echo "changes from bucket_sha:"
-git diff --name-only ${bucket_sha} @
 # do SHA check, exit if no change
 if \
   echo "${bucket_sha}" | grep '[a-f0-9]' > /dev/null \

@@ -4,9 +4,9 @@ const supertest = require("supertest");
 const app = require("../app.js");
 
 describe("app", function () {
-  it("test / (POST)", (done) => {
+  it("test /v2 (POST)", (done) => {
     supertest(app)
-      .post("/")
+      .post("/v2/")
       .then((response) => {
         expect(response.statusCode).toBe(200);
         expect(response.body).toBeTruthy();
@@ -17,17 +17,9 @@ describe("app", function () {
   });
   it("test canary", (done) => {
     supertest(app)
-      .get("/public-endpoint")
+      .get("/v2/public-endpoint")
       .then((response) => {
         expect(response.statusCode).toBe(200);
-        done();
-      });
-  });
-  it("test redirect from /login", function (done) {
-    supertest(app)
-      .get("/login")
-      .then((response) => {
-        expect(response.statusCode).toBe(301);
         done();
       });
   });

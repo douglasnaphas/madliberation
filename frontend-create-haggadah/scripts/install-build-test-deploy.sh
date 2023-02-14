@@ -24,9 +24,11 @@ echo "changes from bucket_sha:"
 git diff --name-only ${bucket_sha} @
 # do SHA check, exit if no change
 if \
-  ! git diff --name-only ${bucket_sha} @ | grep '^frontend-create-haggadah/' > /dev/null \
+  echo "${bucket_sha}" | grep '[a-f0-9]' > /dev/null \
   && \
-  echo "${bucket_sha}" | grep '[a-f0-9]' > /dev/null
+  git log --pretty="%H" | grep ${bucket_sha} > /dev/null \
+  && \
+  ! git diff --name-only ${bucket_sha} @ | grep '^frontend-create-haggadah/' > /dev/null
 then
   echo "no changes to frontend-create-haggadah from ${bucket_sha} to ${GITHUB_SHA}"
   echo "not going any further with frontend-create-haggadah this build"

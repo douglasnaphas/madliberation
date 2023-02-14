@@ -25,12 +25,7 @@ const steps = [
   },
   {
     order: 2,
-    label: "Guests",
-    body: <div></div>,
-  },
-  {
-    order: 3,
-    label: "Invites",
+    label: "Your email",
     body: <div></div>,
   },
 ].sort((a: any, b: any) => {

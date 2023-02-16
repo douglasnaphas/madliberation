@@ -8,6 +8,7 @@
     "docker-build": "docker build -t frontend-create-haggadah .",
     "dev": "next dev",
     "build": "next build && next export",
+    "dev-deploy": "bash ./scripts/dev-deploy.sh",
     "dev-start": "bash ./scripts/run-dev.sh",
     "dev-stop": "docker-compose down",
     "start": "next start",

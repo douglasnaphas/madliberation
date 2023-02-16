@@ -16,12 +16,17 @@ import MuiAccordionSummary, {
 } from "@mui/material/AccordionSummary";
 import MuiAccordionDetails from "@mui/material/AccordionDetails";
 import { madLiberationStyles } from "../madLiberationStyles";
+import ScriptMenu from "../src/ScriptMenu";
 
 const steps = [
   {
     order: 1,
     label: "Pick script",
-    body: <div></div>,
+    body: (
+      <div>
+        <ScriptMenu></ScriptMenu>
+      </div>
+    ),
   },
   {
     order: 2,

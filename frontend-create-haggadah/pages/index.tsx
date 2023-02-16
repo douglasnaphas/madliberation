@@ -17,6 +17,7 @@ import MuiAccordionSummary, {
 import MuiAccordionDetails from "@mui/material/AccordionDetails";
 import { madLiberationStyles } from "../madLiberationStyles";
 import ScriptMenu from "../src/ScriptMenu";
+import { fetchScripts } from "../src/fetchScripts";
 
 const steps = [
   {
@@ -24,7 +25,7 @@ const steps = [
     label: "Pick script",
     body: (
       <div>
-        <ScriptMenu></ScriptMenu>
+        <ScriptMenu fetchScripts={fetchScripts}></ScriptMenu>
       </div>
     ),
   },

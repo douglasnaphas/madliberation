@@ -1,6 +1,3 @@
-// /** @jsxRuntime classic */
-// /** @jsx jsx */
-
 import React from "react";
 import { useEffect, useState } from "react";
 interface ScriptItem {

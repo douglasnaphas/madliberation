@@ -19,27 +19,6 @@ import { madLiberationStyles } from "../madLiberationStyles";
 import ScriptMenu from "../src/ScriptMenu";
 import { fetchScripts } from "../src/fetchScripts";
 
-const steps = [
-  {
-    order: 1,
-    label: "Pick script",
-    body: (
-      <div>
-        <ScriptMenu fetchScripts={fetchScripts}></ScriptMenu>
-      </div>
-    ),
-  },
-  {
-    order: 2,
-    label: "Your email",
-    body: <div></div>,
-  },
-].sort((a: any, b: any) => {
-  if (a.order === b.order) return 0;
-  if (a.order < b.order) return -1;
-  return a;
-});
-
 const Accordion = styled((props: AccordionProps) => (
   <MuiAccordion disableGutters elevation={0} square {...props} />
 ))(({ theme }) => ({
@@ -77,6 +56,31 @@ const AccordionDetails = styled(MuiAccordionDetails)(({ theme }) => ({
 }));
 
 export default function Home() {
+  const [selectedScript, setSelectedScript] = React.useState("");
+  const steps = [
+    {
+      order: 1,
+      label: "Pick script",
+      body: (
+        <div>
+          <ScriptMenu
+            fetchScripts={fetchScripts}
+            selectedScript={selectedScript}
+            setSelectedScript={setSelectedScript}
+          ></ScriptMenu>
+        </div>
+      ),
+    },
+    {
+      order: 2,
+      label: "Your email",
+      body: <div></div>,
+    },
+  ].sort((a: any, b: any) => {
+    if (a.order === b.order) return 0;
+    if (a.order < b.order) return -1;
+    return a;
+  });
   const [accordionExpanded, setAccordionExpanded] = React.useState(
     steps.map(() => {
       return false;

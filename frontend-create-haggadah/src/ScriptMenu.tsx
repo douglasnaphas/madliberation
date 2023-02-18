@@ -1,5 +1,12 @@
 import React from "react";
 import { useEffect, useState } from "react";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableRow from "@mui/material/TableRow";
+import Radio from "@mui/material/Radio";
+import RadioGroup from "@mui/material/RadioGroup";
+
 interface ScriptItem {
   haggadah_description: string;
   lib_id: string;
@@ -22,10 +29,12 @@ type ScriptMenuProps = {
     };
     status: number;
   }>;
+  selectedScript: string;
+  setSelectedScript: React.Dispatch<React.SetStateAction<string>>;
 };
 const ScriptMenu = (props: ScriptMenuProps) => {
   const [scripts, setScripts] = React.useState<ScriptItemArray>([]);
-  const { fetchScripts } = props;
+  const { fetchScripts, selectedScript, setSelectedScript } = props;
   useEffect(() => {
     fetchScripts().then((dataAndStatus) => {
       if (dataAndStatus?.data?.scripts?.Items) {
@@ -33,11 +42,36 @@ const ScriptMenu = (props: ScriptMenuProps) => {
       }
     });
   }, []);
-  const scriptRows = scripts.map((s) => <div>{s.haggadah_short_desc}</div>);
+  const scriptRows = scripts.map((s) => {
+    const scriptUid = `${s.room_code}-${s.lib_id}`;
+    return (
+      <TableRow key={`row${scriptUid}`}>
+        <TableCell key={`${scriptUid}-select`}>
+          <Radio
+            key={`${scriptUid}-radio`}
+            value={`${scriptUid}`}
+            checked={selectedScript === `${scriptUid}`}
+            onChange={(event) => {
+              console.log("event.target.value:");
+              console.log(event.target.value);
+              setSelectedScript(event.target.value);
+            }}
+          ></Radio>
+        </TableCell>
+        {s.haggadah_short_desc}
+      </TableRow>
+    );
+  });
   return (
     <div>
       <h3>Scripts</h3>
-      {scriptRows}
+      <div>
+        <RadioGroup name={"script"}>
+          <Table>
+            <TableBody>{scriptRows}</TableBody>
+          </Table>
+        </RadioGroup>
+      </div>
     </div>
   );
 };

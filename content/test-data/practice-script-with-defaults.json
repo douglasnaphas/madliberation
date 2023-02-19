@@ -1,0 +1,296 @@
+{
+  "pages": [
+    {
+      "lines": [
+        {
+          "type": "h1",
+          "segments": [{ "type": "text", "text": "A Very Practice Passover" }]
+        },
+        {
+          "type": "h4",
+          "segments": [
+            {
+              "type": "text",
+              "text": "A safe space to learn how to play Mad Liberation"
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "segments": [
+            { "type": "text", "text": "Come, Jew, on a Jewney of liberation." }
+          ]
+        },
+        {
+          "type": "h2",
+          "segments": [{ "type": "text", "text": "The bad old days" }]
+        },
+        {
+          "type": "p",
+          "segments": [
+            {
+              "type": "text",
+              "text": "Have you ever been to a seder where someone says, “Stop looking at your phone”?"
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "segments": [
+            {
+              "type": "text",
+              "text": "The only thing that ruins Passover quicker than that is when someone "
+            },
+            {
+              "type": "lib",
+              "prompt": "does something disruptive",
+              "id": 1,
+              "answer": "leaves with the seder plate"
+            },
+            { "type": "text", "text": "." }
+          ]
+        },
+        {
+          "type": "p",
+          "segments": [
+            {
+              "type": "text",
+              "text": "Here comes another ad-libbed, user-supplied word or phrase, coming at you like "
+            },
+            {
+              "type": "lib",
+              "prompt": "something fast and heavy",
+              "id": 2,
+              "answer": "a damn lib"
+            },
+            { "type": "text", "text": "." }
+          ]
+        },
+        {
+          "type": "p",
+          "segments": [
+            {
+              "type": "text",
+              "text": "Anway, the point of this thing is to make it so people can look at their phones while celebrating Passover."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "lines": [
+        {
+          "type": "p",
+          "segments": [
+            {
+              "type": "text",
+              "text": "Well, this is fun. It’s important for a Haggadah to span multiple pages, like a textual "
+            },
+            {
+              "type": "lib",
+              "prompt": "long thing",
+              "id": 3,
+              "answer": "snake"
+            },
+            { "type": "text", "text": "." }
+          ]
+        },
+        {
+          "type": "p",
+          "segments": [
+            {
+              "type": "text",
+              "text": "Some pages will have songs. Some songs will have libs, as in:"
+            }
+          ]
+        },
+        {
+          "type": "indent",
+          "segments": [{ "type": "text", "text": "If you like" }]
+        },
+        {
+          "type": "indent",
+          "segments": [
+            {
+              "type": "lib",
+              "prompt": "three-syllable person/place/thing that rhymes with “ay”",
+              "id": 4,
+              "answer": "Claude Monet"
+            }
+          ]
+        },
+        {
+          "type": "indent",
+          "segments": [
+            { "type": "text", "text": "You can " },
+            { "type": "lib", "prompt": "verb", "id": 5, "answer": "read him" },
+            { "type": "text", "text": " every day," }
+          ]
+        },
+        {
+          "type": "indent",
+          "segments": [{ "type": "text", "text": "Seders are fine" }]
+        },
+        {
+          "type": "indent",
+          "segments": [
+            { "type": "text", "text": "Good Haggadahs have to rhyme" }
+          ]
+        },
+        {
+          "type": "p",
+          "segments": [{ "type": "text", "text": "Others will not." }]
+        }
+      ]
+    },
+    {
+      "lines": [
+        {
+          "type": "h2",
+          "segments": [{ "type": "text", "text": "More information" }]
+        },
+        {
+          "type": "p",
+          "segments": [
+            {
+              "type": "text",
+              "text": "Now that you get the hang of it, how about some actual information? We don’t want this Practice Script to be "
+            },
+            {
+              "type": "lib",
+              "prompt": "something non-informative",
+              "id": 6,
+              "answer": "a blank space"
+            },
+            { "type": "text", "text": "." }
+          ]
+        },
+        {
+          "type": "stageDirection",
+          "segments": [
+            {
+              "type": "text",
+              "text": "This is a stage direction, a Mad Liberation experimental feature. Don’t read this aloud."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "segments": [
+            {
+              "type": "text",
+              "text": "Mad Liberation was conceived as a way of having fun. Before computers, its inventors used to print out printed scripts on "
+            },
+            {
+              "type": "lib",
+              "prompt": "archaic machines",
+              "id": 7,
+              "answer": "steam engines"
+            },
+            { "type": "text", "text": ", and pass around a deck of " },
+            {
+              "type": "lib",
+              "prompt": "things you could technically write on",
+              "id": 8,
+              "answer": "dry erase boards"
+            },
+            {
+              "type": "text",
+              "text": ". On these items, participants would answer questions with words and phrases."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "segments": [
+            {
+              "type": "text",
+              "text": "Then, during the reading phase of the Haggadah, individuals would pass around the printed script and the painstakingly assembled and sorted deck. When a blank appeared in the script, the reader would pause, "
+            },
+            {
+              "type": "lib",
+              "prompt": "take a conspicuous action",
+              "id": 9,
+              "answer": "blow trumpets"
+            },
+            {
+              "type": "text",
+              "text": ", read the next answer from the deck, put it on the bottom of the deck, keep reading the script, and repeat the cycle when the next blank appeared."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "segments": [
+            {
+              "type": "text",
+              "text": "This new incarnation of Mad Liberation is a virtual, tech-enabled, disruptive, "
+            },
+            {
+              "type": "lib",
+              "prompt": "tech buzz word",
+              "id": 10,
+              "answer": "industry-leading"
+            },
+            { "type": "text", "text": " version of that. I think you get it." }
+          ]
+        }
+      ]
+    },
+    {
+      "lines": [
+        {
+          "type": "h2",
+          "segments": [
+            { "type": "text", "text": "More information about Passover" }
+          ]
+        },
+        {
+          "type": "p",
+          "segments": [
+            {
+              "type": "text",
+              "text": "By the way, if you’re not Jewish, or if you’re Jewish and you’re so young you haven’t been to a Passover seder, or if you’re just "
+            },
+            {
+              "type": "lib",
+              "prompt": "a person who doesn’t know anything",
+              "id": 11,
+              "answer": "a silly fool"
+            },
+            {
+              "type": "text",
+              "text": ", you may be feeling a little confused right now."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "segments": [
+            { "type": "text", "text": "Passover is a holiday. Like " },
+            {
+              "type": "lib",
+              "prompt": "a holiday",
+              "id": 12,
+              "answer": "Pentecost"
+            },
+            {
+              "type": "text",
+              "text": ". It involves gathering with friends and/or family at a party called a seder."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "segments": [
+            {
+              "type": "text",
+              "text": "At this seder, the friends and family come prepared with certain items. These items are placed on a seder plate and explained. The explanation of the items, and the explanation of the history, meaning, and significance of Passover, is scripted. The script is called a Haggadah."
+            }
+          ]
+        },
+        { "type": "h2", "segments": [{ "type": "text", "text": "The end." }] }
+      ]
+    }
+  ]
+}

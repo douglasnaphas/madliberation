@@ -1,4 +1,1 @@
-for f in it/*-in.md
-do
-  diff <(awk -f txt2json.awk ${f}) ${f/%-in.md/-expected.json}
-done
+diff <(node bin/defaultScript.js scripts/004-Practice_Script.md | jq '.') <(cat test-data/practice-script-with-defaults.json | jq '.')

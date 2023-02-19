@@ -144,6 +144,10 @@ jobs:
         working-directory: content
         run: |
           npm test
+      - name: itest content
+        working-directory: content
+        run: |
+          npm run it
       - name: Deploy content
         working-directory: content
         env:
@@ -244,6 +248,10 @@ jobs:
         working-directory: content
         run: |
           npm test
+      - name: itest content
+        working-directory: content
+        run: |
+          npm run it
       - name: Deploy content
         working-directory: content
         env:

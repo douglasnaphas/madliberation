@@ -156,7 +156,7 @@ describe("lib/script2json.parse", () => {
   });
   test("some youngest player pages, funny page prefixes", () => {
     // the Google Docs script currently sometimes prints like ### # {{ Page }}
-    // instead of # {{ Page }}, if the page braek is before an h3 (page breaks
+    // instead of # {{ Page }}, if the page break is before an h3 (page breaks
     // are often right before headings).
     const input =
       "### # {{Page}}\n\nPage 1.\n\n" +

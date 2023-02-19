@@ -337,6 +337,54 @@ describe("lib/defaultScript.parse", () => {
     };
     testParse({ input: input, expected: expected });
   });
+  test("libs on multiple lines", () => {
+    const input =
+      "# {{Page}}\n\n# This script has {{ a problem // a lib // I have _ // a bear in my car }}.\n\nThe problem is that libs are on multiple {{ fracture planes // bounded contexts // Split it up by _ // lines }}.";
+    const expected = {
+      pages: [
+        {
+          lines: [
+            {
+              type: "h1",
+              segments: [
+                {
+                  type: "text",
+                  text: "This script has ",
+                },
+                {
+                  type: "lib",
+                  prompt: "a problem",
+                  id: 1,
+                  answer: "a bear in my car",
+                },
+                {
+                  type: "text",
+                  text: ".",
+                },
+              ],
+            },
+            {
+              type: "p",
+              segments: [
+                {
+                  type: "text",
+                  text: "The problem is that libs are on multiple ",
+                },
+                {
+                  type: "lib",
+                  prompt: "fracture planes",
+                  id: 2,
+                  answer: "lines",
+                },
+                { type: "text", text: "." },
+              ],
+            },
+          ],
+        },
+      ],
+    };
+    testParse({ input: input, expected: expected });
+  });
   test("some stage directions", () => {
     const input =
       "# {{Page}}\n\n[[ This is a stage direction. No need to process libs here. ]]\n\nThere is also a second line.";
@@ -349,8 +397,7 @@ describe("lib/defaultScript.parse", () => {
               segments: [
                 {
                   type: "text",
-                  text:
-                    "This is a stage direction. No need to process libs here.",
+                  text: "This is a stage direction. No need to process libs here.",
                 },
               ],
             },
@@ -464,7 +511,7 @@ describe("lib/defaultScript.parseLine", () => {
           type: "lib",
           prompt: "hi",
           id: 2,
-          answer: "no"
+          answer: "no",
         },
         {
           text: " lmnop qr",

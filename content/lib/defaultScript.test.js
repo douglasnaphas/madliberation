@@ -1,4 +1,27 @@
 const defaultScript = require("./defaultScript");
+test.only("class syntax", () => {
+  class DefaultScript {
+    constructor() {
+      this.libId = 1;
+    }
+    parseLine(line) {
+      return { text: line + "suffix", id: this.libId++ };
+    }
+    parse(lines) {
+      return lines.split("\n").map((line) => this.parseLine(line));
+    }
+  }
+  const ds = new DefaultScript();
+  const parsedLines = ds.parse("ab\ncd\nef");
+  expect(parsedLines).toEqual([
+    {
+      text: "absuffix",
+      id: 1,
+    },
+    { text: "cdsuffix", id: 2 },
+    { text: "efsuffix", id: 3 },
+  ]);
+});
 describe("lib/defaultScript.parse", () => {
   const testParse = ({ input, expected }) => {
     expect(defaultScript.parse(input)).toEqual(expected);

@@ -113,6 +113,11 @@ jobs:
         working-directory: content
         run: |
           npm test
+      - name: itest content (SKIP)
+        working-directory: content
+        run: |
+          echo "Skipping, as this tests the incomplete preview-Haggadah feature"
+#          npm run it
       - name: Deploy content
         working-directory: content
         env:

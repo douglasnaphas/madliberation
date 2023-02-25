@@ -16,28 +16,8 @@ import MuiAccordionSummary, {
 } from "@mui/material/AccordionSummary";
 import MuiAccordionDetails from "@mui/material/AccordionDetails";
 import { madLiberationStyles } from "../madLiberationStyles";
-
-const steps = [
-  {
-    order: 1,
-    label: "Pick script",
-    body: <div></div>,
-  },
-  {
-    order: 2,
-    label: "Guests",
-    body: <div></div>,
-  },
-  {
-    order: 3,
-    label: "Invites",
-    body: <div></div>,
-  },
-].sort((a: any, b: any) => {
-  if (a.order === b.order) return 0;
-  if (a.order < b.order) return -1;
-  return a;
-});
+import ScriptMenu from "../src/ScriptMenu";
+import { fetchScripts } from "../src/fetchScripts";
 
 const Accordion = styled((props: AccordionProps) => (
   <MuiAccordion disableGutters elevation={0} square {...props} />
@@ -76,6 +56,31 @@ const AccordionDetails = styled(MuiAccordionDetails)(({ theme }) => ({
 }));
 
 export default function Home() {
+  const [selectedScript, setSelectedScript] = React.useState("");
+  const steps = [
+    {
+      order: 1,
+      label: "Pick script",
+      body: (
+        <div>
+          <ScriptMenu
+            fetchScripts={fetchScripts}
+            selectedScript={selectedScript}
+            setSelectedScript={setSelectedScript}
+          ></ScriptMenu>
+        </div>
+      ),
+    },
+    {
+      order: 2,
+      label: "Your email",
+      body: <div></div>,
+    },
+  ].sort((a: any, b: any) => {
+    if (a.order === b.order) return 0;
+    if (a.order < b.order) return -1;
+    return a;
+  });
   const [accordionExpanded, setAccordionExpanded] = React.useState(
     steps.map(() => {
       return false;

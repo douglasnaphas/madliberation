@@ -1,7 +1,30 @@
-const script2json = require("./script2json");
-describe("lib/script2json.parse", () => {
+const defaultScript = require("./defaultScript");
+test.only("class syntax", () => {
+  class DefaultScript {
+    constructor() {
+      this.libId = 1;
+    }
+    parseLine(line) {
+      return { text: line + "suffix", id: this.libId++ };
+    }
+    parse(lines) {
+      return lines.split("\n").map((line) => this.parseLine(line));
+    }
+  }
+  const ds = new DefaultScript();
+  const parsedLines = ds.parse("ab\ncd\nef");
+  expect(parsedLines).toEqual([
+    {
+      text: "absuffix",
+      id: 1,
+    },
+    { text: "cdsuffix", id: 2 },
+    { text: "efsuffix", id: 3 },
+  ]);
+});
+describe("lib/defaultScript.parse", () => {
   const testParse = ({ input, expected }) => {
-    expect(script2json.parse(input)).toEqual(expected);
+    expect(defaultScript.parse(input)).toEqual(expected);
   };
   test("figure out how to strip text before the first page", () => {
     const stripPrePage = (text) => {
@@ -284,9 +307,8 @@ describe("lib/script2json.parse", () => {
                 {
                   type: "lib",
                   prompt: "a problem",
-                  example: "a headache",
-                  sentence: "I have _",
-                  default: "a bear in pursuit",
+                  id: 1,
+                  answer: "a bear in pursuit",
                 },
                 {
                   type: "text",
@@ -300,7 +322,7 @@ describe("lib/script2json.parse", () => {
     };
     testParse({ input: input, expected: expected });
   });
-  test("one page, two lines, no libs", () => {
+  test("one page, two lines, a lib", () => {
     const input =
       "# {{Page}}\n\n# This script has {{ a problem // a lib // I have _ // a bear in my car }}.\n\nThere is also a second line.";
     const expected = {
@@ -317,9 +339,8 @@ describe("lib/script2json.parse", () => {
                 {
                   type: "lib",
                   prompt: "a problem",
-                  example: "a lib",
-                  sentence: "I have _",
-                  default: "a bear in my car",
+                  id: 1,
+                  answer: "a bear in my car",
                 },
                 {
                   type: "text",
@@ -331,6 +352,54 @@ describe("lib/script2json.parse", () => {
               type: "p",
               segments: [
                 { type: "text", text: "There is also a second line." },
+              ],
+            },
+          ],
+        },
+      ],
+    };
+    testParse({ input: input, expected: expected });
+  });
+  test("libs on multiple lines", () => {
+    const input =
+      "# {{Page}}\n\n# This script has {{ a problem // a lib // I have _ // a bear in my car }}.\n\nThe problem is that libs are on multiple {{ fracture planes // bounded contexts // Split it up by _ // lines }}.";
+    const expected = {
+      pages: [
+        {
+          lines: [
+            {
+              type: "h1",
+              segments: [
+                {
+                  type: "text",
+                  text: "This script has ",
+                },
+                {
+                  type: "lib",
+                  prompt: "a problem",
+                  id: 1,
+                  answer: "a bear in my car",
+                },
+                {
+                  type: "text",
+                  text: ".",
+                },
+              ],
+            },
+            {
+              type: "p",
+              segments: [
+                {
+                  type: "text",
+                  text: "The problem is that libs are on multiple ",
+                },
+                {
+                  type: "lib",
+                  prompt: "fracture planes",
+                  id: 2,
+                  answer: "lines",
+                },
+                { type: "text", text: "." },
               ],
             },
           ],
@@ -351,8 +420,7 @@ describe("lib/script2json.parse", () => {
               segments: [
                 {
                   type: "text",
-                  text:
-                    "This is a stage direction. No need to process libs here.",
+                  text: "This is a stage direction. No need to process libs here.",
                 },
               ],
             },
@@ -399,9 +467,9 @@ describe("lib/script2json.parse", () => {
     testParse({ input: input, expected: expected });
   });
 });
-describe("lib/script2json.parseLine", () => {
+describe("lib/defaultScript.parseLine", () => {
   test("# The simplest possible script", () => {
-    expect(script2json.parseLine("# The simplest possible script")).toEqual({
+    expect(defaultScript.parseLine("# The simplest possible script")).toEqual({
       type: "h1",
       segments: [
         {
@@ -412,7 +480,7 @@ describe("lib/script2json.parseLine", () => {
     });
   });
   test("The simplest possible script", () => {
-    expect(script2json.parseLine("The simplest possible script")).toEqual({
+    expect(defaultScript.parseLine("The simplest possible script")).toEqual({
       type: "p",
       segments: [
         {
@@ -424,7 +492,7 @@ describe("lib/script2json.parseLine", () => {
   });
   test("text line with a lib", () => {
     expect(
-      script2json.parseLine(
+      defaultScript.parseLine(
         "text line with {{ a strange thing // a lib prompt // I see _ // a fumpton}}"
       )
     ).toEqual({
@@ -437,17 +505,16 @@ describe("lib/script2json.parseLine", () => {
         {
           type: "lib",
           prompt: "a strange thing",
-          example: "a lib prompt",
-          sentence: "I see _",
-          default: "a fumpton",
+          id: 1,
+          answer: "a fumpton",
         },
       ],
     });
   });
   test("multiple libs", () => {
     expect(
-      script2json.parseLine(
-        "a {{ b // c // d // e}} fg {{ hi // jk }} lmnop qr"
+      defaultScript.parseLine(
+        "a {{ b // c // d // e}} fg {{ hi // jk // lm // no }} lmnop qr"
       )
     ).toEqual({
       type: "p",
@@ -456,9 +523,8 @@ describe("lib/script2json.parseLine", () => {
         {
           type: "lib",
           prompt: "b",
-          example: "c",
-          sentence: "d",
-          default: "e",
+          id: 1,
+          answer: "e",
         },
         {
           type: "text",
@@ -467,9 +533,8 @@ describe("lib/script2json.parseLine", () => {
         {
           type: "lib",
           prompt: "hi",
-          example: "jk",
-          sentence: undefined,
-          default: undefined,
+          id: 2,
+          answer: "no",
         },
         {
           text: " lmnop qr",
@@ -479,7 +544,7 @@ describe("lib/script2json.parseLine", () => {
     });
   });
   test("## An h2", () => {
-    expect(script2json.parseLine("## An h2")).toEqual({
+    expect(defaultScript.parseLine("## An h2")).toEqual({
       type: "h2",
       segments: [
         {
@@ -490,7 +555,7 @@ describe("lib/script2json.parseLine", () => {
     });
   });
   test("### An h3", () => {
-    expect(script2json.parseLine("### An h3")).toEqual({
+    expect(defaultScript.parseLine("### An h3")).toEqual({
       type: "h3",
       segments: [
         {
@@ -501,7 +566,7 @@ describe("lib/script2json.parseLine", () => {
     });
   });
   test("#### An h4", () => {
-    expect(script2json.parseLine("#### An h4")).toEqual({
+    expect(defaultScript.parseLine("#### An h4")).toEqual({
       type: "h4",
       segments: [
         {
@@ -512,7 +577,7 @@ describe("lib/script2json.parseLine", () => {
     });
   });
   test("##### An h5", () => {
-    expect(script2json.parseLine("##### An h5")).toEqual({
+    expect(defaultScript.parseLine("##### An h5")).toEqual({
       type: "h5",
       segments: [
         {
@@ -523,7 +588,7 @@ describe("lib/script2json.parseLine", () => {
     });
   });
   test("###### An h6", () => {
-    expect(script2json.parseLine("###### An h6")).toEqual({
+    expect(defaultScript.parseLine("###### An h6")).toEqual({
       type: "h6",
       segments: [
         {
@@ -534,7 +599,7 @@ describe("lib/script2json.parseLine", () => {
     });
   });
   test("indented", () => {
-    expect(script2json.parseLine("    a line of a poem or song")).toEqual({
+    expect(defaultScript.parseLine("    a line of a poem or song")).toEqual({
       type: "indent",
       segments: [
         {
@@ -546,7 +611,7 @@ describe("lib/script2json.parseLine", () => {
   });
   test("omitted example", () => {
     expect(
-      script2json.parseLine("a lib {{ with // // no _ // example }}")
+      defaultScript.parseLine("a lib {{ with // // no _ // example }}")
     ).toEqual({
       type: "p",
       segments: [
@@ -557,9 +622,8 @@ describe("lib/script2json.parseLine", () => {
         {
           type: "lib",
           prompt: "with",
-          example: "",
-          sentence: "no _",
-          default: "example",
+          id: 1,
+          answer: "example",
         },
       ],
     });

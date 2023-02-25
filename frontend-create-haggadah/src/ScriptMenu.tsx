@@ -50,6 +50,7 @@ const ScriptMenu = (props: ScriptMenuProps) => {
           <Radio
             key={`${scriptUid}-radio`}
             value={`${scriptUid}`}
+            id={`${scriptUid}`}
             checked={selectedScript === `${scriptUid}`}
             onChange={(event) => {
               console.log("event.target.value:");
@@ -58,7 +59,12 @@ const ScriptMenu = (props: ScriptMenuProps) => {
             }}
           ></Radio>
         </TableCell>
-        {s.haggadah_short_desc}
+        <TableCell key={`${scriptUid}-short-desc`}>
+          <label htmlFor={`${scriptUid}`}>{s.haggadah_short_desc}</label>
+        </TableCell>
+        <TableCell key={`${scriptUid}-description`}>
+          {s.haggadah_description}
+        </TableCell>
       </TableRow>
     );
   });

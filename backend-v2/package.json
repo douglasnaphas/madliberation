@@ -14,7 +14,7 @@
     "jwk-to-pem": "^2.0.0",
     "lodash": "^4.17.21",
     "node-rsa": "^1.0.1",
-    "qs": "^6.9.3",
+    "qs": "^6.9.7",
     "querystring": "^0.2.0"
   },
   "devDependencies": {

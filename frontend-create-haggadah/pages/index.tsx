@@ -20,6 +20,7 @@ import ScriptMenu from "../src/ScriptMenu";
 import { fetchScripts } from "../src/fetchScripts";
 import { emailEditLink } from "../src/emailEditLink";
 import YourEmailSection from "../src/YourEmailSection";
+import SubmitSection from "../src/SubmitSection";
 
 const Accordion = styled((props: AccordionProps) => (
   <MuiAccordion disableGutters elevation={0} square {...props} />
@@ -80,7 +81,6 @@ export default function Home() {
       body: (
         <div>
           <YourEmailSection
-            emailEditLink={emailEditLink}
             yourEmail={yourEmail}
             setYourEmail={setYourEmail}
           ></YourEmailSection>
@@ -143,6 +143,9 @@ export default function Home() {
                 </div>
               );
             })}
+          </div>
+          <div>
+            <SubmitSection emailEditLink={emailEditLink}></SubmitSection>
           </div>
         </Paper>
       </Container>

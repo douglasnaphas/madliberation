@@ -1,28 +1,30 @@
 import React from "react";
 import { useState } from "react";
-import { TextField, Typography } from "@mui/material";
+import { Button, TextField, Typography } from "@mui/material";
 
-type YourEmailSectionProps = {
+type SubmitSectionProps = {
   emailEditLink: () => Promise<{
     message?: string;
     status: number;
   }>;
-  yourEmail: string;
-  setYourEmail: React.Dispatch<React.SetStateAction<string>>;
 };
-const YourEmailSection = (props: YourEmailSectionProps) => {
-  const { emailEditLink, yourEmail, setYourEmail } = props;
+const SubmitSection = (props: SubmitSectionProps) => {
+  const { emailEditLink } = props;
+  const [buttonPressed, setButtonPressed] = React.useState(false);
   return (
     <div>
-      <div>
-        <Typography component="p" paragraph gutterBottom>
-          Enter <label htmlFor="your-email-address">your email address</label>
-        </Typography>
-      </div>
-      <div>
-        <TextField variant="outlined" id="your-email-address"></TextField>
-      </div>
+      <Button
+        disabled={buttonPressed}
+        onClick={() => {
+          setButtonPressed(true);
+          emailEditLink().then((r) => {
+            setButtonPressed(false);
+          });
+        }}
+      >
+        Submit
+      </Button>
     </div>
   );
 };
-export default YourEmailSection;
+export default SubmitSection;

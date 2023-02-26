@@ -3,15 +3,11 @@ import { useState } from "react";
 import { TextField, Typography } from "@mui/material";
 
 type YourEmailSectionProps = {
-  emailEditLink: () => Promise<{
-    message?: string;
-    status: number;
-  }>;
   yourEmail: string;
   setYourEmail: React.Dispatch<React.SetStateAction<string>>;
 };
 const YourEmailSection = (props: YourEmailSectionProps) => {
-  const { emailEditLink, yourEmail, setYourEmail } = props;
+  const { yourEmail, setYourEmail } = props;
   return (
     <div>
       <div>

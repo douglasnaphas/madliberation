@@ -26,6 +26,7 @@ const seders = require("./lib/seders");
 const sedersJoined = require("./lib/sedersJoined");
 const rejoin = require("./lib/rejoin");
 const login = require("./lib/login/login");
+const getEditLink = require("./lib/getEditLink");
 
 const router = express.Router();
 
@@ -106,6 +107,8 @@ router.get("/get-cookies", getLoginCookies);
 
 router.use(bodyParser.json());
 
+router.get("/edit-link", getEditLink);
+
 router.use(authenticate);
 
 router.get("/playground", function (req, res, next) {
@@ -129,6 +132,7 @@ const rosterMiddleware = require("./lib/rosterMiddleware/rosterMiddleware.js");
 router.get("/roster", gameNameCookieCheckMidWare, rosterMiddleware);
 
 const closeSederMiddleware = require("./lib/closeSederMiddleware/closeSederMiddleware.js");
+const getEditLink = require("./lib/getEditLink");
 router.post(
   "/close-seder",
   gameNameCookieCheckMidWare,
@@ -159,9 +163,14 @@ router.get(
   }
 );
 
-router.get("/script", gameNameCookieCheckMidWare, scriptMiddleware, (req, res) => {
-  res.send(res.locals.script);
-});
+router.get(
+  "/script",
+  gameNameCookieCheckMidWare,
+  scriptMiddleware,
+  (req, res) => {
+    res.send(res.locals.script);
+  }
+);
 
 router.post("/play", readRosterMiddleware, (req, res) => {
   res.send({ err: res.locals.dbError, data: res.locals.dbData });

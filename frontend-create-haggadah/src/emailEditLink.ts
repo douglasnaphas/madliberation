@@ -1,9 +1,9 @@
 const emailEditLink = async () => {
-  const response = await fetch("../v2/a");
+  const response = await fetch("../v2/edit-link");
   const data = await response.json();
   const status = response.status;
   return {
-    message: data,
+    data,
     status,
   };
 };

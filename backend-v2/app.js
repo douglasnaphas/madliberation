@@ -132,7 +132,7 @@ const rosterMiddleware = require("./lib/rosterMiddleware/rosterMiddleware.js");
 router.get("/roster", gameNameCookieCheckMidWare, rosterMiddleware);
 
 const closeSederMiddleware = require("./lib/closeSederMiddleware/closeSederMiddleware.js");
-const getEditLink = require("./lib/getEditLink");
+
 router.post(
   "/close-seder",
   gameNameCookieCheckMidWare,

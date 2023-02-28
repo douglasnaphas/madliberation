@@ -16,7 +16,15 @@ const YourEmailSection = (props: YourEmailSectionProps) => {
         </Typography>
       </div>
       <div>
-        <TextField variant="outlined" id="your-email-address"></TextField>
+        <TextField
+          variant="outlined"
+          id="your-email-address"
+          onChange={(event) => {
+            console.log("event.target.value (your email address):");
+            console.log(event.target.value);
+            setYourEmail(event.target.value);
+          }}
+        ></TextField>
       </div>
     </div>
   );

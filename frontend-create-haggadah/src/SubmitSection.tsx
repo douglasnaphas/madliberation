@@ -3,14 +3,16 @@ import { useState } from "react";
 import { Button, TextField, Typography } from "@mui/material";
 
 type SubmitSectionProps = {
-  getEditLink: () => Promise<{
+  getEditLink: (props: { path: string; leaderEmail: string }) => Promise<{
     message?: string;
     status: number;
   }>;
+  leaderEmail: string,
+  path: string,
   setEditLink: React.Dispatch<React.SetStateAction<string>>;
 };
 const SubmitSection = (props: SubmitSectionProps) => {
-  const { getEditLink } = props;
+  const { getEditLink, path, leaderEmail } = props;
   const [buttonPressed, setButtonPressed] = React.useState(false);
   return (
     <div>
@@ -18,7 +20,7 @@ const SubmitSection = (props: SubmitSectionProps) => {
         disabled={buttonPressed}
         onClick={() => {
           setButtonPressed(true);
-          getEditLink().then((r) => {
+          getEditLink({path, leaderEmail}).then((r) => {
             setButtonPressed(false);
           });
         }}

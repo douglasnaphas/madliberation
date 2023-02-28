@@ -43,7 +43,7 @@ const ScriptMenu = (props: ScriptMenuProps) => {
     });
   }, []);
   const scriptRows = scripts.map((s) => {
-    const scriptUid = `${s.room_code}-${s.lib_id}`;
+    const scriptUid = `${s.path}`;
     return (
       <TableRow key={`row${scriptUid}`}>
         <TableCell key={`${scriptUid}-select`}>

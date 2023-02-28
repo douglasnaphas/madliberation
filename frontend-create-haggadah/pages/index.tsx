@@ -149,6 +149,8 @@ export default function Home() {
             <SubmitSection
               getEditLink={getEditLink}
               setEditLink={setEditLink}
+              leaderEmail={yourEmail}
+              path={selectedScript}
             ></SubmitSection>
           </div>
           {editLink !== "" && (

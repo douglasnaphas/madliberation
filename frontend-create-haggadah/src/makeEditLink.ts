@@ -1,0 +1,2 @@
+const makeEditLink = () => ``;
+export { makeEditLink };

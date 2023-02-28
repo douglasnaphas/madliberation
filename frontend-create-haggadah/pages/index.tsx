@@ -18,7 +18,7 @@ import MuiAccordionDetails from "@mui/material/AccordionDetails";
 import { madLiberationStyles } from "../madLiberationStyles";
 import ScriptMenu from "../src/ScriptMenu";
 import { fetchScripts } from "../src/fetchScripts";
-import { emailEditLink } from "../src/emailEditLink";
+import { getEditLink } from "../src/getEditLink";
 import YourEmailSection from "../src/YourEmailSection";
 import SubmitSection from "../src/SubmitSection";
 
@@ -61,6 +61,7 @@ const AccordionDetails = styled(MuiAccordionDetails)(({ theme }) => ({
 export default function Home() {
   const [selectedScript, setSelectedScript] = React.useState("");
   const [yourEmail, setYourEmail] = React.useState("");
+  const [editLink, setEditLink] = React.useState("");
   const steps = [
     {
       order: 1,
@@ -145,8 +146,25 @@ export default function Home() {
             })}
           </div>
           <div>
-            <SubmitSection emailEditLink={emailEditLink}></SubmitSection>
+            <SubmitSection
+              getEditLink={getEditLink}
+              setEditLink={setEditLink}
+            ></SubmitSection>
           </div>
+          {editLink !== "" && (
+            <div>
+              <Typography component="p" paragraph gutterBottom>
+                Your permalink for proceeding with your Haggadah is{" "}
+                {`${editLink}`}. Click{" "}
+                <a
+                  href={`mailto:${yourEmail}?subject=Permalink to create my Haggadah&body=Edit the Haggadah by going to ${editLink}`}
+                >
+                  here
+                </a>
+                .
+              </Typography>
+            </div>
+          )}
         </Paper>
       </Container>
       <br />

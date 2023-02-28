@@ -1,4 +1,4 @@
-const emailEditLink = async () => {
+const getEditLink = async () => {
   const response = await fetch("../v2/edit-link");
   const data = await response.json();
   const status = response.status;
@@ -7,4 +7,4 @@ const emailEditLink = async () => {
     status,
   };
 };
-export { emailEditLink };
+export { getEditLink };

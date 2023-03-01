@@ -4,6 +4,7 @@ const AWS = require("aws-sdk");
 const schema = require("../schema");
 const responses = require("../responses");
 const logger = require("../logger");
+const randomCapGenerator = require("./randomCapGenerator");
 const postEditLink = [
   // fail if there's no path and leaderEmail
   checkBody(["path", "leaderEmail"]),
@@ -55,7 +56,18 @@ const postEditLink = [
     return next();
   },
   // save path and leaderEmail in locals
+  (req, res, next) => {
+    res.locals.path = req.body.path;
+    res.locals.leaderEmail = req.body.leaderEmail;
+    return next();
+  },
   // generate password, save in locals
+  (req, res, next) => {
+    const pwSequence = randomCapGenerator({letters: 16})
+    const pw = pwSequence.next().value;
+    res.locals.pw = pw;
+    return next();
+  },
   // generate seder code, save in db w other locals, and in locals
   // send response
   (req, res, next) => {

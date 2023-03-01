@@ -18,7 +18,9 @@ const SubmitSection = (props: SubmitSectionProps) => {
   return (
     <div>
       <Button
-        disabled={buttonPressed || !validator.validate(leaderEmail)}
+        disabled={
+          buttonPressed || !validator.validate(leaderEmail) || path === ""
+        }
         onClick={() => {
           setButtonPressed(true);
           getEditLink({ path, leaderEmail }).then((r) => {

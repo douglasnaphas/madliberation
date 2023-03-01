@@ -1,14 +1,15 @@
 import React from "react";
 import { useState } from "react";
 import { Button, TextField, Typography } from "@mui/material";
+const validator = require("email-validator");
 
 type SubmitSectionProps = {
   getEditLink: (props: { path: string; leaderEmail: string }) => Promise<{
     message?: string;
     status: number;
   }>;
-  leaderEmail: string,
-  path: string,
+  leaderEmail: string;
+  path: string;
   setEditLink: React.Dispatch<React.SetStateAction<string>>;
 };
 const SubmitSection = (props: SubmitSectionProps) => {
@@ -17,10 +18,10 @@ const SubmitSection = (props: SubmitSectionProps) => {
   return (
     <div>
       <Button
-        disabled={buttonPressed}
+        disabled={buttonPressed || !validator.validate(leaderEmail)}
         onClick={() => {
           setButtonPressed(true);
-          getEditLink({path, leaderEmail}).then((r) => {
+          getEditLink({ path, leaderEmail }).then((r) => {
             setButtonPressed(false);
           });
         }}

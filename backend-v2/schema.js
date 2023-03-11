@@ -63,7 +63,10 @@ const schema = {
   MS: "ms",
   CONNECTION_ID: "connection_id",
   WAIT: "wait", // wait page, ws-wait WS API
-  READ_ROSTER: "read-roster"
+  READ_ROSTER: "read-roster",
+  // v2
+  LEADER_EMAIL: "leader-email",
+  LEADER_PW: "leader_pw"
 };
 
 module.exports = schema;

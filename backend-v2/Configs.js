@@ -1,4 +1,8 @@
 class Configs {
+
+  static SEDER_CODE_LENGTH = 12;
+  static LEADER_PW_LENGTH = 16;
+
   static OPAQUE_COOKIE_LENGTH() {
     return 30;
   }

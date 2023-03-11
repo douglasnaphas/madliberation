@@ -1,10 +1,15 @@
 const checkBody = require("./checkBody");
 const validator = require("email-validator");
 const AWS = require("aws-sdk");
+const { DynamoDBDocumentClient, PutCommand } = require("@aws-sdk/lib-dynamodb");
+const { DynamoDBClient } = require("@aws-sdk/client-dynamodb");
 const schema = require("../schema");
 const responses = require("../responses");
 const logger = require("../logger");
 const randomCapGenerator = require("./randomCapGenerator");
+const Configs = require("../Configs");
+const sederCode = require("./seder-code");
+
 const postEditLink = [
   // fail if there's no path and leaderEmail
   checkBody(["path", "leaderEmail"]),
@@ -61,17 +66,31 @@ const postEditLink = [
     res.locals.leaderEmail = req.body.leaderEmail;
     return next();
   },
-  // generate password, save in locals
+  // generate password, save it and its hash in locals
   (req, res, next) => {
-    const pwSequence = randomCapGenerator({letters: 16})
+    const pwSequence = randomCapGenerator({
+      letters: Configs.LEADER_PW_LENGTH,
+    });
     const pw = pwSequence.next().value;
     res.locals.pw = pw;
+    const crypto = require("crypto");
+    const pwHash = crypto
+      .createHash("sha256")
+      .update(pw)
+      .digest("hex")
+      .toLowerCase();
     return next();
   },
   // generate seder code, save in db w other locals, and in locals
+  sederCode({
+    dynamoDBDocumentClient: DynamoDBDocumentClient,
+    putCommand: PutCommand,
+    dynamoDBClient: DynamoDBClient,
+    configs: Configs,
+  }),
   // send response
   (req, res, next) => {
-    res.send({ data: { sederCode: "SOME-SEQU-ENCE-LTRS" } });
+    res.send({ data: { sederCode: res.locals.sederCode, pw: res.locals.pw } });
   },
 ];
 module.exports = postEditLink;

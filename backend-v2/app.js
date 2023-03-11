@@ -2,13 +2,11 @@ const bodyParser = require("body-parser");
 var express = require("express");
 var Configs = require("./Configs");
 var app = express();
-var credChecker = require("./lib/credChecker");
 var cookieParser = require("cookie-parser");
 const AWS = require("aws-sdk");
 
 const pathCheck = require("./lib/pathCheck");
 const roomCode = require("./lib/room-code");
-const roomCodeExists = require("./lib/roomCodeExists");
 const randomStringGenerator = require("./lib/randomCapGenerator");
 const schema = require("./schema");
 const blacklistPostParams = require("./lib/blacklistPostParams");

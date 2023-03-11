@@ -5,7 +5,7 @@ const validator = require("email-validator");
 
 type SubmitSectionProps = {
   getEditLink: (props: { path: string; leaderEmail: string }) => Promise<{
-    message?: string;
+    lnk?: string;
     status: number;
   }>;
   leaderEmail: string;
@@ -24,7 +24,7 @@ const SubmitSection = (props: SubmitSectionProps) => {
         onClick={() => {
           setButtonPressed(true);
           getEditLink({ path, leaderEmail }).then((r) => {
-            setEditLink(r.message || "");
+            setEditLink(r.lnk || "");
             setButtonPressed(false);
           });
         }}

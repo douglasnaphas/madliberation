@@ -13,7 +13,7 @@ type SubmitSectionProps = {
   setEditLink: React.Dispatch<React.SetStateAction<string>>;
 };
 const SubmitSection = (props: SubmitSectionProps) => {
-  const { getEditLink, path, leaderEmail } = props;
+  const { getEditLink, path, leaderEmail, setEditLink } = props;
   const [buttonPressed, setButtonPressed] = React.useState(false);
   return (
     <div>
@@ -24,6 +24,7 @@ const SubmitSection = (props: SubmitSectionProps) => {
         onClick={() => {
           setButtonPressed(true);
           getEditLink({ path, leaderEmail }).then((r) => {
+            setEditLink(r.message || "");
             setButtonPressed(false);
           });
         }}

@@ -8,7 +8,10 @@ const getEditLink = async (props: { path: string; leaderEmail: string }) => {
   const response = await fetch("../v2/edit-link", fetchInit);
   const data = await response.json();
   const status = response.status;
+  const lnk = `./edit.html?sederCode=${data.sederCode}&pw=${data.pw}`;
+  // return an editLink, not data and status
   return {
+    lnk,
     data,
     status,
   };

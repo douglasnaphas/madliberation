@@ -20,8 +20,6 @@ const YourEmailSection = (props: YourEmailSectionProps) => {
           variant="outlined"
           id="your-email-address"
           onChange={(event) => {
-            console.log("event.target.value (your email address):");
-            console.log(event.target.value);
             setYourEmail(event.target.value);
           }}
         ></TextField>

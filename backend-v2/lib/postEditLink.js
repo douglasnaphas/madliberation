@@ -79,6 +79,7 @@ const postEditLink = [
       .update(pw)
       .digest("hex")
       .toLowerCase();
+    res.locals.pwHash = pwHash;
     return next();
   },
   // generate seder code, save in db w other locals, and in locals
@@ -90,7 +91,7 @@ const postEditLink = [
   }),
   // send response
   (req, res, next) => {
-    res.send({ data: { sederCode: res.locals.sederCode, pw: res.locals.pw } });
+    return res.send({ data: { sederCode: res.locals.sederCode, pw: res.locals.pw } });
   },
 ];
 module.exports = postEditLink;

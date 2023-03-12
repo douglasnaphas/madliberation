@@ -156,22 +156,6 @@ export default function Home() {
               path={selectedScript}
             ></SubmitSection>
           </div>
-          {editLink !== "" && (
-            <div>
-              <Typography component="p" paragraph gutterBottom>
-                <a href={editLink}>This</a> is your permalink for proceeding
-                with your Haggadah. Click{" "}
-                <a
-                  href={`mailto:${yourEmail}?subject=Permalink to create my Haggadah&body=Edit the Haggadah by going to ${encodeURIComponent(
-                    editLink
-                  )}`}
-                >
-                  here
-                </a>{" "}
-                to email this to yourself.
-              </Typography>
-            </div>
-          )}
         </Paper>
       </Container>
       <br />

@@ -12,7 +12,6 @@ const getEditLink = async (props: { path: string; leaderEmail: string }) => {
   // return an editLink, not data and status
   return {
     lnk,
-    data,
     status,
   };
 };

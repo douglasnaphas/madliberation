@@ -91,7 +91,7 @@ const postEditLink = [
   }),
   // send response
   (req, res, next) => {
-    return res.send({ data: { sederCode: res.locals.sederCode, pw: res.locals.pw } });
+    return res.send({ sederCode: res.locals.sederCode, pw: res.locals.pw });
   },
 ];
 module.exports = postEditLink;

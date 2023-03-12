@@ -102,7 +102,13 @@ export default function Home() {
   );
 
   return (
-    <div>
+    <div
+      style={{
+        backgroundColor: "#81181f",
+        height: "100%",
+        minHeight: "100%",
+      }}
+    >
       <div>
         <img
           css={{

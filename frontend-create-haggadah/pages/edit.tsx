@@ -20,6 +20,7 @@ export default function Edit() {
       style={{
         backgroundColor: "#81181f",
         height: "100%",
+        minHeight: "100%",
       }}
     >
       <div>

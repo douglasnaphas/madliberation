@@ -2,7 +2,7 @@ const getEditLink = async (props: { path: string; leaderEmail: string }) => {
   const { path, leaderEmail } = props;
   const fetchInit = {
     method: "POST",
-    redirect: "follow",
+    redirect: "follow" as RequestRedirect,
     body: JSON.stringify({ path, leaderEmail }),
     headers: { "Content-Type": "application/json" },
   };

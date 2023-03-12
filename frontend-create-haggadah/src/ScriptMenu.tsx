@@ -19,6 +19,7 @@ interface ScriptItem {
 }
 type ScriptItemArray = Array<ScriptItem>;
 type ScriptMenuProps = {
+  disabled?: boolean;
   fetchScripts: () => Promise<{
     data?: {
       scripts: {
@@ -34,7 +35,7 @@ type ScriptMenuProps = {
 };
 const ScriptMenu = (props: ScriptMenuProps) => {
   const [scripts, setScripts] = React.useState<ScriptItemArray>([]);
-  const { fetchScripts, selectedScript, setSelectedScript } = props;
+  const { disabled, fetchScripts, selectedScript, setSelectedScript } = props;
   useEffect(() => {
     fetchScripts().then((dataAndStatus) => {
       if (dataAndStatus?.data?.scripts?.Items) {
@@ -48,6 +49,7 @@ const ScriptMenu = (props: ScriptMenuProps) => {
       <TableRow key={`row${scriptUid}`}>
         <TableCell key={`${scriptUid}-select`}>
           <Radio
+            disabled={disabled}
             key={`${scriptUid}-radio`}
             value={`${scriptUid}`}
             id={`${scriptUid}`}

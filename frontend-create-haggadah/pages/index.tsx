@@ -69,6 +69,7 @@ export default function Home() {
       body: (
         <div>
           <ScriptMenu
+            disabled={editLink !== ""}
             fetchScripts={fetchScripts}
             selectedScript={selectedScript}
             setSelectedScript={setSelectedScript}
@@ -82,6 +83,7 @@ export default function Home() {
       body: (
         <div>
           <YourEmailSection
+            disabled={editLink !== ""}
             yourEmail={yourEmail}
             setYourEmail={setYourEmail}
           ></YourEmailSection>
@@ -159,7 +161,9 @@ export default function Home() {
                 <a href={editLink}>This</a> is your permalink for proceeding
                 with your Haggadah. Click{" "}
                 <a
-                  href={`mailto:${yourEmail}?subject=Permalink to create my Haggadah&body=Edit the Haggadah by going to ${encodeURIComponent(editLink)}`}
+                  href={`mailto:${yourEmail}?subject=Permalink to create my Haggadah&body=Edit the Haggadah by going to ${encodeURIComponent(
+                    editLink
+                  )}`}
                 >
                   here
                 </a>{" "}

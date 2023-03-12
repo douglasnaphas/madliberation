@@ -3,11 +3,12 @@ import { useState } from "react";
 import { TextField, Typography } from "@mui/material";
 
 type YourEmailSectionProps = {
+  disabled?: boolean,
   yourEmail: string;
   setYourEmail: React.Dispatch<React.SetStateAction<string>>;
 };
 const YourEmailSection = (props: YourEmailSectionProps) => {
-  const { yourEmail, setYourEmail } = props;
+  const { disabled, yourEmail, setYourEmail } = props;
   return (
     <div>
       <div>
@@ -17,6 +18,7 @@ const YourEmailSection = (props: YourEmailSectionProps) => {
       </div>
       <div>
         <TextField
+          disabled={disabled}
           variant="outlined"
           id="your-email-address"
           onChange={(event) => {

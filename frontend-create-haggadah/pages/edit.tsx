@@ -17,7 +17,7 @@ import { fetchScripts } from "../src/fetchScripts";
 export default function Edit() {
   // get the email from the server
 
-  const permalink = document.createElement("a");
+  const permalink = window.document.createElement("a");
   permalink.href = window.location.origin;
   permalink.hash = "";
   return (

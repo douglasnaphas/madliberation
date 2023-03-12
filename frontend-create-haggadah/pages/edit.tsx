@@ -20,7 +20,7 @@ export default function Edit() {
   let permalink;
   if (typeof window !== "undefined") {
     permalink = window.document.createElement("a");
-    permalink.href = window.location.origin;
+    permalink.href = window.location.href;
     permalink.hash = "";
   }
   return (

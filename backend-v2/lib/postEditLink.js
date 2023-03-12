@@ -93,7 +93,7 @@ const postEditLink = [
   (req, res, next) => {
     return res.redirect(
       303,
-      `./edit.html?sederCode=${res.locals.sederCode}&pw=${res.locals.pw}`
+      `../create-haggadah/edit.html?sederCode=${res.locals.sederCode}&pw=${res.locals.pw}`
     );
   },
 ];

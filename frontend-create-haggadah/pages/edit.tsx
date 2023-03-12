@@ -17,9 +17,12 @@ import { fetchScripts } from "../src/fetchScripts";
 export default function Edit() {
   // get the email from the server
 
-  const permalink = window.document.createElement("a");
-  permalink.href = window.location.origin;
-  permalink.hash = "";
+  let permalink;
+  if (typeof permalink !== "undefined") {
+    permalink = window.document.createElement("a");
+    permalink.href = window.location.origin;
+    permalink.hash = "";
+  }
   return (
     <div
       style={{
@@ -42,18 +45,21 @@ export default function Edit() {
       <Container maxWidth="md">
         <Paper>
           <div>
-            <Typography component="p" paragraph gutterBottom>
-              <a href={permalink.href}>This</a> is your permalink for proceeding
-              with your Haggadah. Click{" "}
-              <a
-                href={`mailto:your@email.com?subject=Permalink to create my Haggadah&body=Edit the Haggadah by going to ${encodeURIComponent(
-                  permalink.href
-                )}`}
-              >
-                here
-              </a>{" "}
-              to email this to yourself.
-            </Typography>
+            {" "}
+            {permalink && (
+              <Typography component="p" paragraph gutterBottom>
+                <a href={permalink.href}>This</a> is your permalink for
+                proceeding with your Haggadah. Click{" "}
+                <a
+                  href={`mailto:your@email.com?subject=Permalink to create my Haggadah&body=Edit the Haggadah by going to ${encodeURIComponent(
+                    permalink.href
+                  )}`}
+                >
+                  here
+                </a>{" "}
+                to email this to yourself.
+              </Typography>
+            )}
           </div>
         </Paper>
       </Container>

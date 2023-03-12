@@ -18,7 +18,7 @@ export default function Edit() {
   // get the email from the server
 
   let permalink;
-  if (typeof permalink !== "undefined") {
+  if (typeof window !== "undefined") {
     permalink = window.document.createElement("a");
     permalink.href = window.location.origin;
     permalink.hash = "";

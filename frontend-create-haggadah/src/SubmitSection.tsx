@@ -26,7 +26,9 @@ const SubmitSection = (props: SubmitSectionProps) => {
           getEditLink({ path, leaderEmail }).then((r) => {
             console.log(r);
             setEditLink(r.lnk || "");
-            setButtonPressed(false);
+            if (r.lnk) {
+              window.location.href = r.lnk;
+            }
           });
         }}
       >

@@ -156,13 +156,14 @@ export default function Home() {
           {editLink !== "" && (
             <div>
               <Typography component="p" paragraph gutterBottom>
-                Your permalink for proceeding with your Haggadah is{" "}
-                <a href={editLink}>{`${editLink}`}</a>. Click{" "}
+                <a href={editLink}>This</a> is your permalink for proceeding
+                with your Haggadah. Click{" "}
                 <a
-                  href={`mailto:${yourEmail}?subject=Permalink to create my Haggadah&body=Edit the Haggadah by going to ${editLink}`}
+                  href={`mailto:${yourEmail}?subject=Permalink to create my Haggadah&body=Edit the Haggadah by going to ${encodeURIComponent(editLink)}`}
                 >
                   here
-                </a> to email this to yourself.
+                </a>{" "}
+                to email this to yourself.
               </Typography>
             </div>
           )}

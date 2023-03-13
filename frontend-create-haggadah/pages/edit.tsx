@@ -53,13 +53,13 @@ export default function Edit() {
   }
   React.useEffect(() => {
     if (sederCode && pw) {
-      fetch(`/leader-email?sederCode=${sederCode}&pw=${pw}`)
+      fetch(`../v2/leader-email?sederCode=${sederCode}&pw=${pw}`)
         .then((r) => r.json())
         .then((j) => {
           setLeaderEmail(j.leaderEmail);
         });
     }
-  });
+  }, []);
   let permalink;
   if (typeof window !== "undefined") {
     permalink = window.document.createElement("a");

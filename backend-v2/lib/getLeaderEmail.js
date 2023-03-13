@@ -13,7 +13,7 @@ const getLeaderEmail = [
     const pwHash = crypto
       .createHash("sha256")
       .update(req.query.pw)
-      .digest("hext")
+      .digest("hex")
       .toLowerCase();
     res.locals.pwHash = pwHash;
     return next();

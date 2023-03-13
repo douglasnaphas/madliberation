@@ -25,6 +25,7 @@ const sedersJoined = require("./lib/sedersJoined");
 const rejoin = require("./lib/rejoin");
 const login = require("./lib/login/login");
 const postEditLink = require("./lib/postEditLink");
+const getLeaderEmail = require("./lib/getLeaderEmail");
 
 const router = express.Router();
 
@@ -106,6 +107,8 @@ router.get("/get-cookies", getLoginCookies);
 router.use(bodyParser.json());
 
 router.post("/edit-link", postEditLink);
+
+router.get("/leader-email", getLeaderEmail);
 
 router.use(authenticate);
 

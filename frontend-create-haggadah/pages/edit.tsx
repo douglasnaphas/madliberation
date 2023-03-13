@@ -13,10 +13,43 @@ import { styled } from "@mui/material/styles";
 import { madLiberationStyles } from "../madLiberationStyles";
 import ScriptMenu from "../src/ScriptMenu";
 import { fetchScripts } from "../src/fetchScripts";
-
+const ThisIsYourLinkText = (props: {
+  lnk?: HTMLAnchorElement;
+  yourEmail: string;
+}) => {
+  const { lnk, yourEmail } = props;
+  if (!lnk || !yourEmail) {
+    return (
+      <div>
+        <p>No lnk or no yourEmail</p>
+      </div>
+    );
+  }
+  return (
+    <Typography component="p" paragraph gutterBottom>
+      <a href={lnk.href}>This</a> is your permalink for proceeding with your
+      Haggadah. Click{" "}
+      <a
+        href={`mailto:${yourEmail}?subject=Permalink to create my Haggadah&body=Edit the Haggadah by going to ${encodeURIComponent(
+          lnk.href
+        )}`}
+      >
+        here
+      </a>{" "}
+      to email this to yourself.
+    </Typography>
+  );
+};
 export default function Edit() {
   // get the email from the server
-
+  const [leaderEmail, setLeaderEmail] = React.useState("");
+  React.useEffect(() => {
+    fetch("/leader-email")
+      .then((r) => r.json())
+      .then((j) => {
+        setLeaderEmail(j.leaderEmail);
+      });
+  });
   let permalink;
   if (typeof window !== "undefined") {
     permalink = window.document.createElement("a");
@@ -45,21 +78,10 @@ export default function Edit() {
       <Container maxWidth="md">
         <Paper>
           <div>
-            {" "}
-            {permalink && (
-              <Typography component="p" paragraph gutterBottom>
-                <a href={permalink.href}>This</a> is your permalink for
-                proceeding with your Haggadah. Click{" "}
-                <a
-                  href={`mailto:your@email.com?subject=Permalink to create my Haggadah&body=Edit the Haggadah by going to ${encodeURIComponent(
-                    permalink.href
-                  )}`}
-                >
-                  here
-                </a>{" "}
-                to email this to yourself.
-              </Typography>
-            )}
+            <ThisIsYourLinkText
+              lnk={permalink}
+              yourEmail={leaderEmail}
+            ></ThisIsYourLinkText>
           </div>
         </Paper>
       </Container>

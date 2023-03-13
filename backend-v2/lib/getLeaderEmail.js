@@ -1,4 +1,4 @@
-const checkBody = require("./checkBody");
+const checkQueryParams = require("./checkQueryParams");
 const { DynamoDBDocumentClient, GetCommand } = require("@aws-sdk/lib-dynamodb");
 const { DynamoDBClient } = require("@aws-sdk/client-dynamodb");
 const logger = require("../logger");
@@ -6,13 +6,13 @@ const schema = require("../schema");
 const responses = require("../responses");
 const getLeaderEmail = [
   // check for required params
-  checkBody(["sederCode", "pw"]),
+  checkQueryParams(["sederCode", "pw"]),
   // save pwHash
   (req, res, next) => {
     const crypto = require("crypto");
     const pwHash = crypto
       .createHash("sha256")
-      .update(req.body.pw)
+      .update(req.query.pw)
       .digest("hext")
       .toLowerCase();
     res.locals.pwHash = pwHash;
@@ -26,7 +26,7 @@ const getLeaderEmail = [
     const getParams = {
       TableName: schema.TABLE_NAME,
       Key: {
-        room_code: req.body.sederCode,
+        room_code: req.query.sederCode,
         lib_id: schema.SEDER_PREFIX,
       },
     };

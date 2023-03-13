@@ -13,6 +13,7 @@ import { styled } from "@mui/material/styles";
 import { madLiberationStyles } from "../madLiberationStyles";
 import ScriptMenu from "../src/ScriptMenu";
 import { fetchScripts } from "../src/fetchScripts";
+
 const ThisIsYourLinkText = (props: {
   lnk?: HTMLAnchorElement;
   yourEmail: string;
@@ -43,12 +44,21 @@ const ThisIsYourLinkText = (props: {
 export default function Edit() {
   // get the email from the server
   const [leaderEmail, setLeaderEmail] = React.useState("");
+  let sederCode: any, pw: any;
+  if (typeof window !== "undefined" && typeof URLSearchParams === "function") {
+    const urlSearchParams = new URLSearchParams(window.location.search);
+    sederCode = urlSearchParams.get("sederCode");
+    pw = urlSearchParams.get("pw");
+    console.log(`found sederCode ${sederCode} and pw ${pw}`);
+  }
   React.useEffect(() => {
-    fetch("/leader-email")
-      .then((r) => r.json())
-      .then((j) => {
-        setLeaderEmail(j.leaderEmail);
-      });
+    if (sederCode && pw) {
+      fetch(`/leader-email?sederCode=${sederCode}&pw=${pw}`)
+        .then((r) => r.json())
+        .then((j) => {
+          setLeaderEmail(j.leaderEmail);
+        });
+    }
   });
   let permalink;
   if (typeof window !== "undefined") {

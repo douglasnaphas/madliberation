@@ -27,7 +27,12 @@ const ThisIsYourLinkText = (props: {
     );
   }
   return (
-    <Typography component="p" paragraph gutterBottom>
+    <Typography
+      component="p"
+      paragraph
+      gutterBottom
+      style={{ marginLeft: "8px" }}
+    >
       <a href={lnk.href}>This</a> is your permalink for proceeding with your
       Haggadah. Click{" "}
       <a

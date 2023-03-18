@@ -28,12 +28,12 @@ describe('joinSederMiddleware/succeed', () => {
   test('expect 500 on missing gameName', () => {
     const req = {
       body: {
-        roomCode: 'JUSTCO'
+        sederCode: 'JUSTCO'
       }
     };
     runTest({req: req, expect500: true});
   });
-  test('expect 500 on missing roomCode', () => {
+  test('expect 500 on missing sederCode', () => {
     const req = {
       body: {
         gameName: 'JUSTCO'
@@ -41,17 +41,17 @@ describe('joinSederMiddleware/succeed', () => {
     };
     runTest({req: req, expect500: true});
   });
-  test('roomCode, gameName should be returned on success', () => {
+  test('sederCode, gameName should be returned on success', () => {
     const req = {
       body: {
         gameName: 'my name',
-        roomCode: 'MYCODE'
+        sederCode: 'MYCODE'
       }
     };
     const expectedData = {
       result: 'success',
       gameName: 'my name',
-      roomCode: 'MYCODE'
+      sederCode: 'MYCODE'
     };
     runTest({req: req, expectedData: expectedData});
   });

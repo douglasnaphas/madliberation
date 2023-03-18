@@ -24,7 +24,6 @@ const SubmitSection = (props: SubmitSectionProps) => {
         onClick={() => {
           setButtonPressed(true);
           getEditLink({ path, leaderEmail }).then((r) => {
-            console.log(r);
             setEditLink(r.lnk || "");
             if (r.lnk) {
               window.location.href = r.lnk;

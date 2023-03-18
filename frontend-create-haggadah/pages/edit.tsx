@@ -6,10 +6,17 @@ import Typography from "@mui/material/Typography";
 import MadLiberationLogo from "../public/mad-liberation-logo.png";
 import VeryAwesomePassoverLogo from "../public/VAPLogo-white.png";
 import { Global, css, jsx } from "@emotion/react";
-import { Paper } from "@mui/material";
+import {
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableRow,
+  TextField,
+} from "@mui/material";
 import Button from "@mui/material/Button";
 import { styled } from "@mui/material/styles";
-
+import * as EmailValidator from "email-validator";
 import { madLiberationStyles } from "../madLiberationStyles";
 import ScriptMenu from "../src/ScriptMenu";
 import { fetchScripts } from "../src/fetchScripts";
@@ -22,7 +29,7 @@ const ThisIsYourLinkText = (props: {
   if (!lnk || !yourEmail) {
     return (
       <div>
-        <p>No lnk or no yourEmail</p>
+        <p>...</p>
       </div>
     );
   }
@@ -45,6 +52,95 @@ const ThisIsYourLinkText = (props: {
       to email this to yourself.
     </Typography>
   );
+};
+interface Guest {
+  name: string;
+  email: string;
+}
+const GuestsForm = (props: {
+  setGuests: React.Dispatch<React.SetStateAction<Array<Guest>>>;
+}) => {
+  const [guestName, setGuestName] = React.useState("");
+  const [guestEmail, setGuestEmail] = React.useState("");
+  const [buttonPressed, setButtonPressed] = React.useState(false);
+  const { setGuests } = props;
+  return (
+    <div>
+      <div>
+        <Typography component="p" paragraph gutterBottom>
+          Add some guests
+        </Typography>
+      </div>
+      <div>
+        <TextField
+          id="guest-name-input"
+          label="Guest name"
+          helperText="e.g., Uncle Mordecai"
+          onChange={(event) => {
+            setGuestName(event.target.value);
+          }}
+        ></TextField>
+        <TextField
+          id="guest-email-input"
+          label="Guest email address"
+          helperText="e.g., mordecai@uncles.com"
+          onChange={(event) => {
+            setGuestEmail(event.target.value);
+          }}
+        ></TextField>
+        <Button
+          disabled={buttonPressed || !EmailValidator.validate(guestEmail)}
+          onClick={() => {
+            setButtonPressed(true);
+            // backend v2 call to add guest
+            setGuests((guests) => [
+              ...guests,
+              { name: guestName, email: guestEmail },
+            ]);
+            setButtonPressed(false);
+          }}
+        >
+          Add
+        </Button>
+      </div>
+    </div>
+  );
+};
+const GuestList = (props: {
+  guests: Array<Guest>;
+  setGuests: React.Dispatch<React.SetStateAction<Array<Guest>>>;
+}) => {
+  const [buttonPressed, setButtonPressed] = React.useState(false);
+  const { guests, setGuests } = props;
+  <div>
+    <Table>
+      <TableBody>
+        {guests.map((g) => (
+          <TableRow key={`guest-row-${g.name}`}>
+            <TableCell key={`guest-name-cell-${g.name}`}>{g.name}</TableCell>
+            <TableCell key={`guest-email-cell-${g.email}`}>{g.email}</TableCell>
+            <Button
+              disabled={buttonPressed}
+              id={`remove-guest-${g.name}`}
+              onClick={() => {
+                setButtonPressed(true);
+                // backend v2 call to remove guest
+                setGuests((guests) => {
+                  return guests.filter(
+                    (currentGuest) =>
+                      `guest-row-${g.name}` !== `guest-row-${currentGuest.name}`
+                  );
+                });
+                setButtonPressed(false);
+              }}
+            >
+              Remove
+            </Button>
+          </TableRow>
+        ))}
+      </TableBody>
+    </Table>
+  </div>;
 };
 export default function Edit() {
   // get the email from the server

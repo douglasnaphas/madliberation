@@ -14,7 +14,7 @@ const succeed = require('./succeed');
 
 const joinSederMiddleware = [
   // check for required body params
-  checkBody(['roomCode', 'gameName']),
+  checkBody(['sederCode', 'pw', 'email', 'gameName']),
   // compute game name session key
   computeGameNameSessionKey(randomCapGenerator, Configs),
   // hash game name

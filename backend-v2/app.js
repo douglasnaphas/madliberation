@@ -18,7 +18,6 @@ const submitLibsMiddleware = require("./lib/submitLibsMiddleware/submitLibsMiddl
 const readRosterMiddleware = require("./lib/readRosterMiddleware/readRosterMiddleware.js");
 const scriptMiddleware = require("./lib/scriptMiddleware/scriptMiddleware");
 const getLoginCookies = require("./lib/getLoginCookies");
-const authenticate = require("./lib/authenticateWithOpaqueCookie");
 const send500OnError = require("./lib/send500OnError");
 const seders = require("./lib/seders");
 const sedersJoined = require("./lib/sedersJoined");
@@ -109,8 +108,6 @@ router.use(bodyParser.json());
 router.post("/edit-link", postEditLink);
 
 router.get("/leader-email", getLeaderEmail);
-
-router.use(authenticate);
 
 router.get("/playground", function (req, res, next) {
   let authHeader;

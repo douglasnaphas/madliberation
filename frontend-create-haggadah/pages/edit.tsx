@@ -59,11 +59,14 @@ interface Guest {
 }
 const GuestsForm = (props: {
   setGuests: React.Dispatch<React.SetStateAction<Array<Guest>>>;
+  sederCode: string;
+  pw: string;
+  setJoinError: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
   const [guestName, setGuestName] = React.useState("");
   const [guestEmail, setGuestEmail] = React.useState("");
   const [buttonPressed, setButtonPressed] = React.useState(false);
-  const { setGuests } = props;
+  const { setGuests, sederCode, pw, setJoinError } = props;
   return (
     <div>
       <div>
@@ -90,9 +93,27 @@ const GuestsForm = (props: {
         ></TextField>
         <Button
           disabled={buttonPressed || !EmailValidator.validate(guestEmail)}
-          onClick={() => {
+          onClick={async () => {
             setButtonPressed(true);
+            setJoinError(false);
             // backend v2 call to add guest
+            const fetchInit = {
+              method: "POST",
+              body: JSON.stringify({
+                sederCode,
+                pw,
+                email: guestEmail,
+                gameName: guestName,
+              }),
+              headers: { "Content-Type": "application/json" },
+            };
+            const response = await fetch("../v2/join-seder", fetchInit);
+            const data = await response.json();
+            if (response.status !== 200) {
+              setJoinError(true);
+              setButtonPressed(false);
+              return;
+            }
             setGuests((guests) => [
               ...guests,
               { name: guestName, email: guestEmail },
@@ -151,6 +172,7 @@ export default function Edit() {
   // get the email from the server
   const [leaderEmail, setLeaderEmail] = React.useState("");
   const [guests, setGuests] = React.useState<Array<Guest>>([]);
+  const [joinError, setJoinError] = React.useState(false);
   let sederCode: any, pw: any;
   if (typeof window !== "undefined" && typeof URLSearchParams === "function") {
     const urlSearchParams = new URLSearchParams(window.location.search);
@@ -201,8 +223,25 @@ export default function Edit() {
             ></ThisIsYourLinkText>
           </div>
           <div>
-            <GuestsForm setGuests={setGuests}></GuestsForm>
+            <GuestsForm
+              setGuests={setGuests}
+              sederCode={sederCode}
+              pw={pw}
+              setJoinError={setJoinError}
+            ></GuestsForm>
           </div>
+          {joinError && (
+            <div>
+              <Typography
+                component="p"
+                paragraph
+                gutterBottom
+                style={{ color: "red" }}
+              >
+                Unable to add that person to your Seder
+              </Typography>
+            </div>
+          )}
           <div>
             <GuestList guests={guests} setGuests={setGuests}></GuestList>
           </div>

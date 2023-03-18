@@ -1,5 +1,4 @@
-const Configs = require("../../Configs");
-const randomCapGenerator = require("../randomCapGenerator");
+const schema = require("../../schema");
 const getHash = require("../getHash");
 const awsSdk = require("aws-sdk");
 const validator = require("email-validator");

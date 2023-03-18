@@ -63,7 +63,7 @@ const joinSederMiddleware = [
     }
   },
   // check pwHash, return or reject
-  (req, res) => {
+  (req, res, next) => {
     if (res.locals.pwHash !== res.locals.correctPwHash) {
       logger.log(
         `v2/joinSederMiddleware: wrong hash ${res.locals.pwHash.substring(

@@ -112,39 +112,45 @@ const GuestList = (props: {
 }) => {
   const [buttonPressed, setButtonPressed] = React.useState(false);
   const { guests, setGuests } = props;
-  <div>
-    <Table>
-      <TableBody>
-        {guests.map((g) => (
-          <TableRow key={`guest-row-${g.name}`}>
-            <TableCell key={`guest-name-cell-${g.name}`}>{g.name}</TableCell>
-            <TableCell key={`guest-email-cell-${g.email}`}>{g.email}</TableCell>
-            <Button
-              disabled={buttonPressed}
-              id={`remove-guest-${g.name}`}
-              onClick={() => {
-                setButtonPressed(true);
-                // backend v2 call to remove guest
-                setGuests((guests) => {
-                  return guests.filter(
-                    (currentGuest) =>
-                      `guest-row-${g.name}` !== `guest-row-${currentGuest.name}`
-                  );
-                });
-                setButtonPressed(false);
-              }}
-            >
-              Remove
-            </Button>
-          </TableRow>
-        ))}
-      </TableBody>
-    </Table>
-  </div>;
+  return (
+    <div>
+      <Table>
+        <TableBody>
+          {guests.map((g) => (
+            <TableRow key={`guest-row-${g.name}`}>
+              <TableCell key={`guest-name-cell-${g.name}`}>{g.name}</TableCell>
+              <TableCell key={`guest-email-cell-${g.email}`}>
+                {g.email}
+              </TableCell>
+              <Button
+                disabled={buttonPressed}
+                id={`remove-guest-${g.name}`}
+                onClick={() => {
+                  setButtonPressed(true);
+                  // backend v2 call to remove guest
+                  setGuests((guests) => {
+                    return guests.filter(
+                      (currentGuest) =>
+                        `guest-row-${g.name}` !==
+                        `guest-row-${currentGuest.name}`
+                    );
+                  });
+                  setButtonPressed(false);
+                }}
+              >
+                Remove
+              </Button>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </div>
+  );
 };
 export default function Edit() {
   // get the email from the server
   const [leaderEmail, setLeaderEmail] = React.useState("");
+  const [guests, setGuests] = React.useState<Array<Guest>>([]);
   let sederCode: any, pw: any;
   if (typeof window !== "undefined" && typeof URLSearchParams === "function") {
     const urlSearchParams = new URLSearchParams(window.location.search);
@@ -193,6 +199,12 @@ export default function Edit() {
               lnk={permalink}
               yourEmail={leaderEmail}
             ></ThisIsYourLinkText>
+          </div>
+          <div>
+            <GuestsForm setGuests={setGuests}></GuestsForm>
+          </div>
+          <div>
+            <GuestList guests={guests} setGuests={setGuests}></GuestList>
           </div>
         </Paper>
       </Container>

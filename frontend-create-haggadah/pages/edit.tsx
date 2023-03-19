@@ -137,9 +137,12 @@ const GuestsForm = (props: {
 const GuestList = (props: {
   guests: Array<Guest>;
   setGuests: React.Dispatch<React.SetStateAction<Array<Guest>>>;
+  sederCode: string;
+  pw: string;
+  setRemoveParticipantError: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
   const [buttonPressed, setButtonPressed] = React.useState(false);
-  const { guests, setGuests } = props;
+  const { guests, setGuests, sederCode, pw, setRemoveParticipantError } = props;
   return (
     <div>
       <Table>
@@ -153,9 +156,30 @@ const GuestList = (props: {
               <Button
                 disabled={buttonPressed}
                 id={`remove-guest-${g.name}`}
-                onClick={() => {
+                onClick={async () => {
                   setButtonPressed(true);
+                  setRemoveParticipantError(false);
                   // backend v2 call to remove guest
+                  const fetchInit = {
+                    method: "POST",
+                    body: JSON.stringify({
+                      sederCode,
+                      pw,
+                      email: g.email,
+                      gameName: g.name,
+                    }),
+                    headers: { "Content-Type": "application/json" },
+                  };
+                  const response = await fetch(
+                    "../v2/remove-participant",
+                    fetchInit
+                  );
+                  const data = await response.json();
+                  if (response.status !== 200) {
+                    setRemoveParticipantError(true);
+                    setButtonPressed(false);
+                    return;
+                  }
                   setGuests((guests) => {
                     return guests.filter(
                       (currentGuest) =>
@@ -180,6 +204,8 @@ export default function Edit() {
   const [leaderEmail, setLeaderEmail] = React.useState("");
   const [guests, setGuests] = React.useState<Array<Guest>>([]);
   const [joinError, setJoinError] = React.useState(false);
+  const [removeParticipantError, setRemoveParticipantError] =
+    React.useState(false);
   let sederCode: any, pw: any;
   if (typeof window !== "undefined" && typeof URLSearchParams === "function") {
     const urlSearchParams = new URLSearchParams(window.location.search);
@@ -250,8 +276,26 @@ export default function Edit() {
             </div>
           )}
           <div>
-            <GuestList guests={guests} setGuests={setGuests}></GuestList>
+            <GuestList
+              guests={guests}
+              setGuests={setGuests}
+              sederCode={sederCode}
+              pw={pw}
+              setRemoveParticipantError={setRemoveParticipantError}
+            ></GuestList>
           </div>
+          {removeParticipantError && (
+            <div>
+              <Typography
+                component="p"
+                paragraph
+                gutterBottom
+                style={{ color: "red" }}
+              >
+                Unable to remove that person from your Seder
+              </Typography>
+            </div>
+          )}
         </Paper>
       </Container>
       <img

@@ -202,6 +202,7 @@ const GuestList = (props: {
 export default function Edit() {
   // get the email from the server
   const [leaderEmail, setLeaderEmail] = React.useState("");
+  const [path, setPath] = React.useState("");
   const [guests, setGuests] = React.useState<Array<Guest>>([]);
   const [joinError, setJoinError] = React.useState(false);
   const [removeParticipantError, setRemoveParticipantError] =
@@ -219,6 +220,11 @@ export default function Edit() {
         .then((r) => r.json())
         .then((j) => {
           setLeaderEmail(j.leaderEmail);
+        });
+      fetch(`../v2/path?sederCode=${sederCode}&pw=${pw}`)
+        .then((r) => r.json())
+        .then((j) => {
+          setPath(j.path);
         });
     }
   }, []);

@@ -25,6 +25,7 @@ const rejoin = require("./lib/rejoin");
 const login = require("./lib/login/login");
 const postEditLink = require("./lib/postEditLink");
 const getLeaderEmail = require("./lib/getLeaderEmail");
+const getPath = require("./lib/getPath");
 
 const router = express.Router();
 
@@ -108,6 +109,8 @@ router.use(bodyParser.json());
 router.post("/edit-link", postEditLink);
 
 router.get("/leader-email", getLeaderEmail);
+
+router.get("/path", getPath);
 
 router.get("/playground", function (req, res, next) {
   let authHeader;

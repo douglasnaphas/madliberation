@@ -314,6 +314,7 @@ export default function Edit() {
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
                   sederCode,
+                  pw,
                   path,
                 }),
               };

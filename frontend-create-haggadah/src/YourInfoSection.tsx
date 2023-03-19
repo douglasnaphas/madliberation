@@ -4,13 +4,11 @@ import { TextField, Typography } from "@mui/material";
 
 type YourInfoSectionProps = {
   disabled?: boolean;
-  yourEmail: string;
   setYourEmail: React.Dispatch<React.SetStateAction<string>>;
-  yourName?: string;
-  setYourName?: React.Dispatch<React.SetStateAction<string>>;
+  setYourName: React.Dispatch<React.SetStateAction<string>>;
 };
 const YourInfoSection = (props: YourInfoSectionProps) => {
-  const { disabled, yourEmail, setYourEmail, yourName, setYourName } = props;
+  const { disabled, setYourEmail, setYourName } = props;
   return (
     <div>
       <div>
@@ -20,17 +18,15 @@ const YourInfoSection = (props: YourInfoSectionProps) => {
         </Typography>
       </div>
       <div>
-        {yourName && setYourName && (
-          <TextField
-            disabled={disabled}
-            variant="outlined"
-            id="your-name"
-            helperText="Your name"
-            onChange={(event) => {
-              setYourName(event.target.value);
-            }}
-          ></TextField>
-        )}
+        <TextField
+          disabled={disabled}
+          variant="outlined"
+          id="your-name"
+          helperText="Your name"
+          onChange={(event) => {
+            setYourName(event.target.value);
+          }}
+        ></TextField>
         <TextField
           disabled={disabled}
           variant="outlined"

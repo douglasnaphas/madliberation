@@ -85,9 +85,7 @@ export default function Home() {
         <div>
           <YourInfoSection
             disabled={editLink !== ""}
-            yourEmail={yourEmail}
             setYourEmail={setYourEmail}
-            yourName={yourName}
             setYourName={setYourName}
           ></YourInfoSection>
         </div>

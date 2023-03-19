@@ -63,6 +63,7 @@ export default function Home() {
   const [yourEmail, setYourEmail] = React.useState("");
   const [yourName, setYourName] = React.useState("");
   const [editLink, setEditLink] = React.useState("");
+  const [createHaggadahError, setCreateHaggadahError] = React.useState(false);
   const steps = [
     {
       order: 1,
@@ -150,12 +151,26 @@ export default function Home() {
             })}
           </div>
           <div>
-            <SubmitSection
-              getEditLink={getEditLink}
-              setEditLink={setEditLink}
-              leaderEmail={yourEmail}
-              path={selectedScript}
-            ></SubmitSection>
+            {createHaggadahError ? (
+              <Typography
+                component="p"
+                paragraph
+                gutterBottom
+                style={{ color: "red" }}
+              >
+                Unable to create your Haggadah, sorry. Please try again in a new
+                tab or different browser.
+              </Typography>
+            ) : (
+              <SubmitSection
+                getEditLink={getEditLink}
+                setEditLink={setEditLink}
+                leaderEmail={yourEmail}
+                leaderName={yourName}
+                path={selectedScript}
+                setCreateHaggadahError={setCreateHaggadahError}
+              ></SubmitSection>
+            )}
           </div>
         </Paper>
       </Container>

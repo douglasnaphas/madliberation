@@ -298,6 +298,7 @@ export default function Edit() {
           )}
         </Paper>
       </Container>
+      <br></br>
       <img
         css={{
           height: "70px",

@@ -19,7 +19,7 @@ import { madLiberationStyles } from "../madLiberationStyles";
 import ScriptMenu from "../src/ScriptMenu";
 import { fetchScripts } from "../src/fetchScripts";
 import { getEditLink } from "../src/getEditLink";
-import YourEmailSection from "../src/YourEmailSection";
+import YourInfoSection from "../src/YourInfoSection";
 import SubmitSection from "../src/SubmitSection";
 
 const Accordion = styled((props: AccordionProps) => (
@@ -80,14 +80,14 @@ export default function Home() {
     },
     {
       order: 2,
-      label: "Your email",
+      label: "Your info",
       body: (
         <div>
-          <YourEmailSection
+          <YourInfoSection
             disabled={editLink !== ""}
             yourEmail={yourEmail}
             setYourEmail={setYourEmail}
-          ></YourEmailSection>
+          ></YourInfoSection>
         </div>
       ),
     },

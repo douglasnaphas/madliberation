@@ -2,12 +2,12 @@ import React from "react";
 import { useState } from "react";
 import { TextField, Typography } from "@mui/material";
 
-type YourEmailSectionProps = {
+type YourInfoSectionProps = {
   disabled?: boolean,
   yourEmail: string;
   setYourEmail: React.Dispatch<React.SetStateAction<string>>;
 };
-const YourEmailSection = (props: YourEmailSectionProps) => {
+const YourInfoSection = (props: YourInfoSectionProps) => {
   const { disabled, yourEmail, setYourEmail } = props;
   return (
     <div>
@@ -29,4 +29,4 @@ const YourEmailSection = (props: YourEmailSectionProps) => {
     </div>
   );
 };
-export default YourEmailSection;
+export default YourInfoSection;

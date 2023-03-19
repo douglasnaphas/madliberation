@@ -296,6 +296,7 @@ export default function Edit() {
               </Typography>
             </div>
           )}
+          <Button>That's everyone</Button>
         </Paper>
       </Container>
       <br></br>

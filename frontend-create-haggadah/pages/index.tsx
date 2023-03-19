@@ -61,6 +61,7 @@ const AccordionDetails = styled(MuiAccordionDetails)(({ theme }) => ({
 export default function Home() {
   const [selectedScript, setSelectedScript] = React.useState("");
   const [yourEmail, setYourEmail] = React.useState("");
+  const [yourName, setYourName] = React.useState("");
   const [editLink, setEditLink] = React.useState("");
   const steps = [
     {

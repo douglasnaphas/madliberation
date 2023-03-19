@@ -70,12 +70,18 @@ const GuestsForm = (props: {
   return (
     <div>
       <div>
-        <Typography component="p" paragraph gutterBottom>
+        <Typography
+          component="p"
+          paragraph
+          gutterBottom
+          style={{ marginLeft: "8px" }}
+        >
           Add some guests
         </Typography>
       </div>
       <div>
         <TextField
+          style={{ marginLeft: "8px" }}
           id="guest-name-input"
           label="Guest name"
           helperText="e.g., Uncle Mordecai"
@@ -84,6 +90,7 @@ const GuestsForm = (props: {
           }}
         ></TextField>
         <TextField
+          style={{ marginLeft: "8px" }}
           id="guest-email-input"
           label="Guest email address"
           helperText="e.g., mordecai@uncles.com"

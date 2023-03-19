@@ -52,7 +52,7 @@ const getPath = [
   (req, res) => {
     if (res.locals.pwHash !== res.locals.correctPwHash) {
       logger.log(
-        `getLeaderEmail: wrong hash ${res.locals.pwHash.substring(
+        `getPath: wrong hash ${res.locals.pwHash.substring(
           0,
           3
         )}... !== ${res.locals.correctPwHash.substring(0, 3)}...`

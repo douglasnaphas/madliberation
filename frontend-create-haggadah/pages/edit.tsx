@@ -326,16 +326,19 @@ export default function Edit() {
           >
             That's everyone
           </Button>
-          <div>
-            <Typography
-              component="p"
-              paragraph
-              gutterBottom
-              style={{ color: "red" }}
-            >
-              Unable to proceed, please report this error to admin@passover.lol
-            </Typography>
-          </div>
+          {thatsEveryoneError && (
+            <div>
+              <Typography
+                component="p"
+                paragraph
+                gutterBottom
+                style={{ color: "red" }}
+              >
+                Unable to proceed, please report this error to
+                admin@passover.lol
+              </Typography>
+            </div>
+          )}
         </Paper>
       </Container>
       <br></br>

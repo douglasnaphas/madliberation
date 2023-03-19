@@ -26,6 +26,7 @@ const login = require("./lib/login/login");
 const postEditLink = require("./lib/postEditLink");
 const getLeaderEmail = require("./lib/getLeaderEmail");
 const getPath = require("./lib/getPath");
+const leaderPwCheck = require("./lib/leaderPwCheck")
 
 const router = express.Router();
 
@@ -139,7 +140,7 @@ const closeSederMiddleware = require("./lib/closeSederMiddleware/closeSederMiddl
 
 router.post(
   "/close-seder",
-  gameNameCookieCheckMidWare,
+  leaderPwCheck,
   closeSederMiddleware,
   assignLibsMiddleware,
   (req, res) => {

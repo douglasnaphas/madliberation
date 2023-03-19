@@ -207,6 +207,9 @@ export default function Edit() {
   const [joinError, setJoinError] = React.useState(false);
   const [removeParticipantError, setRemoveParticipantError] =
     React.useState(false);
+  const [thatsEveryoneButtonClicked, setThatsEveryoneButtonClicked] =
+    React.useState(false);
+  const [thatsEveryoneError, setThatsEveryoneError] = React.useState(false);
   let sederCode: any, pw: any;
   if (typeof window !== "undefined" && typeof URLSearchParams === "function") {
     const urlSearchParams = new URLSearchParams(window.location.search);
@@ -302,7 +305,37 @@ export default function Edit() {
               </Typography>
             </div>
           )}
-          <Button>That's everyone</Button>
+          <Button
+            disabled={thatsEveryoneButtonClicked}
+            onClick={async () => {
+              setThatsEveryoneButtonClicked(true);
+              const fetchInit = {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                  sederCode,
+                  path,
+                }),
+              };
+              const response = await fetch("../v2/close-seder", fetchInit);
+              if (response.status !== 200) {
+                setThatsEveryoneError(true);
+              }
+              setThatsEveryoneButtonClicked(false);
+            }}
+          >
+            That's everyone
+          </Button>
+          <div>
+            <Typography
+              component="p"
+              paragraph
+              gutterBottom
+              style={{ color: "red" }}
+            >
+              Unable to proceed, please report this error to admin@passover.lol
+            </Typography>
+          </div>
         </Paper>
       </Container>
       <br></br>

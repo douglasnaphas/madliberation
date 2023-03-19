@@ -126,6 +126,9 @@ router.post("/room-code", roomCode(AWS, randomStringGenerator, Configs));
 const joinSederMiddleware = require("./lib/joinSederMiddleware/joinSederMiddleware.js");
 router.post("/join-seder", joinSederMiddleware);
 
+const removeParticipantMiddleware = require("./lib/removeParticipantMiddleware/removeParticipantMiddleware.js");
+router.post("/remove-participant", removeParticipantMiddleware);
+
 const rosterMiddleware = require("./lib/rosterMiddleware/rosterMiddleware.js");
 router.get("/roster", gameNameCookieCheckMidWare, rosterMiddleware);
 

@@ -586,6 +586,7 @@ export class MadliberationWebapp extends Stack {
       versioned: true,
     });
     scriptsBucket.grantRead(backendHandler);
+    scriptsBucket.grantRead(backendV2Handler);
 
     const fromAddressOutput = fromAddress || "no SES from address";
     new CfnOutput(this, "sesFromAddress", {

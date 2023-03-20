@@ -7,21 +7,25 @@
  * next otherwise
  */
 function handleQueryErrors() {
-  const Logger = require('./Logger');
+  const Logger = require("./Logger");
   const middleware = (req, res, next) => {
-    const responses = require('../responses');
-    if(Array.isArray(res.locals.dbError)) {
+    const responses = require("../responses");
+    if (Array.isArray(res.locals.dbError)) {
       let dbErrors = res.locals.dbError;
-      for(let i = 0; i < dbErrors.length; i++) {
-        if(dbErrors[i]) {
-          Logger.log({ob: [i, dbErrors[i]]});
+      for (let i = 0; i < dbErrors.length; i++) {
+        if (dbErrors[i]) {
+          Logger.log({ message: "handleQueryErrors, dbError present" });
+          Logger.log({ ob: [i, dbErrors[i]] });
           return res.status(500).send(responses.SERVER_ERROR);
         }
       }
       return next();
     }
-    
-    if(res.locals.dbError || !res.locals.dbData) {
+
+    if (res.locals.dbError || !res.locals.dbData) {
+      Logger.log({
+        message: "handleQueryErrors: dbError or no dbData, locals:",
+      });
       return res.status(500).send(responses.SERVER_ERROR);
     }
     return next();

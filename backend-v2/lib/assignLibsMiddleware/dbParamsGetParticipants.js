@@ -10,8 +10,10 @@
 function dbParams() {
   const responses = require('../../responses');
   const schema = require('../../schema');
+  const logger = require("../../logger")
   const middleware = (req, res, next) => {
-    if(!req.body.roomCode) {
+    if(!res.locals.roomCode) {
+      logger.log("dbParamsGetParticipants: no roomCode")
       return res.status(500).send(responses.SERVER_ERROR);
     }
     res.locals.getParticipantsDbParams = {
@@ -20,7 +22,7 @@ function dbParams() {
         '#L': schema.SORT_KEY
       },
       ExpressionAttributeValues: {
-        ':r': req.body.roomCode,
+        ':r': res.locals.roomCode,
         ':l': schema.PARTICIPANT_PREFIX
       },
       KeyConditionExpression: '#R = :r AND begins_with(#L, :l)',

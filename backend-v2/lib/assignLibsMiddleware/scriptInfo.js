@@ -6,32 +6,33 @@
  *      appear in the script
  * 500 on error.
  */
+const logger = require("../../logger");
 function scriptInfo() {
-  const responses = require('../../responses');
+  const responses = require("../../responses");
   const middleware = (req, res, next) => {
-    if(!res.locals.s3Data ||
-       !res.locals.s3Data.Body) {
+    if (!res.locals.s3Data || !res.locals.s3Data.Body) {
+      logger.log("scriptInfo: no s3Data.Body, locals:");
+      logger.log(res.locals);
       return res.status(500).send(responses.SERVER_ERROR);
     }
     res.locals.scriptVersion = res.locals.s3Data.VersionId;
     const libs = [];
     const buf = Buffer.from(res.locals.s3Data.Body);
-    const script = JSON.parse(buf.toString('utf8'));
-    if(!Array.isArray(script.pages)) return next();
+    const script = JSON.parse(buf.toString("utf8"));
+    if (!Array.isArray(script.pages)) return next();
     let id = 1;
-    script.pages.forEach(page => {
-      if(!Array.isArray(page.lines)) return;
-      page.lines.forEach(line => {
-        if(!Array.isArray(line.segments)) return;
-        line.segments.forEach(segment => {
-          if(segment.type != 'lib') return;
+    script.pages.forEach((page) => {
+      if (!Array.isArray(page.lines)) return;
+      page.lines.forEach((line) => {
+        if (!Array.isArray(line.segments)) return;
+        line.segments.forEach((segment) => {
+          if (segment.type != "lib") return;
           const lib = {};
           lib.id = id;
-          ['prompt', 'example', 'sentence']
-            .forEach(p =>{
-              if(segment[p] != '') lib[p] = segment[p];
-            });
-          if(segment['default'] != '') lib['defaultAnswer'] = segment.default;
+          ["prompt", "example", "sentence"].forEach((p) => {
+            if (segment[p] != "") lib[p] = segment[p];
+          });
+          if (segment["default"] != "") lib["defaultAnswer"] = segment.default;
           libs.push(lib);
           id++;
         });

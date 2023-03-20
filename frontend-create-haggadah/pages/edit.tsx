@@ -249,7 +249,7 @@ export default function Edit() {
         .then((r) => r.json())
         .then((j) => {
           if (!("closed" in j)) {
-            return;
+            setSederClosed(false);
           }
           setSederClosed(j.closed as boolean);
         });

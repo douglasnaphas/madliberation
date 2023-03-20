@@ -23,7 +23,7 @@ const leaderPwCheck = [
     }
     if (req.body && req.body.sederCode && req.body.pw) {
       res.locals.sederCode = req.body.sederCode;
-      res.locals.roomCode = req.query.sederCode;
+      res.locals.roomCode = req.body.sederCode;
       res.locals.pw = req.body.pw;
       return next();
     }

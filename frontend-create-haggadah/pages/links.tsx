@@ -6,25 +6,9 @@ import Typography from "@mui/material/Typography";
 import MadLiberationLogo from "../public/mad-liberation-logo.png";
 import VeryAwesomePassoverLogo from "../public/VAPLogo-white.png";
 import { Global, css, jsx } from "@emotion/react";
-import {
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-  Paper,
-  Table,
-  TableBody,
-  TableCell,
-  TableRow,
-  TextField,
-} from "@mui/material";
-import Button from "@mui/material/Button";
+import { Paper, Table, TableBody, TableCell, TableRow } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import * as EmailValidator from "email-validator";
 import { madLiberationStyles } from "../madLiberationStyles";
-import ScriptMenu from "../src/ScriptMenu";
-import { fetchScripts } from "../src/fetchScripts";
 
 const ThisIsYourLinkText = (props: {
   lnk?: HTMLAnchorElement;
@@ -64,21 +48,11 @@ interface Guest {
 }
 const GuestList = (props: {
   guests: Array<Guest>;
-  setGuests: React.Dispatch<React.SetStateAction<Array<Guest>>>;
   sederCode: string;
   pw: string;
-  setRemoveParticipantError: React.Dispatch<React.SetStateAction<boolean>>;
-  sederClosed: boolean;
 }) => {
   const [buttonPressed, setButtonPressed] = React.useState(false);
-  const {
-    guests,
-    setGuests,
-    sederCode,
-    pw,
-    setRemoveParticipantError,
-    sederClosed,
-  } = props;
+  const { guests, sederCode, pw } = props;
   return (
     <div>
       <Table>
@@ -122,11 +96,6 @@ export default function Links() {
         .then((r) => r.json())
         .then((j) => {
           setLeaderEmail(j.leaderEmail);
-        });
-      fetch(`../v2/path?sederCode=${sederCode}&pw=${pw}`)
-        .then((r) => r.json())
-        .then((j) => {
-          setPath(j.path);
         });
       fetch(`../v2/closed?sederCode=${sederCode}&pw=${pw}`)
         .then((r) => r.json())

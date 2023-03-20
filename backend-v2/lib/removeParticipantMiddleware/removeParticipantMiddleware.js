@@ -95,6 +95,7 @@ const removeParticipantMiddleware = [
           schema.SEPARATOR +
           res.locals.gameNameHash,
       },
+      ConditionExpression: "attribute_not_exists(assignments)",
     };
     try {
       const response = await ddbDocClient.send(new DeleteCommand(deleteParams));

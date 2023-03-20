@@ -7,6 +7,11 @@ import MadLiberationLogo from "../public/mad-liberation-logo.png";
 import VeryAwesomePassoverLogo from "../public/VAPLogo-white.png";
 import { Global, css, jsx } from "@emotion/react";
 import {
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
   Paper,
   Table,
   TableBody,
@@ -207,9 +212,12 @@ export default function Edit() {
   const [joinError, setJoinError] = React.useState(false);
   const [removeParticipantError, setRemoveParticipantError] =
     React.useState(false);
-  const [thatsEveryoneButtonClicked, setThatsEveryoneButtonClicked] =
+  const [confirmThatsEveryoneDialogOpen, setConfirmThatsEveryoneDialogOpen] =
+    React.useState(false);
+  const [yesThatsEveryoneButtonClicked, setYesThatsEveryoneButtonClicked] =
     React.useState(false);
   const [thatsEveryoneError, setThatsEveryoneError] = React.useState(false);
+  const [sederClosed, setSederClosed] = React.useState(true);
   let sederCode: any, pw: any;
   if (typeof window !== "undefined" && typeof URLSearchParams === "function") {
     const urlSearchParams = new URLSearchParams(window.location.search);
@@ -306,28 +314,52 @@ export default function Edit() {
             </div>
           )}
           <Button
-            disabled={thatsEveryoneButtonClicked}
-            onClick={async () => {
-              setThatsEveryoneButtonClicked(true);
-              const fetchInit = {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                  roomCode: sederCode,
-                  sederCode,
-                  pw,
-                  path,
-                }),
-              };
-              const response = await fetch("../v2/close-seder", fetchInit);
-              if (response.status !== 200) {
-                setThatsEveryoneError(true);
-              }
-              setThatsEveryoneButtonClicked(false);
+            onClick={() => {
+              setConfirmThatsEveryoneDialogOpen(true);
             }}
           >
             That's everyone
           </Button>
+          <Dialog open={confirmThatsEveryoneDialogOpen}>
+            <DialogTitle>Are you sure?</DialogTitle>
+            <DialogContent>
+              <DialogContentText>
+                Is that really everyone you want to add?
+              </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+              <Button
+                disabled={yesThatsEveryoneButtonClicked}
+                onClick={async () => {
+                  setYesThatsEveryoneButtonClicked(true);
+                  const fetchInit = {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                      roomCode: sederCode,
+                      sederCode,
+                      pw,
+                      path,
+                    }),
+                  };
+                  const response = await fetch("../v2/close-seder", fetchInit);
+                  if (response.status !== 200) {
+                    setThatsEveryoneError(true);
+                  }
+                  setYesThatsEveryoneButtonClicked(false);
+                }}
+              >
+                Yes, that's everyone
+              </Button>
+              <Button
+                onClick={() => {
+                  setConfirmThatsEveryoneDialogOpen(false);
+                }}
+              >
+                Cancel
+              </Button>
+            </DialogActions>
+          </Dialog>
           {thatsEveryoneError && (
             <div>
               <Typography

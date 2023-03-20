@@ -145,9 +145,17 @@ const GuestList = (props: {
   sederCode: string;
   pw: string;
   setRemoveParticipantError: React.Dispatch<React.SetStateAction<boolean>>;
+  sederClosed: boolean;
 }) => {
   const [buttonPressed, setButtonPressed] = React.useState(false);
-  const { guests, setGuests, sederCode, pw, setRemoveParticipantError } = props;
+  const {
+    guests,
+    setGuests,
+    sederCode,
+    pw,
+    setRemoveParticipantError,
+    sederClosed,
+  } = props;
   return (
     <div>
       <Table>
@@ -159,7 +167,7 @@ const GuestList = (props: {
                 {g.email}
               </TableCell>
               <Button
-                disabled={buttonPressed}
+                disabled={buttonPressed || sederClosed}
                 id={`remove-guest-${g.name}`}
                 onClick={async () => {
                   setButtonPressed(true);
@@ -237,6 +245,11 @@ export default function Edit() {
         .then((j) => {
           setPath(j.path);
         });
+      fetch(`../v2/closed?sederCode=${sederCode}&pw=${pw}`)
+        .then((r) => r.json())
+        .then((j) => {
+          setSederClosed(j.closed);
+        });
     }
   }, []);
   let permalink;
@@ -272,15 +285,17 @@ export default function Edit() {
               yourEmail={leaderEmail}
             ></ThisIsYourLinkText>
           </div>
-          <div>
-            <GuestsForm
-              setGuests={setGuests}
-              sederCode={sederCode}
-              pw={pw}
-              setJoinError={setJoinError}
-            ></GuestsForm>
-          </div>
-          {joinError && (
+          {!sederClosed && (
+            <div>
+              <GuestsForm
+                setGuests={setGuests}
+                sederCode={sederCode}
+                pw={pw}
+                setJoinError={setJoinError}
+              ></GuestsForm>
+            </div>
+          )}
+          {joinError && !sederClosed && (
             <div>
               <Typography
                 component="p"
@@ -299,9 +314,10 @@ export default function Edit() {
               sederCode={sederCode}
               pw={pw}
               setRemoveParticipantError={setRemoveParticipantError}
+              sederClosed={sederClosed}
             ></GuestList>
           </div>
-          {removeParticipantError && (
+          {removeParticipantError && !sederClosed && (
             <div>
               <Typography
                 component="p"
@@ -348,7 +364,8 @@ export default function Edit() {
                   if (response.status !== 200) {
                     setThatsEveryoneError(true);
                   }
-                  setYesThatsEveryoneButtonClicked(false);
+                  setSederClosed(true);
+                  setConfirmThatsEveryoneDialogOpen(false);
                 }}
               >
                 Yes, that's everyone

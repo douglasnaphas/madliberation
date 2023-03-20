@@ -26,6 +26,7 @@ const login = require("./lib/login/login");
 const postEditLink = require("./lib/postEditLink");
 const getLeaderEmail = require("./lib/getLeaderEmail");
 const getPath = require("./lib/getPath");
+const getClosed = require("./lib/getClosed");
 const leaderPwCheck = require("./lib/leaderPwCheck")
 
 const router = express.Router();
@@ -112,6 +113,8 @@ router.post("/edit-link", postEditLink);
 router.get("/leader-email", getLeaderEmail);
 
 router.get("/path", getPath);
+
+router.get("/closed", getClosed);
 
 router.get("/playground", function (req, res, next) {
   let authHeader;

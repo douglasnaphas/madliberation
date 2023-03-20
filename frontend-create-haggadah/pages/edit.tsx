@@ -248,7 +248,10 @@ export default function Edit() {
       fetch(`../v2/closed?sederCode=${sederCode}&pw=${pw}`)
         .then((r) => r.json())
         .then((j) => {
-          setSederClosed(j.closed);
+          if (!("closed" in j)) {
+            return;
+          }
+          setSederClosed(j.closed as boolean);
         });
     }
   }, []);

@@ -62,83 +62,6 @@ interface Guest {
   name: string;
   email: string;
 }
-const GuestsForm = (props: {
-  setGuests: React.Dispatch<React.SetStateAction<Array<Guest>>>;
-  sederCode: string;
-  pw: string;
-  setJoinError: React.Dispatch<React.SetStateAction<boolean>>;
-}) => {
-  const [guestName, setGuestName] = React.useState("");
-  const [guestEmail, setGuestEmail] = React.useState("");
-  const [buttonPressed, setButtonPressed] = React.useState(false);
-  const { setGuests, sederCode, pw, setJoinError } = props;
-  return (
-    <div>
-      <div>
-        <Typography
-          component="p"
-          paragraph
-          gutterBottom
-          style={{ marginLeft: "8px" }}
-        >
-          Add some guests
-        </Typography>
-      </div>
-      <div>
-        <TextField
-          style={{ marginLeft: "8px" }}
-          id="guest-name-input"
-          label="Guest name"
-          helperText="e.g., Uncle Mordecai"
-          onChange={(event) => {
-            setGuestName(event.target.value);
-          }}
-        ></TextField>
-        <TextField
-          style={{ marginLeft: "8px" }}
-          id="guest-email-input"
-          label="Guest email address"
-          helperText="e.g., mordecai@uncles.com"
-          onChange={(event) => {
-            setGuestEmail(event.target.value);
-          }}
-        ></TextField>
-        <Button
-          disabled={buttonPressed || !EmailValidator.validate(guestEmail)}
-          onClick={async () => {
-            setButtonPressed(true);
-            setJoinError(false);
-            // backend v2 call to add guest
-            const fetchInit = {
-              method: "POST",
-              body: JSON.stringify({
-                sederCode,
-                pw,
-                email: guestEmail,
-                gameName: guestName,
-              }),
-              headers: { "Content-Type": "application/json" },
-            };
-            const response = await fetch("../v2/join-seder", fetchInit);
-            const data = await response.json();
-            if (response.status !== 200) {
-              setJoinError(true);
-              setButtonPressed(false);
-              return;
-            }
-            setGuests((guests) => [
-              ...guests,
-              { name: guestName, email: guestEmail },
-            ]);
-            setButtonPressed(false);
-          }}
-        >
-          Add
-        </Button>
-      </div>
-    </div>
-  );
-};
 const GuestList = (props: {
   guests: Array<Guest>;
   setGuests: React.Dispatch<React.SetStateAction<Array<Guest>>>;
@@ -166,45 +89,6 @@ const GuestList = (props: {
               <TableCell key={`guest-email-cell-${g.email}`}>
                 {g.email}
               </TableCell>
-              <Button
-                disabled={buttonPressed || sederClosed}
-                id={`remove-guest-${g.name}`}
-                onClick={async () => {
-                  setButtonPressed(true);
-                  setRemoveParticipantError(false);
-                  // backend v2 call to remove guest
-                  const fetchInit = {
-                    method: "POST",
-                    body: JSON.stringify({
-                      sederCode,
-                      pw,
-                      email: g.email,
-                      gameName: g.name,
-                    }),
-                    headers: { "Content-Type": "application/json" },
-                  };
-                  const response = await fetch(
-                    "../v2/remove-participant",
-                    fetchInit
-                  );
-                  const data = await response.json();
-                  if (response.status !== 200) {
-                    setRemoveParticipantError(true);
-                    setButtonPressed(false);
-                    return;
-                  }
-                  setGuests((guests) => {
-                    return guests.filter(
-                      (currentGuest) =>
-                        `guest-row-${g.name}` !==
-                        `guest-row-${currentGuest.name}`
-                    );
-                  });
-                  setButtonPressed(false);
-                }}
-              >
-                Remove
-              </Button>
             </TableRow>
           ))}
         </TableBody>
@@ -215,7 +99,6 @@ const GuestList = (props: {
 export default function Links() {
   // get the email from the server
   const [leaderEmail, setLeaderEmail] = React.useState("");
-  const [path, setPath] = React.useState("");
   const [guests, setGuests] = React.useState<Array<Guest>>([]);
   const [joinError, setJoinError] = React.useState(false);
   const [removeParticipantError, setRemoveParticipantError] =
@@ -288,113 +171,13 @@ export default function Links() {
               yourEmail={leaderEmail}
             ></ThisIsYourLinkText>
           </div>
-          {!sederClosed && (
-            <div>
-              <GuestsForm
-                setGuests={setGuests}
-                sederCode={sederCode}
-                pw={pw}
-                setJoinError={setJoinError}
-              ></GuestsForm>
-            </div>
-          )}
-          {joinError && !sederClosed && (
-            <div>
-              <Typography
-                component="p"
-                paragraph
-                gutterBottom
-                style={{ color: "red" }}
-              >
-                Unable to add that person to your Seder
-              </Typography>
-            </div>
-          )}
           <div>
             <GuestList
               guests={guests}
-              setGuests={setGuests}
               sederCode={sederCode}
               pw={pw}
-              setRemoveParticipantError={setRemoveParticipantError}
-              sederClosed={sederClosed}
             ></GuestList>
           </div>
-          {removeParticipantError && !sederClosed && (
-            <div>
-              <Typography
-                component="p"
-                paragraph
-                gutterBottom
-                style={{ color: "red" }}
-              >
-                Unable to remove that person from your Seder
-              </Typography>
-            </div>
-          )}
-          <Button
-            onClick={() => {
-              setConfirmThatsEveryoneDialogOpen(true);
-            }}
-          >
-            That's everyone
-          </Button>
-          <Dialog open={confirmThatsEveryoneDialogOpen}>
-            <DialogTitle>Are you sure?</DialogTitle>
-            <DialogContent>
-              <DialogContentText>
-                Your Seder has ${guests.length + 1} $
-                {guests.length > 0 ? "people, including you" : "person: you"}.
-                Is that really everyone you want to add?
-              </DialogContentText>
-            </DialogContent>
-            <DialogActions>
-              <Button
-                disabled={yesThatsEveryoneButtonClicked}
-                onClick={async () => {
-                  setYesThatsEveryoneButtonClicked(true);
-                  const fetchInit = {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({
-                      roomCode: sederCode,
-                      sederCode,
-                      pw,
-                      path,
-                    }),
-                  };
-                  const response = await fetch("../v2/close-seder", fetchInit);
-                  if (response.status !== 200) {
-                    setThatsEveryoneError(true);
-                  }
-                  setSederClosed(true);
-                  setConfirmThatsEveryoneDialogOpen(false);
-                }}
-              >
-                Yes, that's everyone
-              </Button>
-              <Button
-                onClick={() => {
-                  setConfirmThatsEveryoneDialogOpen(false);
-                }}
-              >
-                Cancel
-              </Button>
-            </DialogActions>
-          </Dialog>
-          {thatsEveryoneError && (
-            <div>
-              <Typography
-                component="p"
-                paragraph
-                gutterBottom
-                style={{ color: "red" }}
-              >
-                Unable to proceed, please report this error to
-                admin@passover.lol
-              </Typography>
-            </div>
-          )}
         </Paper>
       </Container>
       <br></br>

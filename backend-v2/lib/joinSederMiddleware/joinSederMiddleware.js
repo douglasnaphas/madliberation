@@ -11,6 +11,7 @@ const hashGameName = require("./hashGameName");
 const dbParams = require("./dbParams");
 const runQuery = require("./runQuery");
 const handleQueryErrors = require("./handleQueryErrors");
+const putParticipantLink = require("../putParticipantLink")
 const succeed = require("./succeed");
 const logger = require("../../logger");
 
@@ -83,6 +84,8 @@ const joinSederMiddleware = [
   runQuery(awsSdk),
   // handle errors from the query
   handleQueryErrors(),
+  // add the participantPw
+  putParticipantLink,
   // success, send
   succeed(),
 ];

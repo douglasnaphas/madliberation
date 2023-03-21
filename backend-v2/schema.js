@@ -67,7 +67,8 @@ const schema = {
   // v2
   LEADER_EMAIL: "leader-email",
   LEADER_PW: "leader_pw",
-  EMAIL: "email" // participant email, not necessarily auth'd
+  EMAIL: "email", // participant email, not necessarily auth'd
+  PARTICIPANT_PW: "participant-pw"
 };
 
 module.exports = schema;

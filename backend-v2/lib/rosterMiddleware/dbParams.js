@@ -20,7 +20,7 @@ function dbParams() {
       },
       ExpressionAttributeValues: {
         ':r': req.query.roomcode,
-        ':l': schema.PARTICIPANT_PREFIX
+        ':l': schema.PARTICIPANT_PREFIX + schema.SEPARATOR
       },
       KeyConditionExpression: '#R = :r AND begins_with(#L, :l)',
       ProjectionExpression: schema.GAME_NAME,

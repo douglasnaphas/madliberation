@@ -40,7 +40,7 @@ const putParticipantLink = [
     const updateParams = {
       TableName: schema.TABLE_NAME,
       Key: {
-        room_code: req.query.sederCode,
+        room_code: req.body.sederCode,
         lib_id:
           schema.PARTICIPANT_PREFIX +
           schema.SEPARATOR +
@@ -61,6 +61,8 @@ const putParticipantLink = [
     } catch (error) {
       logger.log(`putParticipantLink: error writing participantPw:`);
       logger.log(error);
+      logger.log(`putParticipantLink: locals:`);
+      logger.log(res.locals);
       return res.status(500).send(responses.SERVER_ERROR);
     }
   },

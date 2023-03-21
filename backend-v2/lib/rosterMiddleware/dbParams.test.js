@@ -1,9 +1,9 @@
 /* globals expect */
-describe('rosterMiddleware/dbParams', () => {
-  const dbParams = require('./dbParams');
-  const responses = require('../../responses');
-  const schema = require('../../schema');
-  const runTest = ({req, expect500, expectNext, expectedDbParams}) => {
+describe("rosterMiddleware/dbParams", () => {
+  const dbParams = require("./dbParams");
+  const responses = require("../../responses");
+  const schema = require("../../schema");
+  const runTest = ({ req, expect500, expectNext, expectedDbParams }) => {
     let nextCalled = false;
     let sentData;
     let statusToSend = 200;
@@ -13,74 +13,81 @@ describe('rosterMiddleware/dbParams', () => {
       status: (s) => {
         statusToSend = s;
         return {
-          send: d => { sentData = d; sentStatus = statusToSend; }
-        }
+          send: (d) => {
+            sentData = d;
+            sentStatus = statusToSend;
+          },
+        };
       },
-      send: d => { sentData = d; sentStatus = statusToSend; }
+      send: (d) => {
+        sentData = d;
+        sentStatus = statusToSend;
+      },
     };
-    const next = () => { nextCalled = true };
+    const next = () => {
+      nextCalled = true;
+    };
     const middleware = dbParams();
     middleware(req, res, next);
-    if(expect500) {
+    if (expect500) {
       expect(sentStatus).toEqual(500);
       expect(sentData).toEqual(responses.SERVER_ERROR);
     }
-    if(expectNext) {
+    if (expectNext) {
       expect(nextCalled).toBeTruthy();
     }
-    if(expectedDbParams) {
+    if (expectedDbParams) {
       expect(res.locals.rosterDbParams).toEqual(expectedDbParams);
     }
   };
-  test('should 500 on missing Room Code', () => {
+  test("should 500 on missing Room Code", () => {
     const req = {
       query: {
-        gamename: 'but no room code'
-      }
+        gamename: "but no room code",
+      },
     };
-    runTest({req: req, expect500: true});
+    runTest({ req: req, expect500: true });
   });
-  test('happy path 1', () => {
+  test("happy path 1", () => {
     const req = {
       query: {
-        roomcode: 'PROVID'
-      }
+        roomcode: "PROVID",
+      },
     };
     const expectedDbParams = {
       ExpressionAttributeNames: {
-        '#R': schema.PARTITION_KEY,
-        '#L': schema.SORT_KEY
+        "#R": schema.PARTITION_KEY,
+        "#L": schema.SORT_KEY,
       },
       ExpressionAttributeValues: {
-        ':r': req.query.roomcode,
-        ':l': schema.PARTICIPANT_PREFIX
+        ":r": req.query.roomcode,
+        ":l": schema.PARTICIPANT_PREFIX + schema.SEPARATOR,
       },
-      KeyConditionExpression: '#R = :r AND begins_with(#L, :l)',
+      KeyConditionExpression: "#R = :r AND begins_with(#L, :l)",
       ProjectionExpression: schema.GAME_NAME,
-      TableName: schema.TABLE_NAME
+      TableName: schema.TABLE_NAME,
     };
-    runTest({req: req, expectNext: true, expectedDbParams: expectedDbParams});
+    runTest({ req: req, expectNext: true, expectedDbParams: expectedDbParams });
   });
-  test('happy path 2', () => {
+  test("happy path 2", () => {
     const req = {
       query: {
-        roomcode: 'ALSOPR'
-      }
+        roomcode: "ALSOPR",
+      },
     };
     const expectedDbParams = {
       ExpressionAttributeNames: {
-        '#R': schema.PARTITION_KEY,
-        '#L': schema.SORT_KEY
+        "#R": schema.PARTITION_KEY,
+        "#L": schema.SORT_KEY,
       },
       ExpressionAttributeValues: {
-        ':r': req.query.roomcode,
-        ':l': schema.PARTICIPANT_PREFIX
+        ":r": req.query.roomcode,
+        ":l": schema.PARTICIPANT_PREFIX + schema.SEPARATOR,
       },
-      KeyConditionExpression: '#R = :r AND begins_with(#L, :l)',
+      KeyConditionExpression: "#R = :r AND begins_with(#L, :l)",
       ProjectionExpression: schema.GAME_NAME,
-      TableName: schema.TABLE_NAME
+      TableName: schema.TABLE_NAME,
     };
-    runTest({req: req, expectNext: true, expectedDbParams: expectedDbParams});
+    runTest({ req: req, expectNext: true, expectedDbParams: expectedDbParams });
   });
-  
 });

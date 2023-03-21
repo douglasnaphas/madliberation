@@ -138,6 +138,7 @@ router.post("/remove-participant", removeParticipantMiddleware);
 
 const rosterMiddleware = require("./lib/rosterMiddleware/rosterMiddleware.js");
 router.get("/roster", gameNameCookieCheckMidWare, rosterMiddleware);
+const invitesMiddleware = require("./lib/invitesMiddleware/invites.js")
 
 const closeSederMiddleware = require("./lib/closeSederMiddleware/closeSederMiddleware.js");
 

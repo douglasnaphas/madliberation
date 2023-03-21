@@ -343,7 +343,7 @@ export default function Edit() {
             <DialogTitle>Are you sure?</DialogTitle>
             <DialogContent>
               <DialogContentText>
-                Your Seder has ${guests.length + 1} $
+                Your Seder has {guests.length + 1}
                 {guests.length > 0 ? "people, including you" : "person: you"}.
                 Is that really everyone you want to add?
               </DialogContentText>

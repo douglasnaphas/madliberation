@@ -5,7 +5,6 @@ import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
 import MadLiberationLogo from "../public/mad-liberation-logo.png";
 import VeryAwesomePassoverLogo from "../public/VAPLogo-white.png";
-import { Global, css, jsx } from "@emotion/react";
 import {
   Dialog,
   DialogActions,
@@ -20,11 +19,7 @@ import {
   TextField,
 } from "@mui/material";
 import Button from "@mui/material/Button";
-import { styled } from "@mui/material/styles";
 import * as EmailValidator from "email-validator";
-import { madLiberationStyles } from "../madLiberationStyles";
-import ScriptMenu from "../src/ScriptMenu";
-import { fetchScripts } from "../src/fetchScripts";
 
 const ThisIsYourLinkText = (props: {
   lnk?: HTMLAnchorElement;

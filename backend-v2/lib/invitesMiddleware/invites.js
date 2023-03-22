@@ -17,6 +17,13 @@ const responses = require("../../responses");
  * query params does not exist.
  */
 const invites = [
+  // log invites request
+  (req, res, next) => {
+    logger.log("invites: called, sederCode, roomCode:");
+    logger.log(req.query.sederCode);
+    logger.log(req.query.roomCode);
+    return next();
+  },
   // check for required params
   checkQueryParams(["sederCode", "pw", "roomCode"]),
   // save pwHash

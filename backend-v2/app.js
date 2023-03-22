@@ -27,7 +27,7 @@ const postEditLink = require("./lib/postEditLink");
 const getLeaderEmail = require("./lib/getLeaderEmail");
 const getPath = require("./lib/getPath");
 const getClosed = require("./lib/getClosed");
-const leaderPwCheck = require("./lib/leaderPwCheck")
+const leaderPwCheck = require("./lib/leaderPwCheck");
 
 const router = express.Router();
 
@@ -138,7 +138,8 @@ router.post("/remove-participant", removeParticipantMiddleware);
 
 const rosterMiddleware = require("./lib/rosterMiddleware/rosterMiddleware.js");
 router.get("/roster", gameNameCookieCheckMidWare, rosterMiddleware);
-const invitesMiddleware = require("./lib/invitesMiddleware/invites.js")
+const invitesMiddleware = require("./lib/invitesMiddleware/invites.js");
+router.get("/invites", invitesMiddleware);
 
 const closeSederMiddleware = require("./lib/closeSederMiddleware/closeSederMiddleware.js");
 

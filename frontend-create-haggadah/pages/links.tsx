@@ -55,7 +55,7 @@ export default function Links() {
   }
   React.useEffect(() => {
     if (sederCode && pw) {
-      fetch(`../v2/invites?sederCode=${sederCode}&pw=${pw}`)
+      fetch(`../v2/invites?sederCode=${sederCode}&pw=${pw}&roomCode=${sederCode}`)
         .then((r) => r.json())
         .then((j) => {
           if (j.participants) {

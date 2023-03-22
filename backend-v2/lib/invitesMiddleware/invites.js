@@ -19,13 +19,13 @@ const responses = require("../../responses");
 const invites = [
   // log invites request
   (req, res, next) => {
-    logger.log("invites: called, sederCode, roomCode:");
+    logger.log("invites: called, sederCode, roomcode:");
     logger.log(req.query.sederCode);
-    logger.log(req.query.roomCode);
+    logger.log(req.query.roomcode);
     return next();
   },
   // check for required params
-  checkQueryParams(["sederCode", "pw", "roomCode"]),
+  checkQueryParams(["sederCode", "pw", "roomcode"]),
   // save pwHash
   (req, res, next) => {
     const crypto = require("crypto");

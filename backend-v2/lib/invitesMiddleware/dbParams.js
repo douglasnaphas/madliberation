@@ -9,8 +9,10 @@
 function dbParams() {
   const responses = require("../../responses");
   const schema = require("../../schema");
+  const logger = require("../../logger");
   const middleware = (req, res, next) => {
     if (!req.query.roomcode) {
+      logger.log("dbParams: no roomcode in query");
       return res.status(500).send(responses.SERVER_ERROR);
     }
     res.locals.rosterDbParams = {

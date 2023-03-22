@@ -7,9 +7,9 @@ const sortParticipants = require("./sortParticipants");
 const checkQueryParams = require("../checkQueryParams");
 const { DynamoDBDocumentClient, GetCommand } = require("@aws-sdk/lib-dynamodb");
 const { DynamoDBClient } = require("@aws-sdk/client-dynamodb");
-const logger = require("../logger");
-const schema = require("../schema");
-const responses = require("../responses");
+const logger = require("../../logger");
+const schema = require("../../schema");
+const responses = require("../../responses");
 
 /**
  * Return a sorted JSON array of the Game Names of participants in this seder.

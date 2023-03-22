@@ -10,56 +10,25 @@ import { Paper, Table, TableBody, TableCell, TableRow } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { madLiberationStyles } from "../madLiberationStyles";
 
-const ThisIsYourLinkText = (props: {
-  lnk?: HTMLAnchorElement;
-  yourEmail: string;
-}) => {
-  const { lnk, yourEmail } = props;
-  if (!lnk || !yourEmail) {
-    return (
-      <div>
-        <p>...</p>
-      </div>
-    );
-  }
-  return (
-    <Typography
-      component="p"
-      paragraph
-      gutterBottom
-      style={{ marginLeft: "8px" }}
-    >
-      <a href={lnk.href}>This</a> is your permalink for proceeding with your
-      Haggadah. Click{" "}
-      <a
-        href={`mailto:${yourEmail}?subject=Permalink to create my Haggadah&body=Edit the Haggadah by going to ${encodeURIComponent(
-          lnk.href
-        )}`}
-      >
-        here
-      </a>{" "}
-      to email this to yourself.
-    </Typography>
-  );
-};
-interface Guest {
-  name: string;
+interface Participant {
+  game_name: string;
   email: string;
+  participant_pw: string;
 }
-const GuestList = (props: {
-  guests: Array<Guest>;
+const ParticipantList = (props: {
+  participants: Array<Participant>;
   sederCode: string;
-  pw: string;
 }) => {
-  const [buttonPressed, setButtonPressed] = React.useState(false);
-  const { guests, sederCode, pw } = props;
+  const { participants } = props;
   return (
     <div>
       <Table>
         <TableBody>
-          {guests.map((g) => (
-            <TableRow key={`guest-row-${g.name}`}>
-              <TableCell key={`guest-name-cell-${g.name}`}>{g.name}</TableCell>
+          {participants.map((g) => (
+            <TableRow key={`guest-row-${g.game_name}`}>
+              <TableCell key={`guest-name-cell-${g.game_name}`}>
+                {g.game_name}
+              </TableCell>
               <TableCell key={`guest-email-cell-${g.email}`}>
                 {g.email}
               </TableCell>
@@ -72,17 +41,11 @@ const GuestList = (props: {
 };
 export default function Links() {
   // get the email from the server
-  const [leaderEmail, setLeaderEmail] = React.useState("");
-  const [guests, setGuests] = React.useState<Array<Guest>>([]);
-  const [joinError, setJoinError] = React.useState(false);
-  const [removeParticipantError, setRemoveParticipantError] =
-    React.useState(false);
-  const [confirmThatsEveryoneDialogOpen, setConfirmThatsEveryoneDialogOpen] =
-    React.useState(false);
-  const [yesThatsEveryoneButtonClicked, setYesThatsEveryoneButtonClicked] =
-    React.useState(false);
-  const [thatsEveryoneError, setThatsEveryoneError] = React.useState(false);
-  const [sederClosed, setSederClosed] = React.useState(true);
+  const [participants, setParticipants] = React.useState<Array<Participant>>(
+    []
+  );
+  React.useState(false);
+  React.useState(false);
   let sederCode: any, pw: any;
   if (typeof window !== "undefined" && typeof URLSearchParams === "function") {
     const urlSearchParams = new URLSearchParams(window.location.search);
@@ -92,18 +55,12 @@ export default function Links() {
   }
   React.useEffect(() => {
     if (sederCode && pw) {
-      fetch(`../v2/leader-email?sederCode=${sederCode}&pw=${pw}`)
+      fetch(`../v2/invites?sederCode=${sederCode}&pw=${pw}`)
         .then((r) => r.json())
         .then((j) => {
-          setLeaderEmail(j.leaderEmail);
-        });
-      fetch(`../v2/closed?sederCode=${sederCode}&pw=${pw}`)
-        .then((r) => r.json())
-        .then((j) => {
-          if (!("closed" in j)) {
-            return;
+          if (j.participants) {
+            setParticipants(j.participants);
           }
-          setSederClosed(j.closed as boolean);
         });
     }
   }, []);
@@ -135,17 +92,10 @@ export default function Links() {
       <Container maxWidth="md">
         <Paper>
           <div>
-            <ThisIsYourLinkText
-              lnk={permalink}
-              yourEmail={leaderEmail}
-            ></ThisIsYourLinkText>
-          </div>
-          <div>
-            <GuestList
-              guests={guests}
+            <ParticipantList
+              participants={participants}
               sederCode={sederCode}
-              pw={pw}
-            ></GuestList>
+            ></ParticipantList>
           </div>
         </Paper>
       </Container>

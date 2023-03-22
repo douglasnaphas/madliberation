@@ -7,8 +7,6 @@ import MadLiberationLogo from "../public/mad-liberation-logo.png";
 import VeryAwesomePassoverLogo from "../public/VAPLogo-white.png";
 import { Global, css, jsx } from "@emotion/react";
 import { Paper, Table, TableBody, TableCell, TableRow } from "@mui/material";
-import { styled } from "@mui/material/styles";
-import { madLiberationStyles } from "../madLiberationStyles";
 
 interface Participant {
   game_name: string;

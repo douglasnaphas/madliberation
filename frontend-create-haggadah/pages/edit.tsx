@@ -20,11 +20,7 @@ import {
   TextField,
 } from "@mui/material";
 import Button from "@mui/material/Button";
-import { styled } from "@mui/material/styles";
 import * as EmailValidator from "email-validator";
-import { madLiberationStyles } from "../madLiberationStyles";
-import ScriptMenu from "../src/ScriptMenu";
-import { fetchScripts } from "../src/fetchScripts";
 
 const enum PageState {
   LOADING = 1,

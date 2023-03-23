@@ -18,13 +18,16 @@ const submitLibsMiddleware = require("./lib/submitLibsMiddleware/submitLibsMiddl
 const readRosterMiddleware = require("./lib/readRosterMiddleware/readRosterMiddleware.js");
 const scriptMiddleware = require("./lib/scriptMiddleware/scriptMiddleware");
 const getLoginCookies = require("./lib/getLoginCookies");
-const authenticate = require("./lib/authenticateWithOpaqueCookie");
 const send500OnError = require("./lib/send500OnError");
 const seders = require("./lib/seders");
 const sedersJoined = require("./lib/sedersJoined");
 const rejoin = require("./lib/rejoin");
 const login = require("./lib/login/login");
 const postEditLink = require("./lib/postEditLink");
+const getLeaderEmail = require("./lib/getLeaderEmail");
+const getPath = require("./lib/getPath");
+const getClosed = require("./lib/getClosed");
+const leaderPwCheck = require("./lib/leaderPwCheck");
 
 const router = express.Router();
 
@@ -107,7 +110,11 @@ router.use(bodyParser.json());
 
 router.post("/edit-link", postEditLink);
 
-router.use(authenticate);
+router.get("/leader-email", getLeaderEmail);
+
+router.get("/path", getPath);
+
+router.get("/closed", getClosed);
 
 router.get("/playground", function (req, res, next) {
   let authHeader;
@@ -126,14 +133,19 @@ router.post("/room-code", roomCode(AWS, randomStringGenerator, Configs));
 const joinSederMiddleware = require("./lib/joinSederMiddleware/joinSederMiddleware.js");
 router.post("/join-seder", joinSederMiddleware);
 
+const removeParticipantMiddleware = require("./lib/removeParticipantMiddleware/removeParticipantMiddleware.js");
+router.post("/remove-participant", removeParticipantMiddleware);
+
 const rosterMiddleware = require("./lib/rosterMiddleware/rosterMiddleware.js");
 router.get("/roster", gameNameCookieCheckMidWare, rosterMiddleware);
+const invitesMiddleware = require("./lib/invitesMiddleware/invites.js");
+router.get("/invites", invitesMiddleware);
 
 const closeSederMiddleware = require("./lib/closeSederMiddleware/closeSederMiddleware.js");
 
 router.post(
   "/close-seder",
-  gameNameCookieCheckMidWare,
+  leaderPwCheck,
   closeSederMiddleware,
   assignLibsMiddleware,
   (req, res) => {

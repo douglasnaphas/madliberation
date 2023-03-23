@@ -1,41 +1,43 @@
-const schema = require("../../schema");
-const getHash = require("../getHash");
+const checkParams = require("./checkParams");
+const dbParams = require("./dbParams");
+const runQuery = require("../runQuery");
 const awsSdk = require("aws-sdk");
-const validator = require("email-validator");
-const crypto = require("crypto");
+const handleQueryErrors = require("../handleQueryErrors");
+const sortParticipants = require("./sortParticipants");
+const checkQueryParams = require("../checkQueryParams");
 const { DynamoDBDocumentClient, GetCommand } = require("@aws-sdk/lib-dynamodb");
 const { DynamoDBClient } = require("@aws-sdk/client-dynamodb");
-
-const checkBody = require("../checkBody");
-const hashGameName = require("./hashGameName");
-const dbParams = require("./dbParams");
-const runQuery = require("./runQuery");
-const handleQueryErrors = require("./handleQueryErrors");
-const putParticipantLink = require("../putParticipantLink")
-const succeed = require("./succeed");
 const logger = require("../../logger");
+const schema = require("../../schema");
+const responses = require("../../responses");
 
-const joinSederMiddleware = [
-  // check for required body params
-  checkBody(["sederCode", "pw", "email", "gameName"]),
-  // make sure email is ok
+/**
+ * Return a sorted JSON array of the Game Names of participants in this seder.
+ * Send 400 with "bad request" if the seder identified by the roomcode in the
+ * query params does not exist.
+ */
+const invites = [
+  // log invites request
   (req, res, next) => {
-    if (validator.validate(req.body.email)) {
-      return next();
-    }
-    return res.status(400).send({ err: "email should be an email address" });
+    logger.log("invites: called, sederCode, roomcode:");
+    logger.log(req.query.sederCode);
+    logger.log(req.query.roomcode);
+    return next();
   },
+  // check for required params
+  checkQueryParams(["sederCode", "pw", "roomcode"]),
   // save pwHash
   (req, res, next) => {
+    const crypto = require("crypto");
     const pwHash = crypto
       .createHash("sha256")
-      .update(req.body.pw)
+      .update(req.query.pw)
       .digest("hex")
       .toLowerCase();
     res.locals.pwHash = pwHash;
     return next();
   },
-  // get correctPwHash and leaderEmail from the db
+  // get correctPwHash and path from the db
   async (req, res, next) => {
     const region = process.env.AWS_REGION || process.env.AWS_DEFAULT_REGION;
     const ddbClient = new DynamoDBClient({ region });
@@ -43,7 +45,7 @@ const joinSederMiddleware = [
     const getParams = {
       TableName: schema.TABLE_NAME,
       Key: {
-        room_code: req.body.sederCode,
+        room_code: req.query.sederCode,
         lib_id: schema.SEDER_PREFIX,
       },
     };
@@ -51,14 +53,14 @@ const joinSederMiddleware = [
       const response = await ddbDocClient.send(new GetCommand(getParams));
       res.locals.correctPwHash = response.Item.pwHash;
       logger.log(
-        `v2/joinSederMiddleware: saved correctPwHash starting ${res.locals.correctPwHash.substring(
+        `invites: saved correctPwHash starting ${res.locals.correctPwHash.substring(
           0,
           3
         )}`
       );
       return next();
     } catch (error) {
-      logger.log("v2/joinSederMiddleware: error getting item from db, error:");
+      logger.log("invites: error getting item from db, error:");
       logger.log(error);
       return res.status(500).send(responses.SERVER_ERROR);
     }
@@ -67,7 +69,7 @@ const joinSederMiddleware = [
   (req, res, next) => {
     if (res.locals.pwHash !== res.locals.correctPwHash) {
       logger.log(
-        `v2/joinSederMiddleware: wrong hash ${res.locals.pwHash.substring(
+        `invites: wrong hash ${res.locals.pwHash.substring(
           0,
           3
         )}... !== ${res.locals.correctPwHash.substring(0, 3)}...`
@@ -76,17 +78,18 @@ const joinSederMiddleware = [
     }
     return next();
   },
-  // hash game name
-  hashGameName(getHash),
-  // create db query params
+  // set db params
   dbParams(),
-  // execute query, set res.locals.dbError, res.locals.dbData
-  runQuery(awsSdk),
+  // run query
+  runQuery(awsSdk, "rosterDbParams"),
   // handle errors from the query
   handleQueryErrors(),
-  // add the participantPw
-  putParticipantLink,
-  // success, send
-  succeed(),
+  // sort the participants
+  sortParticipants(),
+  // success, send res.locals.participants
+  (req, res) => {
+    res.send({ participants: res.locals.participants });
+  },
 ];
-module.exports = joinSederMiddleware;
+
+module.exports = invites;

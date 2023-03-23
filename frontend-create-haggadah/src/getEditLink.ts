@@ -11,7 +11,6 @@ const getEditLink = async (props: { path: string; leaderEmail: string }) => {
   const lnk =
     `${window.location.origin}/create-haggadah/edit.html` +
     `?sederCode=${data.sederCode}&pw=${data.pw}`;
-  // return an editLink, not data and status
   return {
     lnk,
     status,

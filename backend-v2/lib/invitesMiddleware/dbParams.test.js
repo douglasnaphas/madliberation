@@ -64,7 +64,10 @@ describe("rosterMiddleware/dbParams", () => {
         ":l": schema.PARTICIPANT_PREFIX + schema.SEPARATOR,
       },
       KeyConditionExpression: "#R = :r AND begins_with(#L, :l)",
-      ProjectionExpression: schema.GAME_NAME,
+      ProjectionExpression:
+        `${schema.GAME_NAME}, ` +
+        `${schema.EMAIL}, ` +
+        `${schema.PARTICIPANT_PW}`,
       TableName: schema.TABLE_NAME,
     };
     runTest({ req: req, expectNext: true, expectedDbParams: expectedDbParams });
@@ -85,7 +88,10 @@ describe("rosterMiddleware/dbParams", () => {
         ":l": schema.PARTICIPANT_PREFIX + schema.SEPARATOR,
       },
       KeyConditionExpression: "#R = :r AND begins_with(#L, :l)",
-      ProjectionExpression: schema.GAME_NAME,
+      ProjectionExpression:
+        `${schema.GAME_NAME}, ` +
+        `${schema.EMAIL}, ` +
+        `${schema.PARTICIPANT_PW}`,
       TableName: schema.TABLE_NAME,
     };
     runTest({ req: req, expectNext: true, expectedDbParams: expectedDbParams });

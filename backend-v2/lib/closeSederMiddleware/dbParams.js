@@ -9,14 +9,15 @@
  * req.body and res.locals and calls next, or sends 500 on error
  */
 function dbParams() {
-  const schema = require('../../schema');
-  const responses = require('../../responses');
-  const Logger = require('../Logger');
+  const schema = require("../../schema");
+  const responses = require("../../responses");
+  const Logger = require("../Logger");
   const middleware = (req, res, next) => {
-    if(!res.locals.roomCode)
-    {
-      Logger.log({status: 500, event: 'closeSederMiddleware/dbParams',
-        message: 'roomCode not set in locals'
+    if (!res.locals.roomCode) {
+      Logger.log({
+        status: 500,
+        event: "closeSederMiddleware/dbParams",
+        message: "roomCode not set in locals",
       });
       return res.status(500).send(responses.SERVER_ERROR);
     }
@@ -26,20 +27,26 @@ function dbParams() {
           Update: {
             TableName: schema.TABLE_NAME,
             Key: {},
-            UpdateExpression: 'SET #C = :t',
-            ExpressionAttributeNames: {'#C': schema.CLOSED},
-            ExpressionAttributeValues: {':t': true},
-            ReturnValuesOnConditionCheckFailure: 'ALL_OLD'
-          }
-        }
-      ]
+            UpdateExpression: "SET #C = :t",
+            ExpressionAttributeNames: { "#C": schema.CLOSED },
+            ExpressionAttributeValues: { ":t": true },
+            ReturnValuesOnConditionCheckFailure: "ALL_OLD",
+          },
+        },
+      ],
     };
-    res.locals.closeSederDbParams.TransactItems[0].Update.Key
-      [`${schema.PARTITION_KEY}`] = res.locals.roomCode;
-    res.locals.closeSederDbParams.TransactItems[0].Update.Key
-      [`${schema.SORT_KEY}`] = schema.SEDER_PREFIX;
+    res.locals.closeSederDbParams.TransactItems[0].Update.Key[
+      `${schema.PARTITION_KEY}`
+    ] = res.locals.roomCode;
+    res.locals.closeSederDbParams.TransactItems[0].Update.Key[
+      `${schema.SORT_KEY}`
+    ] = schema.SEDER_PREFIX;
     return next();
   };
+  Logger.log({
+    event: "v2/closeSederMiddleware/dbParams",
+    message: "finished dbParams",
+  });
   return middleware;
 }
 

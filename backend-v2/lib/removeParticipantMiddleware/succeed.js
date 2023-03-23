@@ -15,7 +15,7 @@ function succeed() {
       return res.status(500).send(responses.SERVER_ERROR);
     }
     logger.log(
-      `v2/joinSederMiddleware/succeed: ${req.body.gameName} joined ${req.body.sederCode}`
+      `v2/joinSederMiddleware/succeed: ${req.body.gameName} joined ${req.body.roomCode}`
     );
     return res.send(
       responses.success({

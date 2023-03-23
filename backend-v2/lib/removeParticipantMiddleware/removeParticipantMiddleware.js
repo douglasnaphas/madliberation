@@ -3,7 +3,11 @@ const getHash = require("../getHash");
 const awsSdk = require("aws-sdk");
 const validator = require("email-validator");
 const crypto = require("crypto");
-const { DynamoDBDocumentClient, GetCommand } = require("@aws-sdk/lib-dynamodb");
+const {
+  DynamoDBDocumentClient,
+  GetCommand,
+  DeleteCommand,
+} = require("@aws-sdk/lib-dynamodb");
 const { DynamoDBClient } = require("@aws-sdk/client-dynamodb");
 
 const checkBody = require("../checkBody");
@@ -11,11 +15,10 @@ const hashGameName = require("./hashGameName");
 const dbParams = require("./dbParams");
 const runQuery = require("./runQuery");
 const handleQueryErrors = require("./handleQueryErrors");
-const putParticipantLink = require("../putParticipantLink")
 const succeed = require("./succeed");
 const logger = require("../../logger");
 
-const joinSederMiddleware = [
+const removeParticipantMiddleware = [
   // check for required body params
   checkBody(["sederCode", "pw", "email", "gameName"]),
   // make sure email is ok
@@ -78,15 +81,32 @@ const joinSederMiddleware = [
   },
   // hash game name
   hashGameName(getHash),
-  // create db query params
-  dbParams(),
-  // execute query, set res.locals.dbError, res.locals.dbData
-  runQuery(awsSdk),
-  // handle errors from the query
-  handleQueryErrors(),
-  // add the participantPw
-  putParticipantLink,
-  // success, send
-  succeed(),
+  // delete the participant from the db
+  async (req, res, next) => {
+    const region = process.env.AWS_REGION || process.env.AWS_DEFAULT_REGION;
+    const ddbClient = new DynamoDBClient({ region });
+    const ddbDocClient = DynamoDBDocumentClient.from(ddbClient);
+    const deleteParams = {
+      TableName: schema.TABLE_NAME,
+      Key: {
+        room_code: req.body.sederCode,
+        lib_id:
+          schema.PARTICIPANT_PREFIX +
+          schema.SEPARATOR +
+          res.locals.gameNameHash,
+      },
+      ConditionExpression: "attribute_not_exists(assignments)",
+    };
+    try {
+      const response = await ddbDocClient.send(new DeleteCommand(deleteParams));
+      logger.log("deleteParticipant: remove participant " + req.body.gameName);
+      return res.send({ message: req.body.gameName + " removed" });
+    } catch (err) {
+      logger.log(
+        "deleteParticipant: failed to remove participant " + req.body.gameName
+      );
+      return res.status(500).send();
+    }
+  },
 ];
-module.exports = joinSederMiddleware;
+module.exports = removeParticipantMiddleware;

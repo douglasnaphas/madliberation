@@ -10,8 +10,10 @@
 function dbParams() {
   const responses = require('../../responses');
   const schema = require('../../schema');
+  const logger = require("../../logger")
   const middleware = (req, res, next) => {
     if(!req.body.roomCode) {
+      logger.log("dbParamsGetParticipants: no roomCode")
       return res.status(500).send(responses.SERVER_ERROR);
     }
     res.locals.getParticipantsDbParams = {

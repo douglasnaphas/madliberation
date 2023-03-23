@@ -19,7 +19,7 @@ import { madLiberationStyles } from "../madLiberationStyles";
 import ScriptMenu from "../src/ScriptMenu";
 import { fetchScripts } from "../src/fetchScripts";
 import { getEditLink } from "../src/getEditLink";
-import YourEmailSection from "../src/YourEmailSection";
+import YourInfoSection from "../src/YourInfoSection";
 import SubmitSection from "../src/SubmitSection";
 
 const Accordion = styled((props: AccordionProps) => (
@@ -61,7 +61,9 @@ const AccordionDetails = styled(MuiAccordionDetails)(({ theme }) => ({
 export default function Home() {
   const [selectedScript, setSelectedScript] = React.useState("");
   const [yourEmail, setYourEmail] = React.useState("");
+  const [yourName, setYourName] = React.useState("");
   const [editLink, setEditLink] = React.useState("");
+  const [createHaggadahError, setCreateHaggadahError] = React.useState(false);
   const steps = [
     {
       order: 1,
@@ -69,6 +71,7 @@ export default function Home() {
       body: (
         <div>
           <ScriptMenu
+            disabled={editLink !== ""}
             fetchScripts={fetchScripts}
             selectedScript={selectedScript}
             setSelectedScript={setSelectedScript}
@@ -78,13 +81,14 @@ export default function Home() {
     },
     {
       order: 2,
-      label: "Your email",
+      label: "Your info",
       body: (
         <div>
-          <YourEmailSection
-            yourEmail={yourEmail}
+          <YourInfoSection
+            disabled={editLink !== ""}
             setYourEmail={setYourEmail}
-          ></YourEmailSection>
+            setYourName={setYourName}
+          ></YourInfoSection>
         </div>
       ),
     },
@@ -104,6 +108,7 @@ export default function Home() {
       style={{
         backgroundColor: "#81181f",
         height: "100%",
+        minHeight: "100%",
       }}
     >
       <div>
@@ -146,27 +151,27 @@ export default function Home() {
             })}
           </div>
           <div>
-            <SubmitSection
-              getEditLink={getEditLink}
-              setEditLink={setEditLink}
-              leaderEmail={yourEmail}
-              path={selectedScript}
-            ></SubmitSection>
-          </div>
-          {editLink !== "" && (
-            <div>
-              <Typography component="p" paragraph gutterBottom>
-                <a href={editLink}>This</a> is your permalink for proceeding
-                with your Haggadah. Click{" "}
-                <a
-                  href={`mailto:${yourEmail}?subject=Permalink to create my Haggadah&body=Edit the Haggadah by going to ${encodeURIComponent(editLink)}`}
-                >
-                  here
-                </a>{" "}
-                to email this to yourself.
+            {createHaggadahError ? (
+              <Typography
+                component="p"
+                paragraph
+                gutterBottom
+                style={{ color: "red" }}
+              >
+                Unable to create your Haggadah, sorry. Please try again in a new
+                tab or different browser.
               </Typography>
-            </div>
-          )}
+            ) : (
+              <SubmitSection
+                getEditLink={getEditLink}
+                setEditLink={setEditLink}
+                leaderEmail={yourEmail}
+                leaderName={yourName}
+                path={selectedScript}
+                setCreateHaggadahError={setCreateHaggadahError}
+              ></SubmitSection>
+            )}
+          </div>
         </Paper>
       </Container>
       <br />

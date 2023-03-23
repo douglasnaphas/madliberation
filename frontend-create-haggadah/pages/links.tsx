@@ -17,23 +17,39 @@ const ParticipantList = (props: {
   participants: Array<Participant>;
   sederCode: string;
 }) => {
-  const { participants } = props;
+  const { participants, sederCode } = props;
   return (
     <div>
-      <Table>
-        <TableBody>
-          {participants.map((g) => (
-            <TableRow key={`guest-row-${g.game_name}`}>
-              <TableCell key={`guest-name-cell-${g.game_name}`}>
-                {g.game_name}
-              </TableCell>
-              <TableCell key={`guest-email-cell-${g.email}`}>
-                {g.email}
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+      <Typography
+        component="p"
+        paragraph
+        gutterBottom
+        style={{ marginLeft: "8px" }}
+      >
+        Send each participant their personalized permalink, shown below, so they
+        can fill in their blanks.
+      </Typography>
+      <div>
+        <Table>
+          <TableBody>
+            {participants.map((g) => (
+              <TableRow key={`guest-row-${g.game_name}`}>
+                <TableCell key={`guest-name-cell-${g.game_name}`}>
+                  {g.game_name}
+                </TableCell>
+                <TableCell key={`guest-email-cell-${g.email}`}>
+                  {g.email}
+                </TableCell>
+                {typeof window !== "undefined" && (
+                  <TableCell
+                    key={`guest-link-cell-${g.email}`}
+                  >{`${window.location.origin}/create-haggadah/blanks.html?sederCode=${sederCode}&pw=${g.participant_pw}`}</TableCell>
+                )}
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
     </div>
   );
 };
@@ -42,8 +58,6 @@ export default function Links() {
   const [participants, setParticipants] = React.useState<Array<Participant>>(
     []
   );
-  React.useState(false);
-  React.useState(false);
   let sederCode: any, pw: any;
   if (typeof window !== "undefined" && typeof URLSearchParams === "function") {
     const urlSearchParams = new URLSearchParams(window.location.search);
@@ -53,7 +67,9 @@ export default function Links() {
   }
   React.useEffect(() => {
     if (sederCode && pw) {
-      fetch(`../v2/invites?sederCode=${sederCode}&pw=${pw}&roomcode=${sederCode}`)
+      fetch(
+        `../v2/invites?sederCode=${sederCode}&pw=${pw}&roomcode=${sederCode}`
+      )
         .then((r) => r.json())
         .then((j) => {
           if (j.participants) {

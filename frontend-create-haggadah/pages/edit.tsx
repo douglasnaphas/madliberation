@@ -400,8 +400,16 @@ export default function Edit() {
           )}
           {pageState === PageState.CLOSED && permalink && (
             <div>
-              <Typography component="p" paragraph gutterBottom>
-                Head to {permalink.href.replace("/edit.html?", "/links.html?")}{" "}
+              <Typography
+                component="p"
+                paragraph
+                gutterBottom
+                style={{ marginLeft: "8px" }}
+              >
+                Head to{" "}
+                <a href={permalink.href.replace("/edit.html?", "/links.html?")}>
+                  your links page
+                </a>{" "}
                 to get the links to send to each participant so you can all fill
                 in your blanks.
               </Typography>

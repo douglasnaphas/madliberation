@@ -31,9 +31,10 @@ const responses = require("../../responses");
 const assignmentsMiddleware = [
   // check for query params
   checkQueryParams([
+    "sederCode",
     api.URL_QUERY_PARAMS.ROOM_CODE,
-    api.URL_QUERY_PARAMS.GAME_NAME,
     api.URL_QUERY_PARAMS.PW,
+    api.URL_QUERY_PARAMS.PARTICIPANT_HASH,
   ]),
   // save pwHash
   (req, res, next) => {
@@ -84,7 +85,7 @@ const assignmentsMiddleware = [
   },
   // check pwHash
   (req, res, next) => {
-    const {participant} = res.locals;
+    const { participant } = res.locals;
     if (res.locals.pwHash !== participant.pwHash) {
       logger.log(
         `assignmentsMiddleware: wrong pwHash ${res.locals.pwHash.substring(
@@ -92,7 +93,7 @@ const assignmentsMiddleware = [
           3
         )}... !== ${participant.pwHash.substring(0, 3)}...`
       );
-      return res.status(400).send(responses.BAD_REQUEST)
+      return res.status(400).send(responses.BAD_REQUEST);
     }
     return next();
   },

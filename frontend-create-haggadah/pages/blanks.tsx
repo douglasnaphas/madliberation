@@ -63,7 +63,7 @@ export default function Blanks() {
       <Container maxWidth="md">
         <Paper>
           <div></div>
-          <div>
+          <div style={{ padding: "8px" }}>
             {assignments.map((assignment) => {
               return <Chip label={assignment.prompt} size="small"></Chip>;
             })}

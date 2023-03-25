@@ -20,8 +20,13 @@ interface Assignment {
   prompt: string;
   sentence?: string;
 }
+interface Answer {
+  id: number;
+  text: string;
+}
 export default function Blanks() {
   const [assignments, setAssignments] = React.useState<Array<Assignment>>([]);
+  const [answers, setAnswers] = React.useState({});
   let sederCode: any, pw: any, ph: any;
   if (typeof window !== "undefined" && typeof URLSearchParams === "function") {
     const urlSearchParams = new URLSearchParams(window.location.search);
@@ -39,6 +44,7 @@ export default function Blanks() {
           setAssignments(j);
         });
       // we'll need to grab saved answers as well
+      // maybe just grab them when an answer gets displayed
     }
   }, []);
   return (

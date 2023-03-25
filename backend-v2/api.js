@@ -8,6 +8,8 @@ const api = {
   URL_QUERY_PARAMS: {
     ROOM_CODE: "roomcode",
     GAME_NAME: "gamename",
+    PW: "pw",
+    PARTICIPANT_HASH: "ph",
   },
   POST_BODY_PARAMS: {
     ROOM_CODE: "roomCode",

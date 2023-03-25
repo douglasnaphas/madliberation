@@ -13,12 +13,16 @@ function dbParams() {
   const responses = require('../../responses');
   const schema = require('../../schema');
   const DbSchema = require('../../DbSchema');
+  const logger = require('../../logger')
   const middleware = (req, res, next) => {
-    if(!req.query.roomcode || !req.query.gamename) {
-      return res.status(400).send(responses.BAD_REQUEST);
+    const {participant} = res.locals;
+    const gameName = participant[schema.GAME_NAME]
+    if(!req.query.roomcode || !gameName) {
+      logger.log(`assignmentsMiddleware/dbParams: no roomcode or no gameName, locals:`)
+      logger.log(res.locals)
+      return res.status(400).send({err: 'need roomcode and ph that yields a gameName'});
     }
     const roomCode = req.query.roomcode;
-    const gameName = decodeURIComponent(req.query.gamename);
     res.locals.assigmentsDbParams = {
       ExpressionAttributeNames: {
         '#R': schema.PARTITION_KEY,

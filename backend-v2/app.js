@@ -153,7 +153,7 @@ router.post(
   }
 );
 
-router.get("/assignments", gameNameCookieCheckMidWare, assignmentsMiddleware);
+router.get("/assignments", assignmentsMiddleware);
 
 router.post(
   "/submit-libs",

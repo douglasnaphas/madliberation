@@ -6,9 +6,22 @@ import Typography from "@mui/material/Typography";
 import MadLiberationLogo from "../public/mad-liberation-logo.png";
 import VeryAwesomePassoverLogo from "../public/VAPLogo-white.png";
 import { Global, css, jsx } from "@emotion/react";
-import { Paper, Table, TableBody, TableCell, TableRow } from "@mui/material";
+import {
+  Paper,
+  Chip,
+  Table,
+  TableBody,
+  TableCell,
+  TableRow,
+} from "@mui/material";
 
+interface Assignment {
+  id: number;
+  prompt: string;
+  sentence?: string;
+}
 export default function Blanks() {
+  const [assignments, setAssignments] = React.useState<Array<Assignment>>([]);
   let sederCode: any, pw: any, ph: any;
   if (typeof window !== "undefined" && typeof URLSearchParams === "function") {
     const urlSearchParams = new URLSearchParams(window.location.search);
@@ -22,7 +35,10 @@ export default function Blanks() {
         `../v2/assignments?sederCode=${sederCode}&pw=${pw}&roomcode=${sederCode}&ph=${ph}`
       )
         .then((r) => r.json())
-        .then((j) => {});
+        .then((j) => {
+          setAssignments(j);
+        });
+      // we'll need to grab saved answers as well
     }
   }, []);
   return (
@@ -47,6 +63,11 @@ export default function Blanks() {
       <Container maxWidth="md">
         <Paper>
           <div></div>
+          <div>
+            {assignments.map((assignment) => {
+              return <Chip label={assignment.prompt} size="small"></Chip>;
+            })}
+          </div>
         </Paper>
       </Container>
       <br></br>

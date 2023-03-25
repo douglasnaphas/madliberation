@@ -33,8 +33,18 @@ const ChipSection = (props: {
   const { setAssignmentNumber, assignmentNumber, assignments, answers } = props;
   return (
     <div style={{ padding: "8px" }}>
-      {assignments.map((assignment) => {
-        return <Chip label={assignment.prompt} size="small"></Chip>;
+      {assignments.map((assignment, assignmentIndex) => {
+        return (
+          <Chip
+            label={assignment.prompt}
+            color={assignmentIndex === assignmentNumber ? "primary" : "default"}
+            clickable={true}
+            onClick={() => {
+              setAssignmentNumber(assignmentIndex);
+            }}
+            size="small"
+          ></Chip>
+        );
       })}
     </div>
   );

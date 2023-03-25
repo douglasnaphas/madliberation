@@ -24,9 +24,25 @@ interface Answer {
   id: number;
   text: string;
 }
+const ChipSection = (props: {
+  setAssignmentNumber: React.Dispatch<React.SetStateAction<number>>;
+  assignmentNumber: number;
+  assignments: Array<Assignment>;
+  answers: any;
+}) => {
+  const { setAssignmentNumber, assignmentNumber, assignments, answers } = props;
+  return (
+    <div style={{ padding: "8px" }}>
+      {assignments.map((assignment) => {
+        return <Chip label={assignment.prompt} size="small"></Chip>;
+      })}
+    </div>
+  );
+};
 export default function Blanks() {
   const [assignments, setAssignments] = React.useState<Array<Assignment>>([]);
   const [answers, setAnswers] = React.useState({});
+  const [assignmentNumber, setAssignmentNumber] = React.useState(0);
   let sederCode: any, pw: any, ph: any;
   if (typeof window !== "undefined" && typeof URLSearchParams === "function") {
     const urlSearchParams = new URLSearchParams(window.location.search);
@@ -69,11 +85,12 @@ export default function Blanks() {
       <Container maxWidth="md">
         <Paper>
           <div></div>
-          <div style={{ padding: "8px" }}>
-            {assignments.map((assignment) => {
-              return <Chip label={assignment.prompt} size="small"></Chip>;
-            })}
-          </div>
+          <ChipSection
+            setAssignmentNumber={setAssignmentNumber}
+            assignmentNumber={assignmentNumber}
+            assignments={assignments}
+            answers={answers}
+          ></ChipSection>
         </Paper>
       </Container>
       <br></br>

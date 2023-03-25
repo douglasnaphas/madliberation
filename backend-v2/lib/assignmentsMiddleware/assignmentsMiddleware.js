@@ -11,7 +11,7 @@ const {
   QueryCommand,
 } = require("@aws-sdk/lib-dynamodb");
 const { DynamoDBClient } = require("@aws-sdk/client-dynamodb");
-const logger = require("../logger");
+const logger = require("../../logger");
 const schema = require("../../schema");
 const responses = require("../../responses");
 

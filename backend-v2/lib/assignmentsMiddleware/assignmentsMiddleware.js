@@ -36,17 +36,6 @@ const assignmentsMiddleware = [
     api.URL_QUERY_PARAMS.PW,
     api.URL_QUERY_PARAMS.PARTICIPANT_HASH,
   ]),
-  // save pwHash
-  (req, res, next) => {
-    const crypto = require("crypto");
-    const pwHash = crypto
-      .createHash("sha256")
-      .update(req.query.pw)
-      .digest("hex")
-      .toLowerCase();
-    res.locals.pwHash = pwHash;
-    return next();
-  },
   // get participant item from the db
   async (req, res, next) => {
     const region = process.env.AWS_REGION || process.env.AWS_DEFAULT_REGION;
@@ -82,19 +71,29 @@ const assignmentsMiddleware = [
       return res.status(500).send(responses.SERVER_ERROR);
     }
   },
-  // check pwHash
+  // check participant_pw
   (req, res, next) => {
     const { participant } = res.locals;
-    if (res.locals.pwHash !== participant.pwHash) {
+    if (
+      participant[schema.PARTICIPANT_PW].find(
+        (pw) => pw === req.query[api.URL_QUERY_PARAMS.PW]
+      )
+    ) {
       logger.log(
-        `assignmentsMiddleware: wrong pwHash ${res.locals.pwHash.substring(
-          0,
-          3
-        )}... !== ${participant.pwHash.substring(0, 3)}...`
+        "assignmentsMiddleware: authenticated link for " +
+          req.query.sederCode +
+          ", " +
+          req.query[api.URL_QUERY_PARAMS.PARTICIPANT_HASH]
       );
-      return res.status(400).send(responses.BAD_REQUEST);
+      return next();
     }
-    return next();
+    logger.log(
+      "assignmentsMiddleware: bad link for " +
+        req.query.sederCode +
+        ", " +
+        req.query[api.URL_QUERY_PARAMS.PARTICIPANT_HASH]
+    );
+    return res.status(400).send({ err: "bad params" });
   },
   // set db query params to get assignments
   dbParams(),

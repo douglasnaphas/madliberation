@@ -26,6 +26,7 @@ function dbParams() {
       },
       KeyConditionExpression: "#R = :r AND begins_with(#L, :l)",
       ProjectionExpression:
+        `${schema.SORT_KEY}, ` +
         `${schema.GAME_NAME}, ` +
         `${schema.EMAIL}, ` +
         `${schema.PARTICIPANT_PW}`,

@@ -73,9 +73,8 @@ const assignmentsMiddleware = [
       }
       const participant = items[0];
       res.locals.participant = participant;
-      logger.log(
-        `assignmentsMiddleware: saved participant ${res.locals.participant}`
-      );
+      logger.log(`assignmentsMiddleware: saved participant:`);
+      logger.log(res.locals.participant);
       return next();
     } catch (error) {
       logger.log("getPath: error getting item from db, error:");

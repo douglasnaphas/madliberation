@@ -8,6 +8,7 @@ const { DynamoDBClient } = require("@aws-sdk/client-dynamodb");
 const logger = require("../logger");
 const schema = require("../schema");
 const responses = require("../responses");
+const api = require("../api");
 const submitLib = [
   checkBody(["sederCode", "ph", "pw", "answerText", "answerId"]),
   // get participant item from the db

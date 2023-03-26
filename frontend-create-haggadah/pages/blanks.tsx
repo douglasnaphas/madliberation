@@ -45,6 +45,7 @@ const PromptSection = (props: {
   } = props;
   const [enteredText, setEnteredText] = React.useState("");
   const [submitLibError, setSubmitLibError] = React.useState(false);
+  const [clientAnswers, setClientAnswers] = React.useState({});
   if (assignments.length < 1) {
     return <div></div>;
   }
@@ -57,7 +58,7 @@ const PromptSection = (props: {
   }
   const assignment = assignments[selectedAssignmentIndex];
   const answer = answers[`${assignment.id}`];
-  console.log(`set answer to ${answer}`);
+  // console.log(`set answer to ${answer}`);
   // React.useEffect(() => {
   //   setEnteredText("");
   // }, [selectedAssignmentIndex]);

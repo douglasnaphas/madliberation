@@ -43,7 +43,7 @@ const PromptSection = (props: {
     pageState,
     setPageState,
   } = props;
-  const [enteredText, setEnteredText] = React.useState("");
+
   const [submitLibError, setSubmitLibError] = React.useState(false);
   if (assignments.length < 1) {
     return <div></div>;
@@ -57,6 +57,9 @@ const PromptSection = (props: {
   }
   const assignment = assignments[selectedAssignmentIndex];
   const answer = answers[`${assignment.id}`];
+  const [enteredText, setEnteredText] = React.useState(
+    (answer && answer.text) || ""
+  );
   return (
     <div>
       <div>
@@ -73,7 +76,7 @@ const PromptSection = (props: {
         <TextField
           variant="outlined"
           fullWidth
-          value={answer || ""}
+          value={enteredText || ""}
           onChange={(event) => {
             setEnteredText(event.target.value);
           }}

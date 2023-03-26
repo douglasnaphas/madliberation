@@ -70,10 +70,11 @@ const PromptSection = (props: {
           {assignment.prompt}
         </Paper>
         <br />
+
         <TextField
           variant="outlined"
           fullWidth
-          value={answer || ""}
+          // value={answer || ""}
           onChange={(event) => {
             setEnteredText(event.target.value);
           }}

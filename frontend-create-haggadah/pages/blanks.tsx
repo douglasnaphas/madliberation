@@ -84,7 +84,7 @@ const ChipSection = (props: {
             onClick={() => {
               setSelectedAssignmentIndex(assignmentIndex);
               if (typeof window !== "undefined") {
-                window.location.href = `${assignmentIndex}`;
+                window.location.hash = `${assignmentIndex}`;
               }
             }}
             size="small"

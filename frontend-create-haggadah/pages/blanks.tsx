@@ -45,6 +45,9 @@ const PromptSection = (props: {
     selectedAssignmentIndex,
     setSelectedAssignmentIndex,
   } = props;
+  if (assignments.length < 1) {
+    return <div></div>;
+  }
   const assignment = assignments[selectedAssignmentIndex];
   const answer = answers[`${assignment.id}`];
   return (

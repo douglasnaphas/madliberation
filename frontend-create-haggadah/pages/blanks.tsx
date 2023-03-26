@@ -97,8 +97,15 @@ const ChipSection = (props: {
 export default function Blanks() {
   const [assignments, setAssignments] = React.useState<Array<Assignment>>([]);
   const [answers, setAnswers] = React.useState({});
-  const [selectedAssignmentIndex, setSelectedAssignmentIndex] =
-    React.useState(0);
+  const [selectedAssignmentIndex, setSelectedAssignmentIndex] = React.useState(
+    typeof window !== "undefined" &&
+      window.location &&
+      window.location.hash &&
+      window.location.hash.split("#")[1] &&
+      parseInt(window.location.hash.split("#")[1])
+      ? parseInt(window.location.hash.split("#")[1])
+      : 0
+  );
   let sederCode: any, pw: any, ph: any;
   if (typeof window !== "undefined" && typeof URLSearchParams === "function") {
     const urlSearchParams = new URLSearchParams(window.location.search);

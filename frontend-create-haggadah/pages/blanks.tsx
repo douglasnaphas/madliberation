@@ -38,6 +38,13 @@ const PromptSection = (props: {
   if (assignments.length < 1) {
     return <div></div>;
   }
+  if (selectedAssignmentIndex >= assignments.length) {
+    setSelectedAssignmentIndex(0);
+    if (typeof window !== "undefined") {
+      window.location.hash = "";
+    }
+    return <div></div>;
+  }
   const assignment = assignments[selectedAssignmentIndex];
   const answer = answers[`${assignment.id}`];
   return (

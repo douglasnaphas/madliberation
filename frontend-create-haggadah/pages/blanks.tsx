@@ -6,7 +6,7 @@ import Typography from "@mui/material/Typography";
 import MadLiberationLogo from "../public/mad-liberation-logo.png";
 import VeryAwesomePassoverLogo from "../public/VAPLogo-white.png";
 import { Global, css, jsx } from "@emotion/react";
-import { Paper, Chip, TextField } from "@mui/material";
+import { Button, Paper, Chip, TextField } from "@mui/material";
 
 interface Assignment {
   id: number;
@@ -20,21 +20,30 @@ interface Answer {
 enum PageState {
   LOADING = 0,
   READY,
+  FETCHING,
 }
 const PromptSection = (props: {
+  submitLib: any;
   answers: any;
   setAnswers: any;
   assignments: Array<Assignment>;
   selectedAssignmentIndex: number;
   setSelectedAssignmentIndex: React.Dispatch<React.SetStateAction<number>>;
+  pageState: PageState;
+  setPageState: React.Dispatch<PageState>;
 }) => {
   const {
+    submitLib,
     answers,
     setAnswers,
     assignments,
     selectedAssignmentIndex,
     setSelectedAssignmentIndex,
+    pageState,
+    setPageState,
   } = props;
+  const [enteredText, setEnteredText] = React.useState("");
+  const [submitLibError, setSubmitLibError] = React.useState(false);
   if (assignments.length < 1) {
     return <div></div>;
   }
@@ -60,22 +69,64 @@ const PromptSection = (props: {
           {assignment.prompt}
         </Paper>
         <br />
-        <TextField variant="outlined" fullWidth></TextField>
+        <TextField
+          variant="outlined"
+          fullWidth
+          onChange={(event) => {
+            setEnteredText(event.target.value);
+          }}
+        ></TextField>
+        <div>
+          <Button
+            disabled={pageState !== PageState.READY}
+            onClick={async () => {
+              const submitLibSuccess = await submitLib({
+                answerText: enteredText,
+                answerId: assignment.id,
+              });
+              if (!submitLibSuccess) {
+                setSubmitLibError(true);
+                return;
+              }
+              setSubmitLibError(false);
+            }}
+          >
+            Submit this one
+          </Button>
+        </div>
+        {submitLibError && (
+          <div>
+            <Typography
+              component="p"
+              paragraph
+              gutterBottom
+              style={{ color: "red" }}
+            >
+              Unable to submit that answer
+            </Typography>
+          </div>
+        )}
       </Container>
     </div>
   );
 };
 const ChipSection = (props: {
+  submitLib: any;
   setSelectedAssignmentIndex: React.Dispatch<React.SetStateAction<number>>;
   selectedAssignmentIndex: number;
   assignments: Array<Assignment>;
   answers: any;
+  pageState: PageState;
+  setPageState: React.Dispatch<PageState>;
 }) => {
   const {
+    submitLib,
     setSelectedAssignmentIndex,
     selectedAssignmentIndex,
     assignments,
     answers,
+    pageState,
+    setPageState,
   } = props;
   return (
     <div>
@@ -103,6 +154,7 @@ const ChipSection = (props: {
   );
 };
 export default function Blanks() {
+  const [pageState, setPageState] = React.useState(PageState.LOADING);
   const [assignments, setAssignments] = React.useState<Array<Assignment>>([]);
   const [answers, setAnswers] = React.useState({});
   const [selectedAssignmentIndex, setSelectedAssignmentIndex] = React.useState(
@@ -121,6 +173,30 @@ export default function Blanks() {
     pw = urlSearchParams.get("pw");
     ph = urlSearchParams.get("ph");
   }
+  const submitLib = async (props: { answerText: string; answerId: number }) => {
+    const { answerText, answerId } = props;
+    const submitLibFetchInit = {
+      method: "POST",
+      body: JSON.stringify({
+        sederCode,
+        pw,
+        ph,
+        answerText,
+        answerId,
+      }),
+      headers: { "Content-Type": "application/json" },
+    };
+    setPageState(PageState.FETCHING);
+    const submitLibResponse = await fetch(
+      "../v2/submit-lib",
+      submitLibFetchInit
+    );
+    setPageState(PageState.READY);
+    if (submitLibResponse.status === 200) {
+      return true;
+    }
+    return false;
+  };
   React.useEffect(() => {
     (async () => {
       if (sederCode && pw) {
@@ -130,6 +206,7 @@ export default function Blanks() {
           .then((r) => r.json())
           .then((j) => {
             setAssignments(j);
+            setPageState(PageState.READY);
           });
         // we'll need to grab saved answers as well
         // maybe just grab them when an answer gets displayed
@@ -159,20 +236,26 @@ export default function Blanks() {
         <Paper>
           <div style={{ padding: "8px" }}>
             <PromptSection
+              submitLib={submitLib}
               answers={answers}
               setAnswers={setAnswers}
               assignments={assignments}
               selectedAssignmentIndex={selectedAssignmentIndex}
               setSelectedAssignmentIndex={setSelectedAssignmentIndex}
+              pageState={pageState}
+              setPageState={setPageState}
             ></PromptSection>
             <br />
             <br />
             <br />
             <ChipSection
+              submitLib={submitLib}
               setSelectedAssignmentIndex={setSelectedAssignmentIndex}
               selectedAssignmentIndex={selectedAssignmentIndex}
               assignments={assignments}
               answers={answers}
+              pageState={pageState}
+              setPageState={setPageState}
             ></ChipSection>
           </div>
         </Paper>

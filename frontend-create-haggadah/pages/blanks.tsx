@@ -12,6 +12,7 @@ interface Assignment {
   id: number;
   prompt: string;
   sentence?: string;
+  example?: string;
 }
 interface Answer {
   id: number;
@@ -76,6 +77,26 @@ const PromptSection = (props: {
             setEnteredText(event.target.value);
           }}
         ></TextField>
+        {assignment.sentence && (
+          <div>
+            <Typography component="span">
+              Your answer should complete the sentence:
+              <span style={{ color: "blue", fontStyle: "italic" }}>
+                {answer.sentence.replace(/_/, "__")}
+              </span>
+            </Typography>
+          </div>
+        )}
+        {assignment.example && (
+          <div>
+            <Typography component="span">
+              For example, you could write:
+              <span style={{ color: "blue", fontStyle: "italic" }}>
+                {assignment.example}
+              </span>
+            </Typography>
+          </div>
+        )}
         <div>
           <Button
             disabled={pageState !== PageState.READY}

@@ -16,6 +16,11 @@ const api = {
     GAME_NAME: "gameName",
     PATH: "path",
     ANSWERS: "answers",
+    SEDER_CODE: "sederCode",
+    PW: "pw",
+    PARTICIPANT_HASH: "ph",
+    ANSWER_TEXT: "answerText",
+    ANSWER_ID: "answerId",
   },
   PARTICIPANT_HASH: "ph",
 };

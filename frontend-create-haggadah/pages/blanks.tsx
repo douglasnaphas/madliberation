@@ -57,6 +57,10 @@ const PromptSection = (props: {
   }
   const assignment = assignments[selectedAssignmentIndex];
   const answer = answers[`${assignment.id}`];
+  console.log(`set answer to ${answer}`);
+  React.useEffect(() => {
+    setEnteredText("");
+  }, [selectedAssignmentIndex]);
   return (
     <div>
       <div>
@@ -74,7 +78,7 @@ const PromptSection = (props: {
         <TextField
           variant="outlined"
           fullWidth
-          defaultValue={answer || ""}
+          // defaultValue={answer || ""}
           // value={answer || ""}
           onChange={(event) => {
             setEnteredText(event.target.value);

@@ -20,11 +20,11 @@ const getPath = [
       TableName: schema.TABLE_NAME,
       KeyConditionExpression: `${schema.PARTITION_KEY} = :rc and begins_with(${schema.SORT_KEY}, :hp)`, // hash prefix
       ExpressionAttributeValues: {
-        ":rc": req.body[api.POST_BODY_PARAMS.SEDER_CODE],
+        ":rc": req.query[api.URL_QUERY_PARAMS.SEDER_CODE],
         ":hp":
           schema.PARTICIPANT_PREFIX +
           schema.SEPARATOR +
-          req.body[api.POST_BODY_PARAMS.PARTICIPANT_HASH],
+          req.query[api.URL_QUERY_PARAMS.PARTICIPANT_HASH],
       },
     };
     try {
@@ -32,7 +32,7 @@ const getPath = [
       const items = response.Items;
       if (items.length > 1) {
         logger.log("getAnswersMap: imprecise hash:");
-        logger.log(req.body[api.POST_BODY_PARAMS.PARTICIPANT_HASH]);
+        logger.log(req.query[api.URL_QUERY_PARAMS.PARTICIPANT_HASH]);
         return res.status(400).send({ err: "imprecise participant hash" });
       }
       const participant = items[0];
@@ -49,22 +49,22 @@ const getPath = [
     const { participant } = res.locals;
     if (
       participant[schema.PARTICIPANT_PW].find(
-        (pw) => pw === req.body[api.POST_BODY_PARAMS.PW]
+        (pw) => pw === req.query[api.URL_QUERY_PARAMS.PW]
       )
     ) {
       logger.log(
         "getAnswersMap: authenticated link for " +
-          req.body.sederCode +
+          req.query.sederCode +
           ", " +
-          req.body[api.POST_BODY_PARAMS.PARTICIPANT_HASH]
+          req.query[api.URL_QUERY_PARAMS.PARTICIPANT_HASH]
       );
       return next();
     }
     logger.log(
       "getAnswersMap: bad link for " +
-        req.body.sederCode +
+        req.query.sederCode +
         ", " +
-        req.body[api.POST_BODY_PARAMS.PARTICIPANT_HASH]
+        req.query[api.URL_QUERY_PARAMS.PARTICIPANT_HASH]
     );
     return res.status(400).send({ err: "bad params" });
   },

@@ -59,7 +59,9 @@ const PromptSection = (props: {
       </div>
 
       <Container maxWidth="sm">
-        <Paper elevation={3}>{assignment.prompt}</Paper>
+        <Paper elevation={3} style={{ textAlign: "center" }}>
+          {assignment.prompt}
+        </Paper>
       </Container>
     </div>
   );

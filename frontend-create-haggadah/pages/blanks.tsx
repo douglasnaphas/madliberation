@@ -57,7 +57,7 @@ const PromptSection = (props: {
   }
   const assignment = assignments[selectedAssignmentIndex];
   const answer =
-    answers && assignment && `${assignment.id}`
+    answers && assignment && `${assignment.id}` in answers
       ? answers[`${assignment.id}`]
       : "";
   const [enteredText, setEnteredText] = React.useState(answer || "");

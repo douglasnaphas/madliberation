@@ -53,6 +53,7 @@ const PromptSection = (props: {
           {assignment.prompt}
         </Paper>
         <br />
+        <TextField variant="outlined" fullWidth></TextField>
       </Container>
     </div>
   );

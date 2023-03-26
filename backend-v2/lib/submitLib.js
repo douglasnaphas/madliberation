@@ -73,11 +73,12 @@ const submitLib = [
     const region = process.env.AWS_REGION || process.env.AWS_DEFAULT_REGION;
     const ddbClient = new DynamoDBClient({ region });
     const ddbDocClient = DynamoDBDocumentClient.from(ddbClient);
+    const { participant } = res.locals;
     const updateParams = {
       TableName: schema.TABLE_NAME,
       Key: {
         room_code: req.body.sederCode,
-        lib_id: res.locals[schema.SORT_KEY],
+        lib_id: participant[schema.SORT_KEY],
       },
       UpdateExpression: "SET #am.#ai = :at",
       ExpressionAttributeNames: {
@@ -89,6 +90,8 @@ const submitLib = [
       },
       ReturnValues: "ALL_NEW",
     };
+    logger.log("submitLib: prepared update params:");
+    logger.log(updateParams);
     try {
       const response = await ddbDocClient.send(new UpdateCommand(updateParams));
       logger.log(

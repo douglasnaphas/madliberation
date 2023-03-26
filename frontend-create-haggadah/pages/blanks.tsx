@@ -154,6 +154,9 @@ export default function Blanks() {
               selectedAssignmentIndex={selectedAssignmentIndex}
               setSelectedAssignmentIndex={setSelectedAssignmentIndex}
             ></PromptSection>
+            <br />
+            <br />
+            <br />
             <ChipSection
               setSelectedAssignmentIndex={setSelectedAssignmentIndex}
               selectedAssignmentIndex={selectedAssignmentIndex}

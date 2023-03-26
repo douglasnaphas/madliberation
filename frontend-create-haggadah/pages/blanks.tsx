@@ -7,6 +7,9 @@ import MadLiberationLogo from "../public/mad-liberation-logo.png";
 import VeryAwesomePassoverLogo from "../public/VAPLogo-white.png";
 import { Global, css, jsx } from "@emotion/react";
 import {
+  Card,
+  CardActions,
+  CardContent,
   Paper,
   Chip,
   Table,
@@ -24,23 +27,66 @@ interface Answer {
   id: number;
   text: string;
 }
+const PromptSection = (props: {
+  answers: any;
+  setAnswers: any;
+  assignments: Array<Assignment>;
+  selectedAssignmentIndex: number;
+  setSelectedAssignmentIndex: React.Dispatch<React.SetStateAction<number>>;
+}) => {
+  const {
+    answers,
+    setAnswers,
+    assignments,
+    selectedAssignmentIndex,
+    setSelectedAssignmentIndex,
+  } = props;
+  const assignment = assignments[selectedAssignmentIndex];
+  const answer = answers[`${assignment.id}`];
+  return (
+    <div>
+      <div>
+        <Typography component="p" paragraph gutterBottom>
+          Enter a word or phrase to replace...
+        </Typography>
+      </div>
+      <Card>
+        <CardContent>
+          <Container maxWidth="sm">
+            <Paper elevation={3}>{assignment.prompt}</Paper>
+          </Container>
+        </CardContent>
+        <CardActions></CardActions>
+      </Card>
+    </div>
+  );
+};
 const ChipSection = (props: {
-  setAssignmentNumber: React.Dispatch<React.SetStateAction<number>>;
-  assignmentNumber: number;
+  setSelectedAssignmentIndex: React.Dispatch<React.SetStateAction<number>>;
+  selectedAssignmentIndex: number;
   assignments: Array<Assignment>;
   answers: any;
 }) => {
-  const { setAssignmentNumber, assignmentNumber, assignments, answers } = props;
+  const {
+    setSelectedAssignmentIndex,
+    selectedAssignmentIndex,
+    assignments,
+    answers,
+  } = props;
   return (
     <div style={{ padding: "8px" }}>
       {assignments.map((assignment, assignmentIndex) => {
         return (
           <Chip
             label={assignment.prompt}
-            color={assignmentIndex === assignmentNumber ? "primary" : "default"}
+            color={
+              assignmentIndex === selectedAssignmentIndex
+                ? "primary"
+                : "default"
+            }
             clickable={true}
             onClick={() => {
-              setAssignmentNumber(assignmentIndex);
+              setSelectedAssignmentIndex(assignmentIndex);
             }}
             size="small"
           ></Chip>
@@ -52,7 +98,8 @@ const ChipSection = (props: {
 export default function Blanks() {
   const [assignments, setAssignments] = React.useState<Array<Assignment>>([]);
   const [answers, setAnswers] = React.useState({});
-  const [assignmentNumber, setAssignmentNumber] = React.useState(0);
+  const [selectedAssignmentIndex, setSelectedAssignmentIndex] =
+    React.useState(0);
   let sederCode: any, pw: any, ph: any;
   if (typeof window !== "undefined" && typeof URLSearchParams === "function") {
     const urlSearchParams = new URLSearchParams(window.location.search);
@@ -96,8 +143,8 @@ export default function Blanks() {
         <Paper>
           <div></div>
           <ChipSection
-            setAssignmentNumber={setAssignmentNumber}
-            assignmentNumber={assignmentNumber}
+            setSelectedAssignmentIndex={setSelectedAssignmentIndex}
+            selectedAssignmentIndex={selectedAssignmentIndex}
             assignments={assignments}
             answers={answers}
           ></ChipSection>

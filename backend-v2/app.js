@@ -29,6 +29,7 @@ const getPath = require("./lib/getPath");
 const getClosed = require("./lib/getClosed");
 const leaderPwCheck = require("./lib/leaderPwCheck");
 const submitLib = require("./lib/submitLib");
+const getAnswersMap = require("./lib/getAnswersMap");
 
 const router = express.Router();
 
@@ -157,6 +158,8 @@ router.post(
 router.get("/assignments", assignmentsMiddleware);
 
 router.post("/submit-lib", submitLib);
+
+router.get("/answers-map", getAnswersMap);
 
 router.post(
   "/submit-libs",

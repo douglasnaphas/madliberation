@@ -73,6 +73,7 @@ const PromptSection = (props: {
         <TextField
           variant="outlined"
           fullWidth
+          value={answer || ""}
           onChange={(event) => {
             setEnteredText(event.target.value);
           }}
@@ -109,6 +110,9 @@ const PromptSection = (props: {
                 setSubmitLibError(true);
                 return;
               }
+              setAnswers((oldAnswers: any) => {
+                return { ...oldAnswers, [`${assignment.id}`]: enteredText };
+              });
               setSubmitLibError(false);
             }}
           >
@@ -220,15 +224,25 @@ export default function Blanks() {
   };
   React.useEffect(() => {
     (async () => {
-      if (sederCode && pw) {
-        fetch(
+      if (sederCode && pw && ph) {
+        const fetchAssignmentsResponse = await fetch(
           `../v2/assignments?sederCode=${sederCode}&pw=${pw}&roomcode=${sederCode}&ph=${ph}`
-        )
-          .then((r) => r.json())
-          .then((j) => {
-            setAssignments(j);
-            setPageState(PageState.READY);
-          });
+        );
+        if (fetchAssignmentsResponse.status !== 200) {
+          return;
+        }
+        const fetchAssignmentsData = await fetchAssignmentsResponse.json();
+        setAssignments(fetchAssignmentsData);
+
+        const fetchAnswersMapResponse = await fetch(
+          `../v2/answers-map?sederCode=${sederCode}&pw=${pw}&ph=${ph}`
+        );
+        if (fetchAnswersMapResponse.status !== 200) {
+          return;
+        }
+        const fetchAnswersMapData = await fetchAnswersMapResponse.json();
+        setAnswers(fetchAnswersMapData);
+        setPageState(PageState.READY);
         // we'll need to grab saved answers as well
         // maybe just grab them when an answer gets displayed
       }

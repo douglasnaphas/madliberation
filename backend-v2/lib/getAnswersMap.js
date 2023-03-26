@@ -7,6 +7,7 @@ const { DynamoDBClient } = require("@aws-sdk/client-dynamodb");
 const logger = require("../logger");
 const schema = require("../schema");
 const responses = require("../responses");
+const api = require("../api");
 const getPath = [
   // check for required params
   checkQueryParams(["sederCode", "pw", "ph"]),

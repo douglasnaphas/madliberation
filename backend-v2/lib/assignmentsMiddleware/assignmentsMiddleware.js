@@ -66,7 +66,7 @@ const assignmentsMiddleware = [
       logger.log(res.locals.participant);
       return next();
     } catch (error) {
-      logger.log("getPath: error getting item from db, error:");
+      logger.log("assignmentsMiddleware: error getting item from db, error:");
       logger.log(error);
       return res.status(500).send(responses.SERVER_ERROR);
     }

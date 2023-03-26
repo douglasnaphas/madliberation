@@ -74,6 +74,7 @@ const PromptSection = (props: {
         <TextField
           variant="outlined"
           fullWidth
+          defaultValue={answer || ""}
           // value={answer || ""}
           onChange={(event) => {
             setEnteredText(event.target.value);

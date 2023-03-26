@@ -27,6 +27,10 @@ const getPath = [
           req.query[api.URL_QUERY_PARAMS.PARTICIPANT_HASH],
       },
     };
+    logger.log("getAnswersMap: about to send query with params:");
+    logger.log(queryParams);
+    logger.log("getAnswersMap: req.query:");
+    logger.log(req.query);
     try {
       const response = await ddbDocClient.send(new QueryCommand(queryParams));
       const items = response.Items;

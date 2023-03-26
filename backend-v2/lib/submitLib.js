@@ -82,10 +82,10 @@ const submitLib = [
       UpdateExpression: "SET #am.#ai = :at",
       ExpressionAttributeNames: {
         "#am": schema.ANSWERS_MAP,
-        "#ai": `${req.body[schema.ANSWER_ID]}`,
+        "#ai": `${req.body[api.POST_BODY_PARAMS.ANSWER_ID]}`,
       },
       ExpressionAttributeValues: {
-        ":at": `${req.body[schema.ANSWER_TEXT]}`,
+        ":at": `${req.body[api.POST_BODY_PARAMS.ANSWER_TEXT]}`,
       },
       ReturnValues: "ALL_NEW",
     };
@@ -93,10 +93,9 @@ const submitLib = [
       const response = await ddbDocClient.send(new UpdateCommand(updateParams));
       logger.log(
         `submitLibs: wrote map entry ${req.body.sederCode} ${
-          req.body[schema.ANSWER_ID]
-        } -> ${req.body[schema.ANSWER_TEXT]}`
+          req.body[api.POST_BODY_PARAMS.ANSWER_ID]
+        } -> ${req.body[api.POST_BODY_PARAMS.ANSWER_TEXT]}`
       );
-      logger.log(`submitLib: saved path ${res.locals.path}`);
       return res.send({ result: "success" });
     } catch (error) {
       logger.log("submitLib: error submitting lib to the db, error:");

@@ -6,17 +6,7 @@ import Typography from "@mui/material/Typography";
 import MadLiberationLogo from "../public/mad-liberation-logo.png";
 import VeryAwesomePassoverLogo from "../public/VAPLogo-white.png";
 import { Global, css, jsx } from "@emotion/react";
-import {
-  Card,
-  CardActions,
-  CardContent,
-  Paper,
-  Chip,
-  Table,
-  TableBody,
-  TableCell,
-  TableRow,
-} from "@mui/material";
+import { Paper, Chip, TextField } from "@mui/material";
 
 interface Assignment {
   id: number;
@@ -62,6 +52,7 @@ const PromptSection = (props: {
         <Paper elevation={3} style={{ textAlign: "center" }}>
           {assignment.prompt}
         </Paper>
+        <br />
       </Container>
     </div>
   );
@@ -92,6 +83,9 @@ const ChipSection = (props: {
             clickable={true}
             onClick={() => {
               setSelectedAssignmentIndex(assignmentIndex);
+              if (typeof window !== "undefined") {
+                window.location.href = `${assignmentIndex}`;
+              }
             }}
             size="small"
           ></Chip>

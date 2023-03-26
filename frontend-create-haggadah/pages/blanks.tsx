@@ -82,7 +82,7 @@ const PromptSection = (props: {
             <Typography component="span">
               Your answer should complete the sentence:
               <span style={{ color: "blue", fontStyle: "italic" }}>
-                {answer.sentence.replace(/_/, "__")}
+                {assignment.sentence.replace(/_/, "__")}
               </span>
             </Typography>
           </div>

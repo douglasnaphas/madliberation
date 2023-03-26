@@ -1,7 +1,7 @@
 const checkBody = require("./checkBody");
 const {
   DynamoDBDocumentClient,
-  GetCommand,
+  QueryCommand,
   UpdateCommand,
 } = require("@aws-sdk/lib-dynamodb");
 const { DynamoDBClient } = require("@aws-sdk/client-dynamodb");

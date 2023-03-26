@@ -57,14 +57,10 @@ const PromptSection = (props: {
           Enter a word or phrase to replace...
         </Typography>
       </div>
-      <Card>
-        <CardContent>
-          <Container maxWidth="sm">
-            <Paper elevation={3}>{assignment.prompt}</Paper>
-          </Container>
-        </CardContent>
-        <CardActions></CardActions>
-      </Card>
+
+      <Container maxWidth="sm">
+        <Paper elevation={3}>{assignment.prompt}</Paper>
+      </Container>
     </div>
   );
 };
@@ -81,7 +77,7 @@ const ChipSection = (props: {
     answers,
   } = props;
   return (
-    <div style={{ padding: "8px" }}>
+    <div>
       {assignments.map((assignment, assignmentIndex) => {
         return (
           <Chip
@@ -150,19 +146,21 @@ export default function Blanks() {
       </div>
       <Container maxWidth="md">
         <Paper>
-          <PromptSection
-            answers={answers}
-            setAnswers={setAnswers}
-            assignments={assignments}
-            selectedAssignmentIndex={selectedAssignmentIndex}
-            setSelectedAssignmentIndex={setSelectedAssignmentIndex}
-          ></PromptSection>
-          <ChipSection
-            setSelectedAssignmentIndex={setSelectedAssignmentIndex}
-            selectedAssignmentIndex={selectedAssignmentIndex}
-            assignments={assignments}
-            answers={answers}
-          ></ChipSection>
+          <div style={{ padding: "8px" }}>
+            <PromptSection
+              answers={answers}
+              setAnswers={setAnswers}
+              assignments={assignments}
+              selectedAssignmentIndex={selectedAssignmentIndex}
+              setSelectedAssignmentIndex={setSelectedAssignmentIndex}
+            ></PromptSection>
+            <ChipSection
+              setSelectedAssignmentIndex={setSelectedAssignmentIndex}
+              selectedAssignmentIndex={selectedAssignmentIndex}
+              assignments={assignments}
+              answers={answers}
+            ></ChipSection>
+          </div>
         </Paper>
       </Container>
       <br></br>

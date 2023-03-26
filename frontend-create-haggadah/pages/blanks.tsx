@@ -58,9 +58,9 @@ const PromptSection = (props: {
   const assignment = assignments[selectedAssignmentIndex];
   const answer = answers[`${assignment.id}`];
   console.log(`set answer to ${answer}`);
-  React.useEffect(() => {
-    setEnteredText("");
-  }, [selectedAssignmentIndex]);
+  // React.useEffect(() => {
+  //   setEnteredText("");
+  // }, [selectedAssignmentIndex]);
   return (
     <div>
       <div>

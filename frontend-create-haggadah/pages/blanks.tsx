@@ -56,10 +56,8 @@ const PromptSection = (props: {
     return <div></div>;
   }
   const assignment = assignments[selectedAssignmentIndex];
-  const answer = answers[`${assignment.id}`];
-  const [enteredText, setEnteredText] = React.useState(
-    (answer && answer.text) || ""
-  );
+  const answer = answers && answers[`${assignment.id}`];
+  const [enteredText, setEnteredText] = React.useState(answer || "");
   return (
     <div>
       <div>

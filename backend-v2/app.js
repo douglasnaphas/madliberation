@@ -28,6 +28,7 @@ const getLeaderEmail = require("./lib/getLeaderEmail");
 const getPath = require("./lib/getPath");
 const getClosed = require("./lib/getClosed");
 const leaderPwCheck = require("./lib/leaderPwCheck");
+const submitLib = require("./lib/submitLib");
 
 const router = express.Router();
 
@@ -154,6 +155,8 @@ router.post(
 );
 
 router.get("/assignments", assignmentsMiddleware);
+
+router.post("/submit-lib", submitLib);
 
 router.post(
   "/submit-libs",

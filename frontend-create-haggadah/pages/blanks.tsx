@@ -27,6 +27,10 @@ interface Answer {
   id: number;
   text: string;
 }
+enum PageState {
+  LOADING = 0,
+  READY,
+}
 const PromptSection = (props: {
   answers: any;
   setAnswers: any;
@@ -108,17 +112,19 @@ export default function Blanks() {
     ph = urlSearchParams.get("ph");
   }
   React.useEffect(() => {
-    if (sederCode && pw) {
-      fetch(
-        `../v2/assignments?sederCode=${sederCode}&pw=${pw}&roomcode=${sederCode}&ph=${ph}`
-      )
-        .then((r) => r.json())
-        .then((j) => {
-          setAssignments(j);
-        });
-      // we'll need to grab saved answers as well
-      // maybe just grab them when an answer gets displayed
-    }
+    (async () => {
+      if (sederCode && pw) {
+        fetch(
+          `../v2/assignments?sederCode=${sederCode}&pw=${pw}&roomcode=${sederCode}&ph=${ph}`
+        )
+          .then((r) => r.json())
+          .then((j) => {
+            setAssignments(j);
+          });
+        // we'll need to grab saved answers as well
+        // maybe just grab them when an answer gets displayed
+      }
+    })();
   }, []);
   return (
     <div
@@ -141,7 +147,13 @@ export default function Blanks() {
       </div>
       <Container maxWidth="md">
         <Paper>
-          <div></div>
+          <PromptSection
+            answers={answers}
+            setAnswers={setAnswers}
+            assignments={assignments}
+            selectedAssignmentIndex={selectedAssignmentIndex}
+            setSelectedAssignmentIndex={setSelectedAssignmentIndex}
+          ></PromptSection>
           <ChipSection
             setSelectedAssignmentIndex={setSelectedAssignmentIndex}
             selectedAssignmentIndex={selectedAssignmentIndex}

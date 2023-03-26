@@ -6,6 +6,7 @@ const api = {
     },
   },
   URL_QUERY_PARAMS: {
+    SEDER_CODE: "sederCode",
     ROOM_CODE: "roomcode",
     GAME_NAME: "gamename",
     PW: "pw",

@@ -86,7 +86,16 @@ const PromptSection = (props: {
           {assignment.prompt}
         </Paper>
         <br />
-
+        {assignment &&
+          answers &&
+          assignment.id &&
+          answers[`${assignment.id}`] && (
+            <div>
+              <div>Your current answer is:</div>
+              <div>{answer}</div>
+            </div>
+          )}
+        <br />
         <TextField
           variant="outlined"
           fullWidth

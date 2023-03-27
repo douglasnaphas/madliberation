@@ -7,6 +7,7 @@ import MadLiberationLogo from "../public/mad-liberation-logo.png";
 import VeryAwesomePassoverLogo from "../public/VAPLogo-white.png";
 import { Global, css, jsx } from "@emotion/react";
 import { Button, Paper, Chip, TextField } from "@mui/material";
+import DoneIcon from "@mui/icons-material/Done";
 
 interface Assignment {
   id: number;
@@ -201,6 +202,14 @@ const ChipSection = (props: {
               }
             }}
             size="small"
+            icon={
+              answers &&
+              assignment &&
+              assignment.id &&
+              assignment.id in answers ? (
+                <DoneIcon />
+              ) : undefined
+            }
           ></Chip>
         );
       })}
@@ -314,15 +323,17 @@ export default function Blanks() {
             <br />
             <br />
             <br />
-            <ChipSection
-              submitLib={submitLib}
-              setSelectedAssignmentIndex={setSelectedAssignmentIndex}
-              selectedAssignmentIndex={selectedAssignmentIndex}
-              assignments={assignments}
-              answers={answers}
-              pageState={pageState}
-              setPageState={setPageState}
-            ></ChipSection>
+            {pageState !== PageState.LOADING && answers && (
+              <ChipSection
+                submitLib={submitLib}
+                setSelectedAssignmentIndex={setSelectedAssignmentIndex}
+                selectedAssignmentIndex={selectedAssignmentIndex}
+                assignments={assignments}
+                answers={answers}
+                pageState={pageState}
+                setPageState={setPageState}
+              ></ChipSection>
+            )}
           </div>
         </Paper>
       </Container>

@@ -22,7 +22,7 @@
     "@emotion/react": "latest",
     "@emotion/server": "latest",
     "@emotion/styled": "latest",
-    "@mui/icons-material": "latest",
+    "@mui/icons-material": "^5.11.11",
     "@mui/material": "latest",
     "@next/font": "latest",
     "email-validator": "^2.0.4",

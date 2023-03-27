@@ -181,10 +181,9 @@ router.get(
 
 router.get(
   "/script",
-  gameNameCookieCheckMidWare,
   scriptMiddleware,
   (req, res) => {
-    res.send(res.locals.script);
+    return res.send(res.locals.script);
   }
 );
 

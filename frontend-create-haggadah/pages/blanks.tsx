@@ -130,8 +130,6 @@ const PromptSection = (props: {
               setAnswers((oldAnswers: any) => {
                 return { ...oldAnswers, [`${assignment.id}`]: enteredText };
               });
-              console.log("answers:");
-              console.log(answers);
               setSubmitLibError(false);
             }}
           >

@@ -43,11 +43,17 @@ const ParticipantList = (props: {
                   {g.email}
                 </TableCell>
                 {typeof window !== "undefined" && (
-                  <TableCell key={`guest-link-cell-${g.email}`}>{`${
-                    window.location.origin
-                  }/create-haggadah/blanks.html?sederCode=${sederCode}&pw=${
-                    g.participant_pw
-                  }&ph=${g.ph.substring(0, Configs.PH_LENGTH)}`}</TableCell>
+                  <TableCell key={`guest-link-cell-${g.email}`}>
+                    <a
+                      target={"_blank"}
+                      href={`${
+                        window.location.origin
+                      }/create-haggadah/blanks.html?sederCode=${sederCode}&pw=${
+                        g.participant_pw
+                      }&ph=${g.ph.substring(0, Configs.PH_LENGTH)}`}
+                    ></a>
+                    {`${g.game_name}'s link`}
+                  </TableCell>
                 )}
               </TableRow>
             ))}

@@ -106,7 +106,7 @@ const postEditLink = [
     const putParams = {
       TableName: schema.TABLE_NAME,
       Item: {
-        room_code: req.query.sederCode,
+        room_code: req.body.sederCode,
         lib_id: schema.READ_PW_PREFIX,
         [schema.READ_PW]: res.locals.rpw,
       },

@@ -68,7 +68,10 @@ const schema = {
   LEADER_EMAIL: "leader-email",
   LEADER_PW: "leader_pw",
   EMAIL: "email", // participant email, not necessarily auth'd
-  PARTICIPANT_PW: "participant_pw" // attribute name
+  PARTICIPANT_PW: "participant_pw", // attribute name
+  ANSWERS_MAP: "answers_map",
+  ANSWER_TEXT: "answer_text",
+  ANSWER_ID: "answer_id",
 };
 
 module.exports = schema;

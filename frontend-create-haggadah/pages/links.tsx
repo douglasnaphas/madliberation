@@ -7,11 +7,13 @@ import MadLiberationLogo from "../public/mad-liberation-logo.png";
 import VeryAwesomePassoverLogo from "../public/VAPLogo-white.png";
 import { Global, css, jsx } from "@emotion/react";
 import { Paper, Table, TableBody, TableCell, TableRow } from "@mui/material";
+import { Configs } from "../src/Configs";
 
 interface Participant {
   game_name: string;
   email: string;
   participant_pw: string;
+  ph: string;
 }
 const ParticipantList = (props: {
   participants: Array<Participant>;
@@ -41,9 +43,16 @@ const ParticipantList = (props: {
                   {g.email}
                 </TableCell>
                 {typeof window !== "undefined" && (
-                  <TableCell
-                    key={`guest-link-cell-${g.email}`}
-                  >{`${window.location.origin}/create-haggadah/blanks.html?sederCode=${sederCode}&pw=${g.participant_pw}`}</TableCell>
+                  <TableCell key={`guest-link-cell-${g.email}`}>
+                    <a
+                      target={"_blank"}
+                      href={`${
+                        window.location.origin
+                      }/create-haggadah/blanks.html?sederCode=${sederCode}&pw=${
+                        g.participant_pw
+                      }&ph=${g.ph.substring(0, Configs.PH_LENGTH)}`}
+                    >{`${g.game_name}'s link`}</a>
+                  </TableCell>
                 )}
               </TableRow>
             ))}

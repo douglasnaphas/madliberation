@@ -46,9 +46,12 @@ const ThisIsYourLinkText = (props: {
       gutterBottom
       style={{ marginLeft: "8px" }}
     >
-      <a href={lnk.href}>This</a> is your permalink for proceeding with your
-      Haggadah. Click{" "}
+      <a target="_blank" href={lnk.href}>
+        This
+      </a>{" "}
+      is your permalink for proceeding with your Haggadah. Click{" "}
       <a
+        target="_blank"
         href={`mailto:${yourEmail}?subject=Permalink to create my Haggadah&body=Edit the Haggadah by going to ${encodeURIComponent(
           lnk.href
         )}`}
@@ -407,7 +410,10 @@ export default function Edit() {
                 style={{ marginLeft: "8px" }}
               >
                 Head to{" "}
-                <a href={permalink.href.replace("/edit.html?", "/links.html?")}>
+                <a
+                  target="_blank"
+                  href={permalink.href.replace("/edit.html?", "/links.html?")}
+                >
                   your links page
                 </a>{" "}
                 to get the links to send to each participant so you can all fill

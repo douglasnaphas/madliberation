@@ -67,10 +67,13 @@ function dbParams() {
           Update: {
             TableName: schema.TABLE_NAME,
             Key: {},
-            UpdateExpression: "SET #A = :a",
+            UpdateExpression: "SET #A = :a, #AM = :em",
             ConditionExpression: "attribute_not_exists(#A)",
-            ExpressionAttributeNames: { "#A": schema.ASSIGNMENTS },
-            ExpressionAttributeValues: { ":a": participant.libs },
+            ExpressionAttributeNames: {
+              "#A": schema.ASSIGNMENTS,
+              "#AM": schema.ANSWERS_MAP,
+            },
+            ExpressionAttributeValues: { ":a": participant.libs, ":em": {} },
             ReturnValuesOnConditionCheckFailure: "ALL_OLD",
           },
         };

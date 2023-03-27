@@ -51,8 +51,7 @@ const ParticipantList = (props: {
                       }/create-haggadah/blanks.html?sederCode=${sederCode}&pw=${
                         g.participant_pw
                       }&ph=${g.ph.substring(0, Configs.PH_LENGTH)}`}
-                    ></a>
-                    {`${g.game_name}'s link`}
+                    >{`${g.game_name}'s link`}</a>
                   </TableCell>
                 )}
               </TableRow>

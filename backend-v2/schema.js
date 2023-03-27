@@ -72,6 +72,8 @@ const schema = {
   ANSWERS_MAP: "answers_map",
   ANSWER_TEXT: "answer_text",
   ANSWER_ID: "answer_id",
+  READ_PW_PREFIX: "read_pw",
+  READ_PW: "rpw"
 };
 
 module.exports = schema;

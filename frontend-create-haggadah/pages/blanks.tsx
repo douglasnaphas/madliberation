@@ -57,11 +57,22 @@ const PromptSection = (props: {
     return <div></div>;
   }
   const assignment = assignments[selectedAssignmentIndex];
+
   const answer = answers[`${assignment.id}`];
+  console.log("got prop, selectedAssignmentIndex", selectedAssignmentIndex);
+  console.log("answers are currently", answers);
+  console.log("assignments are currently", assignments);
+  console.log("assignment is currently", assignment);
+  console.log(
+    "answers[`${assignment.id}`] is currently",
+    answers[`${assignment.id}`]
+  );
+  console.log("answer is currently", answer);
+  console.log("enteredText is currently", enteredText);
   // console.log(`set answer to ${answer}`);
-  // React.useEffect(() => {
-  //   setEnteredText("");
-  // }, [selectedAssignmentIndex]);
+  React.useEffect(() => {
+    setEnteredText("");
+  }, [selectedAssignmentIndex]);
   return (
     <div>
       <div>
@@ -80,7 +91,7 @@ const PromptSection = (props: {
           variant="outlined"
           fullWidth
           // defaultValue={answer || ""}
-          // value={answer || ""}
+          value={enteredText}
           onChange={(event) => {
             setEnteredText(event.target.value);
           }}
@@ -120,6 +131,8 @@ const PromptSection = (props: {
               setAnswers((oldAnswers: any) => {
                 return { ...oldAnswers, [`${assignment.id}`]: enteredText };
               });
+              console.log("answers:");
+              console.log(answers);
               setSubmitLibError(false);
             }}
           >
@@ -277,16 +290,18 @@ export default function Blanks() {
       <Container maxWidth="md">
         <Paper>
           <div style={{ padding: "8px" }}>
-            <PromptSection
-              submitLib={submitLib}
-              answers={answers}
-              setAnswers={setAnswers}
-              assignments={assignments}
-              selectedAssignmentIndex={selectedAssignmentIndex}
-              setSelectedAssignmentIndex={setSelectedAssignmentIndex}
-              pageState={pageState}
-              setPageState={setPageState}
-            ></PromptSection>
+            {pageState !== PageState.LOADING && answers && (
+              <PromptSection
+                submitLib={submitLib}
+                answers={answers}
+                setAnswers={setAnswers}
+                assignments={assignments}
+                selectedAssignmentIndex={selectedAssignmentIndex}
+                setSelectedAssignmentIndex={setSelectedAssignmentIndex}
+                pageState={pageState}
+                setPageState={setPageState}
+              ></PromptSection>
+            )}
             <br />
             <br />
             <br />

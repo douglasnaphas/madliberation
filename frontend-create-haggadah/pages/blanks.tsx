@@ -281,25 +281,25 @@ export default function Blanks() {
         const fetchAnswersMapData = await fetchAnswersMapResponse.json();
         setAnswers(fetchAnswersMapData);
 
-        try {
-          const fetchRpwResponse = await fetch(
-            `../v2/rpw?sederCode=${sederCode}&pw=${pw}&ph=${ph}`
-          );
-          if (fetchRpwResponse.status !== 200) {
-            return;
-          }
-          const fetchRpwData = await fetchRpwResponse.json();
-          if (
-            typeof window !== "undefined" &&
-            window.location &&
-            window.location.origin
-          ) {
-            const rl = window.document.createElement("a");
-            rl.href = `https://${window.location.origin}/create-haggadah/read.html?sederCode=${sederCode}&rpw=${fetchRpwData.rpw}`;
-          }
-        } catch (err) {
-          console.log(err);
-        }
+        // try {
+        //   const fetchRpwResponse = await fetch(
+        //     `../v2/rpw?sederCode=${sederCode}&pw=${pw}&ph=${ph}`
+        //   );
+        //   if (fetchRpwResponse.status !== 200) {
+        //     return;
+        //   }
+        //   const fetchRpwData = await fetchRpwResponse.json();
+        //   if (
+        //     typeof window !== "undefined" &&
+        //     window.location &&
+        //     window.location.origin
+        //   ) {
+        //     const rl = window.document.createElement("a");
+        //     rl.href = `https://${window.location.origin}/create-haggadah/read.html?sederCode=${sederCode}&rpw=${fetchRpwData.rpw}`;
+        //   }
+        // } catch (err) {
+        //   console.log(err);
+        // }
         setPageState(PageState.READY);
       }
     })();

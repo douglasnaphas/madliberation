@@ -104,7 +104,7 @@ function validateParticipateLink(props) {
       ) {
         logger.log(
           "validateParticipantLink: authenticated link for " +
-            res.loals.roomCode +
+            res.locals.roomCode +
             ", " +
             res.locals.ph
         );

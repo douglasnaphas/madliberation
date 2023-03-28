@@ -19,6 +19,14 @@
 const checkQueryParams = require("./checkQueryParams");
 const checkBody = require("./checkBody");
 const api = require("../api");
+const {
+  DynamoDBDocumentClient,
+  QueryCommand,
+} = require("@aws-sdk/lib-dynamodb");
+const { DynamoDBClient } = require("@aws-sdk/client-dynamodb");
+const logger = require("../../logger");
+const schema = require("../../schema");
+const responses = require("../../responses");
 function validateParticipateLink(props) {
   const { method } = props;
   const middleware = [];
@@ -30,9 +38,9 @@ function validateParticipateLink(props) {
         api.URL_QUERY_PARAMS.PARTICIPANT_HASH,
       ]),
       (req, res, next) => {
-        res.locals.roomCode = api.URL_QUERY_PARAMS.ROOM_CODE;
-        res.locals.pw = api.URL_QUERY_PARAMS.PW;
-        res.locals.ph = api.URL_QUERY_PARAMS.PARTICIPANT_HASH;
+        res.locals.roomCode = req.query[api.URL_QUERY_PARAMS.ROOM_CODE];
+        res.locals.pw = req.query[api.URL_QUERY_PARAMS.PW];
+        res.locals.ph = req.query[api.URL_QUERY_PARAMS.PARTICIPANT_HASH];
         return next();
       }
     );
@@ -45,18 +53,70 @@ function validateParticipateLink(props) {
         api.POST_BODY_PARAMS.PARTICIPANT_HASH,
       ]),
       (req, res, next) => {
-        res.locals.roomCode = api.POST_BODY_PARAMS.ROOM_CODE;
-        res.locals.pw = api.POST_BODY_PARAMS.PW;
-        res.locals.ph = api.POST_BODY_PARAMS.PARTICIPANT_HASH;
+        res.locals.roomCode = req.body[api.POST_BODY_PARAMS.ROOM_CODE];
+        res.locals.pw = req.body[api.POST_BODY_PARAMS.PW];
+        res.locals.ph = req.body[api.POST_BODY_PARAMS.PARTICIPANT_HASH];
         return next();
       }
     );
   }
-  middleware
-    .push
+  middleware.push(
     // get participant item from the db
-    // check participant pw
-    ();
+    async (req, res, next) => {
+      const region = process.env.AWS_REGION || process.env.AWS_DEFAULT_REGION;
+      const ddbClient = new DynamoDBClient({ region });
+      const ddbDocClient = DynamoDBDocumentClient.from(ddbClient);
+      const queryParams = {
+        TableName: schema.TABLE_NAME,
+        KeyConditionExpression: `${schema.PARTITION_KEY} = :rc and begins_with(${schema.SORT_KEY}, :hp)`, // hash prefix
+        ExpressionAttributeValues: {
+          ":rc": res.locals.roomCode,
+          ":hp": schema.PARTICIPANT_PREFIX + schema.SEPARATOR + res.locals.ph,
+        },
+      };
+      try {
+        const response = await ddbDocClient.send(new QueryCommand(queryParams));
+        const items = response.Items;
+        if (items.length > 1) {
+          logger.log("validateParticipantLink: imprecise hash:");
+          logger.log(res.locals.ph);
+          return res.status(400).send({ err: "imprecise participant hash" });
+        }
+        const participant = items[0];
+        res.locals.participant = participant;
+        logger.log(`validateParticipantLink: saved participant`);
+        return next();
+      } catch (error) {
+        logger.log(
+          "validateParticipantLink: error getting item from db, error:"
+        );
+        logger.log(error);
+        return res.status(500).send(responses.SERVER_ERROR);
+      }
+    },
+    // check participant_pw
+    (req, res, next) => {
+      const { participant } = res.locals;
+      if (
+        participant[schema.PARTICIPANT_PW].find((pw) => pw === res.locals.pw)
+      ) {
+        logger.log(
+          "validateParticipantLink: authenticated link for " +
+            res.loals.roomCode +
+            ", " +
+            res.locals.ph
+        );
+        return next();
+      }
+      logger.log(
+        "validateParticipantLink: bad link for " +
+          res.locals.roomCode +
+          ", " +
+          res.locals.ph
+      );
+      return res.status(400).send({ err: "bad params" });
+    }
+  );
   return middleware;
 }
 module.exports = validateParticipateLink;

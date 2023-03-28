@@ -182,7 +182,7 @@ router.get(
   }
 );
 
-router.get("/rpw", validateParticipantLink({ method: "GET" }, getRpw));
+router.get("/rpw", validateParticipantLink({ method: "GET" }), getRpw);
 
 router.get("/script", validateReadLink, scriptMiddleware, (req, res) => {
   return res.send(res.locals.script);

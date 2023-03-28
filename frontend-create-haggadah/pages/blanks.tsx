@@ -282,7 +282,7 @@ export default function Blanks() {
         setAnswers(fetchAnswersMapData);
 
         const fetchRpwResponse = await fetch(
-          `../v2/answers-map?sederCode=${sederCode}&pw=${pw}&ph=${ph}`
+          `../v2/rpw?sederCode=${sederCode}&pw=${pw}&ph=${ph}`
         );
         if (fetchRpwResponse.status !== 200) {
           return;

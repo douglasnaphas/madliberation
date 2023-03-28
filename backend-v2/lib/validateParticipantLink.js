@@ -24,9 +24,9 @@ const {
   QueryCommand,
 } = require("@aws-sdk/lib-dynamodb");
 const { DynamoDBClient } = require("@aws-sdk/client-dynamodb");
-const logger = require("../../logger");
-const schema = require("../../schema");
-const responses = require("../../responses");
+const logger = require("../logger");
+const schema = require("../schema");
+const responses = require("../responses");
 function validateParticipateLink(props) {
   const { method } = props;
   const middleware = [];

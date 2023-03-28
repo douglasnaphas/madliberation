@@ -286,6 +286,7 @@ export default function Blanks() {
             `../v2/rpw?sederCode=${sederCode}&pw=${pw}&ph=${ph}&roomcode=${sederCode}`
           );
           if (fetchRpwResponse.status !== 200) {
+            // TODO: handle error, here and at other fetches, might not need try-catch
             return;
           }
           const fetchRpwData = await fetchRpwResponse.json();
@@ -295,7 +296,8 @@ export default function Blanks() {
             window.location.origin
           ) {
             const rl = window.document.createElement("a");
-            rl.href = `https://${window.location.origin}/create-haggadah/read.html?sederCode=${sederCode}&rpw=${fetchRpwData.rpw}`;
+            rl.href = `${window.location.origin}/create-haggadah/read.html?sederCode=${sederCode}&rpw=${fetchRpwData.rpw}&roomcode=${sederCode}`;
+            setReadLink(rl.href);
           }
         } catch (err) {
           console.log(err);

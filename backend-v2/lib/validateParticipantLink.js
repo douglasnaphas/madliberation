@@ -91,6 +91,8 @@ function validateParticipateLink(props) {
           "validateParticipantLink: error getting item from db, error:"
         );
         logger.log(error);
+        logger.log("validateParticipantLink: locals:")
+        logger.log(res.locals);
         return res.status(500).send(responses.SERVER_ERROR);
       }
     },

@@ -7,6 +7,8 @@
  *         [{id: NUMBER, defaultAnswer: STRING, prompt: STRING, ...}, ...]
  *      b) optionally has an answers property like
  *         [{id: NUMBER, answer: STRING}], answer optional
+ *      c) optionally has an answers_map property like
+ *         {[STRING]: string, ...}
  * post:
  *   1) res.locals.path is the path
  *   2) res.locals.version is the script_version

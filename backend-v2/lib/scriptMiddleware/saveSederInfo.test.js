@@ -327,4 +327,57 @@ describe('scriptMiddleware/saveSederInfo', () => {
       expectedPath: expectedPath, expectedAnswers: expectedAnswers,
       expectNext: true});
   });
+  test('several participants, not all assignments answered, answers out of order', () => {
+    const expectedVersion = "lhMEdJDP1ItMXPIb2nnnMMnDRCtUL3.Daa";
+    const expectedPath = "madliberation-scripts/007-2019_Script";
+    const dbData = {
+      Items: [
+        {
+          assignments: [
+            {id: 18, prompt: 'prompt 18', defaultAnswer: 'just d', example:
+              'there should be an example', sentence: 'not many __'},
+            {id: 75, prompt: 'please seventy-five', defaultAnswer: 'ugh',
+              example: 'fish', sentence: 'many __'},
+            {id: 7, prompt: 'sparse nums', defaultAnswer: 'that is', example:
+              'kinda funny', sentence: 'will not see that often'},
+            {id: 5, defaultAnswer: 'anything'},
+          ],
+          answers: [
+            {id: 7, answer: 'slightly odd actually'},
+            {id: 75, answer: 'me'},
+            {id: 5, answer: 'nothing much'}
+          ]
+        },
+        {
+          path: expectedPath,
+          script_version: expectedVersion
+        },
+        {
+          assignments: [
+            {
+              id: 1,
+              defaultAnswer: 'we have a default',
+              prompt: 'we have a prompt'
+            }
+          ],
+          answers: [
+            {
+              answer: 'answer provided',
+              id: 1
+            }
+          ]
+        }
+      ]
+    };
+    const expectedAnswers = [
+      {id: 1, answer: 'answer provided'},
+      {id: 5, answer: 'nothing much'},
+      {id: 7, answer: 'slightly odd actually'},
+      {id: 18, answer: 'just d'},
+      {id: 75, answer: 'me'}
+    ];
+    runTest({dbData: dbData, expectedVersion: expectedVersion,
+      expectedPath: expectedPath, expectedAnswers: expectedAnswers,
+      expectNext: true});
+  });
 });

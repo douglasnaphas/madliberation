@@ -45,6 +45,12 @@ function saveSederInfo() {
           }
         }
       }
+      if (items[i][schema.ANSWERS_MAP]) {
+        const answersMap = items[i][schema.ANSWERS_MAP];
+        for (const [key, value] of Object.entries(answersMap)) {
+          answers[parseInt(key)] = value;
+        }
+      }
       if (Array.isArray(items[i].assignments)) {
         for (let j = 0; j < items[i].assignments.length; j++) {
           if (Number.isInteger(items[i].assignments[j].id)) {

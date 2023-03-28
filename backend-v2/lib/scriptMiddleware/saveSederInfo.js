@@ -48,7 +48,9 @@ function saveSederInfo() {
       if (items[i][schema.ANSWERS_MAP]) {
         const answersMap = items[i][schema.ANSWERS_MAP];
         for (const [key, value] of Object.entries(answersMap)) {
-          answers[parseInt(key)] = value;
+          if (Number.isInteger(parseInt(key))) {
+            answers[parseInt(key)] = value;
+          }
         }
       }
       if (Array.isArray(items[i].assignments)) {

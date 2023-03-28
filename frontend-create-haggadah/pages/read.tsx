@@ -16,11 +16,11 @@ const enum PageState {
 export default function Read() {
   const [pageState, setPageState] = React.useState(PageState.LOADING);
 
-  let sederCode: any, pw: any, hashPage: any;
+  let sederCode: any, rpw: any, hashPage: any;
   if (typeof window !== "undefined" && typeof URLSearchParams === "function") {
     const urlSearchParams = new URLSearchParams(window.location.search);
     sederCode = urlSearchParams.get("sederCode");
-    pw = urlSearchParams.get("pw");
+    rpw = urlSearchParams.get("rpw");
     if (
       window.location.hash.split("#").length > 1 &&
       parseInt(window.location.hash.split("#")[1])
@@ -33,9 +33,9 @@ export default function Read() {
 
   React.useEffect(() => {
     (async () => {
-      if (sederCode && pw) {
+      if (sederCode && rpw) {
         const fetchScriptResponse = await fetch(
-          `../v2/script?sederCode=${sederCode}&pw=${pw}&roomcode=${sederCode}`
+          `../v2/script?sederCode=${sederCode}&rpw=${rpw}&roomcode=${sederCode}`
         );
         if (fetchScriptResponse.status !== 200) {
           return;

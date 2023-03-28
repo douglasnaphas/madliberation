@@ -203,6 +203,17 @@ const ChipSection = (props: {
     </div>
   );
 };
+const ReadLinkSection = (props: { readLink: string }) => {
+  const { readLink } = props;
+  return (
+    <div>
+      The link to the finished product is:{" "}
+      <a target={"_blank"} href={readLink}>
+        here
+      </a>
+    </div>
+  );
+};
 export default function Blanks() {
   const [pageState, setPageState] = React.useState(PageState.LOADING);
   const [assignments, setAssignments] = React.useState<Array<Assignment>>([]);
@@ -216,6 +227,8 @@ export default function Blanks() {
       ? parseInt(window.location.hash.split("#")[1])
       : 0
   );
+  const [readLink, setReadLink] = React.useState("");
+  const [rpw, setRpw] = React.useState("");
   let sederCode: any, pw: any, ph: any;
   if (typeof window !== "undefined" && typeof URLSearchParams === "function") {
     const urlSearchParams = new URLSearchParams(window.location.search);
@@ -267,9 +280,23 @@ export default function Blanks() {
         }
         const fetchAnswersMapData = await fetchAnswersMapResponse.json();
         setAnswers(fetchAnswersMapData);
+
+        const fetchRpwResponse = await fetch(
+          `../v2/answers-map?sederCode=${sederCode}&pw=${pw}&ph=${ph}`
+        );
+        if (fetchRpwResponse.status !== 200) {
+          return;
+        }
+        const fetchRpwData = await fetchRpwResponse.json();
+        if (
+          typeof window !== "undefined" &&
+          window.location &&
+          window.location.origin
+        ) {
+          const rl = window.document.createElement("a");
+          rl.href = `https://${window.location.origin}/create-haggadah/read.html?sederCode=${sederCode}&rpw=${fetchRpwData.rpw}`;
+        }
         setPageState(PageState.READY);
-        // we'll need to grab saved answers as well
-        // maybe just grab them when an answer gets displayed
       }
     })();
   }, []);
@@ -320,6 +347,9 @@ export default function Blanks() {
                 pageState={pageState}
                 setPageState={setPageState}
               ></ChipSection>
+            )}
+            {pageState !== PageState.LOADING && readLink !== "" && (
+              <ReadLinkSection readLink={readLink}></ReadLinkSection>
             )}
           </div>
         </Paper>

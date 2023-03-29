@@ -31,30 +31,6 @@ export default function Read() {
   }
   const [selectedPage, setSelectedPage] = React.useState(hashPage);
   const [script, setScript] = React.useState<any>();
-  const hashChangeHandler = () => {
-    // should probably create and register this in useEffect after the script is fetched
-    // I think I'm enclosing some undefineds
-    if (typeof window === "undefined") {
-      return;
-    }
-    if (
-      window.location.hash.split("#").length > 1 &&
-      parseInt(window.location.hash.split("#")[1])
-    ) {
-      hashPage = parseInt(window.location.hash.split("#")[1]);
-      console.log("hashPage", hashPage);
-      console.log("script.pages.length", script.pages.length);
-      if (
-        script &&
-        script.pages &&
-        Array.isArray(script.pages) &&
-        hashPage <= script.pages.length &&
-        hashPage >= 1
-      ) {
-        setSelectedPage(hashPage);
-      }
-    }
-  };
 
   React.useEffect(() => {
     (async () => {
@@ -68,6 +44,34 @@ export default function Read() {
         const fetchScriptData = await fetchScriptResponse.json();
         setScript(fetchScriptData);
         setPageState(PageState.READY);
+
+        const hashChangeHandler = () => {
+          // should probably create and register this in useEffect after the script is fetched
+          // I think I'm enclosing some undefineds
+          if (typeof window === "undefined") {
+            return;
+          }
+          if (
+            window.location.hash.split("#").length > 1 &&
+            parseInt(window.location.hash.split("#")[1])
+          ) {
+            hashPage = parseInt(window.location.hash.split("#")[1]);
+            console.log("hashPage", hashPage);
+            console.log(
+              "fetchScriptData.pages.length",
+              fetchScriptData.pages.length
+            );
+            if (
+              fetchScriptData &&
+              fetchScriptData.pages &&
+              Array.isArray(fetchScriptData.pages) &&
+              hashPage <= fetchScriptData.pages.length &&
+              hashPage >= 1
+            ) {
+              setSelectedPage(hashPage);
+            }
+          }
+        };
         window.addEventListener("hashchange", hashChangeHandler);
         return () => {
           window.removeEventListener("hashchange", hashChangeHandler);

@@ -42,11 +42,10 @@ class HomePage extends Component {
     const { user, setUser, storage } = this.props;
     const createHaggadahLinkText =
       "Plan a seder where people fill out their mad libs beforehand (experimental)";
-    const createHaggadahLink = (
+    const createHaggadahLink = () => 
       <a target="_blank" href={`/create-haggadah/index.html`}>
         {createHaggadahLinkText}
-      </a>
-    );
+      </a>;
     return (
       <div>
         <div>

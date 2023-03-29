@@ -28,8 +28,20 @@ export default function Read() {
       hashPage = parseInt(window.location.hash.split("#")[1]);
     }
   }
-  const [selectedPage, setSelectedPage] = React.useState();
-  const [script, setScript] = React.useState({});
+  const [selectedPage, setSelectedPage] = React.useState(hashPage);
+  const hashChangeHandler = () => {
+    if (typeof window === "undefined") {
+      return;
+    }
+    if (
+      window.location.hash.split("#").length > 1 &&
+      parseInt(window.location.hash.split("#")[1])
+    ) {
+      hashPage = parseInt(window.location.hash.split("#")[1]);
+      setSelectedPage(hashPage);
+    }
+  };
+  const [script, setScript] = React.useState();
 
   React.useEffect(() => {
     (async () => {
@@ -42,6 +54,11 @@ export default function Read() {
         }
         const fetchScriptData = await fetchScriptResponse.json();
         setScript(fetchScriptData);
+        setPageState(PageState.READY);
+        window.addEventListener("hashchange", hashChangeHandler);
+        return () => {
+          window.removeEventListener("hashchange", hashChangeHandler);
+        };
       }
     })();
   }, []);
@@ -66,7 +83,9 @@ export default function Read() {
       </div>
       <Container maxWidth="md">
         <Paper>
-          <div style={{ padding: "8px" }}></div>
+          <div style={{ padding: "8px" }}>
+            The current page is {`${selectedPage}`}
+          </div>
         </Paper>
       </Container>
       <br></br>

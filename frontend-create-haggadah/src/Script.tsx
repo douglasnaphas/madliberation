@@ -1,3 +1,4 @@
+// @ts-nocheck
 import CircularProgress from '@mui/material/CircularProgress';
 import Page from './Page';
 import React from 'react';

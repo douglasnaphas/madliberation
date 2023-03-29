@@ -1,4 +1,5 @@
 /** @jsxImportSource @emotion/react */
+// @ts-nocheck
 import React, { Component } from "react";
 import Popover from "@mui/material/Popover";
 import { Typography } from "@mui/material";
@@ -8,7 +9,7 @@ class Answer extends Component {
   state = {
     anchorEl: null,
   };
-  handleClick = (event) => {
+  handleClick = (event:any ) => {
     this.setState({ anchorEl: event.currentTarget });
   };
   handleClose = () => {

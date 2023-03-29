@@ -40,7 +40,9 @@ class HomePage extends Component {
   state = { logoutClicked: false };
   render() {
     const { user, setUser, storage } = this.props;
-
+    const createHaggadahLinkText =
+      "Plan a seder where people fill out their mad libs beforehand (experimental)";
+    const createHaggadahHref = `/create-haggadah/index.html`;
     return (
       <div>
         <div>
@@ -56,6 +58,17 @@ class HomePage extends Component {
               />
             </div>
             <div>
+              <Button
+                madliberationid="plan-seder-button"
+                variant="contained"
+                color="secondary"
+                href={createHaggadahHref}
+              >
+                {createHaggadahLinkText}
+              </Button>
+            </div>
+            <div>
+              <br />
               <Button
                 madliberationid="join-a-seder-button"
                 title="Join a seder"

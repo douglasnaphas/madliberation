@@ -8,24 +8,26 @@
  * req.query.roomcode, or sends 500 on error
  */
 function querySederParams() {
-  const responses = require('../../responses');
-  const schema = require('../../schema');
+  const responses = require("../../responses");
+  const schema = require("../../schema");
   const middleware = (req, res, next) => {
-    if(!req.query.roomcode) {
+    if (!req.query.roomcode) {
       return res.status(500).send(responses.SERVER_ERROR);
     }
     res.locals.querySederParams = {
       ExpressionAttributeNames: {
-        '#R': schema.PARTITION_KEY,
-        '#P': schema.PATH
+        "#R": schema.PARTITION_KEY,
+        "#P": schema.PATH,
       },
       ExpressionAttributeValues: {
-        ':r': req.query.roomcode
+        ":r": req.query.roomcode,
       },
-      KeyConditionExpression: '#R = :r',
-      ProjectionExpression: `#P, ${schema.SCRIPT_VERSION}, ${schema.ANSWERS}`
-        + `, ${schema.ASSIGNMENTS}`,
-      TableName: schema.TABLE_NAME
+      KeyConditionExpression: "#R = :r",
+      ProjectionExpression:
+        `#P, ${schema.SCRIPT_VERSION}, ${schema.ANSWERS}` +
+        `, ${schema.ASSIGNMENTS}` +
+        `, ${schema.ANSWERS_MAP}`,
+      TableName: schema.TABLE_NAME,
     };
     return next();
   };

@@ -89,6 +89,38 @@ const postEditLink = [
     dynamoDBClient: DynamoDBClient,
     configs: Configs,
   }),
+  // generate read pw, save it in locals
+  (req, res, next) => {
+    const rpwSequence = randomCapGenerator({
+      letters: Configs.READ_PW_LENGTH,
+    });
+    const rpw = rpwSequence.next().value;
+    res.locals.rpw = rpw;
+    return next();
+  },
+  // save read pw in db in its own item
+  async (req, res, next) => {
+    const region = process.env.AWS_REGION || process.env.AWS_DEFAULT_REGION;
+    const ddbClient = new DynamoDBClient({ region });
+    const ddbDocClient = DynamoDBDocumentClient.from(ddbClient);
+    const putParams = {
+      TableName: schema.TABLE_NAME,
+      Item: {
+        room_code: res.locals.sederCode,
+        lib_id: schema.READ_PW_PREFIX,
+        [schema.READ_PW]: res.locals.rpw,
+      },
+    };
+    try {
+      const response = await ddbDocClient.send(new PutCommand(putParams));
+      logger.log(`postEditLink: saved rpw for ${res.locals.sederCode}`);
+      return next();
+    } catch (error) {
+      logger.log(`postEditLink: error saving rpw for ${res.locals.sederCode}:`);
+      logger.log(error);
+      return res.status(500).send(responses.SERVER_ERROR);
+    }
+  },
   // send response
   (req, res, next) => {
     return res.send({ sederCode: res.locals.sederCode, pw: res.locals.pw });

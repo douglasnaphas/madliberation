@@ -30,6 +30,9 @@ const getClosed = require("./lib/getClosed");
 const leaderPwCheck = require("./lib/leaderPwCheck");
 const submitLib = require("./lib/submitLib");
 const getAnswersMap = require("./lib/getAnswersMap");
+const validateParticipantLink = require("./lib/validateParticipantLink");
+const getRpw = require("./lib/getRpw");
+const validateReadLink = require("./lib/validateReadLink");
 
 const router = express.Router();
 
@@ -179,14 +182,11 @@ router.get(
   }
 );
 
-router.get(
-  "/script",
-  gameNameCookieCheckMidWare,
-  scriptMiddleware,
-  (req, res) => {
-    res.send(res.locals.script);
-  }
-);
+router.get("/rpw", validateParticipantLink({ method: "GET" }), getRpw);
+
+router.get("/script", validateReadLink, scriptMiddleware, (req, res) => {
+  return res.send(res.locals.script);
+});
 
 router.post("/play", readRosterMiddleware, (req, res) => {
   res.send({ err: res.locals.dbError, data: res.locals.dbData });

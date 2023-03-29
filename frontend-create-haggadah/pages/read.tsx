@@ -107,7 +107,7 @@ export default function Read() {
               <div>
                 <div style={{ padding: "8px" }}>
                   <div>
-                    <Page page={script.pages[selectedPage]}></Page>
+                    <Page page={script.pages[selectedPage - 1]}></Page>
                   </div>
                   <div>
                     <Button

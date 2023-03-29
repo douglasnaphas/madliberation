@@ -7,6 +7,7 @@ import MadLiberationLogo from "../public/mad-liberation-logo.png";
 import VeryAwesomePassoverLogo from "../public/VAPLogo-white.png";
 import { Global, css, jsx } from "@emotion/react";
 import { Button, Paper, TextField } from "@mui/material";
+import Page from "../src/Page";
 
 const enum PageState {
   LOADING = 0,
@@ -29,6 +30,7 @@ export default function Read() {
     }
   }
   const [selectedPage, setSelectedPage] = React.useState(hashPage);
+  const [script, setScript] = React.useState<any>();
   const hashChangeHandler = () => {
     if (typeof window === "undefined") {
       return;
@@ -38,10 +40,17 @@ export default function Read() {
       parseInt(window.location.hash.split("#")[1])
     ) {
       hashPage = parseInt(window.location.hash.split("#")[1]);
-      setSelectedPage(hashPage);
+      if (
+        script &&
+        script.pages &&
+        Array.isArray(script.pages) &&
+        hashPage <= script.pages.length &&
+        hashPage >= 1
+      ) {
+        setSelectedPage(hashPage);
+      }
     }
   };
-  const [script, setScript] = React.useState<any>();
 
   React.useEffect(() => {
     (async () => {
@@ -89,25 +98,32 @@ export default function Read() {
             Array.isArray(script.pages) && (
               <div>
                 <div style={{ padding: "8px" }}>
-                  <Button
-                    onClick={() => {
-                      if (typeof window !== "undefined") {
-                        window.location.hash = `${selectedPage - 1}`;
-                      }
-                    }}
-                  >
-                    Previous page
-                  </Button>{" "}
-                  {`${selectedPage} / ${script.pages.length}`}{" "}
-                  <Button
-                    onClick={() => {
-                      if (typeof window !== "undefined") {
-                        window.location.hash = `${selectedPage + 1}`;
-                      }
-                    }}
-                  >
-                    Next page
-                  </Button>
+                  <div>
+                    <Page page={script.pages[selectedPage]}></Page>
+                  </div>
+                  <div>
+                    <Button
+                      disabled={selectedPage === 1}
+                      onClick={() => {
+                        if (typeof window !== "undefined") {
+                          window.location.hash = `${selectedPage - 1}`;
+                        }
+                      }}
+                    >
+                      Previous page
+                    </Button>{" "}
+                    {`${selectedPage} / ${script.pages.length}`}{" "}
+                    <Button
+                      disabled={selectedPage === script.pages.length}
+                      onClick={() => {
+                        if (typeof window !== "undefined") {
+                          window.location.hash = `${selectedPage + 1}`;
+                        }
+                      }}
+                    >
+                      Next page
+                    </Button>
+                  </div>
                 </div>
               </div>
             )}

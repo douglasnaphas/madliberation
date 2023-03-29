@@ -7,14 +7,15 @@ import { css } from "@emotion/react";
 type LibProps = {
   prompt: string;
   answer: string;
+  key: string;
 };
 const Lib = (props: LibProps) => {
-  const { prompt, answer } = props;
+  const { prompt, answer, key } = props;
   const [anchorEl, setAnchorEl] = React.useState<
     (EventTarget & HTMLSpanElement) | null
   >(null);
   return (
-    <span>
+    <span key={key}>
       <span
         style={{
           paddingLeft: "4px",

@@ -32,6 +32,8 @@ export default function Read() {
   const [selectedPage, setSelectedPage] = React.useState(hashPage);
   const [script, setScript] = React.useState<any>();
   const hashChangeHandler = () => {
+    // should probably create and register this in useEffect after the script is fetched
+    // I think I'm enclosing some undefineds
     if (typeof window === "undefined") {
       return;
     }
@@ -40,6 +42,8 @@ export default function Read() {
       parseInt(window.location.hash.split("#")[1])
     ) {
       hashPage = parseInt(window.location.hash.split("#")[1]);
+      console.log("hashPage", hashPage);
+      console.log("script.pages.length", script.pages.length);
       if (
         script &&
         script.pages &&
@@ -105,6 +109,10 @@ export default function Read() {
                     <Button
                       disabled={selectedPage === 1}
                       onClick={() => {
+                        console.log(
+                          "Previous page clicked, selectedPage",
+                          selectedPage
+                        );
                         if (typeof window !== "undefined") {
                           window.location.hash = `${selectedPage - 1}`;
                         }
@@ -116,6 +124,10 @@ export default function Read() {
                     <Button
                       disabled={selectedPage === script.pages.length}
                       onClick={() => {
+                        console.log(
+                          "Next page clicked, selectedPage",
+                          selectedPage
+                        );
                         if (typeof window !== "undefined") {
                           window.location.hash = `${selectedPage + 1}`;
                         }

@@ -296,7 +296,7 @@ export default function Blanks() {
             window.location.origin
           ) {
             const rl = window.document.createElement("a");
-            rl.href = `${window.location.origin}/create-haggadah/read.html?sederCode=${sederCode}&rpw=${fetchRpwData.rpw}&roomcode=${sederCode}`;
+            rl.href = `${window.location.origin}/create-haggadah/read.html?sederCode=${sederCode}&rpw=${fetchRpwData.rpw}&roomcode=${sederCode}#1`;
             setReadLink(rl.href);
           }
         } catch (err) {

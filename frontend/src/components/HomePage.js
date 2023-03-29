@@ -68,6 +68,7 @@ class HomePage extends Component {
               </Button>
             </div>
             <div>
+              <br />
               <Button
                 madliberationid="join-a-seder-button"
                 title="Join a seder"

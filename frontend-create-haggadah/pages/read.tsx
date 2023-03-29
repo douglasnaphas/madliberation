@@ -41,7 +41,7 @@ export default function Read() {
       setSelectedPage(hashPage);
     }
   };
-  const [script, setScript] = React.useState();
+  const [script, setScript] = React.useState<any>();
 
   React.useEffect(() => {
     (async () => {
@@ -83,9 +83,34 @@ export default function Read() {
       </div>
       <Container maxWidth="md">
         <Paper>
-          <div style={{ padding: "8px" }}>
-            The current page is {`${selectedPage}`}
-          </div>
+          {pageState !== PageState.LOADING &&
+            script &&
+            script.pages &&
+            Array.isArray(script.pages) && (
+              <div>
+                <div style={{ padding: "8px" }}>
+                  <Button
+                    onClick={() => {
+                      if (typeof window !== "undefined") {
+                        window.location.hash = `${selectedPage - 1}`;
+                      }
+                    }}
+                  >
+                    Previous page
+                  </Button>{" "}
+                  {`${selectedPage} / ${script.pages.length}`}{" "}
+                  <Button
+                    onClick={() => {
+                      if (typeof window !== "undefined") {
+                        window.location.hash = `${selectedPage + 1}`;
+                      }
+                    }}
+                  >
+                    Next page
+                  </Button>
+                </div>
+              </div>
+            )}
         </Paper>
       </Container>
       <br></br>

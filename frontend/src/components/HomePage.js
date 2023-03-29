@@ -42,10 +42,7 @@ class HomePage extends Component {
     const { user, setUser, storage } = this.props;
     const createHaggadahLinkText =
       "Plan a seder where people fill out their mad libs beforehand (experimental)";
-    const createHaggadahLink = () => 
-      <a target="_blank" href={`/create-haggadah/index.html`}>
-        {createHaggadahLinkText}
-      </a>;
+    const createHaggadahHref = `/create-haggadah/index.html`;
     return (
       <div>
         <div>
@@ -63,13 +60,11 @@ class HomePage extends Component {
             <div>
               <Button
                 madliberationid="plan-seder-button"
-                title={createHaggadahLinkText}
                 variant="contained"
-                component={createHaggadahLink}
                 color="secondary"
-                to="/create-haggadah/index.html"
+                href={createHaggadahHref}
               >
-                Join a seder
+                {createHaggadahLinkText}
               </Button>
             </div>
             <div>

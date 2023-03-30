@@ -57,6 +57,7 @@ function sederCode({
           path: res.locals.path,
           leaderEmail: res.locals.leaderEmail,
           pwHash: res.locals.pwHash,
+          leaderName: res.locals.leaderName,
         },
         ConditionExpression: "attribute_not_exists(room_code)",
       };

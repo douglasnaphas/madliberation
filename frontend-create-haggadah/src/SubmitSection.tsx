@@ -4,7 +4,11 @@ import { Button, TextField, Typography } from "@mui/material";
 const validator = require("email-validator");
 
 type SubmitSectionProps = {
-  getEditLink: (props: { path: string; leaderEmail: string }) => Promise<{
+  getEditLink: (props: {
+    path: string;
+    leaderEmail: string;
+    leaderName: string;
+  }) => Promise<{
     lnk?: string;
     status: number;
   }>;
@@ -39,6 +43,7 @@ const SubmitSection = (props: SubmitSectionProps) => {
             const getEditLinkResponse = await getEditLink({
               path,
               leaderEmail,
+              leaderName,
             });
             const permaUrl = new URL(getEditLinkResponse.lnk as string);
             const sederCode = permaUrl.searchParams.get("sederCode");

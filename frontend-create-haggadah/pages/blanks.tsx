@@ -8,6 +8,7 @@ import VeryAwesomePassoverLogo from "../public/VAPLogo-white.png";
 import { Global, css, jsx } from "@emotion/react";
 import { Button, Paper, Chip, TextField } from "@mui/material";
 import DoneIcon from "@mui/icons-material/Done";
+import SederSummary from "../src/SederSummary";
 
 interface Assignment {
   id: number;
@@ -207,10 +208,14 @@ const ReadLinkSection = (props: { readLink: string }) => {
   const { readLink } = props;
   return (
     <div>
-      The link to the finished product is:{" "}
-      <a target={"_blank"} href={readLink}>
-        here
-      </a>
+      <br />
+      <div>
+        The link to the finished product is:{" "}
+        <a target={"_blank"} href={readLink}>
+          here
+        </a>
+        . It updates as people fill in their blanks.
+      </div>
     </div>
   );
 };
@@ -298,6 +303,7 @@ export default function Blanks() {
             const rl = window.document.createElement("a");
             rl.href = `${window.location.origin}/create-haggadah/read.html?sederCode=${sederCode}&rpw=${fetchRpwData.rpw}&roomcode=${sederCode}#1`;
             setReadLink(rl.href);
+            setRpw(fetchRpwData.rpw);
           }
         } catch (err) {
           console.log(err);
@@ -357,6 +363,14 @@ export default function Blanks() {
             {pageState !== PageState.LOADING && readLink !== "" && (
               <ReadLinkSection readLink={readLink}></ReadLinkSection>
             )}
+            <div>
+              {sederCode && rpw && (
+                <SederSummary
+                  sederCode={sederCode}
+                  rpw={rpw}
+                ></SederSummary>
+              )}
+            </div>
           </div>
         </Paper>
       </Container>

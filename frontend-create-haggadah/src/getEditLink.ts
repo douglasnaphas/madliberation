@@ -1,8 +1,12 @@
-const getEditLink = async (props: { path: string; leaderEmail: string }) => {
-  const { path, leaderEmail } = props;
+const getEditLink = async (props: {
+  path: string;
+  leaderEmail: string;
+  leaderName: string;
+}) => {
+  const { path, leaderEmail, leaderName } = props;
   const fetchInit = {
     method: "POST",
-    body: JSON.stringify({ path, leaderEmail }),
+    body: JSON.stringify({ path, leaderEmail, leaderName }),
     headers: { "Content-Type": "application/json" },
   };
   const response = await fetch("../v2/edit-link", fetchInit);

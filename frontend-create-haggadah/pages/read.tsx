@@ -8,6 +8,7 @@ import VeryAwesomePassoverLogo from "../public/VAPLogo-white.png";
 import { Global, css, jsx } from "@emotion/react";
 import { Button, Paper, TextField } from "@mui/material";
 import Page from "../src/Page";
+import SederSummary from "../src/SederSummary";
 
 const enum PageState {
   LOADING = 0,
@@ -155,6 +156,20 @@ export default function Read() {
         }}
         src={`${VeryAwesomePassoverLogo.src}`}
       ></img>
+      <div>
+        {sederCode && rpw && (
+          <div>
+            <br />
+            <Container maxWidth="md">
+              <Paper>
+                <div style={{ padding: "8px" }}>
+                  <SederSummary sederCode={sederCode} rpw={rpw}></SederSummary>
+                </div>
+              </Paper>
+            </Container>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

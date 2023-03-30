@@ -11,8 +11,8 @@ const Configs = require("../Configs");
 const sederCode = require("./seder-code");
 
 const postEditLink = [
-  // fail if there's no path and leaderEmail
-  checkBody(["path", "leaderEmail"]),
+  // fail if there's no path, leaderEmail, or leaderName
+  checkBody(["path", "leaderEmail", "leaderName"]),
   // make sure leaderEmail is OK
   (req, res, next) => {
     if (validator.validate(req.body.leaderEmail)) {
@@ -60,10 +60,11 @@ const postEditLink = [
     }
     return next();
   },
-  // save path and leaderEmail in locals
+  // save path, leaderEmail, and leaderName in locals
   (req, res, next) => {
     res.locals.path = req.body.path;
     res.locals.leaderEmail = req.body.leaderEmail;
+    res.locals.leaderName = req.body.leaderName;
     return next();
   },
   // generate password, save it and its hash in locals

@@ -33,6 +33,7 @@ const getAnswersMap = require("./lib/getAnswersMap");
 const validateParticipantLink = require("./lib/validateParticipantLink");
 const getRpw = require("./lib/getRpw");
 const validateReadLink = require("./lib/validateReadLink");
+const getSederSummary = require("./lib/getSederSummary");
 
 const router = express.Router();
 
@@ -156,6 +157,12 @@ router.post(
   (req, res) => {
     res.send(responses.success());
   }
+);
+
+router.get(
+  "/seder-summary",
+  validateParticipantLink({ method: "GET" }),
+  getSederSummary
 );
 
 router.get("/assignments", assignmentsMiddleware);

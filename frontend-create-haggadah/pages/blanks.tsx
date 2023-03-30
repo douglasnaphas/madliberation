@@ -8,6 +8,7 @@ import VeryAwesomePassoverLogo from "../public/VAPLogo-white.png";
 import { Global, css, jsx } from "@emotion/react";
 import { Button, Paper, Chip, TextField } from "@mui/material";
 import DoneIcon from "@mui/icons-material/Done";
+import SederSummary from "../src/SederSummary";
 
 interface Assignment {
   id: number;
@@ -357,6 +358,15 @@ export default function Blanks() {
             {pageState !== PageState.LOADING && readLink !== "" && (
               <ReadLinkSection readLink={readLink}></ReadLinkSection>
             )}
+            <div>
+              {sederCode && pw && ph && (
+                <SederSummary
+                  sederCode={sederCode}
+                  pw={pw}
+                  ph={ph}
+                ></SederSummary>
+              )}
+            </div>
           </div>
         </Paper>
       </Container>

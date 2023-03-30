@@ -4,7 +4,7 @@ const { DynamoDBClient } = require("@aws-sdk/client-dynamodb");
 const logger = require("../logger");
 const schema = require("../schema");
 const responses = require("../responses");
-const getPath = [
+const getRpw = [
   // get rpw from the db
   async (req, res, next) => {
     const region = process.env.AWS_REGION || process.env.AWS_DEFAULT_REGION;
@@ -33,4 +33,4 @@ const getPath = [
     return res.send({ rpw: res.locals.seder[schema.READ_PW] });
   },
 ];
-module.exports = getPath;
+module.exports = getRpw;

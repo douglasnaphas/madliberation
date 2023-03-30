@@ -8,6 +8,10 @@ const logger = require("../logger");
 const schema = require("../schema");
 const responses = require("../responses");
 const getSederSummary = [
+  // save roomCode in locals
+  (req, res, next) => {
+    res.locals.roomCode = req.query.roomcode;
+  },
   // query for participant info
   async (req, res, next) => {
     const region = process.env.AWS_REGION || process.env.AWS_DEFAULT_REGION;

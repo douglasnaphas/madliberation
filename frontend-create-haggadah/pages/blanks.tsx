@@ -364,7 +364,7 @@ export default function Blanks() {
               <ReadLinkSection readLink={readLink}></ReadLinkSection>
             )}
             <div>
-              {sederCode && rpw && ph && (
+              {sederCode && rpw && (
                 <SederSummary
                   sederCode={sederCode}
                   rpw={rpw}

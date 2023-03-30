@@ -8,7 +8,7 @@ const logger = require("../logger");
 const schema = require("../schema");
 const responses = require("../responses");
 const api = require("../api");
-const getPath = [
+const getAnswersMap = [
   // check for required params
   checkQueryParams(["sederCode", "pw", "ph"]),
   // get participant item from the db
@@ -77,4 +77,4 @@ const getPath = [
     return res.send(res.locals.participant[schema.ANSWERS_MAP]);
   },
 ];
-module.exports = getPath;
+module.exports = getAnswersMap;

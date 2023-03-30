@@ -208,7 +208,6 @@ const ReadLinkSection = (props: { readLink: string }) => {
   const { readLink } = props;
   return (
     <div>
-      <br />
       <div>
         The link to the finished product is:{" "}
         <a target={"_blank"} href={readLink}>
@@ -234,6 +233,7 @@ export default function Blanks() {
   );
   const [readLink, setReadLink] = React.useState("");
   const [rpw, setRpw] = React.useState("");
+  const [gameName, setGameName] = React.useState();
   let sederCode: any, pw: any, ph: any;
   if (typeof window !== "undefined" && typeof URLSearchParams === "function") {
     const urlSearchParams = new URLSearchParams(window.location.search);
@@ -308,6 +308,16 @@ export default function Blanks() {
         } catch (err) {
           console.log(err);
         }
+
+        const fetchGameNameResponse = await fetch(
+          `../v2/game-name?sederCode=` +
+            `${sederCode}&pw=${pw}&ph=${ph}&roomcode=${sederCode}`
+        );
+        if (fetchGameNameResponse.status === 200) {
+          const fetchGameNameData = await fetchGameNameResponse.json();
+          setGameName(fetchGameNameData.gameName);
+        }
+
         setPageState(PageState.READY);
       }
     })();
@@ -360,15 +370,18 @@ export default function Blanks() {
                 setPageState={setPageState}
               ></ChipSection>
             )}
+            {pageState !== PageState.LOADING && gameName && (
+              <div>
+                <br />
+                <div>Submitting answers as {gameName}.</div>
+              </div>
+            )}
             {pageState !== PageState.LOADING && readLink !== "" && (
               <ReadLinkSection readLink={readLink}></ReadLinkSection>
             )}
             <div>
               {sederCode && rpw && (
-                <SederSummary
-                  sederCode={sederCode}
-                  rpw={rpw}
-                ></SederSummary>
+                <SederSummary sederCode={sederCode} rpw={rpw}></SederSummary>
               )}
             </div>
           </div>

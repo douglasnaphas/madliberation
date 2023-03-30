@@ -31,7 +31,6 @@ const SederSummary = (props: SederSummaryProps) => {
   }
   return (
     <div>
-      <br />
       <div>
         This Haggadah was initialized by {`${sederSummary.leaderName}`} at{" "}
         {sederSummary.createdAt}, Seder code begins{" "}

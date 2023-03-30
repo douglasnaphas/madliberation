@@ -100,6 +100,7 @@ const getSederSummary = [
         timeStyle: "short",
         timeZone: "UTC",
       }).format(createdDate) + " GMT";
+    return next();
   },
   // send the response
   (req, res, next) => {

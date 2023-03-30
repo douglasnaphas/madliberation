@@ -208,10 +208,13 @@ const ReadLinkSection = (props: { readLink: string }) => {
   const { readLink } = props;
   return (
     <div>
-      The link to the finished product is:{" "}
-      <a target={"_blank"} href={readLink}>
-        here
-      </a>
+      <br />
+      <div>
+        The link to the finished product is:{" "}
+        <a target={"_blank"} href={readLink}>
+          here
+        </a>
+      </div>
     </div>
   );
 };

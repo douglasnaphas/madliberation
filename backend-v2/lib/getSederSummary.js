@@ -84,6 +84,23 @@ const getSederSummary = [
       return res.status(500).send(responses.SERVER_ERROR);
     }
   },
+  // save the createdAt formatted timestamp
+  (req, res, next) => {
+    if (!res.locals.seder.created) {
+      logger.log(
+        "getSederSummary: no res.locals.seder.created",
+        res.locals.roomCode
+      );
+      return res.status(500).send(responses.SERVER_ERROR);
+    }
+    const createdDate = new Date(res.locals.seder.created);
+    res.locals.createdAt =
+      new Intl.DateTimeFormat("en-US", {
+        dateStyle: "full",
+        timeStyle: "short",
+        timeZone: "UTC",
+      }).format(createdDate) + " GMT";
+  },
   // send the response
   (req, res, next) => {
     return res.send({
@@ -91,6 +108,7 @@ const getSederSummary = [
       leaderName: res.locals.seder.leaderName,
       created: res.locals.seder.created,
       timestamp: res.locals.seder.timestamp,
+      createdAt: res.locals.createdAt,
     });
   },
 ];

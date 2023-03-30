@@ -212,8 +212,9 @@ const ReadLinkSection = (props: { readLink: string }) => {
       <div>
         The link to the finished product is:{" "}
         <a target={"_blank"} href={readLink}>
-          here. It updates as people fill in their blanks.
+          here
         </a>
+        . It updates as people fill in their blanks.
       </div>
     </div>
   );

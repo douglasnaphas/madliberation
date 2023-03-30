@@ -34,6 +34,7 @@ const validateParticipantLink = require("./lib/validateParticipantLink");
 const getRpw = require("./lib/getRpw");
 const validateReadLink = require("./lib/validateReadLink");
 const getSederSummary = require("./lib/getSederSummary");
+const getGameName = require("./lib/getGameName");
 
 const router = express.Router();
 
@@ -166,6 +167,12 @@ router.get("/assignments", assignmentsMiddleware);
 router.post("/submit-lib", submitLib);
 
 router.get("/answers-map", getAnswersMap);
+
+router.get(
+  "/game-name",
+  validateParticipantLink({ method: "GET" }),
+  getGameName
+);
 
 router.post(
   "/submit-libs",

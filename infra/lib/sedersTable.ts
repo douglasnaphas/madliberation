@@ -79,6 +79,18 @@ const sedersTable: (construct: Construct) => dynamodb.Table = (
     },
     projectionType: dynamodb.ProjectionType.ALL,
   });
+  table.addGlobalSecondaryIndex({
+    indexName: schemaV2.PARTICIPANT_EMAIL_INDEX,
+    partitionKey: {
+      name: schemaV2.EMAIL,
+      type: dynamodb.AttributeType.STRING,
+    },
+    sortKey: {
+      name: schema.USER_EMAIL,
+      type: dynamodb.AttributeType.STRING,
+    },
+    projectionType: dynamodb.ProjectionType.ALL,
+  });
   return table;
 };
 module.exports = sedersTable;

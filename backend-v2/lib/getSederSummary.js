@@ -37,5 +37,31 @@ const getSederSummary = [
       return res.status(500).send(responses.SERVER_ERROR);
     }
   },
+  (req, res, next) => {
+    if (!Array.isArray(res.locals.items)) {
+      logger.log("getSederSummary: non-array items", res.locals.roomCode);
+      return res.status(500).send(responses.SERVER_ERROR);
+    }
+    res.locals.participants = res.locals.items.map((participant) => {
+      const gameName = participant[schema.GAME_NAME];
+      const numberOfAssignments =
+        participant[schema.ASSIGNMENTS] &&
+        Array.isArray(participant[schema.ASSIGNMENTS])
+          ? participant[schema.ASSIGNMENTS].length
+          : 0;
+      const numberOfAnswers = participant[schema.ANSWERS_MAP]
+        ? Object.keys(participant[schema.ANSWERS_MAP]).length
+        : 0;
+      return {
+        gameName,
+        numberOfAssignments,
+        numberOfAnswers,
+      };
+    });
+    return next();
+  },
+  (req, res, next) => {
+    return res.send({ participants: res.locals.participants });
+  },
 ];
 module.exports = getSederSummary;

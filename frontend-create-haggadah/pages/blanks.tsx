@@ -368,7 +368,6 @@ export default function Blanks() {
                 <SederSummary
                   sederCode={sederCode}
                   rpw={rpw}
-                  ph={ph}
                 ></SederSummary>
               )}
             </div>

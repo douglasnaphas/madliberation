@@ -11,6 +11,7 @@ const getSederSummary = [
   // save roomCode in locals
   (req, res, next) => {
     res.locals.roomCode = req.query.roomcode;
+    return next();
   },
   // query for participant info
   async (req, res, next) => {

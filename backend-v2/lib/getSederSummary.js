@@ -37,6 +37,7 @@ const getSederSummary = [
       return res.status(500).send(responses.SERVER_ERROR);
     }
   },
+  // save participants' assigned/answered stats
   (req, res, next) => {
     if (!Array.isArray(res.locals.items)) {
       logger.log("getSederSummary: non-array items", res.locals.roomCode);
@@ -60,8 +61,37 @@ const getSederSummary = [
     });
     return next();
   },
+  // get the seder info
+  async (req, res, next) => {
+    const region = process.env.AWS_REGION || process.env.AWS_DEFAULT_REGION;
+    const ddbClient = new DynamoDBClient({ region });
+    const ddbDocClient = DynamoDBDocumentClient.from(ddbClient);
+    const getParams = {
+      TableName: schema.TABLE_NAME,
+      Key: {
+        room_code: res.locals.roomCode,
+        lib_id: schema.SEDER_PREFIX,
+      },
+    };
+    try {
+      const response = await ddbDocClient.send(new GetCommand(getParams));
+      res.locals.seder = response.Item;
+      logger.log(`getSederSummary: saved seder ${res.locals.roomCode}`);
+      return next();
+    } catch (error) {
+      logger.log("getSederSummary: error getting item from db, error:");
+      logger.log(error);
+      return res.status(500).send(responses.SERVER_ERROR);
+    }
+  },
+  // send the response
   (req, res, next) => {
-    return res.send({ participants: res.locals.participants });
+    return res.send({
+      participants: res.locals.participants,
+      leaderName: res.locals.seder.leaderName,
+      created: res.locals.seder.created,
+      timestamp: res.locals.seder.timestamp,
+    });
   },
 ];
 module.exports = getSederSummary;

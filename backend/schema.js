@@ -40,6 +40,7 @@ const schema = {
   // seders
   CREATED: "created",
   CLOSED: "closed",
+  TIMESTAMP: "timestamp",
   // participants
   SESSION_KEY: "session_key",
   GAME_NAME: "game_name",
@@ -63,7 +64,7 @@ const schema = {
   MS: "ms",
   CONNECTION_ID: "connection_id",
   WAIT: "wait", // wait page, ws-wait WS API
-  READ_ROSTER: "read-roster"
+  READ_ROSTER: "read-roster",
 };
 
 module.exports = schema;

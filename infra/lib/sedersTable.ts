@@ -1,6 +1,7 @@
 import { aws_dynamodb as dynamodb, RemovalPolicy } from "aws-cdk-lib";
 import { Construct } from "constructs";
 const schema = require("../../backend/schema");
+const schemaV2 = require("../../backend-v2/schema");
 const sedersTable: (construct: Construct) => dynamodb.Table = (
   construct: Construct
 ) => {
@@ -62,6 +63,18 @@ const sedersTable: (construct: Construct) => dynamodb.Table = (
     indexName: schema.OPAQUE_COOKIE_INDEX,
     partitionKey: {
       name: schema.OPAQUE_COOKIE,
+      type: dynamodb.AttributeType.STRING,
+    },
+    projectionType: dynamodb.ProjectionType.ALL,
+  });
+  table.addGlobalSecondaryIndex({
+    indexName: schemaV2.LEADER_EMAIL_INDEX,
+    partitionKey: {
+      name: schemaV2.LEADER_EMAIL,
+      type: dynamodb.AttributeType.STRING,
+    },
+    sortKey: {
+      name: schema.TIMESTAMP,
       type: dynamodb.AttributeType.STRING,
     },
     projectionType: dynamodb.ProjectionType.ALL,

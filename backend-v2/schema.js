@@ -73,7 +73,9 @@ const schema = {
   ANSWER_TEXT: "answer_text",
   ANSWER_ID: "answer_id",
   READ_PW_PREFIX: "read_pw",
-  READ_PW: "rpw"
+  READ_PW: "rpw",
+  PARTICIPANT_EMAIL_INDEX: "participant_email_index",
+  LEADER_EMAIL_INDEX: "leader_email_index",
 };
 
 module.exports = schema;

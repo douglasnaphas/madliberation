@@ -56,6 +56,7 @@ function sederCode({
           created: now.getTime(),
           path: res.locals.path,
           leaderEmail: res.locals.leaderEmail,
+          pw: res.locals.pw,
           pwHash: res.locals.pwHash,
           leaderName: res.locals.leaderName,
         },

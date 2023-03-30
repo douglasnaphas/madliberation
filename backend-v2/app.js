@@ -159,11 +159,7 @@ router.post(
   }
 );
 
-router.get(
-  "/seder-summary",
-  validateParticipantLink({ method: "GET" }),
-  getSederSummary
-);
+router.get("/seder-summary", validateReadLink(), getSederSummary);
 
 router.get("/assignments", assignmentsMiddleware);
 

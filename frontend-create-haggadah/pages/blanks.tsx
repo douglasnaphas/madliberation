@@ -212,7 +212,7 @@ const ReadLinkSection = (props: { readLink: string }) => {
       <div>
         The link to the finished product is:{" "}
         <a target={"_blank"} href={readLink}>
-          here
+          here. It updates as people fill in their blanks.
         </a>
       </div>
     </div>
@@ -302,6 +302,7 @@ export default function Blanks() {
             const rl = window.document.createElement("a");
             rl.href = `${window.location.origin}/create-haggadah/read.html?sederCode=${sederCode}&rpw=${fetchRpwData.rpw}&roomcode=${sederCode}#1`;
             setReadLink(rl.href);
+            setRpw(fetchRpwData.rpw);
           }
         } catch (err) {
           console.log(err);
@@ -362,10 +363,10 @@ export default function Blanks() {
               <ReadLinkSection readLink={readLink}></ReadLinkSection>
             )}
             <div>
-              {sederCode && pw && ph && (
+              {sederCode && rpw && ph && (
                 <SederSummary
                   sederCode={sederCode}
-                  pw={pw}
+                  rpw={rpw}
                   ph={ph}
                 ></SederSummary>
               )}

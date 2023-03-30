@@ -2,16 +2,16 @@ import React from "react";
 import { useEffect, useState } from "react";
 type SederSummaryProps = {
   sederCode: string;
-  pw: string;
+  rpw: string;
   ph: string;
 };
 const SederSummary = (props: SederSummaryProps) => {
-  const { sederCode, pw, ph } = props;
+  const { sederCode, rpw, ph } = props;
   const [sederSummary, setSederSummary] = React.useState<any>();
   React.useEffect(() => {
     (async () => {
       const fetchSederSummaryResponse = await fetch(
-        `../v2/seder-summary?sederCode=${sederCode}&pw=${pw}&ph=${ph}&roomcode=${sederCode}`
+        `../v2/seder-summary?sederCode=${sederCode}&rpw=${rpw}&ph=${ph}&roomcode=${sederCode}`
       );
       if (fetchSederSummaryResponse.status !== 200) {
         return;

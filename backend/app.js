@@ -164,6 +164,8 @@ app.post("/seders", seders);
 app.get("/seders", seders);
 app.get("/seders-started", seders);
 app.get("/seders-joined", sedersJoined);
+const getParticipantLinkData = require("./lib/getParticipantLinkData");
+app.get("/participant-link-data", getParticipantLinkData);
 
 app.use(send500OnError);
 

@@ -65,6 +65,11 @@ const schema = {
   CONNECTION_ID: "connection_id",
   WAIT: "wait", // wait page, ws-wait WS API
   READ_ROSTER: "read-roster",
+  // v2, but related to flows requiring v1 auth
+  EMAIL: "email",
+  PARTICIPANT_PW: "participant_pw", // attribute name
+  PARTICIPANT_EMAIL_INDEX: "participant_email_index",
+  LEADER_EMAIL_INDEX: "leader_email_index",
 };
 
 module.exports = schema;

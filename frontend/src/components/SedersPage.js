@@ -19,6 +19,7 @@ function SedersPage({
 }) {
   const [sedersIStarted, setSedersIStarted] = useState([]);
   const [sedersIJoined, setSedersIJoined] = useState([]);
+  const [participantLinkData, setParticipantLinkData] = useState([]);
   const [selectedRoomCode, setSelectedRoomCode] = useState();
   const [selectionMade, setSelectionMade] = useState(false);
   const [buttonClicked, setButtonClicked] = useState(false);
@@ -66,6 +67,18 @@ function SedersPage({
       .catch((err) => {
         console.log(err);
       });
+    const participantLinkDataUrl = new URL(
+      `./participant-link-data?email=${encodeURIComponent(user.email)}`,
+      Configs.apiUrl()
+    );
+    fetch(participantLinkDataUrl, { credentials: "include" });
+    then((r) => {
+      return r.json();
+    }).then((ld) => {
+      if (Array.isArray(ld)) {
+        setParticipantLinkData(ld);
+      }
+    });
   }, [user]);
   const seders = new Map();
   sedersIStarted.forEach((seder) => {
@@ -219,10 +232,19 @@ function SedersPage({
             <CircularProgress />
           </div>
         )}
-      {seders.size == 0 && gotResponseSedersJoined && gotResponseSedersStarted && (
+      {seders.size == 0 &&
+        gotResponseSedersJoined &&
+        gotResponseSedersStarted && (
+          <div>
+            None. You are not and were not in any seders. Please{" "}
+            <a href="/">start or join one</a>.
+          </div>
+        )}
+      {participantLinkData.length > 0 && (
         <div>
-          None. You are not and were not in any seders. Please{" "}
-          <a href="/">start or join one</a>.
+          {participantLinkData.map((ld) => {
+            return <div>{ld.participant_pw}</div>;
+          })}
         </div>
       )}
     </>

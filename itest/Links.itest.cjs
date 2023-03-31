@@ -169,12 +169,13 @@ const itGetArrayByAttribute = async (page, attribute) => {
   await page.click('[madliberationid="plan-seder-button"]');
 
   ////////////////// Plan a Seder /////////////////////////////////////////////
-  const pickScriptAccordtionTextXPath = '//*[text()="Pick script"]';
+  const pickScriptAccordionTextXPath = '//*[text()="Pick script"]';
   await page
-    .waitForXPath(pickScriptAccordtionTextXPath, waitOptions)
+    .waitForXPath(pickScriptAccordionTextXPath, waitOptions)
     .catch(async (e) => {
       failTest(e, "Pick script accordion not found", browser);
     });
+  
 
   ////////////////////////////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////////////////////////

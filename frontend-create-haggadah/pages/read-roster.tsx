@@ -10,7 +10,7 @@ import { Paper, Table, TableBody, TableCell, TableRow } from "@mui/material";
 import { Configs } from "../src/Configs";
 
 interface Participant {
-  game_name: string;
+  gameName: string;
   numberOfAssignments: number;
   numberOfAnswers: number;
 }
@@ -36,7 +36,7 @@ const ParticipantList = (props: {
             {participants.map((g) => (
               <TableRow key={`guest-row-${g.game_name}`}>
                 <TableCell key={`guest-name-cell-${g.game_name}`}>
-                  {g.game_name}
+                  {g.gameName}
                 </TableCell>
                 <TableCell key={`guest-answers-${g.game_name}`}>
                   {g.numberOfAnswers}

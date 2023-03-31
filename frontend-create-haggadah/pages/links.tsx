@@ -28,7 +28,7 @@ const ParticipantList = (props: {
         gutterBottom
         style={{ marginLeft: "8px" }}
       >
-        Send each participant their personalized permalink, shown below, so they
+        Send each participant their personalized link, shown below, so they
         can fill in their blanks.
       </Typography>
       <div>

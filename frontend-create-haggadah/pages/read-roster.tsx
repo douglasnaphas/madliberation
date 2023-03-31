@@ -6,14 +6,20 @@ import Typography from "@mui/material/Typography";
 import MadLiberationLogo from "../public/mad-liberation-logo.png";
 import VeryAwesomePassoverLogo from "../public/VAPLogo-white.png";
 import { Global, css, jsx } from "@emotion/react";
-import { Paper, Table, TableBody, TableCell, TableRow } from "@mui/material";
+import {
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+} from "@mui/material";
 import { Configs } from "../src/Configs";
 
 interface Participant {
-  game_name: string;
-  email: string;
-  participant_pw: string;
-  ph: string;
+  gameName: string;
+  numberOfAssignments: number;
+  numberOfAnswers: number;
 }
 const ParticipantList = (props: {
   participants: Array<Participant>;
@@ -22,38 +28,27 @@ const ParticipantList = (props: {
   const { participants, sederCode } = props;
   return (
     <div>
-      <Typography
-        component="p"
-        paragraph
-        gutterBottom
-        style={{ marginLeft: "8px" }}
-      >
-        Send each participant their personalized link, shown below, so they
-        can fill in their blanks.
-      </Typography>
       <div>
         <Table>
+          <TableHead>
+            <TableRow key={"read-roster-header"}>
+              <TableCell>Name</TableCell>
+              <TableCell>Answered</TableCell>
+              <TableCell>Assigned</TableCell>
+            </TableRow>
+          </TableHead>
           <TableBody>
             {participants.map((g) => (
-              <TableRow key={`guest-row-${g.game_name}`}>
-                <TableCell key={`guest-name-cell-${g.game_name}`}>
-                  {g.game_name}
+              <TableRow key={`guest-row-${g.gameName}`}>
+                <TableCell key={`guest-name-cell-${g.gameName}`}>
+                  {g.gameName}
                 </TableCell>
-                <TableCell key={`guest-email-cell-${g.email}`}>
-                  {g.email}
+                <TableCell key={`guest-answers-${g.gameName}`}>
+                  {g.numberOfAnswers}
                 </TableCell>
-                {typeof window !== "undefined" && (
-                  <TableCell key={`guest-link-cell-${g.email}`}>
-                    <a
-                      target={"_blank"}
-                      href={`${
-                        window.location.origin
-                      }/create-haggadah/blanks.html?sederCode=${sederCode}&pw=${
-                        g.participant_pw
-                      }&ph=${g.ph.substring(0, Configs.PH_LENGTH)}`}
-                    >{`${g.game_name}'s link`}</a>
-                  </TableCell>
-                )}
+                <TableCell key={`guest-assignments-${g.gameName}`}>
+                  {g.numberOfAssignments}
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>
@@ -62,22 +57,21 @@ const ParticipantList = (props: {
     </div>
   );
 };
-export default function Links() {
+export default function ReadRoster() {
   // get the email from the server
   const [participants, setParticipants] = React.useState<Array<Participant>>(
     []
   );
-  let sederCode: any, pw: any;
+  let sederCode: any, rpw: any;
   if (typeof window !== "undefined" && typeof URLSearchParams === "function") {
     const urlSearchParams = new URLSearchParams(window.location.search);
     sederCode = urlSearchParams.get("sederCode");
-    pw = urlSearchParams.get("pw");
-    console.log(`found sederCode ${sederCode} and pw ${pw}`);
+    rpw = urlSearchParams.get("rpw");
   }
   React.useEffect(() => {
-    if (sederCode && pw) {
+    if (sederCode && rpw) {
       fetch(
-        `../v2/invites?sederCode=${sederCode}&pw=${pw}&roomcode=${sederCode}`
+        `../v2/seder-summary?sederCode=${sederCode}&rpw=${rpw}&roomcode=${sederCode}`
       )
         .then((r) => r.json())
         .then((j) => {

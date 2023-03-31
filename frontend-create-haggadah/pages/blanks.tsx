@@ -204,8 +204,11 @@ const ChipSection = (props: {
     </div>
   );
 };
-const ReadLinkSection = (props: { readLink: string }) => {
-  const { readLink } = props;
+const ReadLinkSection = (props: {
+  readLink: string;
+  readRosterLink: string;
+}) => {
+  const { readLink, readRosterLink } = props;
   return (
     <div>
       <div>
@@ -214,6 +217,12 @@ const ReadLinkSection = (props: { readLink: string }) => {
           here
         </a>
         . It updates as people fill in their blanks.
+      </div>
+      <div>
+        See who's filled in their blanks{" "}
+        <a target={"_blank"} href={readRosterLink}>
+          here
+        </a>
       </div>
     </div>
   );
@@ -232,6 +241,7 @@ export default function Blanks() {
       : 0
   );
   const [readLink, setReadLink] = React.useState("");
+  const [readRosterLink, setReadRosterLink] = React.useState("");
   const [rpw, setRpw] = React.useState("");
   const [gameName, setGameName] = React.useState();
   let sederCode: any, pw: any, ph: any;
@@ -304,6 +314,9 @@ export default function Blanks() {
             rl.href = `${window.location.origin}/create-haggadah/read.html?sederCode=${sederCode}&rpw=${fetchRpwData.rpw}&roomcode=${sederCode}#1`;
             setReadLink(rl.href);
             setRpw(fetchRpwData.rpw);
+            const rrl = window.document.createElement("a");
+            rrl.href = `${window.location.origin}/create-haggadah/read-roster.html?sederCode=${sederCode}&rpw=${fetchRpwData.rpw}&roomcode=${sederCode}`;
+            setReadRosterLink(rrl.href);
           }
         } catch (err) {
           console.log(err);
@@ -376,9 +389,14 @@ export default function Blanks() {
                 <div>Submitting answers as {gameName}.</div>
               </div>
             )}
-            {pageState !== PageState.LOADING && readLink !== "" && (
-              <ReadLinkSection readLink={readLink}></ReadLinkSection>
-            )}
+            {pageState !== PageState.LOADING &&
+              readLink !== "" &&
+              readRosterLink !== "" && (
+                <ReadLinkSection
+                  readLink={readLink}
+                  readRosterLink={readRosterLink}
+                ></ReadLinkSection>
+              )}
             <div>
               {sederCode && rpw && (
                 <SederSummary sederCode={sederCode} rpw={rpw}></SederSummary>

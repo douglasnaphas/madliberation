@@ -74,11 +74,15 @@ function SedersPage({
     fetch(participantLinkDataUrl, { credentials: "include" });
     then((r) => {
       return r.json();
-    }).then((ld) => {
-      if (Array.isArray(ld)) {
-        setParticipantLinkData(ld);
-      }
-    });
+    })
+      .then((ld) => {
+        if (Array.isArray(ld)) {
+          setParticipantLinkData(ld);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }, [user]);
   const seders = new Map();
   sedersIStarted.forEach((seder) => {

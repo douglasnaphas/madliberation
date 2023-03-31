@@ -6,7 +6,14 @@ import Typography from "@mui/material/Typography";
 import MadLiberationLogo from "../public/mad-liberation-logo.png";
 import VeryAwesomePassoverLogo from "../public/VAPLogo-white.png";
 import { Global, css, jsx } from "@emotion/react";
-import { Paper, Table, TableBody, TableCell, TableRow } from "@mui/material";
+import {
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+} from "@mui/material";
 import { Configs } from "../src/Configs";
 
 interface Participant {
@@ -21,17 +28,15 @@ const ParticipantList = (props: {
   const { participants, sederCode } = props;
   return (
     <div>
-      <Typography
-        component="p"
-        paragraph
-        gutterBottom
-        style={{ marginLeft: "8px" }}
-      >
-        Send each participant their personalized permalink, shown below, so they
-        can fill in their blanks.
-      </Typography>
       <div>
         <Table>
+          <TableHead>
+            <TableRow key={"read-roster-header"}>
+              <TableCell>Name</TableCell>
+              <TableCell>Answered</TableCell>
+              <TableCell>Assigned</TableCell>
+            </TableRow>
+          </TableHead>
           <TableBody>
             {participants.map((g) => (
               <TableRow key={`guest-row-${g.gameName}`}>

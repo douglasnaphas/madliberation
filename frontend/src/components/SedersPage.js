@@ -71,10 +71,10 @@ function SedersPage({
       `./participant-link-data?email=${encodeURIComponent(user.email)}`,
       Configs.apiUrl()
     );
-    fetch(participantLinkDataUrl, { credentials: "include" });
-    then((r) => {
-      return r.json();
-    })
+    fetch(participantLinkDataUrl, { credentials: "include" })
+      .then((r) => {
+        return r.json();
+      })
       .then((ld) => {
         if (Array.isArray(ld)) {
           setParticipantLinkData(ld);

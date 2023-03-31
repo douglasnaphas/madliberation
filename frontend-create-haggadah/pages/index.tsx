@@ -21,6 +21,7 @@ import { fetchScripts } from "../src/fetchScripts";
 import { getEditLink } from "../src/getEditLink";
 import YourInfoSection from "../src/YourInfoSection";
 import SubmitSection from "../src/SubmitSection";
+import Head from "next/head";
 
 const Accordion = styled((props: AccordionProps) => (
   <MuiAccordion disableGutters elevation={0} square {...props} />
@@ -104,86 +105,91 @@ export default function Home() {
   );
 
   return (
-    <div
-      style={{
-        backgroundColor: "#81181f",
-        height: "100%",
-        minHeight: "100%",
-      }}
-    >
-      <div>
+    <div>
+      <Head>
+        <title>Plan a Seder</title>
+      </Head>
+      <div
+        style={{
+          backgroundColor: "#81181f",
+          height: "100%",
+          minHeight: "100%",
+        }}
+      >
+        <div>
+          <img
+            css={{
+              height: "200px",
+              display: "block",
+              marginLeft: "auto",
+              marginRight: "auto",
+            }}
+            src={`${MadLiberationLogo.src}`}
+          ></img>
+        </div>
+        <Container maxWidth="md">
+          <Paper>
+            <div>
+              {" "}
+              {/* accordions from steps */}
+              {steps.map((step, index) => {
+                return (
+                  <div>
+                    <Accordion
+                      expanded={accordionExpanded[index]}
+                      onChange={(event) => {
+                        setAccordionExpanded((oldAccordionExpanded) => {
+                          return oldAccordionExpanded.map((a, i) => {
+                            if (i === index) {
+                              return !a;
+                            }
+                            return a;
+                          });
+                        });
+                      }}
+                    >
+                      <AccordionSummary>{step.label}</AccordionSummary>
+                      <AccordionDetails>{step.body}</AccordionDetails>
+                    </Accordion>
+                  </div>
+                );
+              })}
+            </div>
+            <div>
+              {createHaggadahError ? (
+                <Typography
+                  component="p"
+                  paragraph
+                  gutterBottom
+                  style={{ color: "red" }}
+                >
+                  Unable to create your Haggadah, sorry. Please try again in a
+                  new tab or different browser.
+                </Typography>
+              ) : (
+                <SubmitSection
+                  getEditLink={getEditLink}
+                  setEditLink={setEditLink}
+                  leaderEmail={yourEmail}
+                  leaderName={yourName}
+                  path={selectedScript}
+                  setCreateHaggadahError={setCreateHaggadahError}
+                ></SubmitSection>
+              )}
+            </div>
+          </Paper>
+        </Container>
+        <br />
         <img
           css={{
-            height: "200px",
+            height: "70px",
             display: "block",
             marginLeft: "auto",
             marginRight: "auto",
           }}
-          src={`${MadLiberationLogo.src}`}
+          src={`${VeryAwesomePassoverLogo.src}`}
         ></img>
       </div>
-      <Container maxWidth="md">
-        <Paper>
-          <div>
-            {" "}
-            {/* accordions from steps */}
-            {steps.map((step, index) => {
-              return (
-                <div>
-                  <Accordion
-                    expanded={accordionExpanded[index]}
-                    onChange={(event) => {
-                      setAccordionExpanded((oldAccordionExpanded) => {
-                        return oldAccordionExpanded.map((a, i) => {
-                          if (i === index) {
-                            return !a;
-                          }
-                          return a;
-                        });
-                      });
-                    }}
-                  >
-                    <AccordionSummary>{step.label}</AccordionSummary>
-                    <AccordionDetails>{step.body}</AccordionDetails>
-                  </Accordion>
-                </div>
-              );
-            })}
-          </div>
-          <div>
-            {createHaggadahError ? (
-              <Typography
-                component="p"
-                paragraph
-                gutterBottom
-                style={{ color: "red" }}
-              >
-                Unable to create your Haggadah, sorry. Please try again in a new
-                tab or different browser.
-              </Typography>
-            ) : (
-              <SubmitSection
-                getEditLink={getEditLink}
-                setEditLink={setEditLink}
-                leaderEmail={yourEmail}
-                leaderName={yourName}
-                path={selectedScript}
-                setCreateHaggadahError={setCreateHaggadahError}
-              ></SubmitSection>
-            )}
-          </div>
-        </Paper>
-      </Container>
-      <br />
-      <img
-        css={{
-          height: "70px",
-          display: "block",
-          marginLeft: "auto",
-          marginRight: "auto",
-        }}
-        src={`${VeryAwesomePassoverLogo.src}`}
-      ></img>
     </div>
   );
 }

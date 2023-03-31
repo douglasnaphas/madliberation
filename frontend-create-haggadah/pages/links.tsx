@@ -8,6 +8,7 @@ import VeryAwesomePassoverLogo from "../public/VAPLogo-white.png";
 import { Global, css, jsx } from "@emotion/react";
 import { Paper, Table, TableBody, TableCell, TableRow } from "@mui/material";
 import { Configs } from "../src/Configs";
+import Head from "next/head";
 
 interface Participant {
   game_name: string;
@@ -28,8 +29,8 @@ const ParticipantList = (props: {
         gutterBottom
         style={{ marginLeft: "8px" }}
       >
-        Send each participant their personalized link, shown below, so they
-        can fill in their blanks.
+        Send each participant their personalized link, shown below, so they can
+        fill in their blanks.
       </Typography>
       <div>
         <Table>
@@ -94,44 +95,51 @@ export default function Links() {
     permalink.hash = "";
   }
   return (
-    <div
-      style={{
-        backgroundColor: "#81181f",
-        height: "100%",
-        minHeight: "100%",
-      }}
-    >
-      <div>
+    <div>
+      {sederCode && typeof sederCode === "string" && (
+        <Head>
+          <title>Links, Seder {sederCode.substring(0, 3)}</title>
+        </Head>
+      )}
+      <div
+        style={{
+          backgroundColor: "#81181f",
+          height: "100%",
+          minHeight: "100%",
+        }}
+      >
+        <div>
+          <img
+            css={{
+              height: "200px",
+              display: "block",
+              marginLeft: "auto",
+              marginRight: "auto",
+            }}
+            src={`${MadLiberationLogo.src}`}
+          ></img>
+        </div>
+        <Container maxWidth="md">
+          <Paper>
+            <div>
+              <ParticipantList
+                participants={participants}
+                sederCode={sederCode}
+              ></ParticipantList>
+            </div>
+          </Paper>
+        </Container>
+        <br></br>
         <img
           css={{
-            height: "200px",
+            height: "70px",
             display: "block",
             marginLeft: "auto",
             marginRight: "auto",
           }}
-          src={`${MadLiberationLogo.src}`}
+          src={`${VeryAwesomePassoverLogo.src}`}
         ></img>
       </div>
-      <Container maxWidth="md">
-        <Paper>
-          <div>
-            <ParticipantList
-              participants={participants}
-              sederCode={sederCode}
-            ></ParticipantList>
-          </div>
-        </Paper>
-      </Container>
-      <br></br>
-      <img
-        css={{
-          height: "70px",
-          display: "block",
-          marginLeft: "auto",
-          marginRight: "auto",
-        }}
-        src={`${VeryAwesomePassoverLogo.src}`}
-      ></img>
     </div>
   );
 }

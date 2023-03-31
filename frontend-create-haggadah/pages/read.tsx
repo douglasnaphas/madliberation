@@ -9,6 +9,7 @@ import { Global, css, jsx } from "@emotion/react";
 import { Button, Paper, TextField } from "@mui/material";
 import Page from "../src/Page";
 import SederSummary from "../src/SederSummary";
+import Head from "next/head";
 
 const enum PageState {
   LOADING = 0,
@@ -81,94 +82,104 @@ export default function Read() {
     })();
   }, []);
   return (
-    <div
-      style={{
-        backgroundColor: "#81181f",
-        height: "100%",
-        minHeight: "100%",
-      }}
-    >
-      <div>
+    <div>
+      {sederCode && typeof sederCode === "string" && (
+        <Head>
+          <title>Haggadah, Seder {sederCode.substring(0, 3)}</title>
+        </Head>
+      )}
+      <div
+        style={{
+          backgroundColor: "#81181f",
+          height: "100%",
+          minHeight: "100%",
+        }}
+      >
+        <div>
+          <img
+            css={{
+              height: "200px",
+              display: "block",
+              marginLeft: "auto",
+              marginRight: "auto",
+            }}
+            src={`${MadLiberationLogo.src}`}
+          ></img>
+        </div>
+        <Container maxWidth="md">
+          <Paper>
+            {pageState !== PageState.LOADING &&
+              script &&
+              script.pages &&
+              Array.isArray(script.pages) && (
+                <div>
+                  <div style={{ padding: "8px" }}>
+                    <div>
+                      <Page page={script.pages[selectedPage - 1]}></Page>
+                    </div>
+                    <div>
+                      <Button
+                        disabled={selectedPage === 1}
+                        onClick={() => {
+                          console.log(
+                            "Previous page clicked, selectedPage",
+                            selectedPage
+                          );
+                          if (typeof window !== "undefined") {
+                            window.location.hash = `${selectedPage - 1}`;
+                          }
+                        }}
+                      >
+                        Previous page
+                      </Button>{" "}
+                      {`${selectedPage} / ${script.pages.length}`}{" "}
+                      <Button
+                        disabled={selectedPage === script.pages.length}
+                        onClick={() => {
+                          console.log(
+                            "Next page clicked, selectedPage",
+                            selectedPage
+                          );
+                          if (typeof window !== "undefined") {
+                            window.location.hash = `${selectedPage + 1}`;
+                          }
+                        }}
+                      >
+                        Next page
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              )}
+          </Paper>
+        </Container>
+        <br></br>
         <img
           css={{
-            height: "200px",
+            height: "70px",
             display: "block",
             marginLeft: "auto",
             marginRight: "auto",
           }}
-          src={`${MadLiberationLogo.src}`}
+          src={`${VeryAwesomePassoverLogo.src}`}
         ></img>
-      </div>
-      <Container maxWidth="md">
-        <Paper>
-          {pageState !== PageState.LOADING &&
-            script &&
-            script.pages &&
-            Array.isArray(script.pages) && (
-              <div>
-                <div style={{ padding: "8px" }}>
-                  <div>
-                    <Page page={script.pages[selectedPage - 1]}></Page>
+        <div>
+          {sederCode && rpw && (
+            <div>
+              <br />
+              <Container maxWidth="md">
+                <Paper>
+                  <div style={{ padding: "8px" }}>
+                    <SederSummary
+                      sederCode={sederCode}
+                      rpw={rpw}
+                    ></SederSummary>
                   </div>
-                  <div>
-                    <Button
-                      disabled={selectedPage === 1}
-                      onClick={() => {
-                        console.log(
-                          "Previous page clicked, selectedPage",
-                          selectedPage
-                        );
-                        if (typeof window !== "undefined") {
-                          window.location.hash = `${selectedPage - 1}`;
-                        }
-                      }}
-                    >
-                      Previous page
-                    </Button>{" "}
-                    {`${selectedPage} / ${script.pages.length}`}{" "}
-                    <Button
-                      disabled={selectedPage === script.pages.length}
-                      onClick={() => {
-                        console.log(
-                          "Next page clicked, selectedPage",
-                          selectedPage
-                        );
-                        if (typeof window !== "undefined") {
-                          window.location.hash = `${selectedPage + 1}`;
-                        }
-                      }}
-                    >
-                      Next page
-                    </Button>
-                  </div>
-                </div>
-              </div>
-            )}
-        </Paper>
-      </Container>
-      <br></br>
-      <img
-        css={{
-          height: "70px",
-          display: "block",
-          marginLeft: "auto",
-          marginRight: "auto",
-        }}
-        src={`${VeryAwesomePassoverLogo.src}`}
-      ></img>
-      <div>
-        {sederCode && rpw && (
-          <div>
-            <br />
-            <Container maxWidth="md">
-              <Paper>
-                <div style={{ padding: "8px" }}>
-                  <SederSummary sederCode={sederCode} rpw={rpw}></SederSummary>
-                </div>
-              </Paper>
-            </Container>
-          </div>
-        )}
+                </Paper>
+              </Container>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

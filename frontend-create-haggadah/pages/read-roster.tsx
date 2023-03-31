@@ -15,6 +15,7 @@ import {
   TableRow,
 } from "@mui/material";
 import { Configs } from "../src/Configs";
+import Head from "next/head";
 
 interface Participant {
   gameName: string;
@@ -88,44 +89,51 @@ export default function ReadRoster() {
     permalink.hash = "";
   }
   return (
-    <div
-      style={{
-        backgroundColor: "#81181f",
-        height: "100%",
-        minHeight: "100%",
-      }}
-    >
-      <div>
+    <div>
+      {sederCode && typeof sederCode === "string" && (
+        <Head>
+          <title>Progress, Seder {sederCode.substring(0, 3)}</title>
+        </Head>
+      )}
+      <div
+        style={{
+          backgroundColor: "#81181f",
+          height: "100%",
+          minHeight: "100%",
+        }}
+      >
+        <div>
+          <img
+            css={{
+              height: "200px",
+              display: "block",
+              marginLeft: "auto",
+              marginRight: "auto",
+            }}
+            src={`${MadLiberationLogo.src}`}
+          ></img>
+        </div>
+        <Container maxWidth="md">
+          <Paper>
+            <div>
+              <ParticipantList
+                participants={participants}
+                sederCode={sederCode}
+              ></ParticipantList>
+            </div>
+          </Paper>
+        </Container>
+        <br></br>
         <img
           css={{
-            height: "200px",
+            height: "70px",
             display: "block",
             marginLeft: "auto",
             marginRight: "auto",
           }}
-          src={`${MadLiberationLogo.src}`}
+          src={`${VeryAwesomePassoverLogo.src}`}
         ></img>
       </div>
-      <Container maxWidth="md">
-        <Paper>
-          <div>
-            <ParticipantList
-              participants={participants}
-              sederCode={sederCode}
-            ></ParticipantList>
-          </div>
-        </Paper>
-      </Container>
-      <br></br>
-      <img
-        css={{
-          height: "70px",
-          display: "block",
-          marginLeft: "auto",
-          marginRight: "auto",
-        }}
-        src={`${VeryAwesomePassoverLogo.src}`}
-      ></img>
     </div>
   );
 }

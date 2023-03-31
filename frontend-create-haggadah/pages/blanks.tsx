@@ -9,6 +9,7 @@ import { Global, css, jsx } from "@emotion/react";
 import { Button, Paper, Chip, TextField } from "@mui/material";
 import DoneIcon from "@mui/icons-material/Done";
 import SederSummary from "../src/SederSummary";
+import Head from "next/head";
 
 interface Assignment {
   id: number;
@@ -337,85 +338,97 @@ export default function Blanks() {
     })();
   }, []);
   return (
-    <div
-      style={{
-        backgroundColor: "#81181f",
-        height: "100%",
-        minHeight: "100%",
-      }}
-    >
-      <div>
+    <div>
+      {sederCode &&
+        typeof sederCode === "string" &&
+        gameName &&
+        typeof gameName === "string" && (
+          <Head>
+            <title>
+              {gameName}'s Link, Seder {sederCode.substring(0, 3)}
+            </title>
+          </Head>
+        )}
+      <div
+        style={{
+          backgroundColor: "#81181f",
+          height: "100%",
+          minHeight: "100%",
+        }}
+      >
+        <div>
+          <img
+            css={{
+              height: "200px",
+              display: "block",
+              marginLeft: "auto",
+              marginRight: "auto",
+            }}
+            src={`${MadLiberationLogo.src}`}
+          ></img>
+        </div>
+        <Container maxWidth="md">
+          <Paper>
+            <div style={{ padding: "8px" }}>
+              {pageState !== PageState.LOADING && answers && (
+                <PromptSection
+                  submitLib={submitLib}
+                  answers={answers}
+                  setAnswers={setAnswers}
+                  assignments={assignments}
+                  selectedAssignmentIndex={selectedAssignmentIndex}
+                  setSelectedAssignmentIndex={setSelectedAssignmentIndex}
+                  pageState={pageState}
+                  setPageState={setPageState}
+                ></PromptSection>
+              )}
+              <br />
+              <br />
+              <br />
+              {pageState !== PageState.LOADING && answers && (
+                <ChipSection
+                  submitLib={submitLib}
+                  setSelectedAssignmentIndex={setSelectedAssignmentIndex}
+                  selectedAssignmentIndex={selectedAssignmentIndex}
+                  assignments={assignments}
+                  answers={answers}
+                  pageState={pageState}
+                  setPageState={setPageState}
+                ></ChipSection>
+              )}
+              {pageState !== PageState.LOADING && gameName && (
+                <div>
+                  <br />
+                  <div>Submitting answers as {gameName}.</div>
+                </div>
+              )}
+              {pageState !== PageState.LOADING &&
+                readLink !== "" &&
+                readRosterLink !== "" && (
+                  <ReadLinkSection
+                    readLink={readLink}
+                    readRosterLink={readRosterLink}
+                  ></ReadLinkSection>
+                )}
+              <div>
+                {sederCode && rpw && (
+                  <SederSummary sederCode={sederCode} rpw={rpw}></SederSummary>
+                )}
+              </div>
+            </div>
+          </Paper>
+        </Container>
+        <br></br>
         <img
           css={{
-            height: "200px",
+            height: "70px",
             display: "block",
             marginLeft: "auto",
             marginRight: "auto",
           }}
-          src={`${MadLiberationLogo.src}`}
+          src={`${VeryAwesomePassoverLogo.src}`}
         ></img>
       </div>
-      <Container maxWidth="md">
-        <Paper>
-          <div style={{ padding: "8px" }}>
-            {pageState !== PageState.LOADING && answers && (
-              <PromptSection
-                submitLib={submitLib}
-                answers={answers}
-                setAnswers={setAnswers}
-                assignments={assignments}
-                selectedAssignmentIndex={selectedAssignmentIndex}
-                setSelectedAssignmentIndex={setSelectedAssignmentIndex}
-                pageState={pageState}
-                setPageState={setPageState}
-              ></PromptSection>
-            )}
-            <br />
-            <br />
-            <br />
-            {pageState !== PageState.LOADING && answers && (
-              <ChipSection
-                submitLib={submitLib}
-                setSelectedAssignmentIndex={setSelectedAssignmentIndex}
-                selectedAssignmentIndex={selectedAssignmentIndex}
-                assignments={assignments}
-                answers={answers}
-                pageState={pageState}
-                setPageState={setPageState}
-              ></ChipSection>
-            )}
-            {pageState !== PageState.LOADING && gameName && (
-              <div>
-                <br />
-                <div>Submitting answers as {gameName}.</div>
-              </div>
-            )}
-            {pageState !== PageState.LOADING &&
-              readLink !== "" &&
-              readRosterLink !== "" && (
-                <ReadLinkSection
-                  readLink={readLink}
-                  readRosterLink={readRosterLink}
-                ></ReadLinkSection>
-              )}
-            <div>
-              {sederCode && rpw && (
-                <SederSummary sederCode={sederCode} rpw={rpw}></SederSummary>
-              )}
-            </div>
-          </div>
-        </Paper>
-      </Container>
-      <br></br>
-      <img
-        css={{
-          height: "70px",
-          display: "block",
-          marginLeft: "auto",
-          marginRight: "auto",
-        }}
-        src={`${VeryAwesomePassoverLogo.src}`}
-      ></img>
     </div>
   );
 }

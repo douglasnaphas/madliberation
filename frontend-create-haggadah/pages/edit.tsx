@@ -21,6 +21,7 @@ import {
 } from "@mui/material";
 import Button from "@mui/material/Button";
 import * as EmailValidator from "email-validator";
+import Head from "next/head";
 
 const enum PageState {
   LOADING = 1,
@@ -259,180 +260,187 @@ export default function Edit() {
     permalink.hash = "";
   }
   return (
-    <div
-      style={{
-        backgroundColor: "#81181f",
-        height: "100%",
-        minHeight: "100%",
-      }}
-    >
-      <div>
+    <div>
+      {sederCode && typeof sederCode === "string" && (
+        <Head>
+          <title>Plan Seder {sederCode.substring(0, 3)}</title>
+        </Head>
+      )}
+      <div
+        style={{
+          backgroundColor: "#81181f",
+          height: "100%",
+          minHeight: "100%",
+        }}
+      >
+        <div>
+          <img
+            css={{
+              height: "200px",
+              display: "block",
+              marginLeft: "auto",
+              marginRight: "auto",
+            }}
+            src={`${MadLiberationLogo.src}`}
+          ></img>
+        </div>
+        <Container maxWidth="md">
+          <Paper>
+            <div>
+              <ThisIsYourLinkText
+                lnk={permalink}
+                yourEmail={leaderEmail}
+              ></ThisIsYourLinkText>
+            </div>
+            {pageState === PageState.OPEN && (
+              <div>
+                <GuestsForm
+                  setGuests={setGuests}
+                  sederCode={sederCode}
+                  pw={pw}
+                  setJoinError={setJoinError}
+                ></GuestsForm>
+              </div>
+            )}
+            {joinError && PageState.OPEN && (
+              <div>
+                <Typography
+                  component="p"
+                  paragraph
+                  gutterBottom
+                  style={{ color: "red" }}
+                >
+                  Unable to add that person to your Seder
+                </Typography>
+              </div>
+            )}
+            {pageState === PageState.OPEN && (
+              <div>
+                <GuestList
+                  guests={guests}
+                  setGuests={setGuests}
+                  sederCode={sederCode}
+                  pw={pw}
+                  setRemoveParticipantError={setRemoveParticipantError}
+                ></GuestList>
+              </div>
+            )}
+            {removeParticipantError && pageState === PageState.OPEN && (
+              <div>
+                <Typography
+                  component="p"
+                  paragraph
+                  gutterBottom
+                  style={{ color: "red" }}
+                >
+                  Unable to remove that person from your Seder
+                </Typography>
+              </div>
+            )}
+            {pageState === PageState.OPEN && (
+              <div>
+                <Button
+                  onClick={() => {
+                    setConfirmThatsEveryoneDialogOpen(true);
+                  }}
+                >
+                  That's everyone
+                </Button>
+                <Dialog open={confirmThatsEveryoneDialogOpen}>
+                  <DialogTitle>Are you sure?</DialogTitle>
+                  <DialogContent>
+                    <DialogContentText>
+                      Your Seder has {guests.length + 1}
+                      {guests.length > 0
+                        ? " people, including you"
+                        : " person: you"}
+                      . Is that really everyone you want to add?
+                    </DialogContentText>
+                  </DialogContent>
+                  <DialogActions>
+                    <Button
+                      disabled={yesThatsEveryoneButtonClicked}
+                      onClick={async () => {
+                        setYesThatsEveryoneButtonClicked(true);
+                        const fetchInit = {
+                          method: "POST",
+                          headers: { "Content-Type": "application/json" },
+                          body: JSON.stringify({
+                            roomCode: sederCode,
+                            sederCode,
+                            pw,
+                            path,
+                          }),
+                        };
+                        const response = await fetch(
+                          "../v2/close-seder",
+                          fetchInit
+                        );
+                        if (response.status !== 200) {
+                          setThatsEveryoneError(true);
+                        }
+                        setPageState(PageState.CLOSED);
+                      }}
+                    >
+                      Yes, that's everyone
+                    </Button>
+                    <Button
+                      onClick={() => {
+                        setConfirmThatsEveryoneDialogOpen(false);
+                      }}
+                    >
+                      Cancel
+                    </Button>
+                  </DialogActions>
+                </Dialog>
+                {thatsEveryoneError && (
+                  <div>
+                    <Typography
+                      component="p"
+                      paragraph
+                      gutterBottom
+                      style={{ color: "red" }}
+                    >
+                      Unable to proceed, please report this error to
+                      admin@passover.lol
+                    </Typography>
+                  </div>
+                )}
+              </div>
+            )}
+            {pageState === PageState.CLOSED && permalink && (
+              <div>
+                <Typography
+                  component="p"
+                  paragraph
+                  gutterBottom
+                  style={{ marginLeft: "8px" }}
+                >
+                  Head to{" "}
+                  <a
+                    target="_blank"
+                    href={permalink.href.replace("/edit.html?", "/links.html?")}
+                  >
+                    your links page
+                  </a>{" "}
+                  to get the links to send to each participant so you can all
+                  fill in your blanks.
+                </Typography>
+              </div>
+            )}
+          </Paper>
+        </Container>
+        <br></br>
         <img
           css={{
-            height: "200px",
+            height: "70px",
             display: "block",
             marginLeft: "auto",
             marginRight: "auto",
           }}
-          src={`${MadLiberationLogo.src}`}
+          src={`${VeryAwesomePassoverLogo.src}`}
         ></img>
       </div>
-      <Container maxWidth="md">
-        <Paper>
-          <div>
-            <ThisIsYourLinkText
-              lnk={permalink}
-              yourEmail={leaderEmail}
-            ></ThisIsYourLinkText>
-          </div>
-          {pageState === PageState.OPEN && (
-            <div>
-              <GuestsForm
-                setGuests={setGuests}
-                sederCode={sederCode}
-                pw={pw}
-                setJoinError={setJoinError}
-              ></GuestsForm>
-            </div>
-          )}
-          {joinError && PageState.OPEN && (
-            <div>
-              <Typography
-                component="p"
-                paragraph
-                gutterBottom
-                style={{ color: "red" }}
-              >
-                Unable to add that person to your Seder
-              </Typography>
-            </div>
-          )}
-          {pageState === PageState.OPEN && (
-            <div>
-              <GuestList
-                guests={guests}
-                setGuests={setGuests}
-                sederCode={sederCode}
-                pw={pw}
-                setRemoveParticipantError={setRemoveParticipantError}
-              ></GuestList>
-            </div>
-          )}
-          {removeParticipantError && pageState === PageState.OPEN && (
-            <div>
-              <Typography
-                component="p"
-                paragraph
-                gutterBottom
-                style={{ color: "red" }}
-              >
-                Unable to remove that person from your Seder
-              </Typography>
-            </div>
-          )}
-          {pageState === PageState.OPEN && (
-            <div>
-              <Button
-                onClick={() => {
-                  setConfirmThatsEveryoneDialogOpen(true);
-                }}
-              >
-                That's everyone
-              </Button>
-              <Dialog open={confirmThatsEveryoneDialogOpen}>
-                <DialogTitle>Are you sure?</DialogTitle>
-                <DialogContent>
-                  <DialogContentText>
-                    Your Seder has {guests.length + 1}
-                    {guests.length > 0
-                      ? " people, including you"
-                      : " person: you"}
-                    . Is that really everyone you want to add?
-                  </DialogContentText>
-                </DialogContent>
-                <DialogActions>
-                  <Button
-                    disabled={yesThatsEveryoneButtonClicked}
-                    onClick={async () => {
-                      setYesThatsEveryoneButtonClicked(true);
-                      const fetchInit = {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({
-                          roomCode: sederCode,
-                          sederCode,
-                          pw,
-                          path,
-                        }),
-                      };
-                      const response = await fetch(
-                        "../v2/close-seder",
-                        fetchInit
-                      );
-                      if (response.status !== 200) {
-                        setThatsEveryoneError(true);
-                      }
-                      setPageState(PageState.CLOSED);
-                    }}
-                  >
-                    Yes, that's everyone
-                  </Button>
-                  <Button
-                    onClick={() => {
-                      setConfirmThatsEveryoneDialogOpen(false);
-                    }}
-                  >
-                    Cancel
-                  </Button>
-                </DialogActions>
-              </Dialog>
-              {thatsEveryoneError && (
-                <div>
-                  <Typography
-                    component="p"
-                    paragraph
-                    gutterBottom
-                    style={{ color: "red" }}
-                  >
-                    Unable to proceed, please report this error to
-                    admin@passover.lol
-                  </Typography>
-                </div>
-              )}
-            </div>
-          )}
-          {pageState === PageState.CLOSED && permalink && (
-            <div>
-              <Typography
-                component="p"
-                paragraph
-                gutterBottom
-                style={{ marginLeft: "8px" }}
-              >
-                Head to{" "}
-                <a
-                  target="_blank"
-                  href={permalink.href.replace("/edit.html?", "/links.html?")}
-                >
-                  your links page
-                </a>{" "}
-                to get the links to send to each participant so you can all fill
-                in your blanks.
-              </Typography>
-            </div>
-          )}
-        </Paper>
-      </Container>
-      <br></br>
-      <img
-        css={{
-          height: "70px",
-          display: "block",
-          marginLeft: "auto",
-          marginRight: "auto",
-        }}
-        src={`${VeryAwesomePassoverLogo.src}`}
-      ></img>
     </div>
   );
 }

@@ -118,7 +118,10 @@ const PromptSection = (props: {
           </div>
         )}
         <div>
+          <br />
           <Button
+            color="primary"
+            variant="contained"
             disabled={pageState !== PageState.READY}
             onClick={async () => {
               const submitLibSuccess = await submitLib({

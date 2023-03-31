@@ -13,7 +13,7 @@ commander
   .option("-L, --slow", "Run headfully in slow mode")
   .parse(process.argv);
 const slowDown = 200;
-const timeoutMs = 45000 + (commander.opts().slow ? slowDown + 2000 : 0);
+const timeoutMs = 10000 + (commander.opts().slow ? slowDown + 2000 : 0);
 const defaultUrl = "https://passover.lol";
 const site = commander.opts().site || defaultUrl;
 const browserOptions = {
@@ -166,8 +166,15 @@ const itGetArrayByAttribute = async (page, attribute) => {
     .catch(async (e) => {
       failTest(e, "Plan a seder button not found", browser);
     });
+  await page.click('[madliberationid="plan-seder-button"]');
 
   ////////////////// Plan a Seder /////////////////////////////////////////////
+  const pickScriptAccordtionTextXPath = '//*[text()="Pick script"]';
+  await page
+    .waitForXPath(pickScriptAccordtionTextXPath, waitOptions)
+    .catch(async (e) => {
+      failTest(e, "Pick script accordion not found", browser);
+    });
 
   ////////////////////////////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////////////////////////

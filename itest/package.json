@@ -11,6 +11,7 @@
   "scripts": {
     "test": "jest --passWithNoTests && echo 'this script is the test'",
     "itest": "bash scripts/itest.sh",
+    "itest-links": "bash scripts/itest-links.sh",
     "smoke": "bash scripts/smoke.sh"
   },
   "repository": {

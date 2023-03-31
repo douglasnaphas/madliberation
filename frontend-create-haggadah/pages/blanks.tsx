@@ -223,6 +223,7 @@ const ReadLinkSection = (props: {
         <a target={"_blank"} href={readRosterLink}>
           here
         </a>
+        .
       </div>
     </div>
   );

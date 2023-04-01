@@ -153,7 +153,7 @@ jobs:
         working-directory: itest
         run: |
           npm install
-      - name: Run smoke test (dev account)
+      - name: Run itest on the v2 link-based flow (dev account)
         working-directory: itest
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.DEV_AWS_ACCESS_KEY_ID }}

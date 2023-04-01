@@ -188,7 +188,7 @@ const itGetArrayByAttribute = async (page, attribute) => {
   const leaderName = "L";
   await page.type(yourNameTextBoxSelector, leaderName);
   const yourEmailAddressTextBoxSelector = "#your-email-address";
-  const leaderEmailAddress = "el@example.com";
+  const leaderEmailAddress = "el@y.co";
   await page.type(yourEmailAddressTextBoxSelector, leaderEmailAddress);
   const planSederSubmitButtonSelector = "button:not([disabled])";
   await page.waitForSelector(planSederSubmitButtonSelector);
@@ -205,7 +205,7 @@ const itGetArrayByAttribute = async (page, attribute) => {
   for (let p = 1; p < NUMBER_OF_PARTICIPANTS; p++) {
     const participant = {
       gameName: "p" + lowercaseAlphabet[p],
-      email: `${lowercaseAlphabet[p]}@x.com`,
+      email: `${lowercaseAlphabet[p]}@x.co`,
     };
     participants.push(participant);
     await page.click(guestNameTextBoxSelector, { clickCount: 3 });

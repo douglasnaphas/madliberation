@@ -181,6 +181,7 @@ const ChipSection = (props: {
       {assignments.map((assignment, assignmentIndex) => {
         return (
           <Chip
+            id={`prompt-chip-${assignmentIndex}`}
             label={assignment.prompt}
             color={
               assignmentIndex === selectedAssignmentIndex

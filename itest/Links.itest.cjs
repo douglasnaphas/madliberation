@@ -283,12 +283,10 @@ const waitOptions = { timeout: timeoutMs /*, visible: true*/ };
     await page.click(chipSelector);
 
     // wait for the card
-    console.log("about to wait for the card...");
     const thisPromptXPath = `//*[@id="this-prompt"][text()='${lastGuest.assignments[asi].prompt}']`;
     await page.waitForXPath(thisPromptXPath, waitOptions);
 
     // enter the text
-    console.log("about to type in the box...");
     const answerBoxSelector = `#answer`;
     await page.type(answerBoxSelector, answerText);
 

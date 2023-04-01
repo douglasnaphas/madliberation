@@ -305,7 +305,7 @@ const waitOptions = { timeout: timeoutMs /*, visible: true*/ };
     u.pathname = "/v2/submit-lib";
     return u.href;
   };
-  const plinkHref2SubmitLibFetchInit = (hr) => {
+  const plinkHref2SubmitLibFetchInit = ({ hr, answerText, answerId }) => {
     const u = new URL(hr);
     const fetchInit = {
       method: "POST",
@@ -313,16 +313,37 @@ const waitOptions = { timeout: timeoutMs /*, visible: true*/ };
         sederCode,
         pw: u.searchParams.get("pw"),
         ph: u.searchParams.get("ph"),
+        answerText,
+        answerId,
       }),
       headers: { "Content-Type": "application/json" },
     };
+    return fetchInit;
   };
   for (let p = participants.length - 2; p >= 0; p--) {
     const submitLibUri = plinkHref2SubmitLibUri(participants[p].plinkHref);
-    const submitLibFetchInit = plinkHref2SubmitLibFetchInit(
-      participants[p].plinkHref
-    );
-    for (let asi = 0; asi < participants[p].assignments.length; asi++) {}
+    if (p === nonSubmitterIndex) {
+      continue;
+    }
+    for (let asi = 0; asi < participants[p].assignments.length; asi++) {
+      if (p === partialSubmitterIndex && asi === 0) {
+        continue;
+      }
+      const submitLibFetchInit = plinkHref2SubmitLibFetchInit({
+        hr: participants[p].plinkHref,
+        answerText: answerToType({
+          participantIndex: p,
+          assignmentId: participants[p].assignments[asi].id,
+        }),
+        answerId: participants[p].assignments[asi].id,
+      });
+      const submitLibResponse = await fetch(submitLibUri, submitLibFetchInit);
+
+      if (submitLibResponse.status !== 200) {
+        console.error("failed to submit lib", p, asi);
+        process.exit(4);
+      }
+    }
   }
 
   // check the read roster

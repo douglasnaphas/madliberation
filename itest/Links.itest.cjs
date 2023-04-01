@@ -205,12 +205,12 @@ const waitOptions = { timeout: timeoutMs /*, visible: true*/ };
     process.exit(3);
   }
   // grab the defaults
-  const defaults = [];
+  const defaults = [undefined];
   script.pages.forEach((page) => {
     page.lines.forEach((line) => {
       line.segments.forEach((segment) => {
         if (segment.type === "lib") {
-          defaults.push = segment.default;
+          defaults.push(segment.default);
         }
       });
     });

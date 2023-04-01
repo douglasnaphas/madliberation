@@ -175,7 +175,10 @@ const itGetArrayByAttribute = async (page, attribute) => {
     .catch(async (e) => {
       failTest(e, "Pick script accordion not found", browser);
     });
-  
+  await page.click("xpath/" + pickScriptAccordionTextXPath);
+  const script2022RadioButtonXPath = '//input[contains(@value,"2022_Script")]';
+  await page.waitForXPath(script2022RadioButtonXPath, waitOptions);
+  await page.click("xpath/" + script2022RadioButtonXPath);
 
   ////////////////////////////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////////////////////////

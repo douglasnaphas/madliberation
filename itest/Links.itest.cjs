@@ -237,6 +237,8 @@ const waitOptions = { timeout: timeoutMs /*, visible: true*/ };
       partialSubmitterIndex = tentativePartialSubmitterIndex;
     }
   }
+  console.log("nonSubmitterIndex", nonSubmitterIndex);
+  console.log("partialSubmitterIndex", partialSubmitterIndex);
   // figure out which answer the partial submitter won't submit
   const omittedAnswerIndex = 0;
 

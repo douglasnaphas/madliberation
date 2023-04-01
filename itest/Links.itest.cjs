@@ -179,7 +179,16 @@ const itGetArrayByAttribute = async (page, attribute) => {
   const script2022RadioButtonXPath = '//input[contains(@value,"2022_Script")]';
   await page.waitForXPath(script2022RadioButtonXPath, waitOptions);
   await page.click("xpath/" + script2022RadioButtonXPath);
-
+  const yourInfoAccordionXPath = '//*[text()="Your info"]';
+  await page.waitForXPath(yourInfoAccordionXPath, waitOptions);
+  await page.click("xpath/" + yourInfoAccordionXPath);
+  const yourNameTextBoxSelector = "#your-name";
+  await page.waitForSelector(yourNameTextBoxSelector, waitOptions);
+  const leaderName = "L";
+  await page.type(yourNameTextBoxSelector, leaderName);
+  const yourEmailAddressTextBoxSelector = "#your-email-address";
+  const leaderEmailAddress = "el@example.com";
+  await page.type(yourEmailAddressTextBoxSelector, leaderEmailAddress);
   ////////////////////////////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////////////////////////
   // Clean up

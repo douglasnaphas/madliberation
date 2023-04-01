@@ -12,7 +12,7 @@ commander
   )
   .option("-L, --slow", "Run headfully in slow mode")
   .parse(process.argv);
-const slowDown = 200;
+const slowDown = 90;
 const timeoutMs = 10000 + (commander.opts().slow ? slowDown + 2000 : 0);
 const defaultUrl = "https://passover.lol";
 const site = commander.opts().site || defaultUrl;

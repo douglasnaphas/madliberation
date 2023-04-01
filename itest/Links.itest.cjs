@@ -11,11 +11,20 @@ commander
     "Site to run against, default https://passover.lol"
   )
   .option("-L, --slow", "Run headfully in slow mode")
+  .option(
+    "-p --participants <PARTICIPANTS>",
+    "Number of participants, including the leader, default 22"
+  )
   .parse(process.argv);
 const slowDown = 90;
 const timeoutMs = 10000 + (commander.opts().slow ? slowDown + 2000 : 0);
 const defaultUrl = "https://passover.lol";
 const site = commander.opts().site || defaultUrl;
+const DEFAULT_NUMBER_OF_PARTICIPANTS = 22; // Two+ groups of 10
+// trouble can start at 10, because of DynamoDB transactions
+// and seders often have about 20+ people
+const numberOfParticipants =
+  commander.opts().participants || DEFAULT_NUMBER_OF_PARTICIPANTS;
 const browserOptions = {
   headless: commander.opts().slow ? false : true,
   args: ["--no-sandbox"],
@@ -199,10 +208,7 @@ const itGetArrayByAttribute = async (page, attribute) => {
   const guestEmailTextBoxSelector = "#guest-email-input";
   await page.waitForSelector(guestNameTextBoxSelector, waitOptions);
   const participants = [{ gameName: leaderName, email: leaderEmailAddress }];
-  const NUMBER_OF_PARTICIPANTS = 22; // Two+ groups of 10
-  // trouble can start at 10, because of DynamoDB transactions
-  // and seders often have about 20+ people
-  for (let p = 1; p < NUMBER_OF_PARTICIPANTS; p++) {
+  for (let p = 1; p < numberOfParticipants; p++) {
     const participant = {
       gameName: "p" + lowercaseAlphabet[p],
       email: `${lowercaseAlphabet[p]}@x.co`,
@@ -224,8 +230,35 @@ const itGetArrayByAttribute = async (page, attribute) => {
     const emailTdXPath = `//td[text()="${participant.email}"]`;
     await page.waitForXPath(emailTdXPath);
   }
-  
-  
+  // TODO: test removing a participant
+  const thatsEveryoneButtonXPath = `//button[text()="That's everyone"][not(@disabled)]`;
+  await page.waitForXPath(thatsEveryoneButtonXPath, waitOptions);
+  await page.click("xpath/" + thatsEveryoneButtonXPath);
+  const textWithParticipantCountXPath = `//*[text()[contains(.,"${participants.length}")]]`;
+  await page.waitForXPath(textWithParticipantCountXPath, waitOptions);
+  const yesThatsEveryoneButtonXPath = `//button[text()="Yes, that's everyone"][not(@disabled)]`;
+  await page.click("xpath/" + yesThatsEveryoneButtonXPath);
+
+  //////////////////////// Links Page /////////////////////////////////////////
+  const yourLinksPageAnchorXPath = `//a[text()="your links page"]`;
+  await page.waitForXPath(yourLinksPageAnchorXPath, waitOptions);
+  const yourLinksPageAnchors = await page.$x(yourLinksPageAnchorXPath);
+  const yourLinksPageAnchor = yourLinksPageAnchors[0];
+  console.log(yourLinksPageAnchor);
+  const yourLinksPageHref = yourLinksPageAnchor.href;
+  console.log(yourLinksPageHref);
+  await page.goto(yourLinksPageHref);
+  const plinkXPath = (gameName) => `//a[text()="${gameName}'s link"]`;
+  for (let p = 0; p < participants.length; p++) {
+    const participant = participants[p];
+    await page.waitForXPath(plinkXPath(participant));
+    const plinks = await page.$x(plinkXPath(participant.gameName));
+    const plink = plinks[0];
+    participants[p].plink = plink;
+    participants[p].plinkHref = plink.href;
+  }
+  const firstGuest = participants[1];
+  await page.click("xpath/" + plinkXPath(firstGuest.gameName));
 
   ////////////////////////////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////////////////////////

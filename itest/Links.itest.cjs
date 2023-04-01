@@ -240,13 +240,15 @@ const itGetArrayByAttribute = async (page, attribute) => {
   await page.click("xpath/" + yesThatsEveryoneButtonXPath);
 
   //////////////////////// Links Page /////////////////////////////////////////
+
   const yourLinksPageAnchorXPath = `//a[text()="your links page"]`;
-  await page.waitForXPath(yourLinksPageAnchorXPath, waitOptions);
-  const yourLinksPageAnchors = await page.$x(yourLinksPageAnchorXPath);
-  const yourLinksPageAnchor = yourLinksPageAnchors[0];
-  console.log(yourLinksPageAnchor);
-  const yourLinksPageHref = yourLinksPageAnchor.href;
-  console.log(yourLinksPageHref);
+  await page.waitForXPath(yourLinksPageAnchorXPath);
+  const href1 = await page.$eval(
+    "xpath/" + yourLinksPageAnchorXPath,
+    (el) => el.href
+  );
+  console.log(href1);
+  const yourLinksPageHref = hrefs1[0];
   await page.goto(yourLinksPageHref);
   const plinkXPath = (gameName) => `//a[text()="${gameName}'s link"]`;
   for (let p = 0; p < participants.length; p++) {

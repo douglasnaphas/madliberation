@@ -33,14 +33,12 @@ then
 else
   PARTICIPANTS_ARG=
 fi
-if [[ ! -z "${TERM}" ]]
+if [[ ! -z "${SCRIPT_TERM}" ]]
 then
-  TERM_ARG="--term ${TERM}"
+  TERM_ARG="--term ${SCRIPT_TERM}"
 else
   TERM_ARG=
 fi
-echo "TERM_ARG:"
-echo $TERM_ARG
 node Links.itest.cjs \
   --site ${APP_URL} \
   ${SLOW_ARG} \

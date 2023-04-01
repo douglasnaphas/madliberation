@@ -22,6 +22,7 @@ const browserOptions = {
 };
 browserOptions.slowMo = slowDown;
 
+const lowercaseAlphabet = "abcdefghijklmnopqrstuvwxyz";
 const failTest = async (err, msg, browser) => {
   console.log("test failed: " + msg);
   console.log(err);
@@ -189,6 +190,33 @@ const itGetArrayByAttribute = async (page, attribute) => {
   const yourEmailAddressTextBoxSelector = "#your-email-address";
   const leaderEmailAddress = "el@example.com";
   await page.type(yourEmailAddressTextBoxSelector, leaderEmailAddress);
+  const planSederSubmitButtonSelector = "button:not([disabled])";
+  await page.waitForSelector(planSederSubmitButtonSelector);
+  await page.click(planSederSubmitButtonSelector);
+
+  ///////////////////////// Edit Page /////////////////////////////////////////
+  const guestNameTextBoxSelector = "#guest-name-input";
+  const guestEmailTextBoxSelector = "#guest-email-input";
+  await page.waitForSelector(guestNameTextBoxSelector, waitOptions);
+  const participants = [{ gameName: leaderName, email: leaderEmailAddress }];
+  const NUMBER_OF_PARTICIPANTS = 22; // Two+ groups of 10
+  // trouble can start at 10, because of DynamoDB transactions
+  // and seders often have about 20+ people
+  for (let p = 1; p < NUMBER_OF_PARTICIPANTS; p++) {
+    const participant = {
+      gameName: "p" + lowercaseAlphabet[p],
+      email: `${lowercaseAlphabet[p]}@x.com`,
+    };
+    participants.push(participant);
+    await page.click(guestNameTextBoxSelector, { clickCount: 3 });
+    await page.type(guestNameTextBoxSelector, participant.gameName);
+    await page.click(guestEmailTextBoxSelector, { clickCount: 3 });
+    await page.type(guestEmailTextBoxSelector, participant.email);
+    const addGuestButtonXPath = '//button[text()="Add"][not(@disabled)]';
+    await page.waitForSelector("xpath/" + addGuestButtonXPath, waitOptions);
+    await page.click("xpath/" + addGuestButtonXPath);
+  }
+
   ////////////////////////////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////////////////////////
   // Clean up

@@ -216,6 +216,16 @@ const itGetArrayByAttribute = async (page, attribute) => {
     await page.waitForSelector("xpath/" + addGuestButtonXPath, waitOptions);
     await page.click("xpath/" + addGuestButtonXPath);
   }
+  // verify everyone we added is in the list
+  for (let p = 1; p < participants.length; p++) {
+    const participant = participants[p];
+    const gameNameTdXPath = `//td[text()="${participant.gameName}"]`;
+    await page.waitForXPath(gameNameTdXPath);
+    const emailTdXPath = `//td[text()="${participant.email}"]`;
+    await page.waitForXPath(emailTdXPath);
+  }
+  
+  
 
   ////////////////////////////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////////////////////////

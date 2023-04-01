@@ -280,11 +280,26 @@ const itGetArrayByAttribute = async (page, attribute) => {
     u.pathname = "/v2/assignments";
     return u.href;
   };
-  const lastGuestAssignmentsUri = plinkHref2AssignmentsUri(lastGuest.plinkHref);
-  const lastGuestAssignmentsResponse = await fetch(lastGuestAssignmentsUri);
-  const lastGuestAssignments = await lastGuestAssignmentsResponse.json();
-  console.log(lastGuestAssignments[0].prompt);
-  for (let p = participants.length - 1; p >= 0; p--) {}
+  const plinkHref2SubmitLibUri = (hr) => {
+    const u = new URL(hr);
+    u.search = ``;
+    u.pathname = "/v2/submit-lib";
+    return u.href;
+  };
+  // get the read roster link
+  // get the read link
+  // get the script from s3, so that we can check for the right defaults
+  const gameNameAndAssignmentId2Answer /* not assignment index */ = (
+    gameName,
+    assignmentId
+  ) => `${gameName}-${assignmentId}`;
+  for (let p = participants.length - 1; p >= 0; p--) {
+    const assignmentsResponse = await fetch(
+      plinkHref2AssignmentsUri(participants[p].plinkHref)
+    );
+    const assignments = await assignmentsResponse.json();
+    participants[p].assignments = assignments;
+  }
 
   ////////////////////////////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////////////////////////

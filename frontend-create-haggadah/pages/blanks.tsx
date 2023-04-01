@@ -219,14 +219,14 @@ const ReadLinkSection = (props: {
     <div>
       <div>
         The link to the finished product is:{" "}
-        <a target={"_blank"} href={readLink}>
+        <a target={"_blank"} href={readLink} id={"read-link"}>
           here
         </a>
         . It updates as people fill in their blanks.
       </div>
       <div>
         See who's filled in their blanks{" "}
-        <a target={"_blank"} href={readRosterLink}>
+        <a target={"_blank"} href={readRosterLink} id={"read-roster-link"}>
           here
         </a>
         .

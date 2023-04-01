@@ -167,7 +167,7 @@ const waitOptions = { timeout: timeoutMs /*, visible: true*/ };
     participants[p].plinkHref = plinkHref;
   }
 
-  ///////////// Blanks ////////////////////////////////////////////////////////
+  ///////////// Blanks Page ///////////////////////////////////////////////////
   const lastGuest = participants[participants.length - 1];
   // start with the last guest and work backwards
   // we are only going to submit in the browser once, so let's do it not as the
@@ -205,12 +205,12 @@ const waitOptions = { timeout: timeoutMs /*, visible: true*/ };
     process.exit(3);
   }
   // grab the defaults
-  const defaults = {};
+  const defaults = [];
   script.pages.forEach((page) => {
     page.lines.forEach((line) => {
       line.segments.forEach((segment) => {
         if (segment.type === "lib") {
-          defaults[segment.id] = segment.default;
+          defaults.push = segment.default;
         }
       });
     });
@@ -270,13 +270,14 @@ const waitOptions = { timeout: timeoutMs /*, visible: true*/ };
   };
 
   // submit libs
-
+  const expectedAnswers = {};
   // use the browser for the lastGuest
   for (let asi = 0; asi < lastGuest.assignments.length; asi++) {
     const answerText = answerToType({
       participantIndex: participants.length - 1,
       assignmentId: lastGuest.assignments[asi].id,
     });
+    expectedAnswers[lastGuest.assignments[asi].id] = answerText;
 
     // click the chip
     const chipSelector = `#prompt-chip-${asi}`;
@@ -323,22 +324,32 @@ const waitOptions = { timeout: timeoutMs /*, visible: true*/ };
   for (let p = participants.length - 2; p >= 0; p--) {
     const submitLibUri = plinkHref2SubmitLibUri(participants[p].plinkHref);
     if (p === nonSubmitterIndex) {
+      // write out that defaults are expected here
       continue;
     }
     for (let asi = 0; asi < participants[p].assignments.length; asi++) {
       if (p === partialSubmitterIndex && asi === 0) {
+        console.log("this is the partial submitter's non-answer");
+        console.log("p", p);
+        console.log("asi", asi);
+        console.log("this person's assignments:");
+        console.log(participants[p].assignments);
+        expectedAnswers[participants[p].assignments[asi].id] =
+          defaults[participants[p].assignments[asi].id];
         continue;
       }
+      const answerText = answerToType({
+        participantIndex: p,
+        assignmentId: participants[p].assignments[asi].id,
+      });
+      const answerId = participants[p].assignments[asi].id;
+      expectedAnswers[answerId] = answerText;
       const submitLibFetchInit = plinkHref2SubmitLibFetchInit({
         hr: participants[p].plinkHref,
-        answerText: answerToType({
-          participantIndex: p,
-          assignmentId: participants[p].assignments[asi].id,
-        }),
-        answerId: participants[p].assignments[asi].id,
+        answerText,
+        answerId,
       });
       const submitLibResponse = await fetch(submitLibUri, submitLibFetchInit);
-
       if (submitLibResponse.status !== 200) {
         console.error("failed to submit lib", p, asi);
         process.exit(4);
@@ -346,15 +357,68 @@ const waitOptions = { timeout: timeoutMs /*, visible: true*/ };
     }
   }
 
-  // check the read roster
-  // get the read roster link, log it
-
   // check the script
   // get the read link, log it
-  // loop through the libs in the readScript, making sure the provided answer
+  const readLinkSelector = `#read-link`;
+  await page.waitForSelector(readLinkSelector, waitOptions);
+  const readLinkHref = await page.$eval(readLinkSelector, (el) => el.href);
+  console.log("readLinkHref:", readLinkHref);
+  // get the read roster link, log it
+  const readRosterLinkSelector = `#read-roster-link`;
+  await page.waitForSelector(readRosterLinkSelector, waitOptions);
+  const readRosterLinkHref = await page.$eval(
+    readRosterLinkSelector,
+    (el) => el.href
+  );
+  console.log("readRosterLinkHref:", readRosterLinkHref);
+
+  ///////////////////////////// Haggadah //////////////////////////////////////
+  await page.goto(readLinkHref);
+  const readThisPageAloudXPath = `//*[text()="Read this page aloud. Click a gray box to see what the prompt was."]`;
+  await page.waitForXPath(readThisPageAloudXPath);
+  const nextPageXPath = `//button[text()="Next page"]`;
+  await page.waitForXPath(nextPageXPath);
+  const populatedScriptHref = (() => {
+    const readLinkUrl = new URL(readLinkHref);
+    readLinkUrl.pathname = "/v2/script";
+    readLinkUrl.hash = "";
+    return readLinkUrl.href;
+  })();
+  const populatedScriptResponse = await fetch(populatedScriptHref);
+  const populatedScript = await populatedScriptResponse.json();
+
+  // loop through the libs in the populatedScript, making sure the provided answer
   // matches the expected answer
+  const receivedAnswers = {};
+  populatedScript.pages.forEach((page) => {
+    page.lines.forEach((line) => {
+      line.segments.forEach((segment) => {
+        if (segment.type === "lib") {
+          receivedAnswers[segment.id] = segment.answer;
+        }
+      });
+    });
+  });
+  console.log("defaults:");
+  console.log(defaults);
+  console.log("receivedAnswers:");
+  console.log(receivedAnswers);
+  console.log("expectedAnswers:");
+  console.log(expectedAnswers);
+  Object.keys(expectedAnswers).forEach((expectedAnswerIndex) => {
+    const ea = expectedAnswers[expectedAnswerIndex];
+    const ra = receivedAnswers[expectedAnswerIndex];
+    if (ra !== ea) {
+      console.error("expected", ea);
+      console.error("got", ra);
+      process.exit(5);
+    }
+  });
+
   // loop through the participants, making sure each provided answer appears
   // in the expected place in the script
+
+  // check the read roster
 
   ////////////////////////////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////////////////////////

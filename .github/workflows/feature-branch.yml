@@ -146,7 +146,7 @@ jobs:
           npm run itest
   itest-links:
     runs-on: ubuntu-latest
-    needs: [frontend-create-haggadah, content]
+    needs: [frontend, frontend-create-haggadah, content]
     steps:
       - uses: actions/checkout@v3
       - name: Install itest

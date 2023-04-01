@@ -27,6 +27,20 @@ then
 else
   SLOW_ARG=
 fi
+if [[ ! -z "${PARTICIPANTS}" ]]
+then
+  PARTICIPANTS_ARG="--participants ${PARTICIPANTS}"
+else
+  PARTICIPANTS_ARG=
+fi
+if [[ ! -z "${SCRIPT_TERM}" ]]
+then
+  TERM_ARG="--term ${SCRIPT_TERM}"
+else
+  TERM_ARG=
+fi
 node Links.itest.cjs \
   --site ${APP_URL} \
-  ${SLOW_ARG}
+  ${SLOW_ARG} \
+  ${PARTICIPANTS_ARG} \
+  ${TERM_ARG}

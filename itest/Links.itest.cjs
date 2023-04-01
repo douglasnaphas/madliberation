@@ -243,24 +243,24 @@ const itGetArrayByAttribute = async (page, attribute) => {
 
   const yourLinksPageAnchorXPath = `//a[text()="your links page"]`;
   await page.waitForXPath(yourLinksPageAnchorXPath);
-  const href1 = await page.$eval(
+  const yourLinksPageHref = await page.$eval(
     "xpath/" + yourLinksPageAnchorXPath,
     (el) => el.href
   );
-  console.log(href1);
-  const yourLinksPageHref = hrefs1[0];
   await page.goto(yourLinksPageHref);
   const plinkXPath = (gameName) => `//a[text()="${gameName}'s link"]`;
   for (let p = 0; p < participants.length; p++) {
     const participant = participants[p];
-    await page.waitForXPath(plinkXPath(participant));
-    const plinks = await page.$x(plinkXPath(participant.gameName));
-    const plink = plinks[0];
-    participants[p].plink = plink;
-    participants[p].plinkHref = plink.href;
+    await page.waitForXPath(plinkXPath(participant.gameName));
+    const plinkHref = await page.$eval(
+      "xpath/" + plinkXPath(participant.gameName),
+      (el) => el.href
+    );
+    console.log(plinkHref);
+    participants[p].plinkHref = plinkHref;
   }
   const firstGuest = participants[1];
-  await page.click("xpath/" + plinkXPath(firstGuest.gameName));
+  await page.goto(firstGuest.plinkHref);
 
   ////////////////////////////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////////////////////////

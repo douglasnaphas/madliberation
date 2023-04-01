@@ -225,13 +225,15 @@ const waitOptions = { timeout: timeoutMs /*, visible: true*/ };
   }
 
   // figure out who will submit none, lastGuest exempt
-  const nonSubmitterIndex = Math.floor(Math.random() * participants.length - 1);
+  const nonSubmitterIndex = Math.floor(
+    Math.random() * (participants.length - 1)
+  );
   // e.g., if there are 3 participants, we want to pick between 0 and 1
   // figure out who will submit all but one, lastGuest exempt
   let partialSubmitterIndex;
   while (!Number.isInteger(partialSubmitterIndex)) {
     const tentativePartialSubmitterIndex = Math.floor(
-      Math.random() * participants.length - 1
+      Math.random() * (participants.length - 1)
     );
     if (tentativePartialSubmitterIndex !== nonSubmitterIndex) {
       partialSubmitterIndex = tentativePartialSubmitterIndex;

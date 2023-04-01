@@ -207,6 +207,11 @@ const itGetArrayByAttribute = async (page, attribute) => {
   const guestNameTextBoxSelector = "#guest-name-input";
   const guestEmailTextBoxSelector = "#guest-email-input";
   await page.waitForSelector(guestNameTextBoxSelector, waitOptions);
+  const editHref = page.url();
+  const editUrl = new URL(editHref);
+  const sederCode = editUrl.searchParams.get("sederCode");
+  // TODO: Make sure the link that the leader is prompted to save matches what's
+  // currently in the address bar
   const participants = [{ gameName: leaderName, email: leaderEmailAddress }];
   for (let p = 1; p < numberOfParticipants; p++) {
     const participant = {
@@ -256,11 +261,30 @@ const itGetArrayByAttribute = async (page, attribute) => {
       "xpath/" + plinkXPath(participant.gameName),
       (el) => el.href
     );
-    console.log(plinkHref);
     participants[p].plinkHref = plinkHref;
   }
-  const firstGuest = participants[1];
-  await page.goto(firstGuest.plinkHref);
+
+  ///////////// Blanks ////////////////////////////////////////////////////////
+  const lastGuest = participants[participants.length - 1];
+  // start with the last guest and work backwards
+  // we are only going to submit in the browser once, so let's do it not as the
+  // leader
+  await page.goto(lastGuest.plinkHref);
+  const promptIntroXPath = '//*[text()="Enter a word or phrase to replace..."]';
+  await page.waitForXPath(promptIntroXPath, waitOptions);
+  // We're on the Blanks page for the last guest
+  // let's grab all assignments via backend-v2, and plan out our answers
+  const plinkHref2AssignmentsUri = (hr) => {
+    const u = new URL(hr);
+    u.search += `&roomcode=${sederCode}`;
+    u.pathname = "/v2/assignments";
+    return u.href;
+  };
+  const lastGuestAssignmentsUri = plinkHref2AssignmentsUri(lastGuest.plinkHref);
+  const lastGuestAssignmentsResponse = await fetch(lastGuestAssignmentsUri);
+  const lastGuestAssignments = await lastGuestAssignmentsResponse.json();
+  console.log(lastGuestAssignments[0].prompt);
+  for (let p = participants.length - 1; p >= 0; p--) {}
 
   ////////////////////////////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////////////////////////

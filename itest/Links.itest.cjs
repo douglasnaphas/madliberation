@@ -2,7 +2,7 @@
 
 const puppeteer = require("puppeteer");
 const commander = require("commander");
-const crypto = require("crypto");
+const { GetObjectCommand, S3Client } = require("@aws-sdk/client-s3");
 
 commander
   .version("1.0.0")
@@ -25,6 +25,10 @@ const DEFAULT_NUMBER_OF_PARTICIPANTS = 22; // Two+ groups of 10
 // and seders often have about 20+ people
 const numberOfParticipants =
   commander.opts().participants || DEFAULT_NUMBER_OF_PARTICIPANTS;
+if (numberOfParticipants < 2) {
+  console.error("Need at least 2 participants");
+  process.exit(2);
+}
 const browserOptions = {
   headless: commander.opts().slow ? false : true,
   args: ["--no-sandbox"],
@@ -40,123 +44,8 @@ const failTest = async (err, msg, browser) => {
 };
 
 const waitOptions = { timeout: timeoutMs /*, visible: true*/ };
-const waitForNavigationOptions = { timeout: timeoutMs };
-const clickOptions = { delay: 200 };
-const typeOptions = { delay: 90 };
-const itWait = async ({ page, madliberationid }) => {
-  await page
-    .waitForSelector(`[madliberationid="${madliberationid}"]`, waitOptions)
-    .catch(async (e) => {
-      failTest(e, `Could not find ${madliberationid}`);
-    });
-};
-const itWaitForAttribute = async (page, attribute) => {
-  await page.waitForSelector(`[${attribute}]`, waitOptions).catch(async (e) => {
-    failTest(e, `Could not find attribute ${attribute}`);
-  });
-};
-const itClick = async ({ page, madliberationid }) => {
-  await itWait({ page: page, madliberationid: madliberationid });
-  await page
-    .click(`[madliberationid="${madliberationid}"]`, clickOptions)
-    .catch(async (e) => {
-      failTest(e, `Could not click ${madliberationid}`);
-    });
-};
-const itType = async ({ page, madliberationid, text }) => {
-  await itClick({ page: page, madliberationid: madliberationid });
-  await page
-    .type(`[madliberationid="${madliberationid}"]`, text, typeOptions)
-    .catch(async (e) => {
-      failTest(e, `Could not type into ${madliberationid}`);
-    });
-};
-const assertOnUrl = ({ page, expectedUrl }) => {
-  if (expectedUrl !== page.url()) {
-    failTest(
-      "unexpected URL",
-      `expected URL to be ${expectedUrl}` +
-        ` after navigation, got ${page.url()}`
-    );
-  }
-};
-const itNavigate = async ({ page, madliberationid, expectedLandingPage }) => {
-  await itWait({ page: page, madliberationid: madliberationid });
-  await Promise.all([
-    page.click(`[madliberationid="${madliberationid}"]`, clickOptions),
-    page.waitForNavigation(waitForNavigationOptions),
-  ]).catch(async (e) => {
-    failTest(e, `Could not navigate by clicking on ${madliberationid}`);
-  });
-  if (expectedLandingPage) {
-    assertOnUrl({ page, expectedUrl: expectedLandingPage });
-  }
-};
-const itGetText = async ({ page, madliberationid }) => {
-  await itWait({ page: page, madliberationid: madliberationid });
-  const text = await page
-    .$$(`[madliberationid="${madliberationid}"]`)
-    .then((a) => {
-      if (!Array.isArray(a) || a.length < 1) {
-        throw new Error(`Could not get text from ${madliberationid}`);
-      }
-      return a[0].getProperty("textContent");
-    })
-    .then((textContent) => {
-      return textContent.jsonValue();
-    })
-    .catch(async (e) => {
-      failTest(e, `Failed getting text content of ${madliberationid}`);
-    });
-  return text;
-};
-const itGetGroupText = async (page, containerMLId, groupName) => {
-  await itWait({ page: page, madliberationid: containerMLId }).catch(
-    async (e) => {
-      failTest(e, `Failed to find container ${containerMLId}`);
-    }
-  );
-  const container = await page
-    .$(`[madliberationid="${containerMLId}"]`)
-    .catch(async (e) => {
-      failTest(e, `Failed to get container ${containerMLId}`);
-    });
-  const texts = await container
-    .$$eval(`[${groupName}]`, (nodes) => nodes.map((n) => n.innerText))
-    .catch(async (e) => {
-      failTest(e, `Failed to get group ${groupName}`);
-    });
-  return texts;
-};
-const itGetArrayByAttribute = async (page, attribute) => {
-  const handles = await page.$$(`[${attribute}]`).catch(async (e) => {
-    failTest(e, `Failed getting array of elements with attribute ${attribute}`);
-  });
-  return handles;
-};
 
 (async () => {
-  ////////////////////////////////////////////////////////////////////////////////
-  ////////////////////////////////////////////////////////////////////////////////
-  // Setup
-  // prereq: for generating random user credentials
-  // Set up test user
-  const randString = (options) => {
-    const { numLetters } = options;
-    const alphabet = (
-      "ABCDEFGHIJKLMNOPQRSTUVWXYZ" + "abcdefghijklmnopqrstuvwxyz"
-    ).split("");
-    let str = "";
-    for (let i = 0; i < numLetters; i++) {
-      str =
-        str +
-        alphabet[
-          parseInt(crypto.randomBytes(3).toString("hex"), 16) % alphabet.length
-        ];
-    }
-    return str;
-  };
-
   ////////////////////////////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////////////////////////
   // Actual test
@@ -210,6 +99,11 @@ const itGetArrayByAttribute = async (page, attribute) => {
   const editHref = page.url();
   const editUrl = new URL(editHref);
   const sederCode = editUrl.searchParams.get("sederCode");
+  const editUrl2PathUrl = (e) => {
+    const u = new URL(e.href);
+    u.pathname = "/v2/path";
+    return u.href;
+  };
   // TODO: Make sure the link that the leader is prompted to save matches what's
   // currently in the address bar
   const participants = [{ gameName: leaderName, email: leaderEmailAddress }];
@@ -289,6 +183,28 @@ const itGetArrayByAttribute = async (page, attribute) => {
   // get the read roster link
   // get the read link
   // get the script from s3, so that we can check for the right defaults
+  const pathResponse = await fetch(editUrl2PathUrl(editUrl));
+  const pathData = await pathResponse.json();
+  const path = pathData.path;
+  const scriptBucket = path.split("/")[0];
+  const scriptKey = path.split("/")[1] + ".json";
+  const s3Client = new S3Client({});
+  const s3GetCommand = new GetObjectCommand({
+    Bucket: scriptBucket,
+    Key: scriptKey,
+  });
+  let script;
+  try {
+    const getScriptResponse = await s3Client.send(s3GetCommand);
+    const scriptString = await getScriptResponse.Body.transformToString();
+    script = JSON.parse(scriptString);
+    console.log("script page count:", script.pages.length);
+  } catch (error) {
+    console.error("Failed to fetch script");
+    console.error(error);
+    process.exit(3);
+  }
+
   const gameNameAndAssignmentId2Answer /* not assignment index */ = (
     gameName,
     assignmentId

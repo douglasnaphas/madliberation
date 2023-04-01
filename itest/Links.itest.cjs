@@ -15,6 +15,10 @@ commander
     "-p --participants <PARTICIPANTS>",
     "Number of participants, including the leader, default 22"
   )
+  .option(
+    "-t --term <TERM>",
+    "Term to look for in the script path, default 2022_Script, another popular value is Practice_Script"
+  )
   .parse(process.argv);
 const slowDown = 90;
 const timeoutMs = 10000 + (commander.opts().slow ? slowDown + 2000 : 0);
@@ -25,10 +29,14 @@ const DEFAULT_NUMBER_OF_PARTICIPANTS = 22; // Two+ groups of 10
 // and seders often have about 20+ people
 const numberOfParticipants =
   commander.opts().participants || DEFAULT_NUMBER_OF_PARTICIPANTS;
-if (numberOfParticipants < 2) {
-  console.error("Need at least 2 participants");
+if (numberOfParticipants < 3) {
+  console.error(
+    "Need at least 3 participants: 1 to submit all libs, 1 to submit some, 1 to submit none"
+  );
   process.exit(2);
 }
+const DEFAULT_SCRIPT_TERM = "2022_Script";
+const scriptTerm = commander.opts().term || DEFAULT_SCRIPT_TERM;
 const browserOptions = {
   headless: commander.opts().slow ? false : true,
   args: ["--no-sandbox"],
@@ -75,7 +83,7 @@ const waitOptions = { timeout: timeoutMs /*, visible: true*/ };
       failTest(e, "Pick script accordion not found", browser);
     });
   await page.click("xpath/" + pickScriptAccordionTextXPath);
-  const script2022RadioButtonXPath = '//input[contains(@value,"2022_Script")]';
+  const script2022RadioButtonXPath = `//input[contains(@value,"${scriptTerm}")]`;
   await page.waitForXPath(script2022RadioButtonXPath, waitOptions);
   await page.click("xpath/" + script2022RadioButtonXPath);
   const yourInfoAccordionXPath = '//*[text()="Your info"]';
@@ -174,14 +182,6 @@ const waitOptions = { timeout: timeoutMs /*, visible: true*/ };
     u.pathname = "/v2/assignments";
     return u.href;
   };
-  const plinkHref2SubmitLibUri = (hr) => {
-    const u = new URL(hr);
-    u.search = ``;
-    u.pathname = "/v2/submit-lib";
-    return u.href;
-  };
-  // get the read roster link
-  // get the read link
   // get the script from s3, so that we can check for the right defaults
   const pathResponse = await fetch(editUrl2PathUrl(editUrl));
   const pathData = await pathResponse.json();
@@ -198,17 +198,23 @@ const waitOptions = { timeout: timeoutMs /*, visible: true*/ };
     const getScriptResponse = await s3Client.send(s3GetCommand);
     const scriptString = await getScriptResponse.Body.transformToString();
     script = JSON.parse(scriptString);
-    console.log("script page count:", script.pages.length);
   } catch (error) {
     console.error("Failed to fetch script");
     console.error(error);
     process.exit(3);
   }
+  // grab the defaults
+  const defaults = {};
+  script.pages.forEach((page) => {
+    page.lines.forEach((line) => {
+      line.segments.forEach((segment) => {
+        if (segment.type === "lib") {
+          defaults[segment.id] = segment.default;
+        }
+      });
+    });
+  });
 
-  const gameNameAndAssignmentId2Answer /* not assignment index */ = (
-    gameName,
-    assignmentId
-  ) => `${gameName}-${assignmentId}`;
   for (let p = participants.length - 1; p >= 0; p--) {
     const assignmentsResponse = await fetch(
       plinkHref2AssignmentsUri(participants[p].plinkHref)
@@ -216,6 +222,96 @@ const waitOptions = { timeout: timeoutMs /*, visible: true*/ };
     const assignments = await assignmentsResponse.json();
     participants[p].assignments = assignments;
   }
+
+  // figure out who will submit none, lastGuest exempt
+  const nonSubmitterIndex = Math.floor(Math.random() * participants.length - 1);
+  // e.g., if there are 3 participants, we want to pick between 0 and 1
+  // figure out who will submit all but one, lastGuest exempt
+  let partialSubmitterIndex;
+  while (!Number.isInteger(partialSubmitterIndex)) {
+    const tentativePartialSubmitterIndex = Math.floor(
+      Math.random() * participants.length - 1
+    );
+    if (tentativePartialSubmitterIndex !== nonSubmitterIndex) {
+      partialSubmitterIndex = tentativePartialSubmitterIndex;
+    }
+  }
+  // figure out which answer the partial submitter won't submit
+  const omittedAnswerIndex = 0;
+
+  // considers non-submitter index and partial submitter index
+  const answerToType = ({ participantIndex, assignmentId }) => {
+    if (participantIndex === nonSubmitterIndex) {
+      return "";
+    }
+    if (
+      participantIndex === partialSubmitterIndex &&
+      participants[participantIndex].assignments[omittedAnswerIndex].id ===
+        assignmentId
+    ) {
+      return "";
+    }
+    return `${participants[participantIndex].gameName}-${assignmentId}`;
+  };
+  // considers non-submitter index, partial submitter index, and defaults
+  const expectedAnswer = ({ participantIndex, assignmentId }) => {
+    if (participantIndex === nonSubmitterIndex) {
+      return defaults[assignmentId];
+    }
+    if (
+      participantIndex === partialSubmitterIndex &&
+      participants[participantIndex].assignments[omittedAnswerIndex].id ===
+        assignmentId
+    ) {
+      return defaults[assignmentId];
+    }
+    return `${participants[participantIndex].gameName}-${assignmentId}`;
+  };
+
+  // submit libs
+  const plinkHref2SubmitLibUri = (hr) => {
+    const u = new URL(hr);
+    u.search = ``;
+    u.pathname = "/v2/submit-lib";
+    return u.href;
+  };
+  // use the browser for the lastGuest
+  for (let asi = 0; asi < lastGuest.assignments.length; asi++) {
+    const answerText = answerToType({
+      participantIndex: participants.length - 1,
+      assignmentId: lastGuest.assignments[asi].id,
+    });
+
+    // click the chip
+    const chipSelector = `#prompt-chip-${asi}`;
+    await page.click(chipSelector);
+
+    // wait for the card
+    const thisPromptXPath = `//*[@id="this-prompt"][text()="${lastGuest.assignments[asi].prompt}"]`;
+    await page.waitForXPath(thisPromptXPath, waitOptions);
+
+    // enter the text
+    const answerBoxSelector = `#answer`;
+    await page.type(answerBoxSelector, answerText);
+
+    // click submit
+    const submitThisOneButtonXPath = `//button[text()="Submit this one"][not(@disabled)]`;
+    await page.click("xpath/" + submitThisOneButtonXPath);
+
+    // wait for the current answer
+    const yourCurrentAnswerIntroXPath = `//*[text()="Your current answer is:"]`;
+    await page.waitForXPath(yourCurrentAnswerIntroXPath);
+  }
+
+  // check the read roster
+  // get the read roster link, log it
+
+  // check the script
+  // get the read link, log it
+  // loop through the libs in the readScript, making sure the provided answer
+  // matches the expected answer
+  // loop through the participants, making sure each provided answer appears
+  // in the expected place in the script
 
   ////////////////////////////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////////////////////////

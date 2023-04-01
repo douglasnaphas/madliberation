@@ -33,7 +33,14 @@ then
 else
   PARTICIPANTS_ARG=
 fi
+if [[ ! -z "${TERM}" ]]
+then
+  TERM_ARG="--term ${TERM}"
+else
+  TERM_ARG=
+fi
 node Links.itest.cjs \
   --site ${APP_URL} \
   ${SLOW_ARG} \
-  ${PARTICIPANTS_ARG}
+  ${PARTICIPANTS_ARG} \
+  ${TERM_ARG}

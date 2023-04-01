@@ -228,7 +228,6 @@ export default function Edit() {
     const urlSearchParams = new URLSearchParams(window.location.search);
     sederCode = urlSearchParams.get("sederCode");
     pw = urlSearchParams.get("pw");
-    console.log(`found sederCode ${sederCode} and pw ${pw}`);
   }
   React.useEffect(() => {
     if (sederCode && pw) {

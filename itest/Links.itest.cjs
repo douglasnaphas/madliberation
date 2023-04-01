@@ -83,6 +83,7 @@ const waitOptions = { timeout: timeoutMs /*, visible: true*/ };
       failTest(e, "Pick script accordion not found", browser);
     });
   await page.click("xpath/" + pickScriptAccordionTextXPath);
+  console.log("scriptTerm:", scriptTerm);
   const script2022RadioButtonXPath = `//input[contains(@value,"${scriptTerm}")]`;
   await page.waitForXPath(script2022RadioButtonXPath, waitOptions);
   await page.click("xpath/" + script2022RadioButtonXPath);
@@ -269,12 +270,7 @@ const waitOptions = { timeout: timeoutMs /*, visible: true*/ };
   };
 
   // submit libs
-  const plinkHref2SubmitLibUri = (hr) => {
-    const u = new URL(hr);
-    u.search = ``;
-    u.pathname = "/v2/submit-lib";
-    return u.href;
-  };
+
   // use the browser for the lastGuest
   for (let asi = 0; asi < lastGuest.assignments.length; asi++) {
     const answerText = answerToType({
@@ -287,10 +283,12 @@ const waitOptions = { timeout: timeoutMs /*, visible: true*/ };
     await page.click(chipSelector);
 
     // wait for the card
-    const thisPromptXPath = `//*[@id="this-prompt"][text()="${lastGuest.assignments[asi].prompt}"]`;
+    console.log("about to wait for the card...");
+    const thisPromptXPath = `//*[@id="this-prompt"][text()='${lastGuest.assignments[asi].prompt}']`;
     await page.waitForXPath(thisPromptXPath, waitOptions);
 
     // enter the text
+    console.log("about to type in the box...");
     const answerBoxSelector = `#answer`;
     await page.type(answerBoxSelector, answerText);
 
@@ -301,6 +299,32 @@ const waitOptions = { timeout: timeoutMs /*, visible: true*/ };
     // wait for the current answer
     const yourCurrentAnswerIntroXPath = `//*[text()="Your current answer is:"]`;
     await page.waitForXPath(yourCurrentAnswerIntroXPath);
+  }
+  // submit the rest of the libs with the backend directly
+  const plinkHref2SubmitLibUri = (hr) => {
+    const u = new URL(hr);
+    u.search = ``;
+    u.pathname = "/v2/submit-lib";
+    return u.href;
+  };
+  const plinkHref2SubmitLibFetchInit = (hr) => {
+    const u = new URL(hr);
+    const fetchInit = {
+      method: "POST",
+      body: JSON.stringify({
+        sederCode,
+        pw: u.searchParams.get("pw"),
+        ph: u.searchParams.get("ph"),
+      }),
+      headers: { "Content-Type": "application/json" },
+    };
+  };
+  for (let p = participants.length - 2; p >= 0; p--) {
+    const submitLibUri = plinkHref2SubmitLibUri(participants[p].plinkHref);
+    const submitLibFetchInit = plinkHref2SubmitLibFetchInit(
+      participants[p].plinkHref
+    );
+    for (let asi = 0; asi < participants[p].assignments.length; asi++) {}
   }
 
   // check the read roster

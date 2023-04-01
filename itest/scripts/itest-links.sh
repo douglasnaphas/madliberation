@@ -39,6 +39,8 @@ then
 else
   TERM_ARG=
 fi
+echo "TERM_ARG:"
+echo $TERM_ARG
 node Links.itest.cjs \
   --site ${APP_URL} \
   ${SLOW_ARG} \

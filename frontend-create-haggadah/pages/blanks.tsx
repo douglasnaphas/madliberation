@@ -89,6 +89,7 @@ const PromptSection = (props: {
           )}
         <br />
         <TextField
+          id="answer"
           variant="outlined"
           fullWidth
           // defaultValue={answer || ""}

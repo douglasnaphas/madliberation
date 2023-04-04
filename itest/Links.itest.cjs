@@ -378,7 +378,7 @@ const waitOptions = { timeout: timeoutMs /*, visible: true*/ };
 
   ///////////////////////////// Haggadah //////////////////////////////////////
   await page.goto(readLinkHref);
-  const readThisPageAloudXPath = `//*[text()="Read this page aloud. Click a gray box to see what the prompt was."]`;
+  const readThisPageAloudXPath = `//*[text()="Read aloud. Have a new person read each page, going around the Seder. Click a gray box to see the prompt."]`;
   await page.waitForXPath(readThisPageAloudXPath);
   const nextPageXPath = `//button[text()="Next page"]`;
   await page.waitForXPath(nextPageXPath);

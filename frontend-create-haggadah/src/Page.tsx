@@ -123,7 +123,7 @@ const Page = (props: PageProps) => {
   });
   return (
     <div>
-      <div>
+      <div id="read-this-page-aloud">
         <StageDirection>
           Read aloud. Have a new person read each page, going around the Seder.
           Click a gray box to see the prompt.

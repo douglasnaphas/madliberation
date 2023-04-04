@@ -17,7 +17,7 @@ commander
   )
   .option(
     "-t --term <TERM>",
-    "Term to look for in the script path, default 2022_Script, another popular value is Practice_Script"
+    "Term to look for in the script path, default 2023_Script, another popular value is Practice_Script"
   )
   .parse(process.argv);
 const slowDown = 90;
@@ -35,7 +35,7 @@ if (numberOfParticipants < 3) {
   );
   process.exit(2);
 }
-const DEFAULT_SCRIPT_TERM = "2022_Script";
+const DEFAULT_SCRIPT_TERM = "2023_Script";
 const scriptTerm = commander.opts().term || DEFAULT_SCRIPT_TERM;
 const browserOptions = {
   headless: commander.opts().slow ? false : true,
@@ -84,9 +84,9 @@ const waitOptions = { timeout: timeoutMs /*, visible: true*/ };
     });
   await page.click("xpath/" + pickScriptAccordionTextXPath);
   console.log("scriptTerm:", scriptTerm);
-  const script2022RadioButtonXPath = `//input[contains(@value,"${scriptTerm}")]`;
-  await page.waitForXPath(script2022RadioButtonXPath, waitOptions);
-  await page.click("xpath/" + script2022RadioButtonXPath);
+  const desiredScriptRadioButtonXPath = `//input[contains(@value,"${scriptTerm}")]`;
+  await page.waitForXPath(desiredScriptRadioButtonXPath, waitOptions);
+  await page.click("xpath/" + desiredScriptRadioButtonXPath);
   const yourInfoAccordionXPath = '//*[text()="Your info"]';
   await page.waitForXPath(yourInfoAccordionXPath, waitOptions);
   await page.click("xpath/" + yourInfoAccordionXPath);

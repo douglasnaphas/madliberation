@@ -99,7 +99,7 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets. DEV_AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: "us-east-1"
         run: |
-            npm run install-build-test-deploy
+          npm run install-build-test-deploy
   content:
     runs-on: ubuntu-latest
     needs: webapp
@@ -117,7 +117,7 @@ jobs:
         working-directory: content
         run: |
           echo "Skipping, as this tests the incomplete preview-Haggadah feature"
-#          npm run it
+      #          npm run it
       - name: Deploy content
         working-directory: content
         env:
@@ -144,7 +144,7 @@ jobs:
           AWS_REGION: "us-east-1"
         run: |
           npm run itest
-  itest-links:
+  itest-links-2023:
     runs-on: ubuntu-latest
     needs: [frontend, frontend-create-haggadah, content]
     steps:
@@ -153,12 +153,52 @@ jobs:
         working-directory: itest
         run: |
           npm install
-      - name: Run itest on the v2 link-based flow (dev account)
+      - name: Run itest on the v2 link-based flow, 2023 (dev account)
         working-directory: itest
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.DEV_AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.DEV_AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: "us-east-1"
           AWS_REGION: "us-east-1"
+          PARTICIPANTS_ARG: "12"
+        run: |
+          npm run itest-links
+  itest-links-2022:
+    runs-on: ubuntu-latest
+    needs: [frontend, frontend-create-haggadah, content]
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install itest
+        working-directory: itest
+        run: |
+          npm install
+      - name: Run itest on the v2 link-based flow, 2022 (dev account)
+        working-directory: itest
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.DEV_AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.DEV_AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: "us-east-1"
+          AWS_REGION: "us-east-1"
+          SCRIPT_TERM: "2022_Script"
+        run: |
+          npm run itest-links
+  itest-links-2019-magid:
+    runs-on: ubuntu-latest
+    needs: [frontend, frontend-create-haggadah, content]
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install itest
+        working-directory: itest
+        run: |
+          npm install
+      - name: Run itest on the v2 link-based flow, 2019 magid (dev account)
+        working-directory: itest
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.DEV_AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.DEV_AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: "us-east-1"
+          AWS_REGION: "us-east-1"
+          PARTICIPANTS_ARG: "8"
+          SCRIPT_TERM: "2019_Magid"
         run: |
           npm run itest-links

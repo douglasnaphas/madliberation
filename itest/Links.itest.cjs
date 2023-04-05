@@ -288,8 +288,11 @@ const waitOptions = { timeout: timeoutMs /*, visible: true*/ };
     await page.click(chipSelector);
 
     // wait for the card
-    const thisPromptXPath = `//*[@id="this-prompt"][text()='${lastGuest.assignments[asi].prompt}']`;
-    await page.waitForXPath(thisPromptXPath, waitOptions);
+    await page.waitForFunction(
+      'document.getElementById("this-prompt").textContent.includes(`' +
+        lastGuest.assignments[asi].prompt +
+        "`)"
+    );
 
     // enter the text
     const answerBoxSelector = `#answer`;

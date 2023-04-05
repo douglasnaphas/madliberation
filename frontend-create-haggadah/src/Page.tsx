@@ -123,9 +123,10 @@ const Page = (props: PageProps) => {
   });
   return (
     <div>
-      <div>
+      <div id="read-this-page-aloud">
         <StageDirection>
-          Read this page aloud. Click a gray box to see what the prompt was.
+          Read aloud. Have a new person read each page, going around the Seder.
+          Click a gray box to see the prompt.
         </StageDirection>
       </div>
       <div>{lines}</div>

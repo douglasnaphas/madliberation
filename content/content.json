@@ -158,7 +158,7 @@
     },
     {
       "haggadah_description": {
-        "S": "The latest Haggadah, from 2022. For in-person Seders."
+        "S": "From 2022. Pretty good. Lots of mad libs."
       },
       "lib_id": {
         "S": "script#011"
@@ -181,9 +181,35 @@
       "script_number": {
         "N": "6"
       }
+    },
+    {
+      "haggadah_description": {
+        "S": "The latest Haggadah, from 2023. VERY similar to the 2022 script."
+      },
+      "lib_id": {
+        "S": "script#012"
+      },
+      "haggadah_short_desc": {
+        "S": "2023 Script"
+      },
+      "room_code": {
+        "S": "script#AAAAAL"
+      },
+      "path": {
+        "S": "012-2023_Script"
+      },
+      "is_script": {
+        "N": "1"
+      },
+      "haggadah_name": {
+        "S": "0012 - 2023 Script"
+      },
+      "script_number": {
+        "N": "7"
+      }
     }
   ],
-  "Count": 7,
-  "ScannedCount": 7,
+  "Count": 8,
+  "ScannedCount": 8,
   "ConsumedCapacity": null
 }

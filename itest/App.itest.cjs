@@ -279,7 +279,7 @@ const submitNoLibs = async (page) => {
         },
       ],
     };
-    const adminCreateUserCommand = new AdminCreateUserCommand(input);
+    const adminCreateUserCommand = new AdminCreateUserCommand(adminCreateUserInput);
     const adminCreateUserResponse = await cognitoIdentityProviderClient.send(
       adminCreateUserCommand
     );

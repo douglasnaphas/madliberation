@@ -252,6 +252,48 @@ const submitNoLibs = async (page) => {
         (setupOnly ? ` and temp password ${tempPassword}` : "")
     );
   };
+  const {
+    CognitoIdentityProviderClient,
+    AdminCreateUserCommand,
+  } = require("@aws-sdk/client-cognito-identity-provider");
+  const createUser3 = async (userName, tempPassword) => {
+    const cognitoIdentityProviderClient = new CognitoIdentityProviderClient();
+    const adminCreateUserInput = {
+      // AdminCreateUserRequest
+      UserPoolId: userPoolId, // required
+      Username: userName, // required
+      MessageAction: "SUPPRESS",
+      TemporaryPassword: tempPassword,
+      UserAttributes: [
+        // AttributeListType
+        {
+          // AttributeType
+          Name: "nickname", // required
+          Value: `nn-${userName}`,
+        },
+      ],
+      ValidationData: [
+        {
+          Name: "email_verified", // required
+          Value: "True",
+        },
+      ],
+    };
+    const adminCreateUserCommand = new AdminCreateUserCommand(input);
+    const adminCreateUserResponse = await cognitoIdentityProviderClient.send(
+      adminCreateUserCommand
+    );
+    if (!adminCreateUserResponse || !adminCreateUserResponse.User) {
+      failTest(
+        adminCreateUserResponse,
+        "Failed to create a user in AWS SDK v3 setup"
+      );
+    }
+    console.log(
+      `created user with username ${userName}` +
+        (setupOnly ? ` and temp password ${tempPassword}` : "")
+    );
+  };
   const user2NameLength = 8;
   const user2Name =
     randString({ numLetters: user2NameLength }) + "@example.com";
@@ -260,7 +302,7 @@ const submitNoLibs = async (page) => {
   const user2PasswordLength = 8;
   const user2Password = randString({ numLetters: user2PasswordLength });
 
-  await createUser(user2Name, user2TempPassword);
+  await createUser3(user2Name, user2TempPassword);
   if (setupOnly) {
     console.log("--setup-only supplied, exiting");
     process.exit(0);

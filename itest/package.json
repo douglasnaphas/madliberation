@@ -33,7 +33,6 @@
   "dependencies": {
     "@aws-sdk/client-cognito-identity-provider": "^3.328.0",
     "@aws-sdk/client-s3": "^3.328.0",
-    "aws-sdk": "^2.1373.0",
     "commander": "^7.0.0",
     "puppeteer": "^19.0.0"
   }

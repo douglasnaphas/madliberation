@@ -217,41 +217,6 @@ const submitNoLibs = async (page) => {
     return str;
   };
 
-  const AWS = require("aws-sdk");
-  const createUser = async (userName, tempPassword) => {
-    const cognitoidentityserviceprovider =
-      new AWS.CognitoIdentityServiceProvider({
-        apiVersion: "2016-04-18",
-      });
-    const adminCreateUserParams = {
-      UserPoolId: userPoolId,
-      Username: userName,
-      MessageAction: "SUPPRESS",
-      TemporaryPassword: tempPassword,
-      UserAttributes: [{ Name: "nickname", Value: `nn-${userName}` }],
-      ValidationData: [
-        {
-          Name: "email_verified",
-          Value: "True",
-        },
-      ],
-    };
-    const createUserResponse = await new Promise((resolve, reject) => {
-      cognitoidentityserviceprovider.adminCreateUser(
-        adminCreateUserParams,
-        (err, data) => {
-          resolve({ err, data });
-        }
-      );
-    });
-    if (createUserResponse.err) {
-      failTest(createUserResponse.err, "Failed to create a user in setup");
-    }
-    console.log(
-      `created user with username ${userName}` +
-        (setupOnly ? ` and temp password ${tempPassword}` : "")
-    );
-  };
   const {
     CognitoIdentityProviderClient,
     AdminCreateUserCommand,

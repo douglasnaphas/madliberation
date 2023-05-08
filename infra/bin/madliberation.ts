@@ -2,6 +2,7 @@
 import { App } from "aws-cdk-lib";
 import { Console } from "console";
 const AWS = require("aws-sdk");
+const { SSMClient, GetParametersCommand } = require("@aws-sdk/client-ssm");
 const crypto = require("crypto");
 import {
   MadliberationWebapp,
@@ -74,6 +75,29 @@ const stackname = require("@cdk-turnkey/stackname");
         .digest("hex")
         .toLowerCase();
       console.log("value hash:");
+      console.log(valueHash);
+      console.log("**************");
+      ssmParameterData[p.Name] = p.Value;
+    }
+  );
+
+  const ssmClient = new SSMClient();
+  const getParametersInput = {
+    Names: configParams.map((c) => c.ssmParamName()),
+    WithDecryption: true,
+  };
+  const getParametersCommand = new GetParametersCommand(getParametersInput);
+  const getParametersResponse = await ssmClient.send(getParametersCommand);
+  getParametersResponse?.Parameters?.forEach(
+    (p: { Name: string; Value: string }) => {
+      console.log("(v3) Received parameter named:");
+      console.log(p.Name);
+      valueHash = crypto
+        .createHash("sha256")
+        .update(p.Value)
+        .digest("hex")
+        .toLowerCase();
+      console.log("(v3) value hash:");
       console.log(valueHash);
       console.log("**************");
       ssmParameterData[p.Name] = p.Value;

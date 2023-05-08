@@ -81,7 +81,7 @@ const stackname = require("@cdk-turnkey/stackname");
     }
   );
 
-  const ssmClient = new SSMClient();
+  const ssmClient = new SSMClient({ region: process.env.AWS_DEFAULT_REGION });
   const getParametersInput = {
     Names: configParams.map((c) => c.ssmParamName()),
     WithDecryption: true,

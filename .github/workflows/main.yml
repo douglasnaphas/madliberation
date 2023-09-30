@@ -77,20 +77,12 @@ jobs:
         run: |
           rm -rf node_modules
           npm install --production
-          echo 'in backend'
-          pwd
-          ls
-          ls node_modules
           du -hs *
       - name: Build backend-v2 prod artifact
         working-directory: backend-v2
         run: |
           rm -rf node_modules
           npm install --production
-          echo 'in backend-v2'
-          pwd
-          ls
-          ls node_modules
           du -hs *
       - name: Deploy the webapp stack to the staging account
         working-directory: infra

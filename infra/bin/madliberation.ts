@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 import { App } from "aws-cdk-lib";
 import { Console } from "console";
-const AWS = require("aws-sdk");
 const { SSMClient, GetParametersCommand } = require("@aws-sdk/client-ssm");
+import { SESv2Client, GetEmailIdentityCommand } from "@aws-sdk/client-sesv2";
 const crypto = require("crypto");
 import {
   MadliberationWebapp,
@@ -79,41 +79,38 @@ const stackname = require("@cdk-turnkey/stackname");
   if (webappProps.fromAddress) {
     // Validate the fromAddress, if provided
     const { fromAddress } = webappProps;
-    const sesv2 = new AWS.SESV2({ apiVersion: "2019-09-27" });
+    const sesv2Client = new SESv2Client({
+      region: process.env.AWS_DEFAULT_REGION,
+    });
     // Check to make sure the email is verified and has sending enabled
-    let sesv2Response: any;
-    const getEmailIdentityParams = {
+    const getEmailIdentityInput = {
       EmailIdentity: fromAddress,
     };
-    sesv2Response = await new Promise((resolve, reject) => {
-      sesv2.getEmailIdentity(getEmailIdentityParams, (err: any, data: any) => {
-        resolve({ err, data });
-      });
-    });
-    if (sesv2Response.err) {
-      console.log("error: Could not get email identity, tried to get:");
-      console.log(fromAddress);
-      process.exit(1);
-    }
-    if (!sesv2Response.data.VerifiedForSendingStatus) {
+    const getEmailIdentityCommand = new GetEmailIdentityCommand(
+      getEmailIdentityInput
+    );
+    const getEmailIdentityResponse = await sesv2Client.send(
+      getEmailIdentityCommand
+    );
+    if (!getEmailIdentityResponse.VerifiedForSendingStatus) {
       console.log("error: VerifiedForSendingStatus is not true for email:");
       console.log(fromAddress);
       process.exit(1);
     }
     if (
       !(
-        sesv2Response.data.DkimAttributes &&
-        sesv2Response.data.DkimAttributes.Status &&
-        sesv2Response.data.DkimAttributes.Status === "SUCCESS"
+        getEmailIdentityResponse.DkimAttributes &&
+        getEmailIdentityResponse.DkimAttributes.Status &&
+        getEmailIdentityResponse.DkimAttributes.Status === "SUCCESS"
       )
     ) {
       console.log(
         "error: DkimAttributes.Status is not SUCCESS. DkimAttributes.Status:"
       );
       console.log(
-        sesv2Response.data.DkimAttributes &&
-          sesv2Response.data.DkimAttributes.Status &&
-          sesv2Response.data.DkimAttributes.Status
+        getEmailIdentityResponse.DkimAttributes &&
+          getEmailIdentityResponse.DkimAttributes.Status &&
+          getEmailIdentityResponse.DkimAttributes.Status
       );
       console.log("email:");
       console.log(fromAddress);

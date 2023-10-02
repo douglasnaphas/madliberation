@@ -183,7 +183,7 @@ export class MadliberationWebapp extends Stack {
     });
 
     const backendHandler = new lambda.Function(this, "BackendHandler", {
-      runtime: lambda.Runtime.NODEJS_14_X,
+      runtime: lambda.Runtime.NODEJS_18_X,
       handler: "index.handler",
       code: lambda.Code.fromAsset("../backend"),
       memorySize: 3000,
@@ -217,7 +217,7 @@ export class MadliberationWebapp extends Stack {
     });
 
     const backendV2Handler = new lambda.Function(this, "BackendV2Handler", {
-      runtime: lambda.Runtime.NODEJS_14_X,
+      runtime: lambda.Runtime.NODEJS_18_X,
       handler: "index.handler",
       code: lambda.Code.fromAsset("../backend-v2"),
       memorySize: 3000,
@@ -293,7 +293,7 @@ export class MadliberationWebapp extends Stack {
 
     const makeHandler = (prefix: string) =>
       new lambda.Function(this, `${prefix.replace(/-/g, "")}Handler`, {
-        runtime: lambda.Runtime.NODEJS_14_X,
+        runtime: lambda.Runtime.NODEJS_18_X,
         handler: `${prefix.toLowerCase()}.handler`,
         code: lambda.Code.fromAsset("../backend"),
         memorySize: 3000,

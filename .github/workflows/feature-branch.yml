@@ -15,7 +15,7 @@ jobs:
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: github-actions@madliberation
+          role-to-assume: arn:aws:iam::287213416300:role/github-actions@madliberation
           aws-region: us-east-1
       - name: Identify dev account and region
         run: |

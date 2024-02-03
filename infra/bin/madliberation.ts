@@ -20,6 +20,16 @@ const stackname = require("@cdk-turnkey/stackname");
     process.exit(3);
   }
   const repository = process.env.GITHUB_REPOSITORY;
+  const managedPolicyList = [
+    iam.ManagedPolicy.fromAwsManagedPolicyName("AWSCloudFormationFullAccess"),
+    iam.ManagedPolicy.fromAwsManagedPolicyName("AmazonRoute53FullAccess"),
+    iam.ManagedPolicy.fromAwsManagedPolicyName("CloudFrontFullAccess"),
+    iam.ManagedPolicy.fromAwsManagedPolicyName("AmazonS3FullAccess"),
+    iam.ManagedPolicy.fromAwsManagedPolicyName("AmazonAPIGatewayAdministrator"),
+    iam.ManagedPolicy.fromAwsManagedPolicyName("AWSLambda_FullAccess"),
+    iam.ManagedPolicy.fromAwsManagedPolicyName("CloudWatchFullAccessV2"),
+
+  ]
   new GitHubOidcRoleStack(app, stackname("role-master"), {
     ref: "master",
     repository,
@@ -32,7 +42,7 @@ const stackname = require("@cdk-turnkey/stackname");
   new GitHubOidcRoleStack(app, stackname("role-all-branches"), {
     ref: "*",
     repository,
-    managedPolicyList: [iam.ManagedPolicy.fromAwsManagedPolicyName("IAMReadOnlyAccess")],
+    managedPolicyList: [iam.ManagedPolicy.fromAwsManagedPolicyName("AdministratorAccess")],
     policyStatements: [],
     roleName: `github-actions` +
       `@${repository.split("/").slice(-1)}`

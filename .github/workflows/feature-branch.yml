@@ -15,7 +15,7 @@ jobs:
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: arn:aws:iam::287213416300:role/github-actions@madliberation
+          role-to-assume: ${{ vars.DEV_ROLE_ARN }}
           aws-region: us-east-1
       - name: Identify dev account and region
         run: |
@@ -23,6 +23,9 @@ jobs:
           echo ${AWS_DEFAULT_REGION} | sed 's/-/+/g'
   webapp:
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
     steps:
       - uses: actions/checkout@v4
         with:
@@ -66,49 +69,66 @@ jobs:
         run: |
           rm -rf node_modules
           npm install --production
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ vars.DEV_ROLE_ARN }}
+          aws-region: us-east-1
       - name: Deploy the webapp stack to dev account
         working-directory: infra
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.DEV_AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.DEV_AWS_SECRET_ACCESS_KEY }}
-          AWS_DEFAULT_REGION: "us-east-1"
         run: |
           npm run deploy-webapp
   frontend:
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
     needs: webapp
     steps:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ vars.DEV_ROLE_ARN }}
+          aws-region: us-east-1
       - name: Deploy to the frontend bucket (dev account)
         working-directory: frontend
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.DEV_AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.DEV_AWS_SECRET_ACCESS_KEY }}
-          AWS_DEFAULT_REGION: "us-east-1"
         run: |
           npm run install-build-test-deploy
   frontend-create-haggadah:
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
     needs: webapp
     steps:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ vars.DEV_ROLE_ARN }}
+          aws-region: us-east-1
       - name: Deploy to the frontend-create-haggadah bucket   (dev account)
         working-directory: frontend-create-haggadah
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets. DEV_AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets. DEV_AWS_SECRET_ACCESS_KEY }}
-          AWS_DEFAULT_REGION: "us-east-1"
         run: |
           npm run install-build-test-deploy
   content:
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
     needs: webapp
     steps:
       - uses: actions/checkout@v3
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ vars.DEV_ROLE_ARN }}
+          aws-region: us-east-1
       - name: Install content
         working-directory: content
         run: |
@@ -124,17 +144,21 @@ jobs:
       #          npm run it
       - name: Deploy content
         working-directory: content
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.DEV_AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.DEV_AWS_SECRET_ACCESS_KEY }}
-          AWS_DEFAULT_REGION: "us-east-1"
         run: |
           npm run deploy
   itest:
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
     needs: [frontend, content]
     steps:
       - uses: actions/checkout@v3
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ vars.DEV_ROLE_ARN }}
+          aws-region: us-east-1
       - name: Install itest
         working-directory: itest
         run: |
@@ -142,17 +166,23 @@ jobs:
       - name: Run smoke test (dev account)
         working-directory: itest
         env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.DEV_AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.DEV_AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: "us-east-1"
           AWS_REGION: "us-east-1"
         run: |
           npm run itest
   itest-links-2023:
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
     needs: [frontend, frontend-create-haggadah, content]
     steps:
       - uses: actions/checkout@v3
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ vars.DEV_ROLE_ARN }}
+          aws-region: us-east-1
       - name: Install itest
         working-directory: itest
         run: |
@@ -160,8 +190,6 @@ jobs:
       - name: Run itest on the v2 link-based flow, 2023 (dev account)
         working-directory: itest
         env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.DEV_AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.DEV_AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: "us-east-1"
           AWS_REGION: "us-east-1"
           PARTICIPANTS_ARG: "12"
@@ -169,9 +197,17 @@ jobs:
           npm run itest-links
   itest-links-2022:
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
     needs: [frontend, frontend-create-haggadah, content]
     steps:
       - uses: actions/checkout@v3
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ vars.DEV_ROLE_ARN }}
+          aws-region: us-east-1
       - name: Install itest
         working-directory: itest
         run: |
@@ -179,8 +215,6 @@ jobs:
       - name: Run itest on the v2 link-based flow, 2022 (dev account)
         working-directory: itest
         env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.DEV_AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.DEV_AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: "us-east-1"
           AWS_REGION: "us-east-1"
           SCRIPT_TERM: "2022_Script"
@@ -188,9 +222,17 @@ jobs:
           npm run itest-links
   itest-links-2019-magid:
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
     needs: [frontend, frontend-create-haggadah, content]
     steps:
       - uses: actions/checkout@v3
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ vars.DEV_ROLE_ARN }}
+          aws-region: us-east-1
       - name: Install itest
         working-directory: itest
         run: |
@@ -198,8 +240,6 @@ jobs:
       - name: Run itest on the v2 link-based flow, 2019 magid (dev account)
         working-directory: itest
         env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.DEV_AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.DEV_AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: "us-east-1"
           AWS_REGION: "us-east-1"
           PARTICIPANTS_ARG: "8"

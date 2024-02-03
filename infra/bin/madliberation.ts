@@ -8,10 +8,35 @@ import {
   MadliberationWebapp,
   MadLiberationWebappProps,
 } from "../lib/madliberation-webapp";
+import { GitHubOidcRoleStack } from "../../../aws-github-oidc/GitHubOIDCRoleStack";
+import * as iam from 'aws-cdk-lib/aws-iam';
 const stackname = require("@cdk-turnkey/stackname");
 
 (async () => {
   const app = new App();
+
+  if (!process.env.GITHUB_REPOSITORY) {
+    console.error("GITHUB_REPOSITORY is not set, it should be something like douglasnaphas/aws-github-oidc");
+    process.exit(3);
+  }
+  const repository = process.env.GITHUB_REPOSITORY;
+  new GitHubOidcRoleStack(app, stackname("role-master"), {
+    ref: "master",
+    repository,
+    managedPolicyList: [iam.ManagedPolicy.fromAwsManagedPolicyName("IAMReadOnlyAccess")],
+    policyStatements: [],
+    roleName: `github-actions` +
+      `@${repository.split("/").slice(-1)}` +
+      `@master`
+  });
+  new GitHubOidcRoleStack(app, stackname("role-all-branches"), {
+    ref: "*",
+    repository,
+    managedPolicyList: [iam.ManagedPolicy.fromAwsManagedPolicyName("IAMReadOnlyAccess")],
+    policyStatements: [],
+    roleName: `github-actions` +
+      `@${repository.split("/").slice(-1)}`
+  });
 
   // This is the array I'll eventually use to elegantly state these names only
   // once in this file.
@@ -109,8 +134,8 @@ const stackname = require("@cdk-turnkey/stackname");
       );
       console.log(
         getEmailIdentityResponse.DkimAttributes &&
-          getEmailIdentityResponse.DkimAttributes.Status &&
-          getEmailIdentityResponse.DkimAttributes.Status
+        getEmailIdentityResponse.DkimAttributes.Status &&
+        getEmailIdentityResponse.DkimAttributes.Status
       );
       console.log("email:");
       console.log(fromAddress);

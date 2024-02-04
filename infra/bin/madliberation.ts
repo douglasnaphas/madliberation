@@ -8,7 +8,7 @@ import {
   MadliberationWebapp,
   MadLiberationWebappProps,
 } from "../lib/madliberation-webapp";
-import { GitHubOidcRoleStack } from "../../../aws-github-oidc/GitHubOIDCRoleStack";
+import { GitHubOidcRoleStack } from "aws-github-oidc-role";
 import * as iam from 'aws-cdk-lib/aws-iam';
 const stackname = require("@cdk-turnkey/stackname");
 

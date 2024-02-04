@@ -54,6 +54,10 @@ jobs:
       - name: Build infra
         working-directory: infra
         run: |
+          ls node_modules
+          ls node_modules/aws-github-oidc-role
+          ls node_modules/aws-github-oidc-role/lib
+          less node_modules/aws-github-oidc-role/package.json
           npm run build
       - name: Test infra
         working-directory: infra

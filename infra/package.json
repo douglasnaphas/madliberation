@@ -33,7 +33,7 @@
     "@aws-sdk/client-ssm": "^3.504.0",
     "@cdk-turnkey/stackname": "^1.2.0",
     "aws-cdk-lib": "^2.126.0",
-    "aws-github-oidc-role": "file:../../aws-github-oidc/GitHubOIDCRoleStack",
+    "aws-github-oidc-role": "v0.1.4",
     "bufferutil": "^4.0.8",
     "constructs": "^10.3.0",
     "utf-8-validate": "^6.0.3"

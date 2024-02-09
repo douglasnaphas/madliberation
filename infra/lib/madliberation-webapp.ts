@@ -18,7 +18,6 @@ import { aws_iam as iam } from "aws-cdk-lib";
 import { aws_certificatemanager as acm } from "aws-cdk-lib";
 import { aws_route53 as route53 } from "aws-cdk-lib";
 import { aws_route53_targets as targets } from "aws-cdk-lib";
-import { aws_s3 as s3 } from "aws-cdk-lib";
 import { aws_sqs as sqs } from "aws-cdk-lib";
 import {
   DynamoEventSource,
@@ -73,13 +72,7 @@ export class MadliberationWebapp extends Stack {
     }
 
     const distroProps: any = {
-      logBucket: appBucket(
-        this,
-        "DistroLoggingBucket",
-        {
-          accessControl: s3.BucketAccessControl.BUCKET_OWNER_FULL_CONTROL
-        }
-      ),
+      logBucket: appBucket(this, "DistroLoggingBucket"),
       logFilePrefix: "distribution-access-logs/",
       logIncludesCookies: true,
       defaultBehavior: {

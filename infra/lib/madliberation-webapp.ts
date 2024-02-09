@@ -72,7 +72,7 @@ export class MadliberationWebapp extends Stack {
     }
 
     const distroProps: any = {
-      enableLogging: true,
+      logBucket: appBucket(this, "DistroLoggingBucket"),
       logFilePrefix: "distribution-access-logs/",
       logIncludesCookies: true,
       defaultBehavior: {

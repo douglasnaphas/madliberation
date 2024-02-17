@@ -3,14 +3,12 @@ concurrency: ci-${{ github.ref }}
 on:
   push:
     branches: [master]
-  schedule:
-    - cron: '5 4 * * 1,3,5' # 4:05 AM (arbitrary time) MWF
   workflow_dispatch:
 jobs:
   idp-app-secret-roll-call:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Identity provider app secret roll call
         working-directory: infra
         env:
@@ -23,6 +21,9 @@ jobs:
           npx ts-node scripts/idp-app-secret-roll-call.ts
   id-account-staging:
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
     steps:
       - name: Identify staging account and region
         env:
@@ -34,6 +35,9 @@ jobs:
           echo ${AWS_DEFAULT_REGION} | sed 's/-/+/g'
   id-account-prod2:
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
     steps:
       - name: Identify staging account and region
         env:
@@ -45,8 +49,11 @@ jobs:
           echo ${AWS_DEFAULT_REGION} | sed 's/-/+/g'
   webapp-staging:
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Install backend
         working-directory: backend
         run: |
@@ -96,9 +103,12 @@ jobs:
           npm run deploy-webapp
   frontend-staging:
     needs: webapp-staging
+    permissions:
+      id-token: write
+      contents: read
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
       - name: Install, build, test, deploy
@@ -112,8 +122,11 @@ jobs:
   frontend-create-haggadah-staging:
     needs: webapp-staging
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
       - name: Install, build, test, deploy (test account)
@@ -127,8 +140,11 @@ jobs:
   content-staging:
     runs-on: ubuntu-latest
     needs: webapp-staging
+    permissions:
+      id-token: write
+      contents: read
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Install content
         working-directory: content
         run: |
@@ -153,8 +169,11 @@ jobs:
   itest-staging:
     needs: [frontend-staging, content-staging]
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Install
         working-directory: itest
         run: |
@@ -171,8 +190,11 @@ jobs:
   itest-links-staging-2023:
     runs-on: ubuntu-latest
     needs: [frontend-staging, frontend-create-haggadah-staging, content-staging]
+    permissions:
+      id-token: write
+      contents: read
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Install itest
         working-directory: itest
         run: |
@@ -189,8 +211,11 @@ jobs:
   itest-links-staging-2019-magid:
     runs-on: ubuntu-latest
     needs: [frontend-staging, frontend-create-haggadah-staging, content-staging]
+    permissions:
+      id-token: write
+      contents: read
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Install itest
         working-directory: itest
         run: |
@@ -210,8 +235,11 @@ jobs:
     needs:
       [itest-staging, itest-links-staging-2019-magid, itest-links-staging-2023]
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Install infra
         working-directory: infra
         run: |
@@ -240,8 +268,11 @@ jobs:
   frontend-prod2:
     needs: webapp-prod2
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
       - name: Install, build, test, deploy
@@ -255,8 +286,11 @@ jobs:
   frontend-create-haggadah-prod2:
     needs: webapp-prod2
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
       - name: Install, build, test, deploy
@@ -270,8 +304,11 @@ jobs:
   content-prod2:
     runs-on: ubuntu-latest
     needs: webapp-prod2
+    permissions:
+      id-token: write
+      contents: read
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Install content
         working-directory: content
         run: |
@@ -296,8 +333,11 @@ jobs:
   itest-prod2:
     needs: [frontend-prod2, content-prod2]
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Install itest
         working-directory: itest
         run: |
@@ -314,8 +354,11 @@ jobs:
   itest-links-prod2-2023:
     runs-on: ubuntu-latest
     needs: [frontend-prod2, frontend-create-haggadah-prod2, content-prod2]
+    permissions:
+      id-token: write
+      contents: read
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Install itest
         working-directory: itest
         run: |
@@ -332,8 +375,11 @@ jobs:
   itest-links-prod2-2019-magid:
     runs-on: ubuntu-latest
     needs: [frontend-prod2, frontend-create-haggadah-prod2, content-prod2]
+    permissions:
+      id-token: write
+      contents: read
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Install itest
         working-directory: itest
         run: |

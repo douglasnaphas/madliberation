@@ -48,8 +48,8 @@ export const GitHubOidcRoleStacks = (app: App, repository: string) => {
   new GitHubOidcRoleStack(app, stackname("role-master"), {
     ref: "master",
     repository,
-    managedPolicyList: [iam.ManagedPolicy.fromAwsManagedPolicyName("IAMReadOnlyAccess")],
-    policyStatements: [],
+    managedPolicyList: [],
+    policyStatements,
     roleName: `github-actions` +
       `@${repository.split("/").slice(-1)}` +
       `@master`

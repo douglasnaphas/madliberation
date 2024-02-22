@@ -8,9 +8,9 @@ import {
   MadliberationWebapp,
   MadLiberationWebappProps,
 } from "../lib/madliberation-webapp";
-import { GitHubOidcRoleStack } from "aws-github-oidc-role";
 import * as iam from 'aws-cdk-lib/aws-iam';
 const stackname = require("@cdk-turnkey/stackname");
+import { GitHubOidcRoleStacks } from "./GitHubOIDCRoleStacks";
 
 (async () => {
   const app = new App();
@@ -19,34 +19,7 @@ const stackname = require("@cdk-turnkey/stackname");
     console.error("GITHUB_REPOSITORY is not set, it should be something like douglasnaphas/aws-github-oidc");
     process.exit(3);
   }
-  const repository = process.env.GITHUB_REPOSITORY;
-  const managedPolicyList = [
-    iam.ManagedPolicy.fromAwsManagedPolicyName("AWSCloudFormationFullAccess"),
-    iam.ManagedPolicy.fromAwsManagedPolicyName("AmazonRoute53FullAccess"),
-    iam.ManagedPolicy.fromAwsManagedPolicyName("CloudFrontFullAccess"),
-    iam.ManagedPolicy.fromAwsManagedPolicyName("AmazonS3FullAccess"),
-    iam.ManagedPolicy.fromAwsManagedPolicyName("AmazonAPIGatewayAdministrator"),
-    iam.ManagedPolicy.fromAwsManagedPolicyName("AWSLambda_FullAccess"),
-    iam.ManagedPolicy.fromAwsManagedPolicyName("CloudWatchFullAccessV2"),
-
-  ]
-  new GitHubOidcRoleStack(app, stackname("role-master"), {
-    ref: "master",
-    repository,
-    managedPolicyList: [iam.ManagedPolicy.fromAwsManagedPolicyName("IAMReadOnlyAccess")],
-    policyStatements: [],
-    roleName: `github-actions` +
-      `@${repository.split("/").slice(-1)}` +
-      `@master`
-  });
-  new GitHubOidcRoleStack(app, stackname("role-all-branches"), {
-    ref: "*",
-    repository,
-    managedPolicyList: [iam.ManagedPolicy.fromAwsManagedPolicyName("AdministratorAccess")],
-    policyStatements: [],
-    roleName: `github-actions` +
-      `@${repository.split("/").slice(-1)}`
-  });
+  GitHubOidcRoleStacks(app, process.env.GITHUB_REPOSITORY);
 
   // This is the array I'll eventually use to elegantly state these names only
   // once in this file.

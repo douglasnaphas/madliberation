@@ -1,4 +1,4 @@
-name: CI
+name: scheduled-test
 concurrency: ci-${{ github.ref }}
 on:
   schedule:

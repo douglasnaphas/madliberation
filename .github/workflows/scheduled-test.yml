@@ -1,5 +1,5 @@
 name: scheduled-test
-concurrency: ci-${{ github.ref }}
+concurrency: schedule-test-${{ github.ref }}
 on:
   schedule:
     - cron: '9 4 * * 1,3,5' # 4:05 AM Philadelphia time (arbitrary time) MWF

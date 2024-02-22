@@ -35,6 +35,7 @@ export const GitHubOidcRoleStacks = (app: App, repository: string) => {
           "s3:GetBucketTagging",
           "s3:GetBucketVersioning",
           "s3:GetBucketWebsite",
+          "s3:GetObject",
           "s3:List*",
           "s3:PutBucketTagging",
           "s3:PutObject",

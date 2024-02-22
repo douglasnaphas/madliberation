@@ -1,0 +1,106 @@
+name: CI
+concurrency: ci-${{ github.ref }}
+on:
+  schedule:
+    - cron: '9 4 * * 1,3,5' # 4:05 AM Philadelphia time (arbitrary time) MWF
+  workflow_dispatch:
+jobs:
+  idp-app-secret-roll-call:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Identity provider app secret roll call
+        working-directory: infra
+        env:
+          FACEBOOK_APP_SECRET: ${{ secrets.FACEBOOK_APP_SECRET }}
+          GOOGLE_APP_SECRET: ${{ secrets.GOOGLE_APP_SECRET }}
+          AMAZON_APP_SECRET: ${{ secrets.AMAZON_APP_SECRET }}
+          APPLE_APP_SECRET: ${{ secrets.APPLE_APP_SECRET }}
+        run: |
+          npm install
+          npx ts-node scripts/idp-app-secret-roll-call.ts
+  id-account-prod2:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ vars.PROD2_ROLE_ARN }}
+          aws-region: us-east-1
+      - name: Identify account and region
+        run: |
+          aws sts get-caller-identity
+          echo ${AWS_DEFAULT_REGION} | sed 's/-/+/g'
+  itest-prod2:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ vars.PROD2_ROLE_ARN }}
+          aws-region: us-east-1
+      - name: Install itest
+        working-directory: itest
+        run: |
+          npm install
+      - name: Run integration tests, prod account
+        working-directory: itest
+        env:
+          AWS_DEFAULT_REGION: "us-east-1"
+          AWS_REGION: "us-east-1"
+        run: |
+          npm run itest
+  itest-links-prod2-2023:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ vars.PROD2_ROLE_ARN }}
+          aws-region: us-east-1
+      - name: Install itest
+        working-directory: itest
+        run: |
+          npm install
+      - name: Run itest on the v2 link-based flow (prod2 account)
+        working-directory: itest
+        env:
+          AWS_DEFAULT_REGION: "us-east-1"
+          AWS_REGION: "us-east-1"
+        run: |
+          npm run itest-links
+  itest-links-prod2-2019-magid:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ vars.PROD2_ROLE_ARN }}
+          aws-region: us-east-1
+      - name: Install itest
+        working-directory: itest
+        run: |
+          npm install
+      - name: Run itest on the v2 link-based flow, 2019 magid (prod2 account)
+        working-directory: itest
+        env:
+          AWS_REGION: "us-east-1"
+          PARTICIPANTS_ARG: "8"
+          SCRIPT_TERM: "2019_Magid"
+        run: |
+          npm run itest-links

@@ -50,7 +50,7 @@ export const GitHubOidcRoleStacks = (app: App, repository: string) => {
     )
   ];
   new GitHubOidcRoleStack(app, stackname("role-master"), {
-    ref: "master",
+    ref: "refs/heads/master",
     repository,
     managedPolicyList: [],
     policyStatements,

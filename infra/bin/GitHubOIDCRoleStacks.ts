@@ -18,6 +18,7 @@ export const GitHubOidcRoleStacks = (app: App, repository: string) => {
           "cognito-idp:AdminCreateUser",
           "cognito-idp:DescribeUserPool",
           "dynamodb:BatchWriteItem",
+          "kms:Decrypt",
           "s3:GetAccelerateConfiguration",
           "s3:GetBucketAnalyticsConfiguration",
           "s3:GetBucketCors",

@@ -40,6 +40,7 @@ export const GitHubOidcRoleStacks = (app: App, repository: string) => {
           "s3:List*",
           "s3:PutBucketTagging",
           "s3:PutObject",
+          "ses:GetEmailIdentity",
           "sns:GetSMSSandboxAccountStatus",
           "ssm:GetParameters",
           "ssm:PutParameter",

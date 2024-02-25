@@ -86,7 +86,7 @@ jobs:
       contents: read
     needs: webapp
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
       - name: Configure AWS Credentials
@@ -105,7 +105,7 @@ jobs:
       contents: read
     needs: webapp
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
       - name: Configure AWS Credentials
@@ -124,7 +124,7 @@ jobs:
       contents: read
     needs: webapp
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
@@ -154,7 +154,7 @@ jobs:
       contents: read
     needs: [frontend, content]
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
@@ -178,7 +178,7 @@ jobs:
       contents: read
     needs: [frontend, frontend-create-haggadah, content]
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
@@ -203,7 +203,7 @@ jobs:
       contents: read
     needs: [frontend, frontend-create-haggadah, content]
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
@@ -228,7 +228,7 @@ jobs:
       contents: read
     needs: [frontend, frontend-create-haggadah, content]
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:

@@ -23,8 +23,8 @@ import {
   DynamoEventSource,
   SqsDlq,
 } from "aws-cdk-lib/aws-lambda-event-sources";
-import * as apigwv2 from "@aws-cdk/aws-apigatewayv2-alpha";
-import * as apigwv2i from "@aws-cdk/aws-apigatewayv2-integrations-alpha";
+import { WebSocketApi, WebSocketStage } from "aws-cdk-lib/aws-apigatewayv2";
+import { WebSocketLambdaIntegration } from "aws-cdk-lib/aws-apigatewayv2-integrations";
 const appBucket = require("./appBucket");
 import { AppUserPool } from "./AppUserPool";
 const addBackendBehavior = require("./addBackendBehavior");
@@ -320,80 +320,80 @@ export class MadliberationWebapp extends Stack {
     ].forEach((handler) => {
       sedersTable.grantReadWriteData(handler);
     });
-    const wsRosterApi = new apigwv2.WebSocketApi(this, "WSRosterAPI", {
+    const wsRosterApi = new WebSocketApi(this, "WSRosterAPI", {
       connectRouteOptions: {
-        integration: new apigwv2i.WebSocketLambdaIntegration(
+        integration: new WebSocketLambdaIntegration(
           "ConnectIntegration",
           connectRosterHandler
         ),
       },
       disconnectRouteOptions: {
-        integration: new apigwv2i.WebSocketLambdaIntegration(
+        integration: new WebSocketLambdaIntegration(
           "DisconnectIntegration",
           disconnectHandler
         ),
       },
       defaultRouteOptions: {
-        integration: new apigwv2i.WebSocketLambdaIntegration(
+        integration: new WebSocketLambdaIntegration(
           "DefaultIntegration",
           defaultHandler
         ),
       },
     });
     const wsRosterStageName = "ws-roster";
-    const wsRosterStage = new apigwv2.WebSocketStage(this, "WSRosterStage", {
+    const wsRosterStage = new WebSocketStage(this, "WSRosterStage", {
       stageName: wsRosterStageName,
       webSocketApi: wsRosterApi,
       autoDeploy: true,
     });
-    const wsWaitApi = new apigwv2.WebSocketApi(this, "WSWaitAPI", {
+    const wsWaitApi = new WebSocketApi(this, "WSWaitAPI", {
       connectRouteOptions: {
-        integration: new apigwv2i.WebSocketLambdaIntegration(
+        integration: new WebSocketLambdaIntegration(
           "ConnectWaitIntegration",
           connectWaitHandler
         ),
       },
       disconnectRouteOptions: {
-        integration: new apigwv2i.WebSocketLambdaIntegration(
+        integration: new WebSocketLambdaIntegration(
           "DisconnectIntegration",
           disconnectHandler
         ),
       },
       defaultRouteOptions: {
-        integration: new apigwv2i.WebSocketLambdaIntegration(
+        integration: new WebSocketLambdaIntegration(
           "DefaultIntegration",
           defaultHandler
         ),
       },
     });
     const wsWaitStageName = "ws-wait";
-    const wsWaitStage = new apigwv2.WebSocketStage(this, "WSWaitStage", {
+    const wsWaitStage = new WebSocketStage(this, "WSWaitStage", {
       stageName: wsWaitStageName,
       webSocketApi: wsWaitApi,
       autoDeploy: true,
     });
-    const wsReadRosterApi = new apigwv2.WebSocketApi(this, "WSReadRosterAPI", {
+    const wsReadRosterApi = new WebSocketApi(this, "WSReadRosterAPI", {
       connectRouteOptions: {
-        integration: new apigwv2i.WebSocketLambdaIntegration(
+        integration: new WebSocketLambdaIntegration(
           "ConnectRRIntegration",
           connectReadRosterHandler
         ),
       },
       disconnectRouteOptions: {
-        integration: new apigwv2i.WebSocketLambdaIntegration(
+        integration: new WebSocketLambdaIntegration(
           "DisconnectRRIntegration",
           disconnectHandler
         ),
       },
       defaultRouteOptions: {
-        integration: new apigwv2i.WebSocketLambdaIntegration(
+        integration: new WebSocketLambdaIntegration(
           "DefaultRRIntegration",
           defaultHandler
         ),
       },
     });
     const wsReadRosterStageName = "ws-read-roster";
-    const wsReadRosterStage = new apigwv2.WebSocketStage(
+    const wsReadRosterStage = new WebSocketStage(
       this,
       "WSReadRosterStage",
       {

@@ -63,11 +63,13 @@ import { GitHubOidcRoleStacks } from "./GitHubOIDCRoleStacks";
     (p: { Name: string; Value: string }) => {
       console.log("(v3) Received parameter named:");
       console.log(p.Name);
+      const SHORT_PREFIX_LENGTH = 6;
       valueHash = crypto
         .createHash("sha256")
         .update(p.Value)
         .digest("hex")
-        .toLowerCase();
+        .toLowerCase()
+        .substring(0, SHORT_PREFIX_LENGTH);
       console.log("(v3) value hash:");
       console.log(valueHash);
       console.log("**************");

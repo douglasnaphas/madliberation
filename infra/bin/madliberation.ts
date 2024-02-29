@@ -71,7 +71,10 @@ import { GitHubOidcRoleStacks } from "./GitHubOIDCRoleStacks";
       console.log("(v3) value hash:");
       console.log(valueHash);
       console.log("**************");
-      if (p.Type === "SecureString") {
+      if (
+        p.Type === "SecureString" &&
+        p.Name === stackname("googleClientSecret")
+      ) {
         ssmParameterData[p.Name] = SecretValue.ssmSecure(p.Name);
       } else {
         ssmParameterData[p.Name] = p.Value;

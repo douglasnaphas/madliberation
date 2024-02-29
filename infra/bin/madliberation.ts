@@ -32,8 +32,6 @@ import { GitHubOidcRoleStacks } from "./GitHubOIDCRoleStacks";
       console.log(this.webappParamName);
       console.log("ssmParamName:");
       console.log(this.ssmParamName());
-      console.log("ssmParamValue:");
-      console.log(this.ssmParamValue);
     };
     constructor(webappParamName: string) {
       this.webappParamName = webappParamName;

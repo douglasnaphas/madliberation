@@ -4,6 +4,7 @@ import {
   CfnOutput,
   Duration,
   RemovalPolicy,
+  SecretValue,
   Stack,
   StackProps,
 } from "aws-cdk-lib";
@@ -39,7 +40,7 @@ export interface MadLiberationWebappProps extends StackProps {
   amazonClientId?: string;
   amazonClientSecret?: string;
   googleClientId?: string;
-  googleClientSecret?: string;
+  googleClientSecret?: SecretValue;
 }
 
 export class MadliberationWebapp extends Stack {

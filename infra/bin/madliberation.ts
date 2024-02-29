@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { App } from "aws-cdk-lib";
+import { App, SecretValue } from "aws-cdk-lib";
 import { Console } from "console";
 const { SSMClient, GetParametersCommand } = require("@aws-sdk/client-ssm");
 import { SESv2Client, GetEmailIdentityCommand } from "@aws-sdk/client-sesv2";
@@ -60,7 +60,7 @@ import { GitHubOidcRoleStacks } from "./GitHubOIDCRoleStacks";
   const ssmParameterData: any = {};
   let valueHash;
   getParametersResponse?.Parameters?.forEach(
-    (p: { Name: string; Value: string }) => {
+    (p: { Name: string; Value: string, Type: string }) => {
       console.log("(v3) Received parameter named:");
       console.log(p.Name);
       const SHORT_PREFIX_LENGTH = 6;
@@ -73,7 +73,11 @@ import { GitHubOidcRoleStacks } from "./GitHubOIDCRoleStacks";
       console.log("(v3) value hash:");
       console.log(valueHash);
       console.log("**************");
-      ssmParameterData[p.Name] = p.Value;
+      if (p.Type === "SecureString") {
+        ssmParameterData[p.Name] = SecretValue.ssmSecure(p.Name);
+      } else {
+        ssmParameterData[p.Name] = p.Value;
+      }
     }
   );
   console.log("==================");

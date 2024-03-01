@@ -72,10 +72,11 @@ import { GitHubOidcRoleStacks } from "./GitHubOIDCRoleStacks";
       console.log(valueHash);
       console.log("**************");
       if (
-        p.Type === "SecureString" &&
-        p.Name === stackname("googleClientSecret")
+        p.Type === "SecureString"
       ) {
-        ssmParameterData[p.Name] = SecretValue.ssmSecure(p.Name);
+        // We'll access it via dynamic reference, to keep the secret value out
+        // of the template.
+        ssmParameterData[p.Name] = { name: p.Name, SecureString: true };
       } else {
         ssmParameterData[p.Name] = p.Value;
       }

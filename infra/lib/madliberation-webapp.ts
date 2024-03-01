@@ -36,11 +36,11 @@ export interface MadLiberationWebappProps extends StackProps {
   domainName?: string;
   zoneId?: string;
   facebookAppId?: string;
-  facebookAppSecret?: string;
+  facebookAppSecret?: { name: string, SecureString: boolean };
   amazonClientId?: string;
-  amazonClientSecret?: string;
+  amazonClientSecret?: { name: string, SecureString: boolean };
   googleClientId?: string;
-  googleClientSecret?: SecretValue;
+  googleClientSecret?: { name: string, SecureString: boolean };
 }
 
 export class MadliberationWebapp extends Stack {

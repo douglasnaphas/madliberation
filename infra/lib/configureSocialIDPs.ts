@@ -57,7 +57,7 @@ const configureSocialIDPs: (
     const userPoolIdentityProviderGoogle =
       new cognito.UserPoolIdentityProviderGoogle(stack, "Google", {
         clientId: googleClientId,
-        clientSecretValue: googleClientSecret,
+        clientSecret: googleClientSecret,
         userPool,
         scopes: ["profile", "email"],
         attributeMapping: {

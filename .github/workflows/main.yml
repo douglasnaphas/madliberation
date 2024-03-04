@@ -191,6 +191,27 @@ jobs:
         working-directory: itest
         run: |
           npm run itest
+  itest-social-staging:
+    needs: [frontend-staging, content-staging]
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install
+        working-directory: itest
+        run: |
+          npm install
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ vars.TEST_ROLE_ARN }}
+          aws-region: us-east-1
+      - name: Run
+        working-directory: itest
+        run: |
+          npm run social
   itest-links-staging-2023:
     runs-on: ubuntu-latest
     needs: [frontend-staging, frontend-create-haggadah-staging, content-staging]
@@ -364,6 +385,27 @@ jobs:
         working-directory: itest
         run: |
           npm run itest
+  itest-social-prod2:
+    needs: [frontend-prod2, content-prod2]
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install
+        working-directory: itest
+        run: |
+          npm install
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ vars.PROD2_ROLE_ARN }}
+          aws-region: us-east-1
+      - name: Run
+        working-directory: itest
+        run: |
+          npm run social
   itest-links-prod2-2023:
     runs-on: ubuntu-latest
     needs: [frontend-prod2, frontend-create-haggadah-prod2, content-prod2]

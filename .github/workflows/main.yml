@@ -259,7 +259,7 @@ jobs:
           npm run itest-links
   webapp-prod2:
     needs:
-      [itest-staging, itest-links-staging-2019-magid, itest-links-staging-2023]
+      [itest-staging, itest-links-staging-2019-magid, itest-links-staging-2023, itest-social-staging]
     runs-on: ubuntu-latest
     permissions:
       id-token: write

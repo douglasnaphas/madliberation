@@ -70,15 +70,6 @@ const itType = async ({ page, madliberationid, text }) => {
       failTest(e, `Could not type into ${madliberationid}`);
     });
 };
-const assertOnUrl = ({ page, expectedUrl }) => {
-  if (expectedUrl !== page.url()) {
-    failTest(
-      "unexpected URL",
-      `expected URL to be ${expectedUrl}` +
-      ` after navigation, got ${page.url()}`
-    );
-  }
-};
 const itNavigate = async ({ page, madliberationid, expectedLandingPage }) => {
   await itWait({ page: page, madliberationid: madliberationid });
   await Promise.all([

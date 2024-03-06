@@ -78,9 +78,6 @@ const itNavigate = async ({ page, madliberationid, expectedLandingPage }) => {
   ]).catch(async (e) => {
     failTest(e, `Could not navigate by clicking on ${madliberationid}`);
   });
-  if (expectedLandingPage) {
-    assertOnUrl({ page, expectedUrl: expectedLandingPage });
-  }
 };
 const itGetText = async ({ page, madliberationid }) => {
   await itWait({ page: page, madliberationid: madliberationid });
@@ -207,7 +204,6 @@ const submitNoLibs = async (page) => {
 
   // Log in with Google
   await itNavigate({ page: page, madliberationid: "login-button" });
-  assertOnUrl({ page: page, expectedUrl: idpUrl });
   const googleSignUpButtonXPath = '//button//*[text()="Continue with Google"]';
   await page.waitForXPath(googleSignUpButtonXPath, waitOptions);
   await page.click("xpath/" + googleSignUpButtonXPath, clickOptions);

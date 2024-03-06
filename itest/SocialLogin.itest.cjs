@@ -38,9 +38,9 @@ const failTest = async (err, msg, browser) => {
   process.exit(1);
 };
 
-const waitOptions = { timeout: timeoutMs /*, visible: true*/ };
+const waitOptions = { timeout: timeoutMs , visible: true };
 const waitForNavigationOptions = { timeout: timeoutMs };
-const clickOptions = { delay: 200 };
+const clickOptions = { delay: 200, visible: true };
 const typeOptions = { delay: 90 };
 const itWait = async ({ page, madliberationid }) => {
   await page
@@ -215,8 +215,14 @@ const submitNoLibs = async (page) => {
     });
 
   // Log in with Google
-
-
+  await itNavigate({ page: page, madliberationid: "login-button" });
+  assertOnUrl({ page: page, expectedUrl: idpUrl });
+  const googleSignUpButtonXPath = '//button//*[text()="Continue with Google"]';
+  await page.waitForXPath(googleSignUpButtonXPath, waitOptions);
+  await page.click("xpath/" + googleSignUpButtonXPath, clickOptions);
+  
   ////////////////////////////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////////////////////////
+  // Clean up
+  await browser.close();
 })();

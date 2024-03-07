@@ -407,6 +407,9 @@ jobs:
           aws-region: us-east-1
       - name: Run
         working-directory: itest
+        env:
+          GOOGLE_TEST_EMAIL: ${{ vars.GOOGLE_TEST_EMAIL }}
+          GOOGLE_TEST_PASSWORD: ${{ secrets.GOOGLE_TEST_PASSWORD }}
         run: |
           npm run social
   itest-links-prod2-2023:

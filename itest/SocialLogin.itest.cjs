@@ -38,7 +38,7 @@ const failTest = async (err, msg, browser) => {
   process.exit(1);
 };
 
-const waitOptions = { timeout: timeoutMs , visible: true };
+const waitOptions = { timeout: timeoutMs, visible: true };
 const waitForNavigationOptions = { timeout: timeoutMs };
 const clickOptions = { delay: 200, visible: true };
 const typeOptions = { delay: 90 };
@@ -206,8 +206,20 @@ const submitNoLibs = async (page) => {
   await itNavigate({ page: page, madliberationid: "login-button" });
   const googleSignUpButtonXPath = '//button//*[text()="Continue with Google"]';
   await page.waitForXPath(googleSignUpButtonXPath, waitOptions);
-  await page.click("xpath/" + googleSignUpButtonXPath, clickOptions);
+  await Promise.all([
+    page.waitForNavigation(),
+    page.click("xpath/" + googleSignUpButtonXPath, clickOptions)
+  ]);
+  await page.waitForFunction(
+    "window.location.hostname === 'accounts.google.com'"
+  );
+  const googleEmailInputSelector = 'input[type="email"]';
+  await page.click(googleEmailInputSelector);
+  const googleTestEmail = process.env.GOOGLE_TEST_EMAIL;
+  const googleTestPassword = process.env.googleTestPassword;
+  await page.type(googleEmailInputSelector, googleTestEmail);
   
+
   ////////////////////////////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////////////////////////
   // Clean up

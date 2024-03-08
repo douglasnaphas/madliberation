@@ -218,7 +218,13 @@ const submitNoLibs = async (page) => {
   const googleTestEmail = process.env.GOOGLE_TEST_EMAIL;
   const googleTestPassword = process.env.googleTestPassword;
   await page.type(googleEmailInputSelector, googleTestEmail);
-  
+  const googleSignInNextButtonXPath = '//button//*[text()="Next"]';
+  await page.click("xpath/" + googleSignInNextButtonXPath);
+  const googlePasswordInputSelector = 'input[type="password"]';
+  await page.click(googlePasswordInputSelector);
+  await page.type(googleTestPassword);
+  await page.click("xpath/" + googleSignInNextButtonXPath);
+
 
   ////////////////////////////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////////////////////////

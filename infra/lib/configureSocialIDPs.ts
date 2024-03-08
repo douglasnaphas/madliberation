@@ -1,7 +1,6 @@
-import { CfnDynamicReference, CfnDynamicReferenceService, SecretValue, Stack } from "aws-cdk-lib";
+import { Stack } from "aws-cdk-lib";
 import { MadLiberationWebappProps } from "./madliberation-webapp";
 import { aws_cognito as cognito } from "aws-cdk-lib";
-import { UserPoolIdentityProviderGoogle } from "aws-cdk-lib/aws-cognito";
 const configureSocialIDPs: (
   stack: Stack,
   props: MadLiberationWebappProps,
@@ -22,7 +21,7 @@ const configureSocialIDPs: (
     const userPoolIdentityProviderFacebook =
       new cognito.UserPoolIdentityProviderFacebook(stack, "Facebook", {
         clientId: facebookAppId,
-        clientSecret: "", // update via escape hatch
+        clientSecret: facebookAppSecret,
         userPool,
         scopes: ["public_profile", "email"],
         /*
@@ -39,46 +38,26 @@ const configureSocialIDPs: (
           email: cognito.ProviderAttribute.FACEBOOK_EMAIL,
         },
       });
-    const cfnUserPoolIdentityProviderFacebook =
-      userPoolIdentityProviderFacebook.node.defaultChild as
-      cognito.CfnUserPoolIdentityProvider;
-    cfnUserPoolIdentityProviderFacebook.addPropertyOverride(
-      "ProviderDetails.client_secret",
-      new CfnDynamicReference(
-        CfnDynamicReferenceService.SSM_SECURE,
-        facebookAppSecret.name
-      )
-    );
     userPool.registerIdentityProvider(userPoolIdentityProviderFacebook);
   }
   if (amazonClientId && amazonClientSecret) {
     const userPoolIdentityProviderAmazon =
       new cognito.UserPoolIdentityProviderAmazon(stack, "Amazon", {
         clientId: amazonClientId,
-        clientSecret: "", // update via escape hatch
+        clientSecret: amazonClientSecret,
         userPool,
         attributeMapping: {
           nickname: cognito.ProviderAttribute.AMAZON_NAME,
           email: cognito.ProviderAttribute.AMAZON_EMAIL,
         },
       });
-    const cfnUserPoolIdentityProviderAmazon =
-      userPoolIdentityProviderAmazon.node.defaultChild as
-      cognito.CfnUserPoolIdentityProvider;
-    cfnUserPoolIdentityProviderAmazon.addPropertyOverride(
-      "ProviderDetails.client_secret",
-      new CfnDynamicReference(
-        CfnDynamicReferenceService.SSM_SECURE,
-        amazonClientSecret.name
-      )
-    );
     userPool.registerIdentityProvider(userPoolIdentityProviderAmazon);
   }
   if (googleClientId && googleClientSecret) {
     const userPoolIdentityProviderGoogle =
       new cognito.UserPoolIdentityProviderGoogle(stack, "Google", {
         clientId: googleClientId,
-        clientSecretValue: new SecretValue(""),
+        clientSecret: googleClientSecret,
         userPool,
         scopes: ["profile", "email"],
         attributeMapping: {
@@ -86,16 +65,6 @@ const configureSocialIDPs: (
           email: cognito.ProviderAttribute.GOOGLE_EMAIL,
         },
       });
-    const cfnUserPoolIdentityProviderGoogle =
-      userPoolIdentityProviderGoogle.node.defaultChild as
-      cognito.CfnUserPoolIdentityProvider;
-    cfnUserPoolIdentityProviderGoogle.addPropertyOverride(
-      "ProviderDetails.client_secret",
-      new CfnDynamicReference(
-        CfnDynamicReferenceService.SSM_SECURE,
-        googleClientSecret.name
-      )
-    );
     userPool.registerIdentityProvider(userPoolIdentityProviderGoogle);
   }
 };

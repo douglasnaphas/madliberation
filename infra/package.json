@@ -13,7 +13,6 @@
     "synth": "npx cdk synth --no-staging",
     "diff": "npx cdk diff",
     "deploy-webapp": "bash scripts/deploy-webapp.sh",
-    "synth-webapp": "bash scripts/synth-webapp.sh",
     "itest": "bash scripts/itest.sh",
     "smoke": "bash scripts/smoke.sh"
   },

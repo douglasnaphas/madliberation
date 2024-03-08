@@ -58,7 +58,7 @@ import { GitHubOidcRoleStacks } from "./GitHubOIDCRoleStacks";
   const ssmParameterData: any = {};
   let valueHash;
   getParametersResponse?.Parameters?.forEach(
-    (p: { Name: string; Value: string, Type: string }) => {
+    (p: { Name: string; Value: string }) => {
       console.log("(v3) Received parameter named:");
       console.log(p.Name);
       const SHORT_PREFIX_LENGTH = 6;
@@ -71,15 +71,7 @@ import { GitHubOidcRoleStacks } from "./GitHubOIDCRoleStacks";
       console.log("(v3) value hash:");
       console.log(valueHash);
       console.log("**************");
-      if (
-        p.Type === "SecureString"
-      ) {
-        // We'll access it via dynamic reference, to keep the secret value out
-        // of the template.
-        ssmParameterData[p.Name] = { name: p.Name, SecureString: true };
-      } else {
-        ssmParameterData[p.Name] = p.Value;
-      }
+      ssmParameterData[p.Name] = p.Value;
     }
   );
   console.log("==================");

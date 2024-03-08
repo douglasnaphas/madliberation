@@ -222,7 +222,7 @@ const submitNoLibs = async (page) => {
   await page.click("xpath/" + googleSignInNextButtonXPath);
   const googlePasswordInputSelector = 'input[type="password"]';
   await page.click(googlePasswordInputSelector);
-  await page.type(googleTestPassword);
+  await page.type(googlePasswordInputSelector, googleTestPassword);
   await page.click("xpath/" + googleSignInNextButtonXPath);
 
 

@@ -50,7 +50,7 @@ const ThisIsYourLinkText = (props: {
       <a target="_blank" href={lnk.href}>
         This
       </a>{" "}
-      is your permalink for proceeding with your Haggadah. Click{" "}
+      is your permalink for proceeding with your Haggadah. Save it somewhere. Click{" "}
       <a
         target="_blank"
         href={`mailto:${yourEmail}?subject=Permalink to create my Haggadah&body=Edit the Haggadah by going to ${encodeURIComponent(

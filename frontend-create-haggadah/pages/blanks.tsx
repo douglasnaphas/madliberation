@@ -404,7 +404,7 @@ export default function Blanks() {
               {pageState !== PageState.LOADING && gameName && (
                 <div>
                   <br />
-                  <div>Submitting answers as {gameName}.</div>
+                  <div>Submitting answers as <strong>{gameName}</strong>.</div>
                 </div>
               )}
               {pageState !== PageState.LOADING &&

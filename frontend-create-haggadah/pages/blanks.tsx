@@ -376,7 +376,9 @@ export default function Blanks() {
           {pageState !== PageState.LOADING && gameName && (
             <div>
               <Paper>
-                <h1>Submitting answers as <strong>{gameName}</strong>.</h1>
+                <div style={{ padding: "8px" }}>
+                  <h1>Submitting answers as <strong>{gameName}</strong>.</h1>
+                </div>
               </Paper>
               <br />
             </div>

@@ -205,6 +205,8 @@ const waitOptions = { timeout: timeoutMs /*, visible: true*/ };
     process.exit(3);
   }
   // grab the defaults
+  // these are from the script as saved in S3; they are not exposed to users,
+  // except to the extent they submit blanks
   const defaults = [undefined];
   script.pages.forEach((page) => {
     page.lines.forEach((line) => {
@@ -225,6 +227,8 @@ const waitOptions = { timeout: timeoutMs /*, visible: true*/ };
   }
 
   // figure out who will submit none, lastGuest exempt
+  // everyone is submitting, though only lastGuest is submitting using the
+  // frontend
   const nonSubmitterIndex = Math.floor(
     Math.random() * (participants.length - 1)
   );
@@ -242,9 +246,13 @@ const waitOptions = { timeout: timeoutMs /*, visible: true*/ };
   console.log("nonSubmitterIndex", nonSubmitterIndex);
   console.log("partialSubmitterIndex", partialSubmitterIndex);
   // figure out which answer the partial submitter won't submit
-  const omittedAnswerIndex = 0;
+  const omittedAnswerIndex = 0; // simplest way, doesn't need to be random
 
-  // considers non-submitter index and partial submitter index
+  // Considers non-submitter index and partial submitter index.
+  // Returns the final answer. When we test the resubmit and blank-out flows
+  // in the browser for lastGuest, we will submit something other than the final
+  // answer first (in the case of the resubmit flow), or blank out the final
+  // answer after submitting it (for the blank-out flow).
   const answerToType = ({ participantIndex, assignmentId }) => {
     if (participantIndex === nonSubmitterIndex) {
       return "";
@@ -252,12 +260,13 @@ const waitOptions = { timeout: timeoutMs /*, visible: true*/ };
     if (
       participantIndex === partialSubmitterIndex &&
       participants[participantIndex].assignments[omittedAnswerIndex].id ===
-        assignmentId
+      assignmentId
     ) {
       return "";
     }
     return `${participants[participantIndex].gameName}-${assignmentId}`;
   };
+
   // considers non-submitter index, partial submitter index, and defaults
   const expectedAnswer = ({ participantIndex, assignmentId }) => {
     if (participantIndex === nonSubmitterIndex) {
@@ -266,7 +275,7 @@ const waitOptions = { timeout: timeoutMs /*, visible: true*/ };
     if (
       participantIndex === partialSubmitterIndex &&
       participants[participantIndex].assignments[omittedAnswerIndex].id ===
-        assignmentId
+      assignmentId
     ) {
       return defaults[assignmentId];
     }
@@ -276,7 +285,9 @@ const waitOptions = { timeout: timeoutMs /*, visible: true*/ };
   // submit libs
   const expectedAnswers = {};
   // use the browser for the lastGuest
-  for (let asi = 0; asi < lastGuest.assignments.length; asi++) {
+  for (let asi /* for "assignment index" */ = 0; asi < lastGuest.assignments.length; asi++) {
+
+
     const answerText = answerToType({
       participantIndex: participants.length - 1,
       assignmentId: lastGuest.assignments[asi].id,
@@ -290,8 +301,8 @@ const waitOptions = { timeout: timeoutMs /*, visible: true*/ };
     // wait for the card
     await page.waitForFunction(
       'document.getElementById("this-prompt").textContent.includes(`' +
-        lastGuest.assignments[asi].prompt +
-        "`)"
+      lastGuest.assignments[asi].prompt +
+      "`)"
     );
 
     // enter the text

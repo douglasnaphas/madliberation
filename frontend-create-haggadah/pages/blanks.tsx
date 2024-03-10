@@ -198,9 +198,9 @@ const ChipSection = (props: {
             size="small"
             icon={
               answers &&
-              assignment &&
-              assignment.id &&
-              assignment.id in answers ? (
+                assignment &&
+                assignment.id &&
+                assignment.id in answers ? (
                 <DoneIcon />
               ) : undefined
             }
@@ -331,7 +331,7 @@ export default function Blanks() {
 
         const fetchGameNameResponse = await fetch(
           `../v2/game-name?sederCode=` +
-            `${sederCode}&pw=${pw}&ph=${ph}&roomcode=${sederCode}`
+          `${sederCode}&pw=${pw}&ph=${ph}&roomcode=${sederCode}`
         );
         if (fetchGameNameResponse.status === 200) {
           const fetchGameNameData = await fetchGameNameResponse.json();

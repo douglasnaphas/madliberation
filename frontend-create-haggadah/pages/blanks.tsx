@@ -373,6 +373,14 @@ export default function Blanks() {
           ></img>
         </div>
         <Container maxWidth="md">
+          {pageState !== PageState.LOADING && gameName && (
+            <div>
+              <Paper>
+                <h1>Submitting answers as <strong>{gameName}</strong>.</h1>
+              </Paper>
+              <br />
+            </div>
+          )}
           <Paper>
             <div style={{ padding: "8px" }}>
               {pageState !== PageState.LOADING && answers && (
@@ -400,12 +408,6 @@ export default function Blanks() {
                   pageState={pageState}
                   setPageState={setPageState}
                 ></ChipSection>
-              )}
-              {pageState !== PageState.LOADING && gameName && (
-                <div>
-                  <br />
-                  <div>Submitting answers as <strong>{gameName}</strong>.</div>
-                </div>
               )}
               {pageState !== PageState.LOADING &&
                 readLink !== "" &&

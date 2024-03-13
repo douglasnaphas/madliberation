@@ -23,6 +23,6 @@ deploy-to-bucket() {
   aws s3 sync --content-type "image/svg+xml" --exclude "*" --include "*.svg" --delete out/ s3://${BUCKET}/
   aws s3 sync --content-type "image/png" --exclude "*" --include "*.png" --delete out/ s3://${BUCKET}/
   aws s3 sync --content-type "image/jpeg" --exclude "*" --include "*.jpg" --delete out/ s3://${BUCKET}/
-  AWS_RETRY_MODE=standard AWS_MAX_ATTEMPTS=8 aws s3 sync --debug --content-type "text/javascript" --exclude "*" --include "*.js" --include "*.js.map" --delete out/ s3://${BUCKET}/
+  AWS_RETRY_MODE=standard AWS_MAX_ATTEMPTS=20 aws s3 sync --debug --content-type "text/javascript" --exclude "*" --include "*.js" --include "*.js.map" --delete out/ s3://${BUCKET}/
 }
   

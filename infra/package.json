@@ -12,6 +12,8 @@
     "test": "jest",
     "synth": "npx cdk synth --no-staging",
     "diff": "npx cdk diff",
+    "deploy-role-all-branches": "bash scripts/deploy-role-all-branches.sh",
+    "deploy-role-master": "bash scripts/deploy-role-master.sh",
     "deploy-webapp": "bash scripts/deploy-webapp.sh",
     "itest": "bash scripts/itest.sh",
     "smoke": "bash scripts/smoke.sh"

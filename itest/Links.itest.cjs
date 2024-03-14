@@ -351,11 +351,18 @@ const waitOptions = { timeout: timeoutMs /*, visible: true*/ };
 
     if (asi < browserUser.assignments.length - 1) {
       // expect the prompt to advance
-      await page.waitForFunction(
-        'document.getElementById("this-prompt").textContent.includes(`' +
-          browserUser.assignments[asi + 1].prompt +
-          "`)"
-      );
+      await page
+        .waitForFunction(
+          'document.getElementById("this-prompt").textContent.includes(`' +
+            browserUser.assignments[asi + 1].prompt +
+            "`)"
+        )
+        .catch((reason) => {
+          failTest(
+            reason,
+            `Failed to find prompt ${browserUser.assignments[asi + 1].prompt}`
+          );
+        });
     } else {
       // wait for the current answer
       const yourCurrentAnswerIntroXPath = `//*[text()="Your current answer is:"]`;

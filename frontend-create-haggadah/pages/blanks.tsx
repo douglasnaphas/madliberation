@@ -138,6 +138,12 @@ const PromptSection = (props: {
                   return { ...oldAnswers, [`${assignment.id}`]: enteredText };
                 });
                 setSubmitLibError(false);
+                if (selectedAssignmentIndex < assignments.length - 1) {
+                  setSelectedAssignmentIndex(selectedAssignmentIndex + 1);
+                  if (typeof window !== "undefined") {
+                    window.location.hash = `${selectedAssignmentIndex + 1}`;
+                  }
+                }
               }}
             >
               {`Submit` +

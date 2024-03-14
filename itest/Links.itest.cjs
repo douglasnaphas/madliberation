@@ -54,8 +54,8 @@ const failTest = async (err, msg, browser) => {
 const waitOptions = { timeout: timeoutMs /*, visible: true*/ };
 
 (async () => {
-  ////////////////////////////////////////////////////////////////////////////////
-  ////////////////////////////////////////////////////////////////////////////////
+  //////////////////////////////////////////////////////////////////////////////
+  //////////////////////////////////////////////////////////////////////////////
   // Actual test
 
   const browsers = []; // so we can close them all when failing a test, someday
@@ -64,8 +64,11 @@ const waitOptions = { timeout: timeoutMs /*, visible: true*/ };
   const page = await browser.newPage();
   await page.goto(site);
 
-  ////////////////////////////////////////////////////////////////////////////////
-  // Home Page, go to /create-haggadah
+  //////////////////////////////////////////////////////////////////////////////
+  /////////////// Mad Liberation Home Page /////////////////////////////////////
+  //////////////////////////////////////////////////////////////////////////////
+
+  // go to /create-haggadah
   const createHaggadahLinkText =
     "Plan a seder where people fill out their mad libs beforehand (experimental)";
   await page
@@ -75,7 +78,10 @@ const waitOptions = { timeout: timeoutMs /*, visible: true*/ };
     });
   await page.click('[madliberationid="plan-seder-button"]');
 
-  ////////////////// Plan a Seder /////////////////////////////////////////////
+  //////////////////////////////////////////////////////////////////////////////
+  ////////////////// Create Haggadah Home Page /////////////////////////////////
+  //////////////////////////////////////////////////////////////////////////////
+
   const pickScriptAccordionTextXPath = '//*[text()="Pick script"]';
   await page
     .waitForXPath(pickScriptAccordionTextXPath, waitOptions)
@@ -101,7 +107,10 @@ const waitOptions = { timeout: timeoutMs /*, visible: true*/ };
   await page.waitForSelector(planSederSubmitButtonSelector);
   await page.click(planSederSubmitButtonSelector);
 
-  ///////////////////////// Edit Page /////////////////////////////////////////
+  //////////////////////////////////////////////////////////////////////////////
+  ///////////////////////// Edit Page //////////////////////////////////////////
+  //////////////////////////////////////////////////////////////////////////////
+
   const guestNameTextBoxSelector = "#guest-name-input";
   const guestEmailTextBoxSelector = "#guest-email-input";
   await page.waitForSelector(guestNameTextBoxSelector, waitOptions);
@@ -147,7 +156,9 @@ const waitOptions = { timeout: timeoutMs /*, visible: true*/ };
   const yesThatsEveryoneButtonXPath = `//button[text()="Yes, that's everyone"][not(@disabled)]`;
   await page.click("xpath/" + yesThatsEveryoneButtonXPath);
 
-  //////////////////////// Links Page /////////////////////////////////////////
+  //////////////////////////////////////////////////////////////////////////////
+  ////////////////////////////// Links Page ////////////////////////////////////
+  //////////////////////////////////////////////////////////////////////////////
 
   const yourLinksPageAnchorXPath = `//a[text()="your links page"]`;
   await page.waitForXPath(yourLinksPageAnchorXPath);
@@ -167,14 +178,20 @@ const waitOptions = { timeout: timeoutMs /*, visible: true*/ };
     participants[p].plinkHref = plinkHref;
   }
 
-  ///////////// Blanks Page ///////////////////////////////////////////////////
-  const lastGuest = participants[participants.length - 1];
-  // start with the last guest and work backwards
+  //////////////////////////////////////////////////////////////////////////////
+  ////////////////////// Blanks Page ///////////////////////////////////////////
+  //////////////////////////////////////////////////////////////////////////////
+
   // we are only going to submit in the browser once, so let's do it not as the
   // leader
-  await page.goto(lastGuest.plinkHref);
+  const BROWSER_USER_INDEX = participants.length - 1;
+  const browserUser = participants[participants.length - 1];
+
+  // start with the last guest and work backwards
+  await page.goto(browserUser.plinkHref);
   const promptIntroXPath = '//*[text()="Enter a word or phrase to replace..."]';
   await page.waitForXPath(promptIntroXPath, waitOptions);
+
   // We're on the Blanks page for the last guest
   // let's grab all assignments via backend-v2, and plan out our answers
   const plinkHref2AssignmentsUri = (hr) => {
@@ -183,6 +200,7 @@ const waitOptions = { timeout: timeoutMs /*, visible: true*/ };
     u.pathname = "/v2/assignments";
     return u.href;
   };
+
   // get the script from s3, so that we can check for the right defaults
   const pathResponse = await fetch(editUrl2PathUrl(editUrl));
   const pathData = await pathResponse.json();
@@ -204,9 +222,9 @@ const waitOptions = { timeout: timeoutMs /*, visible: true*/ };
     console.error(error);
     process.exit(3);
   }
+
   // grab the defaults
   // these are from the script as saved in S3; they are not exposed to users,
-  // except to the extent they submit blanks
   const defaults = [undefined];
   script.pages.forEach((page) => {
     page.lines.forEach((line) => {
@@ -218,6 +236,7 @@ const waitOptions = { timeout: timeoutMs /*, visible: true*/ };
     });
   });
 
+  // grab everyone's assisgnments
   for (let p = participants.length - 1; p >= 0; p--) {
     const assignmentsResponse = await fetch(
       plinkHref2AssignmentsUri(participants[p].plinkHref)
@@ -226,14 +245,14 @@ const waitOptions = { timeout: timeoutMs /*, visible: true*/ };
     participants[p].assignments = assignments;
   }
 
-  // figure out who will submit none, lastGuest exempt
-  // everyone is submitting, though only lastGuest is submitting using the
-  // frontend
+  // Figure out who will submit none, browserUser exempt.
+  // Everyone is submitting, though only browserUser is submitting using the
+  // frontend.
   const nonSubmitterIndex = Math.floor(
     Math.random() * (participants.length - 1)
   );
   // e.g., if there are 3 participants, we want to pick between 0 and 1
-  // figure out who will submit all but one, lastGuest exempt
+  // figure out who will submit all but one, browserUser exempt
   let partialSubmitterIndex;
   while (!Number.isInteger(partialSubmitterIndex)) {
     const tentativePartialSubmitterIndex = Math.floor(
@@ -246,11 +265,11 @@ const waitOptions = { timeout: timeoutMs /*, visible: true*/ };
   console.log("nonSubmitterIndex", nonSubmitterIndex);
   console.log("partialSubmitterIndex", partialSubmitterIndex);
   // figure out which answer the partial submitter won't submit
-  const omittedAnswerIndex = 0; // simplest way, doesn't need to be random
+  const OMITTED_ANSWER_INDEX = 0; // partial submitter only
 
   // Considers non-submitter index and partial submitter index.
   // Returns the final answer. When we test the resubmit and blank-out flows
-  // in the browser for lastGuest, we will submit something other than the final
+  // in the browser for browserUser, we will submit something other than the final
   // answer first (in the case of the resubmit flow), or blank out the final
   // answer after submitting it (for the blank-out flow).
   const answerToType = ({ participantIndex, assignmentId }) => {
@@ -259,7 +278,7 @@ const waitOptions = { timeout: timeoutMs /*, visible: true*/ };
     }
     if (
       participantIndex === partialSubmitterIndex &&
-      participants[participantIndex].assignments[omittedAnswerIndex].id ===
+      participants[participantIndex].assignments[OMITTED_ANSWER_INDEX].id ===
       assignmentId
     ) {
       return "";
@@ -267,32 +286,37 @@ const waitOptions = { timeout: timeoutMs /*, visible: true*/ };
     return `${participants[participantIndex].gameName}-${assignmentId}`;
   };
 
-  // considers non-submitter index, partial submitter index, and defaults
+  const BLANKED_OUT_ANSWER_INDEX = 1; // browserUser (browser user) only
+
+  // Considers non-submitter index, partial submitter index,
+  // BLANKED_OUT_ANSWER_INDEX, and defaults.
   const expectedAnswer = ({ participantIndex, assignmentId }) => {
     if (participantIndex === nonSubmitterIndex) {
       return defaults[assignmentId];
     }
     if (
       participantIndex === partialSubmitterIndex &&
-      participants[participantIndex].assignments[omittedAnswerIndex].id ===
+      participants[participantIndex].assignments[OMITTED_ANSWER_INDEX].id ===
       assignmentId
     ) {
       return defaults[assignmentId];
     }
+
     return `${participants[participantIndex].gameName}-${assignmentId}`;
   };
 
   // submit libs
   const expectedAnswers = {};
-  // use the browser for the lastGuest
-  for (let asi /* for "assignment index" */ = 0; asi < lastGuest.assignments.length; asi++) {
 
+  // browser
+  for (let asi /* assignment index */ = 0; asi < browserUser.assignments.length; asi++) {
+    const RESUBMITTED_ANSWER_INDEX = 2;
 
     const answerText = answerToType({
       participantIndex: participants.length - 1,
-      assignmentId: lastGuest.assignments[asi].id,
+      assignmentId: browserUser.assignments[asi].id,
     });
-    expectedAnswers[lastGuest.assignments[asi].id] = answerText;
+    expectedAnswers[browserUser.assignments[asi].id] = answerText;
 
     // click the chip
     const chipSelector = `#prompt-chip-${asi}`;
@@ -301,7 +325,7 @@ const waitOptions = { timeout: timeoutMs /*, visible: true*/ };
     // wait for the card
     await page.waitForFunction(
       'document.getElementById("this-prompt").textContent.includes(`' +
-      lastGuest.assignments[asi].prompt +
+      browserUser.assignments[asi].prompt +
       "`)"
     );
 
@@ -310,13 +334,14 @@ const waitOptions = { timeout: timeoutMs /*, visible: true*/ };
     await page.type(answerBoxSelector, answerText);
 
     // click submit
-    const submitThisOneButtonXPath = `//button[text()="Submit this one"][not(@disabled)]`;
+    const submitThisOneButtonXPath = `//button[text()="Submit ➡️"][not(@disabled)]`;
     await page.click("xpath/" + submitThisOneButtonXPath);
 
     // wait for the current answer
     const yourCurrentAnswerIntroXPath = `//*[text()="Your current answer is:"]`;
     await page.waitForXPath(yourCurrentAnswerIntroXPath);
   }
+
   // submit the rest of the libs with the backend directly
   const plinkHref2SubmitLibUri = (hr) => {
     const u = new URL(hr);
@@ -390,7 +415,14 @@ const waitOptions = { timeout: timeoutMs /*, visible: true*/ };
   );
   console.log("readRosterLinkHref:", readRosterLinkHref);
 
-  ///////////////////////////// Haggadah //////////////////////////////////////
+  //////////////////////////////////////////////////////////////////////////////
+  //////////////////////////// Read Roster /////////////////////////////////////
+
+
+  //////////////////////////////////////////////////////////////////////////////
+  ///////////////////////////// Read Page //////////////////////////////////////
+  //////////////////////////////////////////////////////////////////////////////
+
   await page.goto(readLinkHref);
   const readThisPageAloudXPath = `//*[text()="Read aloud. Have a new person read each page, going around the Seder. Click a gray box to see the prompt."]`;
   await page.waitForXPath(readThisPageAloudXPath);

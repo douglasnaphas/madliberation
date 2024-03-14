@@ -340,8 +340,8 @@ const waitOptions = { timeout: timeoutMs /*, visible: true*/ };
         '//div[text()="Submit this one."]';
     await page.waitForXPath(buttonExplanationXPath);
     const submitButtonXPath =
-      `//button[text()="Submit ` +
-      (asi === browserUser.assignments.length - 1 ? `` : `➡️`) +
+      `//button[text()="Submit` +
+      (asi === browserUser.assignments.length - 1 ? `` : ` ➡️`) +
       `"][not(@disabled)]`;
     await page.click("xpath/" + submitButtonXPath);
 

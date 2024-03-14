@@ -334,8 +334,19 @@ const waitOptions = { timeout: timeoutMs /*, visible: true*/ };
     await page.type(answerBoxSelector, answerText);
 
     // click submit
-    const submitThisOneButtonXPath = `//button[text()="Submit ➡️"][not(@disabled)]`;
-    await page.click("xpath/" + submitThisOneButtonXPath);
+    const buttonExplanationXPath =
+      asi === browserUser.assignments.length - 1 ?
+        '//div[text()="Submit this one and advance to the next prompt."]' :
+        '//div[text()="Submit this one."]';
+    await page.waitForXPath(buttonExplanationXPath);
+    const submitButtonXPath =
+      `//button[text()="Submit ` +
+      (asi === browserUser.assignments.length - 1 ? `` : `➡️`) +
+      `"][not(@disabled)]`;
+    await page.click("xpath/" + submitButtonXPath);
+
+    // expect the prompt to advance
+
 
     // wait for the current answer
     const yourCurrentAnswerIntroXPath = `//*[text()="Your current answer is:"]`;

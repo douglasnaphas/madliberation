@@ -6,8 +6,7 @@ import Typography from "@mui/material/Typography";
 import MadLiberationLogo from "../public/mad-liberation-logo.png";
 import VeryAwesomePassoverLogo from "../public/VAPLogo-white.png";
 import { Global, css, jsx } from "@emotion/react";
-import { Button, Paper, Chip, TextField, StepButton } from "@mui/material";
-import { Step, Stepper } from "@mui/material";
+import { Button, Paper, Chip, TextField } from "@mui/material";
 import DoneIcon from "@mui/icons-material/Done";
 import SederSummary from "../src/SederSummary";
 import Head from "next/head";
@@ -226,38 +225,6 @@ const ChipSection = (props: {
           ></Chip>
         );
       })}
-    </div>
-  );
-};
-const StepperSection = (props: {
-  submitLib: any;
-  setSelectedAssignmentIndex: React.Dispatch<React.SetStateAction<number>>;
-  selectedAssignmentIndex: number;
-  assignments: Array<Assignment>;
-  answers: any;
-  pageState: PageState;
-  setPageState: React.Dispatch<PageState>;
-}) => {
-  const {
-    submitLib,
-    setSelectedAssignmentIndex,
-    selectedAssignmentIndex,
-    assignments,
-    answers,
-    pageState,
-    setPageState,
-  } = props;
-  return (
-    <div>
-      <Stepper nonLinear activeStep={selectedAssignmentIndex}>
-        {assignments.map((assignment) => {
-          return (
-            <Step key={assignment.prompt}>
-              <StepButton>{assignment.prompt}</StepButton>
-            </Step>
-          );
-        })}
-      </Stepper>
     </div>
   );
 };

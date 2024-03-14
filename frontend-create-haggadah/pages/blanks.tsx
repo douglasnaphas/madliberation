@@ -120,27 +120,33 @@ const PromptSection = (props: {
         )}
         <div>
           <br />
-          <Button
-            color="primary"
-            variant="contained"
-            disabled={pageState !== PageState.READY}
-            onClick={async () => {
-              const submitLibSuccess = await submitLib({
-                answerText: enteredText,
-                answerId: assignment.id,
-              });
-              if (!submitLibSuccess) {
-                setSubmitLibError(true);
-                return;
-              }
-              setAnswers((oldAnswers: any) => {
-                return { ...oldAnswers, [`${assignment.id}`]: enteredText };
-              });
-              setSubmitLibError(false);
-            }}
-          >
-            Submit this one
-          </Button>
+          <div>
+            <Button
+              color="primary"
+              variant="contained"
+              disabled={pageState !== PageState.READY}
+              onClick={async () => {
+                const submitLibSuccess = await submitLib({
+                  answerText: enteredText,
+                  answerId: assignment.id,
+                });
+                if (!submitLibSuccess) {
+                  setSubmitLibError(true);
+                  return;
+                }
+                setAnswers((oldAnswers: any) => {
+                  return { ...oldAnswers, [`${assignment.id}`]: enteredText };
+                });
+                setSubmitLibError(false);
+              }}
+            >
+              Submit ➡️
+            </Button>
+          </div>
+          <div>
+            Submit this one and advance to the next prompt.
+          </div>
+
         </div>
         {submitLibError && (
           <div>

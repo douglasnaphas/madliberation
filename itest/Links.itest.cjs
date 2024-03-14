@@ -349,11 +349,18 @@ const waitOptions = { timeout: timeoutMs /*, visible: true*/ };
       `"][not(@disabled)]`;
     await page.click("xpath/" + submitButtonXPath);
 
-    // expect the prompt to advance
-
-    // wait for the current answer
-    const yourCurrentAnswerIntroXPath = `//*[text()="Your current answer is:"]`;
-    await page.waitForXPath(yourCurrentAnswerIntroXPath);
+    if (asi < browserUser.assignments.length - 1) {
+      // expect the prompt to advance
+      await page.waitForFunction(
+        'document.getElementById("this-prompt").textContent.includes(`' +
+          browserUser.assignments[asi + 1].prompt +
+          "`)"
+      );
+    } else {
+      // wait for the current answer
+      const yourCurrentAnswerIntroXPath = `//*[text()="Your current answer is:"]`;
+      await page.waitForXPath(yourCurrentAnswerIntroXPath);
+    }
   }
 
   // submit the rest of the libs with the backend directly

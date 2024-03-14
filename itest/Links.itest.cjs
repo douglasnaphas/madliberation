@@ -340,8 +340,8 @@ const waitOptions = { timeout: timeoutMs /*, visible: true*/ };
     // click submit
     const buttonExplanationXPath =
       asi === browserUser.assignments.length - 1
-        ? '//div[text()="Submit this one and advance to the next prompt."]'
-        : '//div[text()="Submit this one."]';
+        ? '//div[text()="Submit this one."]'
+        : '//div[text()="Submit this one and advance to the next prompt."]';
     await page.waitForXPath(buttonExplanationXPath);
     const submitButtonXPath =
       `//button[text()="Submit` +

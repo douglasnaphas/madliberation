@@ -149,8 +149,8 @@ const PromptSection = (props: {
           <div>
             {`Submit this one` +
               (selectedAssignmentIndex === assignments.length - 1
-                ? ` and advance to the next prompt`
-                : ``) +
+                ? ``
+                : ` and advance to the next prompt`) +
               `.`}
           </div>
         </div>

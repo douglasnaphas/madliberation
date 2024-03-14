@@ -6,7 +6,7 @@ import Typography from "@mui/material/Typography";
 import MadLiberationLogo from "../public/mad-liberation-logo.png";
 import VeryAwesomePassoverLogo from "../public/VAPLogo-white.png";
 import { Global, css, jsx } from "@emotion/react";
-import { Button, Paper, Chip, TextField } from "@mui/material";
+import { Box, Button, Paper, Chip, TextField } from "@mui/material";
 import DoneIcon from "@mui/icons-material/Done";
 import SederSummary from "../src/SederSummary";
 import Head from "next/head";
@@ -120,45 +120,58 @@ const PromptSection = (props: {
         )}
         <div>
           <br />
-          <div>
-            <Button
-              color="primary"
-              variant="contained"
-              disabled={pageState !== PageState.READY}
-              onClick={async () => {
-                const submitLibSuccess = await submitLib({
-                  answerText: enteredText,
-                  answerId: assignment.id,
-                });
-                if (!submitLibSuccess) {
-                  setSubmitLibError(true);
-                  return;
-                }
-                setAnswers((oldAnswers: any) => {
-                  return { ...oldAnswers, [`${assignment.id}`]: enteredText };
-                });
-                setSubmitLibError(false);
-                if (selectedAssignmentIndex < assignments.length - 1) {
-                  setSelectedAssignmentIndex(selectedAssignmentIndex + 1);
-                  if (typeof window !== "undefined") {
-                    window.location.hash = `${selectedAssignmentIndex + 1}`;
-                  }
-                }
-              }}
-            >
-              {`Submit` +
-                (selectedAssignmentIndex === assignments.length - 1
-                  ? ``
-                  : ` ➡️`)}
-            </Button>
-          </div>
-          <div>
-            {`Submit this one` +
-              (selectedAssignmentIndex === assignments.length - 1
-                ? ``
-                : ` and advance to the next prompt`) +
-              `.`}
-          </div>
+          <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
+            <Box id="left-box">
+              <Button color="secondary" variant="contained">
+                Back
+              </Button>
+            </Box>
+            <Box id="invisible-center-box" sx={{ flex: "1 1 auto" }}></Box>
+            <Box id="right-box">
+              <div>
+                <Button
+                  color="primary"
+                  variant="contained"
+                  disabled={pageState !== PageState.READY}
+                  onClick={async () => {
+                    const submitLibSuccess = await submitLib({
+                      answerText: enteredText,
+                      answerId: assignment.id,
+                    });
+                    if (!submitLibSuccess) {
+                      setSubmitLibError(true);
+                      return;
+                    }
+                    setAnswers((oldAnswers: any) => {
+                      return {
+                        ...oldAnswers,
+                        [`${assignment.id}`]: enteredText,
+                      };
+                    });
+                    setSubmitLibError(false);
+                    if (selectedAssignmentIndex < assignments.length - 1) {
+                      setSelectedAssignmentIndex(selectedAssignmentIndex + 1);
+                      if (typeof window !== "undefined") {
+                        window.location.hash = `${selectedAssignmentIndex + 1}`;
+                      }
+                    }
+                  }}
+                >
+                  {`Submit` +
+                    (selectedAssignmentIndex === assignments.length - 1
+                      ? ``
+                      : ` ➡️`)}
+                </Button>
+              </div>
+              <div id="submit-this-one-text">
+                {`Submit this one` +
+                  (selectedAssignmentIndex === assignments.length - 1
+                    ? ``
+                    : ` and advance to the next prompt`) +
+                  `.`}
+              </div>
+            </Box>
+          </Box>
         </div>
         {submitLibError && (
           <div>

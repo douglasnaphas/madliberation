@@ -360,7 +360,8 @@ const waitOptions = { timeout: timeoutMs /*, visible: true*/ };
         .catch((reason) => {
           failTest(
             reason,
-            `Failed to find prompt ${browserUser.assignments[asi + 1].prompt}`
+            `Failed to find prompt ${browserUser.assignments[asi + 1].prompt}`,
+            browser
           );
         });
     } else {

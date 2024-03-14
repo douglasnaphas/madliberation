@@ -310,6 +310,9 @@ export default function Blanks() {
         setAnswers(fetchAnswersMapData);
 
         try {
+          // Get the read password (rpw).
+          // There is only one read password for the whole Seder.
+          // Anyone with any of /blanks links (participants) are allowed to get it.
           const fetchRpwResponse = await fetch(
             `../v2/rpw?sederCode=${sederCode}&pw=${pw}&ph=${ph}&roomcode=${sederCode}`
           );

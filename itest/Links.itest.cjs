@@ -44,10 +44,16 @@ const browserOptions = {
 browserOptions.slowMo = slowDown;
 
 const lowercaseAlphabet = "abcdefghijklmnopqrstuvwxyz";
-const failTest = async (err, msg, browser) => {
+const failTest = async (err, msg, browsers) => {
   console.log("test failed: " + msg);
   console.log(err);
-  if (browser) await browser.close();
+  if (browsers && browsers.length) {
+    for (let b = 0; b < browsers.length; b++) {
+      if (browsers[b].close) {
+        await browsers[b].close();
+      }
+    }
+  }
   process.exit(1);
 };
 
@@ -74,7 +80,7 @@ const waitOptions = { timeout: timeoutMs /*, visible: true*/ };
   await page
     .waitForXPath('//*[text()="' + createHaggadahLinkText + '"]', waitOptions)
     .catch(async (e) => {
-      failTest(e, "Plan a seder button not found", browser);
+      failTest(e, "Plan a seder button not found", browsers);
     });
   await page.click('[madliberationid="plan-seder-button"]');
 
@@ -86,7 +92,7 @@ const waitOptions = { timeout: timeoutMs /*, visible: true*/ };
   await page
     .waitForXPath(pickScriptAccordionTextXPath, waitOptions)
     .catch(async (e) => {
-      failTest(e, "Pick script accordion not found", browser);
+      failTest(e, "Pick script accordion not found", browsers);
     });
   await page.click("xpath/" + pickScriptAccordionTextXPath);
   console.log("scriptTerm:", scriptTerm);
@@ -361,7 +367,7 @@ const waitOptions = { timeout: timeoutMs /*, visible: true*/ };
           failTest(
             reason,
             `Failed to find prompt ${browserUser.assignments[asi + 1].prompt}`,
-            browser
+            browsers
           );
         });
     } else {

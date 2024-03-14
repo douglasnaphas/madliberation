@@ -279,7 +279,7 @@ const waitOptions = { timeout: timeoutMs /*, visible: true*/ };
     if (
       participantIndex === partialSubmitterIndex &&
       participants[participantIndex].assignments[OMITTED_ANSWER_INDEX].id ===
-      assignmentId
+        assignmentId
     ) {
       return "";
     }
@@ -297,7 +297,7 @@ const waitOptions = { timeout: timeoutMs /*, visible: true*/ };
     if (
       participantIndex === partialSubmitterIndex &&
       participants[participantIndex].assignments[OMITTED_ANSWER_INDEX].id ===
-      assignmentId
+        assignmentId
     ) {
       return defaults[assignmentId];
     }
@@ -309,7 +309,11 @@ const waitOptions = { timeout: timeoutMs /*, visible: true*/ };
   const expectedAnswers = {};
 
   // browser
-  for (let asi /* assignment index */ = 0; asi < browserUser.assignments.length; asi++) {
+  for (
+    let asi /* assignment index */ = 0;
+    asi < browserUser.assignments.length;
+    asi++
+  ) {
     const RESUBMITTED_ANSWER_INDEX = 2;
 
     const answerText = answerToType({
@@ -325,8 +329,8 @@ const waitOptions = { timeout: timeoutMs /*, visible: true*/ };
     // wait for the card
     await page.waitForFunction(
       'document.getElementById("this-prompt").textContent.includes(`' +
-      browserUser.assignments[asi].prompt +
-      "`)"
+        browserUser.assignments[asi].prompt +
+        "`)"
     );
 
     // enter the text
@@ -335,9 +339,9 @@ const waitOptions = { timeout: timeoutMs /*, visible: true*/ };
 
     // click submit
     const buttonExplanationXPath =
-      asi === browserUser.assignments.length - 1 ?
-        '//div[text()="Submit this one and advance to the next prompt."]' :
-        '//div[text()="Submit this one."]';
+      asi === browserUser.assignments.length - 1
+        ? '//div[text()="Submit this one and advance to the next prompt."]'
+        : '//div[text()="Submit this one."]';
     await page.waitForXPath(buttonExplanationXPath);
     const submitButtonXPath =
       `//button[text()="Submit` +
@@ -346,7 +350,6 @@ const waitOptions = { timeout: timeoutMs /*, visible: true*/ };
     await page.click("xpath/" + submitButtonXPath);
 
     // expect the prompt to advance
-
 
     // wait for the current answer
     const yourCurrentAnswerIntroXPath = `//*[text()="Your current answer is:"]`;
@@ -428,7 +431,6 @@ const waitOptions = { timeout: timeoutMs /*, visible: true*/ };
 
   //////////////////////////////////////////////////////////////////////////////
   //////////////////////////// Read Roster /////////////////////////////////////
-
 
   //////////////////////////////////////////////////////////////////////////////
   ///////////////////////////// Read Page //////////////////////////////////////

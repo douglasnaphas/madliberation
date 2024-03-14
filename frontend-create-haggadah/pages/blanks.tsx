@@ -393,7 +393,7 @@ export default function Blanks() {
               <Paper>
                 <div style={{ padding: "8px" }}>
                   <h1>
-                    Submitting answers as <strong>{gameName}</strong>.
+                    Submitting answers as <strong>{gameName}</strong>
                   </h1>
                 </div>
               </Paper>

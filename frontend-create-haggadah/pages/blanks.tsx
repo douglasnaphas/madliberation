@@ -140,13 +140,19 @@ const PromptSection = (props: {
                 setSubmitLibError(false);
               }}
             >
-              Submit ➡️
+              {`Submit` +
+                (selectedAssignmentIndex === assignments.length - 1
+                  ? ``
+                  : ` ➡️`)}
             </Button>
           </div>
           <div>
-            Submit this one and advance to the next prompt.
+            {`Submit this one` +
+              (selectedAssignmentIndex === assignments.length - 1
+                ? ` and advance to the next prompt`
+                : ``) +
+              `.`}
           </div>
-
         </div>
         {submitLibError && (
           <div>
@@ -204,9 +210,9 @@ const ChipSection = (props: {
             size="small"
             icon={
               answers &&
-                assignment &&
-                assignment.id &&
-                assignment.id in answers ? (
+              assignment &&
+              assignment.id &&
+              assignment.id in answers ? (
                 <DoneIcon />
               ) : undefined
             }
@@ -340,7 +346,7 @@ export default function Blanks() {
 
         const fetchGameNameResponse = await fetch(
           `../v2/game-name?sederCode=` +
-          `${sederCode}&pw=${pw}&ph=${ph}&roomcode=${sederCode}`
+            `${sederCode}&pw=${pw}&ph=${ph}&roomcode=${sederCode}`
         );
         if (fetchGameNameResponse.status === 200) {
           const fetchGameNameData = await fetchGameNameResponse.json();
@@ -386,7 +392,9 @@ export default function Blanks() {
             <div>
               <Paper>
                 <div style={{ padding: "8px" }}>
-                  <h1>Submitting answers as <strong>{gameName}</strong>.</h1>
+                  <h1>
+                    Submitting answers as <strong>{gameName}</strong>.
+                  </h1>
                 </div>
               </Paper>
               <br />

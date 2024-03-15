@@ -367,6 +367,25 @@ export default function Blanks() {
         }
 
         setPageState(PageState.READY);
+
+        // Register a listener on the browser event hashchange, so if someone
+        // uses the browser's Back button, changing the hash from, say, #7 to #6,
+        // the selected lib index goes to 6.
+        const hashChangeHandler = () => {
+          if (typeof window === "undefined") return;
+          if (!window.location.hash) return;
+          if (window.location.hash.split("#").length < 2) return;
+          const hash = parseInt(window.location.hash.split("#")[1]);
+          if (hash !== 0 && !hash) return;
+          if (hash < 0) return;
+          if (hash > assignments.length - 1) return;
+          if (hash === selectedAssignmentIndex) return;
+          setSelectedAssignmentIndex(hash);
+        };
+        window.addEventListener("hashchange", hashChangeHandler);
+        return () => {
+          window.removeEventListener("hashchange", hashChangeHandler);
+        };
       }
     })();
   }, []);

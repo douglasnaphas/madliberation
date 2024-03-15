@@ -121,12 +121,6 @@ const PromptSection = (props: {
         <div>
           <br />
           <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
-            <Box id="left-box">
-              <Button color="secondary" variant="contained">
-                Back
-              </Button>
-            </Box>
-            <Box id="invisible-center-box" sx={{ flex: "1 1 auto" }}></Box>
             <Box id="right-box">
               <div>
                 <Button

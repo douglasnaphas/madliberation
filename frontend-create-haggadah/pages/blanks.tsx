@@ -385,7 +385,6 @@ export default function Blanks() {
           if (hash !== 0 && !hash) return;
           if (hash < 0) return;
           if (hash > fetchAssignmentsData.length - 1) return;
-          if (hash === selectedAssignmentIndex) return;
           console.log(`hash is now ${hash}`);
           setSelectedAssignmentIndex(hash);
         };

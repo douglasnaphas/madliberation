@@ -372,6 +372,12 @@ export default function Blanks() {
         // uses the browser's Back button, changing the hash from, say, #7 to #6,
         // the selected lib index goes to 6.
         const hashChangeHandler = () => {
+          console.log("hash changed");
+          console.log(`assignments.length`, assignments.length);
+          console.log(
+            `fetchAssignmentsData.length`,
+            fetchAssignmentsData.length
+          );
           if (typeof window === "undefined") return;
           if (!window.location.hash) return;
           if (window.location.hash.split("#").length < 2) return;
@@ -380,6 +386,7 @@ export default function Blanks() {
           if (hash < 0) return;
           if (hash > fetchAssignmentsData.length - 1) return;
           if (hash === selectedAssignmentIndex) return;
+          console.log(`hash is now ${hash}`);
           setSelectedAssignmentIndex(hash);
         };
         window.addEventListener("hashchange", hashChangeHandler);

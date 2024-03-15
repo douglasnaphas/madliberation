@@ -381,7 +381,7 @@ const waitOptions = { timeout: timeoutMs /*, visible: true*/ };
     // test that the Back button moves you to the previous lib
     if (asi === BACK_BUTTON_TEST_INDEX) {
       await page.goBack();
-      const actualHash = window.location.hash.split("#")[1];
+      const actualHash = new URL(page.url()).hash.split("#")[1];
       const expectedHash = BACK_BUTTON_TEST_INDEX - 1;
       if (actualHash !== expectedHash) {
         failTest(

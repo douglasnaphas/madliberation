@@ -321,6 +321,7 @@ const waitOptions = { timeout: timeoutMs /*, visible: true*/ };
     asi++
   ) {
     const RESUBMITTED_ANSWER_INDEX = 2;
+    const BACK_BUTTON_TEST_INDEX = 3;
 
     const answerText = answerToType({
       participantIndex: participants.length - 1,
@@ -355,6 +356,7 @@ const waitOptions = { timeout: timeoutMs /*, visible: true*/ };
       `"][not(@disabled)]`;
     await page.click("xpath/" + submitButtonXPath);
 
+    // check auto-advancing, unless we just submitted the last one
     if (asi < browserUser.assignments.length - 1) {
       // expect the prompt to advance
       await page
@@ -374,6 +376,40 @@ const waitOptions = { timeout: timeoutMs /*, visible: true*/ };
       // wait for the current answer
       const yourCurrentAnswerIntroXPath = `//*[text()="Your current answer is:"]`;
       await page.waitForXPath(yourCurrentAnswerIntroXPath);
+    }
+
+    // test that the Back button moves you to the previous lib
+    if (asi === BACK_BUTTON_TEST_INDEX) {
+      await page.goBack();
+      const actualHash = window.location.hash.split("#")[1];
+      const expectedHash = BACK_BUTTON_TEST_INDEX - 1;
+      if (actualHash !== expectedHash) {
+        failTest(
+          new Error("wrong hash"),
+          `expected location hash of ${expectedHash} after Back, got ` +
+            `${actualHash}`,
+          /* This is not me testing that the Back button works */
+          /* The app is supposed to keep the hash equal to the assignment index. */
+          browsers
+        );
+      }
+      // The prompt text should be from the assignment before the one we were
+      // just on
+      const expectedPrompt =
+        browserUser.assignments[BACK_BUTTON_TEST_INDEX - 1].prompt;
+      await page
+        .waitForFunction(
+          'document.getElementById("this-prompt").textContent.includes(`' +
+            expectedPrompt +
+            "`)"
+        )
+        .catch((reason) =>
+          failTest(
+            reason,
+            `Prompt not equal to "${expectedPrompt}" after Back navigation`,
+            browsers
+          )
+        );
     }
   }
 

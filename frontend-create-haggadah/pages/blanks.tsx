@@ -378,7 +378,7 @@ export default function Blanks() {
           const hash = parseInt(window.location.hash.split("#")[1]);
           if (hash !== 0 && !hash) return;
           if (hash < 0) return;
-          if (hash > assignments.length - 1) return;
+          if (hash > fetchAssignmentsData.length - 1) return;
           if (hash === selectedAssignmentIndex) return;
           setSelectedAssignmentIndex(hash);
         };

@@ -320,7 +320,7 @@ const waitOptions = { timeout: timeoutMs /*, visible: true*/ };
     asi < browserUser.assignments.length;
     asi++
   ) {
-    const RESUBMITTED_ANSWER_INDEX = 2;
+    const BLANKOUT_INDEX = 2;
     const BACK_BUTTON_TEST_INDEX = 3;
     const RANDOM_ACCESS_INDEXES = {
       START: 4, // when we hit here, go to END
@@ -349,7 +349,7 @@ const waitOptions = { timeout: timeoutMs /*, visible: true*/ };
       });
     }
 
-    // Really test random access, and blanking-out, and resubmission
+    // Really test random access and resubmission
     if (asi === RANDOM_ACCESS_INDEXES.START) {
       const { START, END } = RANDOM_ACCESS_INDEXES;
 
@@ -396,6 +396,19 @@ const waitOptions = { timeout: timeoutMs /*, visible: true*/ };
           browsers
         );
       }
+
+      // There should be a blank-out button and a re-submit button
+      const blankOutButtonXPath = '//button[text()="Blank out this answer"]';
+      await page.waitForXPath(blankOutButtonXPath);
+      const updateAnswerButtonXPath = '//button[text()="Update answer"]';
+      await page.waitForXPath(updateAnswerButtonXPath);
+
+      // There should be two buttons total
+      
+
+      // The re-submit button should be disabled
+
+      // There should be no "and go to the next prompt" text.
 
       // go back to START
       const startChipSelector = `#prompt-chip-${START}`;
@@ -463,9 +476,12 @@ const waitOptions = { timeout: timeoutMs /*, visible: true*/ };
       may or may not expect the current hash, after the back navigation, to be
       one less than what the hash just was. So we'll just make sure that the
       hash matches the assignment index after a Back. */
+      const currentHash = () =>
+        parseInt(new URL(page.url()).hash.split("#")[1]);
+      const hashBeforeBack = currentHash();
       await page.goBack();
-      const actualHash = parseInt(new URL(page.url()).hash.split("#")[1]);
-      const expectedPrompt = browserUser.assignments[actualHash].prompt;
+      const hashAfterBack = currentHash();
+      const expectedPrompt = browserUser.assignments[hashAfterBack].prompt;
       await page
         .waitForFunction(
           'document.getElementById("this-prompt").textContent.includes(`' +
@@ -479,6 +495,15 @@ const waitOptions = { timeout: timeoutMs /*, visible: true*/ };
             browsers
           )
         );
+      await page.goForward();
+      const hashAfterBackAndForward = currentHash();
+      if (hashBeforeBack !== hashAfterBackAndForward) {
+        failTest(
+          new Error("unexpected hash behavior after Back and Forward"),
+          `expected hash ${hashBeforeBack}, got ${hashAfterBackAndForward}`,
+          browsers
+        );
+      }
     }
   }
 

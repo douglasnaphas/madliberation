@@ -348,8 +348,10 @@ const waitOptions = { timeout: timeoutMs /*, visible: true*/ };
       });
     }
 
-    // Really test random access
+    // Really test random access, and blanking-out, and resubmission
     if (asi === RANDOM_ACCESS_INDEXES.START) {
+      const { START, END } = RANDOM_ACCESS_INDEXES;
+      
       // go back to END by clicking on the chip
       const endChipSelector = `#prompt-chip-${END}`;
       await page.click(endChipSelector).catch((reason) => {
@@ -375,6 +377,8 @@ const waitOptions = { timeout: timeoutMs /*, visible: true*/ };
               `didn't find expected prompt "${assignments[END].prompt}"`
           );
         });
+
+      // It should say "your current answer is <previously submitted answer>"
 
       // go back to START
       const startChipSelector = `#prompt-chip-${START}`;

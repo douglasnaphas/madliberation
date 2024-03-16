@@ -389,6 +389,15 @@ const waitOptions = { timeout: timeoutMs /*, visible: true*/ };
     );
 
     // Expect the Submit button to be disabled before any text is entered
+    const disabledSubmitButtonXPath =
+      '//button[@disabled and contains(text(), "Submit")]';
+    await page.waitForXPath(disabledSubmitButtonXPath).catch((reason) => {
+      failTest(
+        reason,
+        `did not find disabled Submit button when text box was blank`,
+        browsers
+      );
+    });
 
     // enter the text
     const answerBoxSelector = `#answer`;

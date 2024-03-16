@@ -322,6 +322,10 @@ const waitOptions = { timeout: timeoutMs /*, visible: true*/ };
   ) {
     const RESUBMITTED_ANSWER_INDEX = 2;
     const BACK_BUTTON_TEST_INDEX = 3;
+    const RANDOM_ACCESS_INDEXES = {
+      START: 4, // when we hit here, go to END
+      END: 1, // then return to START
+    };
 
     const answerText = answerToType({
       participantIndex: participants.length - 1,
@@ -329,9 +333,53 @@ const waitOptions = { timeout: timeoutMs /*, visible: true*/ };
     });
     expectedAnswers[browserUser.assignments[asi].id] = answerText;
 
-    // click the chip
-    const chipSelector = `#prompt-chip-${asi}`;
-    await page.click(chipSelector);
+    // To test both the random-access flow and the auto-advance flow, click the
+    // chip sometimes.
+    const CHIP_INTERVAL = 4;
+    if (asi % CHIP_INTERVAL === 0) {
+      const chipSelector = `#prompt-chip-${asi}`;
+      await page.click(chipSelector).catch((reason) => {
+        failTest(
+          reason,
+          `did not find chip for prompt number ${asi},` +
+            `"${assignments[asi].prompt}"`,
+          browsers
+        );
+      });
+    }
+
+    // Really test random access
+    if (asi === RANDOM_ACCESS_INDEXES.START) {
+      // go back to END by clicking on the chip
+      const endChipSelector = `#prompt-chip-${END}`;
+      await page.click(endChipSelector).catch((reason) => {
+        failTest(
+          reason,
+          `did not find chip for prompt number ${END}, ` +
+            `"${assignments[END].prompt}"`,
+          browsers
+        );
+      });
+
+      // wait for the prompt from index END
+      await page
+        .waitForFunction(
+          'document.getElementById("this-prompt").textContent.includes(`' +
+            browserUser.assignments[END].prompt +
+            "`)"
+        )
+        .catch((reason) => {
+          failTest(
+            reason,
+            `tried jumping back to prompt number ${END}, ` +
+              `didn't find expected prompt "${assignments[END].prompt}"`
+          );
+        });
+
+      // go back to START
+      const startChipSelector = `#prompt-chip-${START}`;
+      await page.click(startChipSelector);
+    }
 
     // wait for the card
     await page.waitForFunction(
@@ -339,6 +387,8 @@ const waitOptions = { timeout: timeoutMs /*, visible: true*/ };
         browserUser.assignments[asi].prompt +
         "`)"
     );
+
+    // Expect the Submit button to be disabled before any text is entered
 
     // enter the text
     const answerBoxSelector = `#answer`;

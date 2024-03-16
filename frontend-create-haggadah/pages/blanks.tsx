@@ -84,7 +84,7 @@ const PromptSection = (props: {
           answers[`${assignment.id}`] && (
             <div>
               <div>Your current answer is:</div>
-              <div>{answer}</div>
+              <div id="current-answer">{answer}</div>
             </div>
           )}
         <br />

@@ -326,6 +326,7 @@ const waitOptions = { timeout: timeoutMs /*, visible: true*/ };
       START: 4, // when we hit here, go to END
       END: 1, // then return to START
     };
+    const yourCurrentAnswerIntroXPath = `//*[text()="Your current answer is:"]`;
 
     const answerText = answerToType({
       participantIndex: participants.length - 1,
@@ -351,7 +352,7 @@ const waitOptions = { timeout: timeoutMs /*, visible: true*/ };
     // Really test random access, and blanking-out, and resubmission
     if (asi === RANDOM_ACCESS_INDEXES.START) {
       const { START, END } = RANDOM_ACCESS_INDEXES;
-      
+
       // go back to END by clicking on the chip
       const endChipSelector = `#prompt-chip-${END}`;
       await page.click(endChipSelector).catch((reason) => {
@@ -379,6 +380,22 @@ const waitOptions = { timeout: timeoutMs /*, visible: true*/ };
         });
 
       // It should say "your current answer is <previously submitted answer>"
+      const previouslySubmittedAnswer =
+        expectedAnswers[browserUser.assignments[END].id];
+      await page.waitForXPath(yourCurrentAnswerIntroXPath);
+      const currentAnswerText = await page
+        .$eval("#current-answer", (el) => el.textContent)
+        .catch((reason) => {
+          failTest(reason, "Unable to find current answer", browsers);
+        });
+      if (currentAnswerText !== previouslySubmittedAnswer) {
+        failTest(
+          new Error("wrong current answer text"),
+          `expected "${previouslySubmittedAnswer}," got ` +
+            `"${currentAnswerText}."`,
+          browsers
+        );
+      }
 
       // go back to START
       const startChipSelector = `#prompt-chip-${START}`;
@@ -437,7 +454,6 @@ const waitOptions = { timeout: timeoutMs /*, visible: true*/ };
         });
     } else {
       // wait for the current answer
-      const yourCurrentAnswerIntroXPath = `//*[text()="Your current answer is:"]`;
       await page.waitForXPath(yourCurrentAnswerIntroXPath);
     }
 

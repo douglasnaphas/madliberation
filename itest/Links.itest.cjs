@@ -441,7 +441,7 @@ const waitOptions = { timeout: timeoutMs /*, visible: true*/ };
     const buttonExplanationXPath =
       asi === browserUser.assignments.length - 1
         ? '//div[text()="Submit this one"]'
-        : '//div[text()="Submit, go to next prompt"]';
+        : '//div[contains(text(),"Submit, go to next prompt")]';
     await page.waitForXPath(buttonExplanationXPath);
     const submitButtonXPath =
       `//button[contains(text(),"Submit"][not(@disabled)]`;

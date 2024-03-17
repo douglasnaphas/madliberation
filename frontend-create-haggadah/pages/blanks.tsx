@@ -89,9 +89,6 @@ const PromptSection = (props: {
               </div>
               <div id="blank-out-section">
                 <Button id="blank-out-button">Blank out this answer</Button>
-                <div id="blank-out-explanation">
-                  A funny default will be used instead.
-                </div>
               </div>
             </div>
           )}
@@ -479,8 +476,6 @@ export default function Blanks() {
                 ></PromptSection>
               )}
               <br />
-              <br />
-              <br />
               {pageState !== PageState.LOADING && answers && (
                 <ChipSection
                   submitLib={submitLib}
@@ -492,19 +487,25 @@ export default function Blanks() {
                   setPageState={setPageState}
                 ></ChipSection>
               )}
-              {pageState !== PageState.LOADING &&
-                readLink !== "" &&
-                readRosterLink !== "" && (
-                  <ReadLinkSection
-                    readLink={readLink}
-                    readRosterLink={readRosterLink}
-                  ></ReadLinkSection>
-                )}
-              <div>
-                {sederCode && rpw && (
-                  <SederSummary sederCode={sederCode} rpw={rpw}></SederSummary>
-                )}
-              </div>
+            </div>
+          </Paper>
+          <br />
+          <Paper>
+            <div>
+              Funny default answers will be used for anything you leave blank.
+            </div>
+            {pageState !== PageState.LOADING &&
+              readLink !== "" &&
+              readRosterLink !== "" && (
+                <ReadLinkSection
+                  readLink={readLink}
+                  readRosterLink={readRosterLink}
+                ></ReadLinkSection>
+              )}
+            <div>
+              {sederCode && rpw && (
+                <SederSummary sederCode={sederCode} rpw={rpw}></SederSummary>
+              )}
             </div>
           </Paper>
         </Container>

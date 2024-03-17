@@ -130,48 +130,72 @@ const PromptSection = (props: {
           <br />
           <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
             <Box id="right-box">
-              <div>
-                <Button
-                  color="primary"
-                  variant="contained"
-                  disabled={pageState !== PageState.READY || enteredText === ""}
-                  onClick={async () => {
-                    const submitLibSuccess = await submitLib({
-                      answerText: enteredText,
-                      answerId: assignment.id,
-                    });
-                    if (!submitLibSuccess) {
-                      setSubmitLibError(true);
-                      return;
+              {assignment &&
+              answers &&
+              assignment.id &&
+              answers[`${assignment.id}`] ? (
+                /* if there's an answer already */ <div id="re-submit-section">
+                  <Button
+                    id="re-submit-button"
+                    disabled={
+                      pageState !== PageState.READY || enteredText === ""
                     }
-                    setAnswers((oldAnswers: any) => {
-                      return {
-                        ...oldAnswers,
-                        [`${assignment.id}`]: enteredText,
-                      };
-                    });
-                    setSubmitLibError(false);
-                    if (selectedAssignmentIndex < assignments.length - 1) {
-                      setSelectedAssignmentIndex(selectedAssignmentIndex + 1);
-                      if (typeof window !== "undefined") {
-                        window.location.hash = `${selectedAssignmentIndex + 1}`;
+                  >
+                    Update answer
+                  </Button>
+                </div> /* if there's no answer yet */
+              ) : (
+                <div id="submit-this-one-section">
+                  <div>
+                    <Button
+                      color="primary"
+                      variant="contained"
+                      disabled={
+                        pageState !== PageState.READY || enteredText === ""
                       }
-                    }
-                  }}
-                >
-                  {`Submit` +
-                    (selectedAssignmentIndex === assignments.length - 1
-                      ? ``
-                      : ` ➡️`)}
-                </Button>
-              </div>
-              <div id="submit-this-one-text">
-                {`Submit this one` +
-                  (selectedAssignmentIndex === assignments.length - 1
-                    ? ``
-                    : ` and advance to the next prompt`) +
-                  `.`}
-              </div>
+                      onClick={async () => {
+                        const submitLibSuccess = await submitLib({
+                          answerText: enteredText,
+                          answerId: assignment.id,
+                        });
+                        if (!submitLibSuccess) {
+                          setSubmitLibError(true);
+                          return;
+                        }
+                        setAnswers((oldAnswers: any) => {
+                          return {
+                            ...oldAnswers,
+                            [`${assignment.id}`]: enteredText,
+                          };
+                        });
+                        setSubmitLibError(false);
+                        if (selectedAssignmentIndex < assignments.length - 1) {
+                          setSelectedAssignmentIndex(
+                            selectedAssignmentIndex + 1
+                          );
+                          if (typeof window !== "undefined") {
+                            window.location.hash = `${
+                              selectedAssignmentIndex + 1
+                            }`;
+                          }
+                        }
+                      }}
+                    >
+                      {`Submit` +
+                        (selectedAssignmentIndex === assignments.length - 1
+                          ? ``
+                          : ` ➡️`)}
+                    </Button>
+                  </div>
+                  <div id="submit-this-one-text">
+                    {`Submit this one` +
+                      (selectedAssignmentIndex === assignments.length - 1
+                        ? ``
+                        : ` and advance to the next prompt`) +
+                      `.`}
+                  </div>
+                </div>
+              )}
             </Box>
           </Box>
         </div>

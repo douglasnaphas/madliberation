@@ -125,7 +125,14 @@ const PromptSection = (props: {
         )}
         <div>
           <br />
-          <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "flex-end",
+              flexDirection: "row",
+              pt: 2,
+            }}
+          >
             <Box id="right-box">
               {assignment &&
               answers &&

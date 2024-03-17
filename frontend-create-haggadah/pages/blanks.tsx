@@ -93,7 +93,6 @@ const PromptSection = (props: {
             </div>
           )}
         <br />
-        <br />
         <TextField
           id="answer"
           variant="outlined"

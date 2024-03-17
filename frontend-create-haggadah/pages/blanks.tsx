@@ -83,15 +83,16 @@ const PromptSection = (props: {
           assignment.id &&
           answers[`${assignment.id}`] && (
             <div>
-              <Box id="your-current-answer-box" sx={{ width: "50%" }}>
-                <div>
-                  <div>Your current answer is:</div>
-                  <div id="current-answer">{answer}</div>
-                </div>
-              </Box>
-              <Box id="blank-out-answer-box" sx={{ width: "50%" }}>
+              <div id="your-current-answer-section">
+                <div>Your current answer is:</div>
+                <div id="current-answer">{answer}</div>
+              </div>
+              <div id="blank-out-section">
                 <Button id="blank-out-button">Blank out this answer</Button>
-              </Box>
+                <div id="blank-out-explanation">
+                  A funny default will be used instead.
+                </div>
+              </div>
             </div>
           )}
         <br />

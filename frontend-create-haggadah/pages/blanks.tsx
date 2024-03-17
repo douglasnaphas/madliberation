@@ -492,16 +492,19 @@ export default function Blanks() {
           <br />
           <Paper>
             <div id="blanks-footer" style={{ padding: "8px" }}>
-              <div>
-                Funny default answers will be used for anything you leave blank.
-              </div>
               {pageState !== PageState.LOADING &&
                 readLink !== "" &&
                 readRosterLink !== "" && (
-                  <ReadLinkSection
-                    readLink={readLink}
-                    readRosterLink={readRosterLink}
-                  ></ReadLinkSection>
+                  <div>
+                    <div>
+                      Funny default answers will be used for anything you leave
+                      blank.
+                    </div>
+                    <ReadLinkSection
+                      readLink={readLink}
+                      readRosterLink={readRosterLink}
+                    ></ReadLinkSection>
+                  </div>
                 )}
               <div>
                 {sederCode && rpw && (

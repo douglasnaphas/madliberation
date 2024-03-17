@@ -444,7 +444,7 @@ const waitOptions = { timeout: timeoutMs /*, visible: true*/ };
         : '//*[contains(text(),"Submit, go to next prompt")]';
     await page.waitForXPath(buttonExplanationXPath);
     const submitButtonXPath =
-      `//button[contains(text(),"Submit"][not(@disabled)]`;
+      `//button[contains(text(),"Submit")][not(@disabled)]`;
     await page.click("xpath/" + submitButtonXPath);
 
     // check auto-advancing, unless we just submitted the last one

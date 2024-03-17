@@ -10,6 +10,7 @@ import { Box, Button, Paper, Chip, TextField } from "@mui/material";
 import DoneIcon from "@mui/icons-material/Done";
 import SederSummary from "../src/SederSummary";
 import Head from "next/head";
+import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 
 interface Assignment {
   id: number;
@@ -157,6 +158,11 @@ const PromptSection = (props: {
                       disabled={
                         pageState !== PageState.READY || enteredText === ""
                       }
+                      endIcon={
+                        selectedAssignmentIndex < assignments.length - 1 ? (
+                          <NavigateNextIcon />
+                        ) : undefined
+                      }
                       onClick={async () => {
                         const submitLibSuccess = await submitLib({
                           answerText: enteredText,
@@ -185,18 +191,15 @@ const PromptSection = (props: {
                         }
                       }}
                     >
-                      {`Submit` +
-                        (selectedAssignmentIndex === assignments.length - 1
-                          ? ``
-                          : ` ➡️`)}
+                      Submit
                     </Button>
                   </div>
                   <div id="submit-this-one-text">
-                    {`Submit this one` +
-                      (selectedAssignmentIndex === assignments.length - 1
-                        ? ``
-                        : ` and advance to the next prompt`) +
-                      `.`}
+                    <Typography variant="subtitle1" gutterBottom>
+                      {selectedAssignmentIndex === assignments.length - 1
+                        ? `Submit this one`
+                        : `Submit, go to next prompt`}
+                    </Typography>
                   </div>
                 </div>
               )}

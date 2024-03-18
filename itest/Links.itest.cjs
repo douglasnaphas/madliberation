@@ -404,7 +404,7 @@ const waitOptions = { timeout: timeoutMs /*, visible: true*/ };
       await page.waitForXPath(updateAnswerButtonXPath);
 
       // There should be two buttons total
-      const buttons = await $$("button");
+      const buttons = await page.$$("button");
       if (buttons.length !== 2) {
         failTest(
           "wrong number of buttons",

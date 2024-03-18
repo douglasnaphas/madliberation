@@ -549,7 +549,7 @@ const waitOptions = { timeout: timeoutMs /*, visible: true*/ };
       expectedAnswers[blankoutLibId] = defaults[blankoutLibId];
 
       // go to the next assignment, if there is one
-      if (BLANKOUT_INDEX < assignments.length - 1) {
+      if (BLANKOUT_INDEX < browserUser.assignments.length - 1) {
         const nextChipSelector = `#prompt-chip-${BLANKOUT_INDEX + 1}`;
         await page.click(nextChipSelector);
       }

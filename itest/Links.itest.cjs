@@ -404,7 +404,14 @@ const waitOptions = { timeout: timeoutMs /*, visible: true*/ };
       await page.waitForXPath(updateAnswerButtonXPath);
 
       // There should be two buttons total
-      
+      const buttons = await $$("button");
+      if (buttons.length !== 2) {
+        failTest(
+          "wrong number of buttons",
+          `expected 2 buttons, found ${buttons.length}`,
+          browsers
+        );
+      }
 
       // The re-submit button should be disabled
 
@@ -443,8 +450,7 @@ const waitOptions = { timeout: timeoutMs /*, visible: true*/ };
         ? '//*[text()="Submit this one"]'
         : '//*[contains(text(),"Submit, go to next prompt")]';
     await page.waitForXPath(buttonExplanationXPath);
-    const submitButtonXPath =
-      `//button[contains(text(),"Submit")][not(@disabled)]`;
+    const submitButtonXPath = `//button[contains(text(),"Submit")][not(@disabled)]`;
     await page.click("xpath/" + submitButtonXPath);
 
     // check auto-advancing, unless we just submitted the last one

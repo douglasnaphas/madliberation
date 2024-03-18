@@ -533,7 +533,28 @@ const waitOptions = { timeout: timeoutMs /*, visible: true*/ };
         );
       }
     }
-  }
+
+    // test blank-out
+    if (asi === BLANKOUT_INDEX) {
+      const blankoutLibId = browserUser.assignments[asi].id;
+
+      // click the previous card to go back one
+      const chipSelector = `#prompt-chip-${BLANKOUT_INDEX}`;
+      await page.click(chipSelector);
+
+      // blank out the answer
+      const blankOutButtonXPath = '//button[text()="Blank out this answer"]';
+      await page.waitForXPath(blankOutButtonXPath);
+      await page.click("xpath/" + blankOutButtonXPath);
+      expectedAnswers[blankoutLibId] = defaults[blankoutLibId];
+
+      // go to the next assignment, if there is one
+      if (BLANKOUT_INDEX < assignments.length - 1) {
+        const nextChipSelector = `#prompt-chip-${BLANKOUT_INDEX + 1}`;
+        await page.click(nextChipSelector);
+      }
+    }
+  } // done testing submission with browser
 
   // submit the rest of the libs with the backend directly
   const plinkHref2SubmitLibUri = (hr) => {

@@ -66,6 +66,30 @@ const PromptSection = (props: {
   React.useEffect(() => {
     setEnteredText("");
   }, [selectedAssignmentIndex]);
+
+  const submitHandler = async () => {
+    const submitLibSuccess = await submitLib({
+      answerText: enteredText,
+      answerId: assignment.id,
+    });
+    if (!submitLibSuccess) {
+      setSubmitLibError(true);
+      return;
+    }
+    setAnswers((oldAnswers: any) => {
+      return {
+        ...oldAnswers,
+        [`${assignment.id}`]: enteredText,
+      };
+    });
+    setSubmitLibError(false);
+    if (selectedAssignmentIndex < assignments.length - 1) {
+      setSelectedAssignmentIndex(selectedAssignmentIndex + 1);
+      if (typeof window !== "undefined") {
+        window.location.hash = `${selectedAssignmentIndex + 1}`;
+      }
+    }
+  };
   return (
     <div>
       <div>
@@ -145,6 +169,7 @@ const PromptSection = (props: {
                     disabled={
                       pageState !== PageState.READY || enteredText === ""
                     }
+                    onClick={submitHandler}
                   >
                     Update answer
                   </Button>
@@ -163,33 +188,7 @@ const PromptSection = (props: {
                           <NavigateNextIcon />
                         ) : undefined
                       }
-                      onClick={async () => {
-                        const submitLibSuccess = await submitLib({
-                          answerText: enteredText,
-                          answerId: assignment.id,
-                        });
-                        if (!submitLibSuccess) {
-                          setSubmitLibError(true);
-                          return;
-                        }
-                        setAnswers((oldAnswers: any) => {
-                          return {
-                            ...oldAnswers,
-                            [`${assignment.id}`]: enteredText,
-                          };
-                        });
-                        setSubmitLibError(false);
-                        if (selectedAssignmentIndex < assignments.length - 1) {
-                          setSelectedAssignmentIndex(
-                            selectedAssignmentIndex + 1
-                          );
-                          if (typeof window !== "undefined") {
-                            window.location.hash = `${
-                              selectedAssignmentIndex + 1
-                            }`;
-                          }
-                        }
-                      }}
+                      onClick={submitHandler}
                     >
                       Submit
                     </Button>

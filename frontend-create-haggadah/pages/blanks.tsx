@@ -194,7 +194,7 @@ const PromptSection = (props: {
                       Submit
                     </Button>
                   </div>
-                  <div id="submit-this-one-text">
+                  <div id="submit-button-explanation">
                     <Typography variant="subtitle1" gutterBottom>
                       {selectedAssignmentIndex === assignments.length - 1
                         ? `Submit this one`

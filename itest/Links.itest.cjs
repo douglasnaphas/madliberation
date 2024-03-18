@@ -323,8 +323,8 @@ const waitOptions = { timeout: timeoutMs /*, visible: true*/ };
     const BLANKOUT_INDEX = 2;
     const BACK_BUTTON_TEST_INDEX = 3;
     const RANDOM_ACCESS_INDEXES = {
-      START: 4, // when we hit here, go to END
-      END: 1, // then return to START
+      LATE: 4, // when we hit here, go to EARLY, which we already submitted
+      EARLY: 1, // then return to LATE
     };
     const yourCurrentAnswerIntroXPath = `//*[text()="Your current answer is:"]`;
 
@@ -350,38 +350,38 @@ const waitOptions = { timeout: timeoutMs /*, visible: true*/ };
     }
 
     // Really test random access and resubmission
-    if (asi === RANDOM_ACCESS_INDEXES.START) {
-      const { START, END } = RANDOM_ACCESS_INDEXES;
+    if (asi === RANDOM_ACCESS_INDEXES.LATE) {
+      const { LATE: LATE, EARLY: EARLY } = RANDOM_ACCESS_INDEXES;
 
-      // go back to END by clicking on the chip
-      const endChipSelector = `#prompt-chip-${END}`;
+      // go back to EARLY, which we already submitted, by clicking on the chip
+      const endChipSelector = `#prompt-chip-${EARLY}`;
       await page.click(endChipSelector).catch((reason) => {
         failTest(
           reason,
-          `did not find chip for prompt number ${END}, ` +
-            `"${assignments[END].prompt}"`,
+          `did not find chip for prompt number ${EARLY}, ` +
+            `"${assignments[EARLY].prompt}"`,
           browsers
         );
       });
 
-      // wait for the prompt from index END
+      // wait for the prompt from index EARLY
       await page
         .waitForFunction(
           'document.getElementById("this-prompt").textContent.includes(`' +
-            browserUser.assignments[END].prompt +
+            browserUser.assignments[EARLY].prompt +
             "`)"
         )
         .catch((reason) => {
           failTest(
             reason,
-            `tried jumping back to prompt number ${END}, ` +
-              `didn't find expected prompt "${assignments[END].prompt}"`
+            `tried jumping back to prompt number ${EARLY}, ` +
+              `didn't find expected prompt "${assignments[EARLY].prompt}"`
           );
         });
 
       // It should say "your current answer is <previously submitted answer>"
       const previouslySubmittedAnswer =
-        expectedAnswers[browserUser.assignments[END].id];
+        expectedAnswers[browserUser.assignments[EARLY].id];
       await page.waitForXPath(yourCurrentAnswerIntroXPath);
       const currentAnswerText = await page
         .$eval("#current-answer", (el) => el.textContent)
@@ -403,7 +403,7 @@ const waitOptions = { timeout: timeoutMs /*, visible: true*/ };
       const updateAnswerButtonXPath = '//button[text()="Update answer"]';
       await page.waitForXPath(updateAnswerButtonXPath);
 
-      // There should be two buttons total
+      // There should be two buttons total, i.e., no Submit button
       const buttons = await page.$$("button");
       if (buttons.length !== 2) {
         failTest(
@@ -414,11 +414,35 @@ const waitOptions = { timeout: timeoutMs /*, visible: true*/ };
       }
 
       // The re-submit button should be disabled
+      const disabledUpdateAnswerButtonXPath =
+        '//button[text()="Update answer" and @disabled]';
+      await page
+        .waitForXPath(disabledUpdateAnswerButtonXPath)
+        .catch((reason) => {
+          failTest(reason, "Update answer button not disabled", browsers);
+        });
 
       // There should be no "and go to the next prompt" text.
+      const submitButtonExplanations = await page.$$(
+        "#submit-button-explanation"
+      );
+      if (submitButtonExplanations.length !== 0) {
+        failTest(
+          "found submit button explanations",
+          `expected no submit button explanations, found ${submitButtonExplanations.length}`,
+          browsers
+        );
+      }
 
-      // go back to START
-      const startChipSelector = `#prompt-chip-${START}`;
+      // Update the answer
+      const updatedAnswerText = "updated answer";
+      const answerBoxSelector = "#answer";
+      await page.type(answerBoxSelector, updatedAnswerText);
+      await page.click("xpath/" + updateAnswerButtonXPath);
+      expectedAnswers[browserUser.assignments[EARLY].id] = updatedAnswerText;
+
+      // go back to LATE
+      const startChipSelector = `#prompt-chip-${LATE}`;
       await page.click(startChipSelector);
     }
 

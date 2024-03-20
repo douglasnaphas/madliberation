@@ -90,6 +90,25 @@ const PromptSection = (props: {
       }
     }
   };
+
+  const blankOutHandler = async () => {
+    const submitLibSuccess = await submitLib({
+      answerText: "",
+      answerId: assignment.id,
+    });
+    if (!submitLibSuccess) {
+      setSubmitLibError(true);
+      return;
+    }
+    setAnswers((oldAnswers: any) => {
+      return {
+        ...oldAnswers,
+        [`${assignment.id}`]: enteredText,
+      };
+    });
+    setSubmitLibError(false);
+  };
+
   return (
     <div>
       <div>
@@ -113,7 +132,13 @@ const PromptSection = (props: {
                 <div id="current-answer">{answer}</div>
               </div>
               <div id="blank-out-section">
-                <Button id="blank-out-button">Blank out this answer</Button>
+                <Button
+                  id="blank-out-button"
+                  disabled={pageState !== PageState.READY}
+                  onClick={blankOutHandler}
+                >
+                  Blank out this answer
+                </Button>
               </div>
             </div>
           )}

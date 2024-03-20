@@ -6,10 +6,11 @@ import Typography from "@mui/material/Typography";
 import MadLiberationLogo from "../public/mad-liberation-logo.png";
 import VeryAwesomePassoverLogo from "../public/VAPLogo-white.png";
 import { Global, css, jsx } from "@emotion/react";
-import { Button, Paper, Chip, TextField } from "@mui/material";
+import { Box, Button, Paper, Chip, TextField } from "@mui/material";
 import DoneIcon from "@mui/icons-material/Done";
 import SederSummary from "../src/SederSummary";
 import Head from "next/head";
+import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 
 interface Assignment {
   id: number;
@@ -65,6 +66,49 @@ const PromptSection = (props: {
   React.useEffect(() => {
     setEnteredText("");
   }, [selectedAssignmentIndex]);
+
+  const submitHandler = async () => {
+    const submitLibSuccess = await submitLib({
+      answerText: enteredText,
+      answerId: assignment.id,
+    });
+    if (!submitLibSuccess) {
+      setSubmitLibError(true);
+      return;
+    }
+    setAnswers((oldAnswers: any) => {
+      return {
+        ...oldAnswers,
+        [`${assignment.id}`]: enteredText,
+      };
+    });
+    setSubmitLibError(false);
+    if (selectedAssignmentIndex < assignments.length - 1) {
+      setSelectedAssignmentIndex(selectedAssignmentIndex + 1);
+      if (typeof window !== "undefined") {
+        window.location.hash = `${selectedAssignmentIndex + 1}`;
+      }
+    }
+  };
+
+  const blankOutHandler = async () => {
+    const submitLibSuccess = await submitLib({
+      answerText: "",
+      answerId: assignment.id,
+    });
+    if (!submitLibSuccess) {
+      setSubmitLibError(true);
+      return;
+    }
+    setAnswers((oldAnswers: any) => {
+      return {
+        ...oldAnswers,
+        [`${assignment.id}`]: undefined,
+      };
+    });
+    setSubmitLibError(false);
+  };
+
   return (
     <div>
       <div>
@@ -83,8 +127,19 @@ const PromptSection = (props: {
           assignment.id &&
           answers[`${assignment.id}`] && (
             <div>
-              <div>Your current answer is:</div>
-              <div>{answer}</div>
+              <div id="your-current-answer-section">
+                <div>Your current answer is:</div>
+                <div id="current-answer">{answer}</div>
+              </div>
+              <div id="blank-out-section">
+                <Button
+                  id="blank-out-button"
+                  disabled={pageState !== PageState.READY}
+                  onClick={blankOutHandler}
+                >
+                  Blank out this answer
+                </Button>
+              </div>
             </div>
           )}
         <br />
@@ -120,27 +175,60 @@ const PromptSection = (props: {
         )}
         <div>
           <br />
-          <Button
-            color="primary"
-            variant="contained"
-            disabled={pageState !== PageState.READY}
-            onClick={async () => {
-              const submitLibSuccess = await submitLib({
-                answerText: enteredText,
-                answerId: assignment.id,
-              });
-              if (!submitLibSuccess) {
-                setSubmitLibError(true);
-                return;
-              }
-              setAnswers((oldAnswers: any) => {
-                return { ...oldAnswers, [`${assignment.id}`]: enteredText };
-              });
-              setSubmitLibError(false);
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "flex-end",
+              flexDirection: "row",
+              pt: 2,
             }}
           >
-            Submit this one
-          </Button>
+            <Box id="right-box">
+              {assignment &&
+              answers &&
+              assignment.id &&
+              answers[`${assignment.id}`] ? (
+                /* if there's an answer already */ <div id="re-submit-section">
+                  <Button
+                    id="re-submit-button"
+                    disabled={
+                      pageState !== PageState.READY || enteredText === ""
+                    }
+                    onClick={submitHandler}
+                  >
+                    Update answer
+                  </Button>
+                </div> /* if there's no answer yet */
+              ) : (
+                <div id="submit-this-one-section">
+                  <div>
+                    <Button
+                      color="primary"
+                      variant="contained"
+                      disabled={
+                        pageState !== PageState.READY || enteredText === ""
+                      }
+                      endIcon={
+                        selectedAssignmentIndex < assignments.length - 1 ? (
+                          <NavigateNextIcon />
+                        ) : undefined
+                      }
+                      onClick={submitHandler}
+                    >
+                      Submit
+                    </Button>
+                  </div>
+                  <div id="submit-button-explanation">
+                    <Typography variant="subtitle1" gutterBottom>
+                      {selectedAssignmentIndex === assignments.length - 1
+                        ? `Submit this one`
+                        : `Submit, go to next prompt`}
+                    </Typography>
+                  </div>
+                </div>
+              )}
+            </Box>
+          </Box>
         </div>
         {submitLibError && (
           <div>
@@ -200,7 +288,9 @@ const ChipSection = (props: {
               answers &&
               assignment &&
               assignment.id &&
-              assignment.id in answers ? (
+              assignment.id in answers &&
+              answers[`${assignment.id}`] !== "" &&
+              answers[`${assignment.id}`] !== undefined ? (
                 <DoneIcon />
               ) : undefined
             }
@@ -304,6 +394,9 @@ export default function Blanks() {
         setAnswers(fetchAnswersMapData);
 
         try {
+          // Get the read password (rpw).
+          // There is only one read password for the whole Seder.
+          // Anyone with any of /blanks links (participants) are allowed to get it.
           const fetchRpwResponse = await fetch(
             `../v2/rpw?sederCode=${sederCode}&pw=${pw}&ph=${ph}&roomcode=${sederCode}`
           );
@@ -339,6 +432,24 @@ export default function Blanks() {
         }
 
         setPageState(PageState.READY);
+
+        // Register a listener on the browser event hashchange, so if someone
+        // uses the browser's Back button, changing the hash from, say, #7 to #6,
+        // the selected lib index goes to 6.
+        const hashChangeHandler = () => {
+          if (typeof window === "undefined") return;
+          if (!window.location.hash) return;
+          if (window.location.hash.split("#").length < 2) return;
+          const hash = parseInt(window.location.hash.split("#")[1]);
+          if (hash !== 0 && !hash) return;
+          if (hash < 0) return;
+          if (hash > fetchAssignmentsData.length - 1) return;
+          setSelectedAssignmentIndex(hash);
+        };
+        window.addEventListener("hashchange", hashChangeHandler);
+        return () => {
+          window.removeEventListener("hashchange", hashChangeHandler);
+        };
       }
     })();
   }, []);
@@ -373,6 +484,18 @@ export default function Blanks() {
           ></img>
         </div>
         <Container maxWidth="md">
+          {pageState !== PageState.LOADING && gameName && (
+            <div>
+              <Paper>
+                <div style={{ padding: "8px" }}>
+                  <h1>
+                    Submitting answers as <strong>{gameName}</strong>
+                  </h1>
+                </div>
+              </Paper>
+              <br />
+            </div>
+          )}
           <Paper>
             <div style={{ padding: "8px" }}>
               {pageState !== PageState.LOADING && answers && (
@@ -388,8 +511,6 @@ export default function Blanks() {
                 ></PromptSection>
               )}
               <br />
-              <br />
-              <br />
               {pageState !== PageState.LOADING && answers && (
                 <ChipSection
                   submitLib={submitLib}
@@ -401,19 +522,24 @@ export default function Blanks() {
                   setPageState={setPageState}
                 ></ChipSection>
               )}
-              {pageState !== PageState.LOADING && gameName && (
-                <div>
-                  <br />
-                  <div>Submitting answers as {gameName}.</div>
-                </div>
-              )}
+            </div>
+          </Paper>
+          <br />
+          <Paper>
+            <div id="blanks-footer" style={{ padding: "8px" }}>
               {pageState !== PageState.LOADING &&
                 readLink !== "" &&
                 readRosterLink !== "" && (
-                  <ReadLinkSection
-                    readLink={readLink}
-                    readRosterLink={readRosterLink}
-                  ></ReadLinkSection>
+                  <div>
+                    <div>
+                      Funny default answers will be used for anything you leave
+                      blank.
+                    </div>
+                    <ReadLinkSection
+                      readLink={readLink}
+                      readRosterLink={readRosterLink}
+                    ></ReadLinkSection>
+                  </div>
                 )}
               <div>
                 {sederCode && rpw && (

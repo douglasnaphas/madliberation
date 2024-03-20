@@ -537,21 +537,27 @@ const waitOptions = { timeout: timeoutMs /*, visible: true*/ };
     // test blank-out
     if (asi === BLANKOUT_INDEX) {
       const blankoutLibId = browserUser.assignments[asi].id;
+      console.log(`testing browser blankout`);
 
       // click the previous card to go back one
       const chipSelector = `#prompt-chip-${BLANKOUT_INDEX}`;
       await page.click(chipSelector);
+      console.log(`clicked ${chipSelector}`);
 
       // blank out the answer
       const blankOutButtonXPath = '//button[text()="Blank out this answer"]';
       await page.waitForXPath(blankOutButtonXPath);
+      console.log(`found blankOutButtonXPath ${blankOutButtonXPath}`);
       await page.click("xpath/" + blankOutButtonXPath);
+      console.log(`clicked blank-out button`);
       expectedAnswers[blankoutLibId] = defaults[blankoutLibId];
 
       // go to the next assignment, if there is one
       if (BLANKOUT_INDEX < browserUser.assignments.length - 1) {
+        console.log(`BLANKOUT_INDEX ${BLANKOUT_INDEX}, there are ` + `${browserUser.assignments.length} assignments`);
         const nextChipSelector = `#prompt-chip-${BLANKOUT_INDEX + 1}`;
         await page.click(nextChipSelector);
+        console.log(`clicked nextChipSelector ${nextChipSelector}`);
       }
     }
   } // done testing submission with browser

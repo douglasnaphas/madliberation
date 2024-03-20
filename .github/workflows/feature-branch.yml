@@ -243,7 +243,7 @@ jobs:
         env:
           AWS_DEFAULT_REGION: "us-east-1"
           AWS_REGION: "us-east-1"
-          PARTICIPANTS_ARG: "8"
+          PARTICIPANTS: "8"
           SCRIPT_TERM: "2019_Magid"
         run: |
           npm run itest-links

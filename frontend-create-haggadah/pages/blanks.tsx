@@ -264,6 +264,18 @@ const ChipSection = (props: {
     pageState,
     setPageState,
   } = props;
+  console.log("answers:", answers);
+  assignments.forEach((assignment, assignmentIndex) => {
+    console.log(
+      "assignment",
+      assignment,
+      "assignmentIndex",
+      assignmentIndex,
+      "assignment.id in answers",
+      assignment.id in answers
+    );
+  });
+  console.log("*************");
   return (
     <div>
       {assignments.map((assignment, assignmentIndex) => {

@@ -300,7 +300,8 @@ const ChipSection = (props: {
               answers &&
               assignment &&
               assignment.id &&
-              assignment.id in answers ? (
+              assignment.id in answers &&
+              answers[`${assignment.id}`] !== "" ? (
                 <DoneIcon />
               ) : undefined
             }

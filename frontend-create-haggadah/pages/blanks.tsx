@@ -103,7 +103,7 @@ const PromptSection = (props: {
     setAnswers((oldAnswers: any) => {
       return {
         ...oldAnswers,
-        [`${assignment.id}`]: enteredText,
+        [`${assignment.id}`]: undefined,
       };
     });
     setSubmitLibError(false);

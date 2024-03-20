@@ -15,7 +15,6 @@ deploy-to-bucket() {
   mkdir tmp-out
   mv out tmp-out/create-haggadah
   mv tmp-out out
-  ls -R out
   aws s3 sync --content-type "text/html" --exclude "*" --include "*.html" --delete out/ s3://${BUCKET}/
   aws s3 sync --content-type "text/css" --exclude "*" --include "*.css" --include "*.css.map" --delete out/ s3://${BUCKET}/
   aws s3 sync --content-type "application/json" --exclude "*" --include "*.json" --delete out/ s3://${BUCKET}/

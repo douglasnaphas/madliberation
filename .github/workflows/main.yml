@@ -405,7 +405,7 @@ jobs:
       - name: Run itest on the v2 link-based flow, 2019 magid (prod2 account)
         working-directory: itest
         env:
-          PARTICIPANTS_ARG: "8"
+          PARTICIPANTS: "8"
           SCRIPT_TERM: "2019_Magid"
         run: |
           npm run itest-links

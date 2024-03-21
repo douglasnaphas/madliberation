@@ -152,7 +152,7 @@ export default function Read() {
                     <div id="pagination">
                       <Pagination
                         count={script.pages.length}
-                        defaultPage={selectedPage + 1}
+                        defaultPage={selectedPage}
                         color="primary"
                         onChange={(event, page) => {
                           console.log("event", event);

@@ -155,6 +155,7 @@ export default function Read() {
                         defaultPage={selectedPage + 1}
                         color="primary"
                         onChange={(event, page) => {
+                          console.log("event", event);
                           if (typeof window !== "undefined") {
                             window.location.hash = `${page}`;
                           }

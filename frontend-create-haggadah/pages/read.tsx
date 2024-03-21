@@ -3,6 +3,7 @@
 import * as React from "react";
 import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
+import Pagination from "@mui/material/Pagination";
 import MadLiberationLogo from "../public/mad-liberation-logo.png";
 import VeryAwesomePassoverLogo from "../public/VAPLogo-white.png";
 import { Global, css, jsx } from "@emotion/react";
@@ -147,6 +148,19 @@ export default function Read() {
                       >
                         Next page
                       </Button>
+                    </div>
+                    <div id="pagination">
+                      <Pagination
+                        count={script.pages.length}
+                        color="primary"
+                        onChange={(event, page) => {
+                          if (typeof window !== "undefined") {
+                            window.location.hash = `${page}`;
+                          }
+                        }}
+                        showFirstButton={true}
+                        showLastButton={true}
+                      ></Pagination>
                     </div>
                   </div>
                 </div>

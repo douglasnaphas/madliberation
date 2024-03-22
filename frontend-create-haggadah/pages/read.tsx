@@ -7,7 +7,9 @@ import Pagination from "@mui/material/Pagination";
 import MadLiberationLogo from "../public/mad-liberation-logo.png";
 import VeryAwesomePassoverLogo from "../public/VAPLogo-white.png";
 import { Global, css, jsx } from "@emotion/react";
-import { Button, Paper, TextField } from "@mui/material";
+import { Button, NativeSelect, Paper, TextField } from "@mui/material";
+import InputLabel from "@mui/material/InputLabel";
+import FormControl from "@mui/material/FormControl";
 import Page from "../src/Page";
 import SederSummary from "../src/SederSummary";
 import Head from "next/head";
@@ -148,6 +150,26 @@ export default function Read() {
                       >
                         Next page
                       </Button>
+                    </div>
+                    <div id="page-select">
+                      <FormControl>
+                        <InputLabel variant="standard" htmlFor="go-to-page">
+                          Go to page
+                        </InputLabel>
+                        <NativeSelect
+                          inputProps={{ name: "go-to-page", id: "go-to-page" }}
+                          defaultValue={selectedPage}
+                          onChange={(event) => {
+                            if (typeof window !== "undefined") {
+                              window.location.hash = `${event.target.value}`;
+                            }
+                          }}
+                        >
+                          {script.pages.map((p: any, i: number) => (
+                            <option value={i + 1}>{i + 1}</option>
+                          ))}
+                        </NativeSelect>
+                      </FormControl>
                     </div>
                     <div id="pagination">
                       <Pagination

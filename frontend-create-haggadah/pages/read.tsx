@@ -157,6 +157,7 @@ export default function Read() {
                           Go to page
                         </InputLabel>
                         <NativeSelect
+                          key={selectedPage}
                           inputProps={{ name: "go-to-page", id: "go-to-page" }}
                           defaultValue={selectedPage}
                           onChange={(event) => {
@@ -166,13 +167,16 @@ export default function Read() {
                           }}
                         >
                           {script.pages.map((p: any, i: number) => (
-                            <option value={i + 1}>{i + 1}</option>
+                            <option key={i + 1} value={i + 1}>
+                              {i + 1}
+                            </option>
                           ))}
                         </NativeSelect>
                       </FormControl>
                     </div>
                     <div id="pagination">
                       <Pagination
+                        key={selectedPage}
                         count={script.pages.length}
                         defaultPage={selectedPage}
                         color="primary"

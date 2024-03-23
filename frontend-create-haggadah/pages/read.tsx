@@ -3,7 +3,6 @@
 import * as React from "react";
 import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
-import Pagination from "@mui/material/Pagination";
 import Box from "@mui/material/Box";
 import MadLiberationLogo from "../public/mad-liberation-logo.png";
 import VeryAwesomePassoverLogo from "../public/VAPLogo-white.png";
@@ -224,22 +223,6 @@ export default function Read() {
                           </NativeSelect>
                         </FormControl>
                       </Box>
-                    </div>
-                    <div id="pagination">
-                      <Pagination
-                        key={selectedPage}
-                        count={script.pages.length}
-                        defaultPage={selectedPage}
-                        color="primary"
-                        onChange={(event, page) => {
-                          console.log("event", event);
-                          if (typeof window !== "undefined") {
-                            window.location.hash = `${page}`;
-                          }
-                        }}
-                        showFirstButton={true}
-                        showLastButton={true}
-                      ></Pagination>
                     </div>
                   </div>
                 </div>

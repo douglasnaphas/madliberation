@@ -76,7 +76,7 @@ const waitOptions = { timeout: timeoutMs /*, visible: true*/ };
 
   // go to /create-haggadah
   const createHaggadahLinkText =
-    "Plan a seder where people fill out their mad libs beforehand (experimental)";
+    "Plan a seder";
   await page
     .waitForXPath('//*[text()="' + createHaggadahLinkText + '"]', waitOptions)
     .catch(async (e) => {

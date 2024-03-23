@@ -132,6 +132,8 @@ export default function Read() {
                         <Box
                           id="previous-button-box"
                           sx={{
+                            display: "flex",
+                            flexDirection: "row",
                             justifyContent: "flex-start",
                             flex: "1 1 auto",
                           }}
@@ -154,6 +156,8 @@ export default function Read() {
                         <Box
                           id="page-number-box"
                           sx={{
+                            display: "flex",
+                            flexDirection: "row",
                             justifyContent: "center",
                             flex: "1 1 auto",
                           }}
@@ -163,6 +167,8 @@ export default function Read() {
                         <Box
                           id="next-button-box"
                           sx={{
+                            display: "flex",
+                            flexDirection: "row",
                             justifyContent: "flex-end",
                             flex: "1 1 auto",
                           }}

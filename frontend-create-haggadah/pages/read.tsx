@@ -133,6 +133,7 @@ export default function Read() {
                           id="previous-button-box"
                           sx={{
                             justifyContent: "flex-start",
+                            flex: "1 1 auto",
                           }}
                         >
                           <Button
@@ -154,6 +155,7 @@ export default function Read() {
                           id="page-number-box"
                           sx={{
                             justifyContent: "center",
+                            flex: "1 1 auto",
                           }}
                         >
                           {`${selectedPage} / ${script.pages.length}`}
@@ -162,6 +164,7 @@ export default function Read() {
                           id="next-button-box"
                           sx={{
                             justifyContent: "flex-end",
+                            flex: "1 1 auto",
                           }}
                         >
                           <Button

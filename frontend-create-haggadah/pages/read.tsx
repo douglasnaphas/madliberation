@@ -4,10 +4,11 @@ import * as React from "react";
 import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
 import Pagination from "@mui/material/Pagination";
+import Box from "@mui/material/Box";
 import MadLiberationLogo from "../public/mad-liberation-logo.png";
 import VeryAwesomePassoverLogo from "../public/VAPLogo-white.png";
 import { Global, css, jsx } from "@emotion/react";
-import { Button, NativeSelect, Paper, TextField } from "@mui/material";
+import { Button, NativeSelect, Paper } from "@mui/material";
 import InputLabel from "@mui/material/InputLabel";
 import FormControl from "@mui/material/FormControl";
 import Page from "../src/Page";
@@ -117,62 +118,103 @@ export default function Read() {
               Array.isArray(script.pages) && (
                 <div>
                   <div style={{ padding: "8px" }}>
-                    <div>
+                    <div id="page-content">
                       <Page page={script.pages[selectedPage - 1]}></Page>
                     </div>
-                    <div>
-                      <Button
-                        disabled={selectedPage === 1}
-                        onClick={() => {
-                          console.log(
-                            "Previous page clicked, selectedPage",
-                            selectedPage
-                          );
-                          if (typeof window !== "undefined") {
-                            window.location.hash = `${selectedPage - 1}`;
-                          }
+                    <div id="previous-next-buttons">
+                      <Box
+                        id="previous-next-box"
+                        sx={{
+                          display: "flex",
+                          flexDirection: "row",
                         }}
                       >
-                        Previous page
-                      </Button>{" "}
-                      {`${selectedPage} / ${script.pages.length}`}{" "}
-                      <Button
-                        disabled={selectedPage === script.pages.length}
-                        onClick={() => {
-                          console.log(
-                            "Next page clicked, selectedPage",
-                            selectedPage
-                          );
-                          if (typeof window !== "undefined") {
-                            window.location.hash = `${selectedPage + 1}`;
-                          }
-                        }}
-                      >
-                        Next page
-                      </Button>
-                    </div>
-                    <div id="page-select">
-                      <FormControl>
-                        <InputLabel variant="standard" htmlFor="go-to-page">
-                          Go to page
-                        </InputLabel>
-                        <NativeSelect
-                          key={selectedPage}
-                          inputProps={{ name: "go-to-page", id: "go-to-page" }}
-                          defaultValue={selectedPage}
-                          onChange={(event) => {
-                            if (typeof window !== "undefined") {
-                              window.location.hash = `${event.target.value}`;
-                            }
+                        <Box
+                          id="previous-button-box"
+                          sx={{
+                            justifyContent: "flex-start",
                           }}
                         >
-                          {script.pages.map((p: any, i: number) => (
-                            <option key={i + 1} value={i + 1}>
-                              {i + 1}
-                            </option>
-                          ))}
-                        </NativeSelect>
-                      </FormControl>
+                          <Button
+                            disabled={selectedPage === 1}
+                            onClick={() => {
+                              console.log(
+                                "Previous page clicked, selectedPage",
+                                selectedPage
+                              );
+                              if (typeof window !== "undefined") {
+                                window.location.hash = `${selectedPage - 1}`;
+                              }
+                            }}
+                          >
+                            Previous page
+                          </Button>
+                        </Box>{" "}
+                        <Box
+                          id="page-number-box"
+                          sx={{
+                            justifyContent: "center",
+                          }}
+                        >
+                          {`${selectedPage} / ${script.pages.length}`}
+                        </Box>{" "}
+                        <Box
+                          id="next-button-box"
+                          sx={{
+                            justifyContent: "flex-end",
+                          }}
+                        >
+                          <Button
+                            disabled={selectedPage === script.pages.length}
+                            onClick={() => {
+                              console.log(
+                                "Next page clicked, selectedPage",
+                                selectedPage
+                              );
+                              if (typeof window !== "undefined") {
+                                window.location.hash = `${selectedPage + 1}`;
+                              }
+                            }}
+                          >
+                            Next page
+                          </Button>
+                        </Box>
+                      </Box>
+                    </div>
+                    <div id="page-select">
+                      <Box
+                        id="page-select-box"
+                        sx={{
+                          display: "flex",
+                          justifyContent: "center",
+                          flexDirection: "row",
+                        }}
+                      >
+                        <FormControl>
+                          <InputLabel variant="standard" htmlFor="go-to-page">
+                            Go to page
+                          </InputLabel>
+                          <NativeSelect
+                            key={selectedPage}
+                            inputProps={{
+                              name: "go-to-page",
+                              id: "go-to-page",
+                            }}
+                            defaultValue={selectedPage}
+                            onChange={(event) => {
+                              if (typeof window !== "undefined") {
+                                window.location.hash = `${event.target.value}`;
+                              }
+                            }}
+                          >
+                            {script.pages.map((p: any, i: number) => (
+                              <option key={i + 1} value={i + 1}>
+                                {i + 1}
+                              </option>
+                            ))}
+                          </NativeSelect>
+                        </FormControl>
+                      </Box>
                     </div>
                     <div id="pagination">
                       <Pagination

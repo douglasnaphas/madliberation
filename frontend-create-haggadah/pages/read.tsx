@@ -152,7 +152,7 @@ export default function Read() {
                           >
                             Previous page
                           </Button>
-                        </Box>{" "}
+                        </Box>
                         <Box
                           id="page-number-box"
                           sx={{
@@ -163,7 +163,7 @@ export default function Read() {
                           }}
                         >
                           {`${selectedPage} / ${script.pages.length}`}
-                        </Box>{" "}
+                        </Box>
                         <Box
                           id="next-button-box"
                           sx={{

@@ -672,15 +672,17 @@ const waitOptions = { timeout: timeoutMs /*, visible: true*/ };
 
     // How many were assigned?
     const expectedNumberAssigned = participants[p].assignments.length;
-    const actualNumberAssigned = await readRosterPage
-      .$eval(guestAssignmentsSelector, (el) => el.textContent)
-      .catch(async (reason) => {
-        await failTest(
-          reason,
-          `Unable to get number assigned, ${guestAssignmentsSelector}`,
-          browsers
-        );
-      });
+    const actualNumberAssigned = parseInt(
+      await readRosterPage
+        .$eval(guestAssignmentsSelector, (el) => el.textContent)
+        .catch(async (reason) => {
+          await failTest(
+            reason,
+            `Unable to get number assigned, ${guestAssignmentsSelector}`,
+            browsers
+          );
+        })
+    );
     if (expectedNumberAssigned !== actualNumberAssigned) {
       await failTest(
         "wrong number assigned on read roster",
@@ -693,15 +695,17 @@ const waitOptions = { timeout: timeoutMs /*, visible: true*/ };
     // How many were answered?
     // # assigned - # blanked out and not resubmitted - # never submitted
     const expectedNumberAnswered = participants[p].answered;
-    const actualNumberAnswered = await readRosterPage
-      .$eval(guestAnswersSelector, (el) => el.textContent)
-      .catch(async (reason) => {
-        await failTest(
-          reason,
-          `Unable to get number answered, ${guestAnswersSelector}`,
-          browsers
-        );
-      });
+    const actualNumberAnswered = parseInt(
+      await readRosterPage
+        .$eval(guestAnswersSelector, (el) => el.textContent)
+        .catch(async (reason) => {
+          await failTest(
+            reason,
+            `Unable to get number answered, ${guestAnswersSelector}`,
+            browsers
+          );
+        })
+    );
     if (expectedNumberAnswered !== actualNumberAnswered) {
       await failTest(
         "wrong number answered on read roster",

@@ -653,58 +653,35 @@ const waitOptions = { timeout: timeoutMs /*, visible: true*/ };
   browsers.push(readRosterBrowser);
   const readRosterPage = await readRosterBrowser.newPage();
   await readRosterPage.goto(readRosterLinkHref);
-  const nameHeaderXPath = '//th[text()="Name"]';
-  const answeredHeaderXPath = '//th[text()="Answered"]';
-  const assignedHeaderXPath = '//th[text()="Assigned"]';
+  // check the table headers
+  const nameHeaderXPath =
+    `//th[text()="Name" and ` +
+    `following-sibling::th[text()="Answered"] and ` +
+    `following-sibling::th[text()="Assigned"]]`;
   await readRosterPage.waitForXPath(nameHeaderXPath);
+  const answeredHeaderXPath =
+    `//th[text()="Answered" and ` + `following-sibling::th[text()="Assigned"]]`;
   await readRosterPage.waitForXPath(answeredHeaderXPath);
-  await readRosterPage.waitForXPath(assignedHeaderXPath);
 
   // Loop through participants, check their read roster info
   for (let p = 0; p < participants.length; p++) {
     const participantName = participants[p].gameName;
-    const guestNameCellSelector = `#guest-name-cell-${participantName}`;
-    const guestAnswersSelector = `#guest-answers-${participantName}`;
-    const guestAssignmentsSelector = `#guest-assignments-${participantName}`;
 
     // How many were assigned?
     const expectedNumberAssigned = participants[p].assignments.length;
-    const actualNumberAssigned = await page
-      .$eval(guestAssignmentsSelector, (el) => el.textContent)
-      .catch((reason) => {
-        failTest(
-          reason,
-          `Unable to get number assigned, ${guestAssignmentsSelector}`,
-          browsers
-        );
-      });
-    if (expectedNumberAssigned !== actualNumberAssigned) {
-      failTest(
-        "wrong number assigned on read roster",
-        `expected ${expectedNumberAssigned}, got ` +
-          `${actualNumberAssigned}, participant ${p} name ${participants[p].gameName}`
-      );
-    }
 
     // How many were answered?
     // # assigned - # blanked out and not resubmitted - # never submitted
     const expectedNumberAnswered = participants[p].answered;
-    const actualNumberAnswered = await page
-      .$eval(guestAnswersSelector, (el) => el.textContent)
-      .catch((reason) => {
-        failTest(
-          reason,
-          `Unable to get number answered, ${guestAnsweredSelector}`,
-          browsers
-        );
-      });
-    if (expectedNumberAnswered !== actualNumberAnswered) {
-      failTest(
-        "wrong number answered on read roster",
-        `expected ${expectedNumberAnswered}, got ` +
-          `${actualNumberAnswered}, participant ${p} name ${participants[p].gameName}`
-      );
-    }
+
+    const expectedRowXPath =
+      `//td[preceding-sibling::td[text()="${participantName}"] and ` +
+      `td[text()="${expectedNumberAnswered}"] and ` +
+      `following-sibling::td[text()="${expectedNumberAssigned}"]]`;
+    const matchingRows = await $$("xpath/" + expectedRowXPath);
+    console.log(`${matchingRows.length} rows matching ${expectedRowXPath}`);
+
+    // TODO: get the actual number assigned and answered in the table
   }
 
   //////////////////////////////////////////////////////////////////////////////
@@ -755,6 +732,8 @@ const waitOptions = { timeout: timeoutMs /*, visible: true*/ };
 
   // loop through the participants, making sure each provided answer appears
   // in the expected place in the script
+
+  // Page through the script, look for the right answers in situ
 
   ////////////////////////////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////////////////////////

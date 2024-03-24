@@ -56,7 +56,11 @@ const getSederSummary = [
           ? participant[schema.ASSIGNMENTS].length
           : 0;
       const numberOfAnswers = participant[schema.ANSWERS_MAP]
-        ? Object.keys(participant[schema.ANSWERS_MAP]).length
+        ? Object.entries(participant[schema.ANSWERS_MAP]).reduce(
+            (nonBlankAnswers, [libId, answer]) =>
+              answer && answer !== "" ? nonBlankAnswers + 1 : nonBlankAnswers,
+            0
+          )
         : 0;
       return {
         gameName,

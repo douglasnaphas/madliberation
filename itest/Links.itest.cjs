@@ -672,7 +672,7 @@ const waitOptions = { timeout: timeoutMs /*, visible: true*/ };
 
     // How many were assigned?
     const expectedNumberAssigned = participants[p].assignments.length;
-    const actualNumberAssigned = await page
+    const actualNumberAssigned = await readRosterPage
       .$eval(guestAssignmentsSelector, (el) => el.textContent)
       .catch((reason) => {
         failTest(
@@ -685,14 +685,15 @@ const waitOptions = { timeout: timeoutMs /*, visible: true*/ };
       failTest(
         "wrong number assigned on read roster",
         `expected ${expectedNumberAssigned}, got ` +
-          `${actualNumberAssigned}, participant ${p} name ${participants[p].gameName}`
+          `${actualNumberAssigned}, participant ${p} name ${participants[p].gameName}`,
+        browsers
       );
     }
 
     // How many were answered?
     // # assigned - # blanked out and not resubmitted - # never submitted
     const expectedNumberAnswered = participants[p].answered;
-    const actualNumberAnswered = await page
+    const actualNumberAnswered = await readRosterPage
       .$eval(guestAnswersSelector, (el) => el.textContent)
       .catch((reason) => {
         failTest(
@@ -705,7 +706,8 @@ const waitOptions = { timeout: timeoutMs /*, visible: true*/ };
       failTest(
         "wrong number answered on read roster",
         `expected ${expectedNumberAnswered}, got ` +
-          `${actualNumberAnswered}, participant ${p} name ${participants[p].gameName}`
+          `${actualNumberAnswered}, participant ${p} name ${participants[p].gameName}`,
+        browsers
       );
     } else {
       console.log(

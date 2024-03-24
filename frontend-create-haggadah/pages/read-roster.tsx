@@ -42,13 +42,17 @@ const ParticipantList = (props: {
             {participants.map((g) => (
               <TableRow key={`guest-row-${g.gameName}`}>
                 <TableCell key={`guest-name-cell-${g.gameName}`}>
-                  {g.gameName}
+                  <span id={`guest-name-cell-${g.gameName}`}>{g.gameName}</span>
                 </TableCell>
                 <TableCell key={`guest-answers-${g.gameName}`}>
-                  {g.numberOfAnswers}
+                  <span id={`guest-answers-${g.gameName}`}>
+                    {g.numberOfAnswers}
+                  </span>
                 </TableCell>
                 <TableCell key={`guest-assignments-${g.gameName}`}>
-                  {g.numberOfAssignments}
+                  <span id={`guest-assignments-${g.gameName}`}>
+                    {g.numberOfAssignments}
+                  </span>
                 </TableCell>
               </TableRow>
             ))}

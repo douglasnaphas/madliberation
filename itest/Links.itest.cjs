@@ -75,8 +75,7 @@ const waitOptions = { timeout: timeoutMs /*, visible: true*/ };
   //////////////////////////////////////////////////////////////////////////////
 
   // go to /create-haggadah
-  const createHaggadahLinkText =
-    "Plan a seder";
+  const createHaggadahLinkText = "Plan a seder";
   await page
     .waitForXPath('//*[text()="' + createHaggadahLinkText + '"]', waitOptions)
     .catch(async (e) => {
@@ -249,6 +248,7 @@ const waitOptions = { timeout: timeoutMs /*, visible: true*/ };
     );
     const assignments = await assignmentsResponse.json();
     participants[p].assignments = assignments;
+    participants[p].answered = 0;
   }
 
   // Figure out who will submit none, browserUser exempt.
@@ -292,7 +292,7 @@ const waitOptions = { timeout: timeoutMs /*, visible: true*/ };
     return `${participants[participantIndex].gameName}-${assignmentId}`;
   };
 
-  const BLANKED_OUT_ANSWER_INDEX = 1; // browserUser (browser user) only
+  const BLANKED_OUT_ANSWER_INDEX = 2; // browserUser (browser user) only
 
   // Considers non-submitter index, partial submitter index,
   // BLANKED_OUT_ANSWER_INDEX, and defaults.
@@ -307,12 +307,18 @@ const waitOptions = { timeout: timeoutMs /*, visible: true*/ };
     ) {
       return defaults[assignmentId];
     }
-
+    if (
+      participantIndex === BROWSER_USER_INDEX &&
+      assignmentId ===
+        participants[participantIndex].assignments[BLANKED_OUT_ANSWER_INDEX].id
+    ) {
+      return defaults[assignmentId];
+    }
     return `${participants[participantIndex].gameName}-${assignmentId}`;
   };
 
   // submit libs
-  const expectedAnswers = {};
+  const expectedAnswers = {}; // lib id -> expected answer text
 
   // browser
   for (
@@ -320,7 +326,6 @@ const waitOptions = { timeout: timeoutMs /*, visible: true*/ };
     asi < browserUser.assignments.length;
     asi++
   ) {
-    const BLANKOUT_INDEX = 2;
     const BACK_BUTTON_TEST_INDEX = 3;
     const RANDOM_ACCESS_INDEXES = {
       LATE: 4, // when we hit here, go to EARLY, which we already submitted
@@ -343,7 +348,7 @@ const waitOptions = { timeout: timeoutMs /*, visible: true*/ };
         failTest(
           reason,
           `did not find chip for prompt number ${asi},` +
-            `"${assignments[asi].prompt}"`,
+            `"${browserUser.assignments[asi].prompt}"`,
           browsers
         );
       });
@@ -476,6 +481,7 @@ const waitOptions = { timeout: timeoutMs /*, visible: true*/ };
     await page.waitForXPath(buttonExplanationXPath);
     const submitButtonXPath = `//button[contains(text(),"Submit")][not(@disabled)]`;
     await page.click("xpath/" + submitButtonXPath);
+    browserUser.answered++;
 
     // check auto-advancing, unless we just submitted the last one
     if (asi < browserUser.assignments.length - 1) {
@@ -535,12 +541,12 @@ const waitOptions = { timeout: timeoutMs /*, visible: true*/ };
     }
 
     // test blank-out
-    if (asi === BLANKOUT_INDEX) {
+    if (asi === BLANKED_OUT_ANSWER_INDEX) {
       const blankoutLibId = browserUser.assignments[asi].id;
       console.log(`testing browser blankout`);
 
       // click the previous card to go back one
-      const chipSelector = `#prompt-chip-${BLANKOUT_INDEX}`;
+      const chipSelector = `#prompt-chip-${BLANKED_OUT_ANSWER_INDEX}`;
       await page.click(chipSelector);
       console.log(`clicked ${chipSelector}`);
 
@@ -549,13 +555,17 @@ const waitOptions = { timeout: timeoutMs /*, visible: true*/ };
       await page.waitForXPath(blankOutButtonXPath);
       console.log(`found blankOutButtonXPath ${blankOutButtonXPath}`);
       await page.click("xpath/" + blankOutButtonXPath);
+      browserUser.answered--;
       console.log(`clicked blank-out button`);
       expectedAnswers[blankoutLibId] = defaults[blankoutLibId];
 
       // go to the next assignment, if there is one
-      if (BLANKOUT_INDEX < browserUser.assignments.length - 1) {
-        console.log(`BLANKOUT_INDEX ${BLANKOUT_INDEX}, there are ` + `${browserUser.assignments.length} assignments`);
-        const nextChipSelector = `#prompt-chip-${BLANKOUT_INDEX + 1}`;
+      if (BLANKED_OUT_ANSWER_INDEX < browserUser.assignments.length - 1) {
+        console.log(
+          `BLANKOUT_INDEX ${BLANKED_OUT_ANSWER_INDEX}, there are ` +
+            `${browserUser.assignments.length} assignments`
+        );
+        const nextChipSelector = `#prompt-chip-${BLANKED_OUT_ANSWER_INDEX + 1}`;
         await page.click(nextChipSelector);
         console.log(`clicked nextChipSelector ${nextChipSelector}`);
       }
@@ -617,6 +627,7 @@ const waitOptions = { timeout: timeoutMs /*, visible: true*/ };
         console.error("failed to submit lib", p, asi);
         process.exit(4);
       }
+      participants[p].answered++;
     }
   }
 
@@ -638,8 +649,63 @@ const waitOptions = { timeout: timeoutMs /*, visible: true*/ };
   //////////////////////////////////////////////////////////////////////////////
   //////////////////////////// Read Roster /////////////////////////////////////
 
-  
+  const readRosterBrowser = await puppeteer.launch(browserOptions);
+  browsers.push(readRosterBrowser);
+  const readRosterPage = await readRosterBrowser.newPage();
+  await readRosterPage.goto(readRosterLinkHref);
+  const nameHeaderXPath = '//th[text()="Name"]';
+  const answeredHeaderXPath = '//th[text()="Answered]';
+  const assignedHeaderXPath = '//th[text()="Assigned"]';
+  await readRosterPage.waitForXPath(nameHeaderXPath);
+  await readRosterPage.waitForXPath(answeredHeaderXPath);
+  await readRosterPage.waitForXPath(assignedHeaderXPath);
 
+  // Loop through participants, check their read roster info
+  for (let p = 0; p < participants.length; p++) {
+    const participantName = participants[p].gameName;
+    const guestNameCellSelector = `#guest-name-cell-${participantName}`;
+    const guestAnswersSelector = `#guest-answers-${participantName}`;
+    const guestAssignmentsSelector = `#guest-assignments-${participantName}`;
+
+    // How many were assigned?
+    const expectedNumberAssigned = participants[p].assignments.length;
+    const actualNumberAssigned = await page
+      .$eval(guestAssignmentsSelector, (el) => el.textContent)
+      .catch((reason) => {
+        failTest(
+          reason,
+          `Unable to get number assigned, ${guestAssignmentsSelector}`,
+          browsers
+        );
+      });
+    if (expectedNumberAssigned !== actualNumberAssigned) {
+      failTest(
+        "wrong number assigned on read roster",
+        `expected ${expectedNumberAssigned}, got ` +
+          `${actualNumberAssigned}, participant ${p} name ${participants[p].gameName}`
+      );
+    }
+
+    // How many were answered?
+    // # assigned - # blanked out and not resubmitted - # never submitted
+    const expectedNumberAnswered = participants[p].answered;
+    const actualNumberAnswered = await page
+      .$eval(guestAnswersSelector, (el) => el.textContent)
+      .catch((reason) => {
+        failTest(
+          reason,
+          `Unable to get number answered, ${guestAnsweredSelector}`,
+          browsers
+        );
+      });
+    if (expectedNumberAnswered !== actualNumberAnswered) {
+      failTest(
+        "wrong number answered on read roster",
+        `expected ${expectedNumberAnswered}, got ` +
+          `${actualNumberAnswered}, participant ${p} name ${participants[p].gameName}`
+      );
+    }
+  }
 
   //////////////////////////////////////////////////////////////////////////////
   ///////////////////////////// Read Page //////////////////////////////////////
@@ -690,12 +756,14 @@ const waitOptions = { timeout: timeoutMs /*, visible: true*/ };
   // loop through the participants, making sure each provided answer appears
   // in the expected place in the script
 
-  // check the read roster
-
   ////////////////////////////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////////////////////////
   // Clean up
-  await browser.close();
+  for (let b = 0; b < browsers.length; b++) {
+    if (browsers[b].close) {
+      await browsers[b].close();
+    }
+  }
   ////////////////////////////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////////////////////////
 })();

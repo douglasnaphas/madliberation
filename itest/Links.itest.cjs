@@ -654,7 +654,7 @@ const waitOptions = { timeout: timeoutMs /*, visible: true*/ };
   const readRosterPage = await readRosterBrowser.newPage();
   await readRosterPage.goto(readRosterLinkHref);
   const nameHeaderXPath = '//th[text()="Name"]';
-  const answeredHeaderXPath = '//th[text()="Answered]';
+  const answeredHeaderXPath = '//th[text()="Answered"]';
   const assignedHeaderXPath = '//th[text()="Assigned"]';
   await readRosterPage.waitForXPath(nameHeaderXPath);
   await readRosterPage.waitForXPath(answeredHeaderXPath);

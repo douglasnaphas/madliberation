@@ -674,15 +674,15 @@ const waitOptions = { timeout: timeoutMs /*, visible: true*/ };
     const expectedNumberAssigned = participants[p].assignments.length;
     const actualNumberAssigned = await readRosterPage
       .$eval(guestAssignmentsSelector, (el) => el.textContent)
-      .catch((reason) => {
-        failTest(
+      .catch(async (reason) => {
+        await failTest(
           reason,
           `Unable to get number assigned, ${guestAssignmentsSelector}`,
           browsers
         );
       });
     if (expectedNumberAssigned !== actualNumberAssigned) {
-      failTest(
+      await failTest(
         "wrong number assigned on read roster",
         `expected ${expectedNumberAssigned}, got ` +
           `${actualNumberAssigned}, participant ${p} name ${participants[p].gameName}`,
@@ -695,15 +695,15 @@ const waitOptions = { timeout: timeoutMs /*, visible: true*/ };
     const expectedNumberAnswered = participants[p].answered;
     const actualNumberAnswered = await readRosterPage
       .$eval(guestAnswersSelector, (el) => el.textContent)
-      .catch((reason) => {
-        failTest(
+      .catch(async (reason) => {
+        await failTest(
           reason,
           `Unable to get number answered, ${guestAnswersSelector}`,
           browsers
         );
       });
     if (expectedNumberAnswered !== actualNumberAnswered) {
-      failTest(
+      await failTest(
         "wrong number answered on read roster",
         `expected ${expectedNumberAnswered}, got ` +
           `${actualNumberAnswered}, participant ${p} name ${participants[p].gameName}`,

@@ -678,7 +678,7 @@ const waitOptions = { timeout: timeoutMs /*, visible: true*/ };
       `//td[preceding-sibling::td[text()="${participantName}"] and ` +
       `td[text()="${expectedNumberAnswered}"] and ` +
       `following-sibling::td[text()="${expectedNumberAssigned}"]]`;
-    const matchingRows = await $$("xpath/" + expectedRowXPath);
+    const matchingRows = await readRosterPage.$$("xpath/" + expectedRowXPath);
     console.log(`${matchingRows.length} rows matching ${expectedRowXPath}`);
 
     // TODO: get the actual number assigned and answered in the table

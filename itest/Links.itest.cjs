@@ -666,22 +666,54 @@ const waitOptions = { timeout: timeoutMs /*, visible: true*/ };
   // Loop through participants, check their read roster info
   for (let p = 0; p < participants.length; p++) {
     const participantName = participants[p].gameName;
+    const guestNameCellSelector = `#guest-name-cell-${participantName}`;
+    const guestAnswersSelector = `#guest-answers-${participantName}`;
+    const guestAssignmentsSelector = `#guest-assignments-${participantName}`;
 
     // How many were assigned?
     const expectedNumberAssigned = participants[p].assignments.length;
+    const actualNumberAssigned = await page
+      .$eval(guestAssignmentsSelector, (el) => el.textContent)
+      .catch((reason) => {
+        failTest(
+          reason,
+          `Unable to get number assigned, ${guestAssignmentsSelector}`,
+          browsers
+        );
+      });
+    if (expectedNumberAssigned !== actualNumberAssigned) {
+      failTest(
+        "wrong number assigned on read roster",
+        `expected ${expectedNumberAssigned}, got ` +
+          `${actualNumberAssigned}, participant ${p} name ${participants[p].gameName}`
+      );
+    }
 
     // How many were answered?
     // # assigned - # blanked out and not resubmitted - # never submitted
     const expectedNumberAnswered = participants[p].answered;
-
-    const expectedRowXPath =
-      `//td[preceding-sibling::td[text()="${participantName}"] and ` +
-      `td[text()="${expectedNumberAnswered}"] and ` +
-      `following-sibling::td[text()="${expectedNumberAssigned}"]]`;
-    const matchingRows = await readRosterPage.$$("xpath/" + expectedRowXPath);
-    console.log(`${matchingRows.length} rows matching ${expectedRowXPath}`);
-
-    // TODO: get the actual number assigned and answered in the table
+    const actualNumberAnswered = await page
+      .$eval(guestAnswersSelector, (el) => el.textContent)
+      .catch((reason) => {
+        failTest(
+          reason,
+          `Unable to get number answered, ${guestAnswersSelector}`,
+          browsers
+        );
+      });
+    if (expectedNumberAnswered !== actualNumberAnswered) {
+      failTest(
+        "wrong number answered on read roster",
+        `expected ${expectedNumberAnswered}, got ` +
+          `${actualNumberAnswered}, participant ${p} name ${participants[p].gameName}`
+      );
+    } else {
+      console.log(
+        `read roster: found ` +
+          `${actualNumberAnswered} / ${actualNumberAnswered} for ` +
+          `${participants[p].gameName}, as expected`
+      );
+    }
   }
 
   //////////////////////////////////////////////////////////////////////////////

@@ -65,7 +65,7 @@ const schema = {
   WAIT: "wait", // wait page, ws-wait WS API
   READ_ROSTER: "read-roster",
   // v2
-  LEADER_EMAIL: "leader-email",
+  LEADER_EMAIL: "leaderEmail",
   LEADER_PW: "leader_pw",
   EMAIL: "email", // participant email, not necessarily auth'd
   PARTICIPANT_PW: "participant_pw", // attribute name

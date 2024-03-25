@@ -19,34 +19,6 @@ jobs:
         run: |
           npm install
           npx ts-node scripts/idp-app-secret-roll-call.ts
-  id-account-staging:
-    runs-on: ubuntu-latest
-    permissions:
-      id-token: write
-      contents: read
-    steps:
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          role-to-assume: ${{ vars.TEST_ROLE_ARN }}
-          aws-region: us-east-1
-      - name: Identify staging account and region
-        run: |
-          aws sts get-caller-identity
-  id-account-prod2:
-    runs-on: ubuntu-latest
-    permissions:
-      id-token: write
-      contents: read
-    steps:
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          role-to-assume: ${{ vars.PROD2_ROLE_ARN }}
-          aws-region: us-east-1
-      - name: Identify prod2 account
-        run: |
-          aws sts get-caller-identity
   webapp-staging:
     runs-on: ubuntu-latest
     permissions:

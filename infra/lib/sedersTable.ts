@@ -67,18 +67,18 @@ const sedersTable: (construct: Construct) => dynamodb.Table = (
     },
     projectionType: dynamodb.ProjectionType.ALL,
   });
-  table.addGlobalSecondaryIndex({
-    indexName: schemaV2.LEADER_EMAIL_INDEX,
-    partitionKey: {
-      name: schemaV2.LEADER_EMAIL,
-      type: dynamodb.AttributeType.STRING,
-    },
-    sortKey: {
-      name: schema.TIMESTAMP,
-      type: dynamodb.AttributeType.STRING,
-    },
-    projectionType: dynamodb.ProjectionType.ALL,
-  });
+  // table.addGlobalSecondaryIndex({
+  //   indexName: schemaV2.LEADER_EMAIL_INDEX,
+  //   partitionKey: {
+  //     name: schemaV2.LEADER_EMAIL,
+  //     type: dynamodb.AttributeType.STRING,
+  //   },
+  //   sortKey: {
+  //     name: schema.TIMESTAMP,
+  //     type: dynamodb.AttributeType.STRING,
+  //   },
+  //   projectionType: dynamodb.ProjectionType.ALL,
+  // });
   table.addGlobalSecondaryIndex({
     indexName: schemaV2.PARTICIPANT_EMAIL_INDEX,
     partitionKey: {

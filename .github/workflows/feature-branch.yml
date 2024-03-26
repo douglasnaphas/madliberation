@@ -132,30 +132,6 @@ jobs:
         working-directory: content
         run: |
           npm run deploy
-  itest:
-    runs-on: ubuntu-latest
-    permissions:
-      id-token: write
-      contents: read
-    needs: [frontend, content]
-    steps:
-      - uses: actions/checkout@v4
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          role-to-assume: ${{ vars.DEV_ROLE_ARN }}
-          aws-region: us-east-1
-      - name: Install itest
-        working-directory: itest
-        run: |
-          npm install
-      - name: Run smoke test (dev account)
-        working-directory: itest
-        env:
-          AWS_DEFAULT_REGION: "us-east-1"
-          AWS_REGION: "us-east-1"
-        run: |
-          npm run itest
   itest-links-2023:
     runs-on: ubuntu-latest
     permissions:

@@ -67,45 +67,6 @@ class HomePage extends Component {
                 {createHaggadahLinkText}
               </Button>
             </div>
-            <div>
-              <br />
-              <Button
-                madliberationid="join-a-seder-button"
-                title="Join a seder"
-                variant="contained"
-                component={Link}
-                color="secondary"
-                to="/enter-room-code"
-              >
-                Join a seder
-              </Button>
-            </div>
-            <div>
-              <br />
-              <Button
-                madliberationid="lead-a-seder-in-person-button"
-                title="Lead a seder - in person"
-                variant="contained"
-                component={Link}
-                color="secondary"
-                to="/explain"
-              >
-                Lead a seder - in person
-              </Button>
-            </div>
-            <div>
-              <br />
-              <Button
-                madliberationid="lead-a-seder-by-video-button"
-                title="Lead a seder - by video"
-                variant="contained"
-                component={Link}
-                color="secondary"
-                to="/explain-video"
-              >
-                Lead a seder - by video
-              </Button>
-            </div>
             <br />
             {!user && (
               <div id="login-container">

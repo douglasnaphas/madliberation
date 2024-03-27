@@ -18,7 +18,6 @@ APP_URL=https://$(aws cloudformation describe-stacks \
   tr -d \")
 echo "APP_URL:"
 echo ${APP_URL}
-echo ${USER_POOL_ID}
 if [[ "${SLOW}" == "y" ]]
 then
   SLOW_ARG="--slow"

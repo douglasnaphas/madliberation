@@ -607,13 +607,6 @@ export class MadliberationWebapp extends Stack {
     new CfnOutput(this, "lambdaApi_url", {
       value: backendApi.url,
     });
-    new CfnOutput(this, "UserPoolId", {
-      value: userPool.userPoolId,
-    });
-    new CfnOutput(this, "UserPoolClientId", {
-      value: userPoolClient.userPoolClientId,
-    });
-    new CfnOutput(this, "TableName", { value: sedersTable.tableName });
     new CfnOutput(this, "WSRosterEndpoint", {
       value: wsRosterApi.apiEndpoint,
     });

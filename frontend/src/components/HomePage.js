@@ -63,6 +63,7 @@ class HomePage extends Component {
                 variant="contained"
                 color="primary"
                 href={createHaggadahHref}
+                disabled={!user}
               >
                 {createHaggadahLinkText}
               </Button>

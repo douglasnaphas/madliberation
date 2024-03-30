@@ -55,6 +55,8 @@ IDP_URL="https://${USER_POOL_DOMAIN}.auth.${AWS_DEFAULT_REGION}.amazoncognito.co
 
 node Links.itest.cjs \
   --site ${APP_URL} \
+  --idp-url "${IDP_URL}" \
+  --user-pool-id ${USER_POOL_ID} \
   ${SLOW_ARG} \
   ${PARTICIPANTS_ARG} \
   ${TERM_ARG}

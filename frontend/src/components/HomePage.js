@@ -9,6 +9,7 @@ import VeryAwesomePassoverLogo from "../VAPLogo-white.png";
 import { Configs } from "../Configs";
 import { madLiberationStyles } from "../madLiberationStyles";
 import Paper from "@mui/material/Paper";
+import Container from "@mui/material/Container";
 import PropTypes from "prop-types";
 
 const styles = {
@@ -94,43 +95,45 @@ class HomePage extends Component {
                   id="logout-container"
                 >
                   <br />
-                  <Paper style={{ padding: "8px" }}>
-                    <Typography component="p">
-                      Logged in as {user.nickname}
-                    </Typography>
-                    <div>
+                  <Container maxWidth="md">
+                    <Paper style={{ padding: "8px" }}>
                       <Typography component="p">
-                        <Button
-                          component={Link}
-                          to="/seders"
-                          title="see-your-seders-button"
-                          madliberationid="see-your-seders-button"
-                        >
-                          See your seders
-                        </Button>
+                        Logged in as {user.nickname}
                       </Typography>
-                    </div>
-                    <div>
-                      <Typography component="p">
-                        <Button
-                          disabled={this.state.logoutClicked}
-                          onClick={() => {
-                            this.setState({ logoutClicked: true });
-                            fetch(Configs.apiRelativeUrl("logout"), {
-                              credentials: "include",
-                            }).then((r) => {
-                              setUser(false);
-                              storage.removeItem("user-nickname");
-                              storage.removeItem("user-email");
-                            });
-                          }}
-                          madliberationid="logout-button"
-                        >
-                          Log out
-                        </Button>
-                      </Typography>
-                    </div>
-                  </Paper>
+                      <div>
+                        <Typography component="p">
+                          <Button
+                            component={Link}
+                            to="/seders"
+                            title="see-your-seders-button"
+                            madliberationid="see-your-seders-button"
+                          >
+                            See your seders
+                          </Button>
+                        </Typography>
+                      </div>
+                      <div>
+                        <Typography component="p">
+                          <Button
+                            disabled={this.state.logoutClicked}
+                            onClick={() => {
+                              this.setState({ logoutClicked: true });
+                              fetch(Configs.apiRelativeUrl("logout"), {
+                                credentials: "include",
+                              }).then((r) => {
+                                setUser(false);
+                                storage.removeItem("user-nickname");
+                                storage.removeItem("user-email");
+                              });
+                            }}
+                            madliberationid="logout-button"
+                          >
+                            Log out
+                          </Button>
+                        </Typography>
+                      </div>
+                    </Paper>
+                  </Container>
                 </div>
               </>
             )}

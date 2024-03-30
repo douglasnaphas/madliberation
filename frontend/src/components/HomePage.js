@@ -40,8 +40,7 @@ class HomePage extends Component {
   state = { logoutClicked: false };
   render() {
     const { user, setUser, storage } = this.props;
-    const createHaggadahLinkText =
-      "Plan a seder";
+    const createHaggadahLinkText = "Plan a seder";
     const createHaggadahHref = `/create-haggadah/index.html`;
     return (
       <div>

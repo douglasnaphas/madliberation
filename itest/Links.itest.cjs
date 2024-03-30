@@ -155,8 +155,10 @@ const waitOptions = { timeout /*, visible: true */ };
   // Log in (leader)
   const loginButtonSelector = '[madliberationid="login-button"]';
   await page.waitForSelector(loginButtonSelector);
-  await page.click(loginButtonSelector);
-  await page.waitForNavigation();
+  await Promise.all([
+    page.click(loginButtonSelector),
+    page.waitForNavigation(),
+  ]);
   if (page.url() !== idpUrl) {
     failTest(
       new Error("wrong IDP URL"),

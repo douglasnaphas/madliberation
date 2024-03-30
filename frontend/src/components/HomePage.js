@@ -58,7 +58,7 @@ class HomePage extends Component {
               />
             </div>
             <div id="home-page-main-content">
-              <Container maxWidth="md">
+              <Container maxWidth="sm">
                 <Paper style={{ padding: "8px" }}>
                   <div>
                     <Button

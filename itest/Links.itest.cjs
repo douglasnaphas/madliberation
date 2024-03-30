@@ -3,6 +3,7 @@
 const puppeteer = require("puppeteer");
 const commander = require("commander");
 const { GetObjectCommand, S3Client } = require("@aws-sdk/client-s3");
+const crypto = require("crypto");
 
 commander
   .version("1.0.0")
@@ -11,6 +12,8 @@ commander
     "Site to run against, default https://passover.lol"
   )
   .option("-L, --slow", "Run headfully in slow mode")
+  .option("-I, --idp-url <URL>", "The URL expected after clicking 'Log in'")
+  .option("--user-pool-id <ID>", "The User Pool Id for the web app")
   .option(
     "-p --participants <PARTICIPANTS>",
     "Number of participants, including the leader, default 22"
@@ -21,9 +24,11 @@ commander
   )
   .parse(process.argv);
 const slowDown = 90;
-const timeoutMs = 10000 + (commander.opts().slow ? slowDown + 2000 : 0);
+const timeout = 10000 + (commander.opts().slow ? slowDown + 2000 : 0); // ms
 const defaultUrl = "https://passover.lol";
 const site = commander.opts().site || defaultUrl;
+const idpUrl = commander.opts().idpUrl;
+const userPoolId = commander.opts().userPoolId;
 const DEFAULT_NUMBER_OF_PARTICIPANTS = 22; // Two+ groups of 10
 // trouble can start at 10, because of DynamoDB transactions
 // and seders often have about 20+ people
@@ -57,7 +62,7 @@ const failTest = async (err, msg, browsers) => {
   process.exit(1);
 };
 
-const waitOptions = { timeout: timeoutMs /*, visible: true*/ };
+const waitOptions = { timeout /*, visible: true */ };
 
 (async () => {
   //////////////////////////////////////////////////////////////////////////////
@@ -73,6 +78,109 @@ const waitOptions = { timeout: timeoutMs /*, visible: true*/ };
   //////////////////////////////////////////////////////////////////////////////
   /////////////// Mad Liberation Home Page /////////////////////////////////////
   //////////////////////////////////////////////////////////////////////////////
+
+  // Create a user, so we can log in
+  // helper for generating random creds
+  const randString = (options) => {
+    const { numLetters } = options;
+    const alphabet = (
+      "ABCDEFGHIJKLMNOPQRSTUVWXYZ" + "abcdefghijklmnopqrstuvwxyz"
+    ).split("");
+    let str = "";
+    for (let i = 0; i < numLetters; i++) {
+      str =
+        str +
+        alphabet[
+          parseInt(crypto.randomBytes(3).toString("hex"), 16) % alphabet.length
+        ];
+    }
+    return str;
+  };
+
+  // create user
+  const {
+    CognitoIdentityProviderClient,
+    AdminCreateUserCommand,
+  } = require("@aws-sdk/client-cognito-identity-provider");
+  const createUser = async (userName, tempPassword) => {
+    const cognitoIdentityProviderClient = new CognitoIdentityProviderClient();
+    const adminCreateUserInput = {
+      // AdminCreateUserRequest
+      UserPoolId: userPoolId, // required
+      Username: userName, // required
+      MessageAction: "SUPPRESS",
+      TemporaryPassword: tempPassword,
+      UserAttributes: [
+        // AttributeListType
+        {
+          // AttributeType
+          Name: "nickname", // required
+          Value: `nn-${userName}`,
+        },
+      ],
+      ValidationData: [
+        {
+          Name: "email_verified", // required
+          Value: "True",
+        },
+      ],
+    };
+    const adminCreateUserCommand = new AdminCreateUserCommand(
+      adminCreateUserInput
+    );
+    const adminCreateUserResponse = await cognitoIdentityProviderClient.send(
+      adminCreateUserCommand
+    );
+    if (!adminCreateUserResponse || !adminCreateUserResponse.User) {
+      failTest(
+        adminCreateUserResponse,
+        "Failed to create a user in AWS SDK v3 setup"
+      );
+    }
+    console.log(`created user with username ${userName}`);
+  };
+  const leaderUserNameLength = 8;
+  const leaderUserName =
+    randString({ numLetters: leaderUserNameLength }) + "@example.com";
+  const leaderTempPasswordLength = 10;
+  const leaderTempPassword = randString({
+    numLetters: leaderTempPasswordLength,
+  });
+  const leaderPasswordLength = 12;
+  const leaderPassword = randString({ numLetters: leaderPasswordLength });
+  await createUser(leaderUserName, leaderTempPassword);
+
+  // TODO: Expect the Plan a Seder button to be disabled before login
+
+  // Log in (leader)
+  const loginButtonSelector = '[madliberationid="login-button"]';
+  await page.waitForSelector(loginButtonSelector);
+  await page.click(loginButtonSelector);
+  await page.waitForNavigation();
+  if (page.url() !== idpUrl) {
+    failTest(
+      new Error("wrong IDP URL"),
+      `expected IDP URL ${idpUrl}, got ${page.url()}`,
+      browsers
+    );
+  }
+  // Enter username
+  const usernameSelector = `input#signInFormUsername[type='text']`;
+  await page.waitForSelector(usernameSelector);
+  await page.type(usernameSelector, leaderUserName);
+  // Enter temp password
+  const passwordSelector = `input#signInFormPassword[type='password']`;
+  await page.type(passwordSelector, leaderTempPassword);
+  const submitButtonSelector = `input[name='signInSubmitButton'][type='Submit']`;
+  await page.click(submitButtonSelector);
+  // Change the password
+  const newPasswordSelector = `input#new_password[type='password']`;
+  await page.waitForSelector(newPasswordSelector);
+  await page.type(newPasswordSelector, leaderPassword);
+  const confirmPasswordSelector = `input#confirm_password[type='password']`;
+  await page.type(confirmPasswordSelector, leaderPassword);
+  const resetPassWordButtonSelector = `button[name="reset_password"][type='submit']`;
+  await page.click(resetPassWordButtonSelector);
 
   // go to /create-haggadah
   const createHaggadahLinkText = "Plan a seder";

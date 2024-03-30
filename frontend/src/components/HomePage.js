@@ -135,7 +135,6 @@ class HomePage extends Component {
                             </Typography>
                           </div>
                         </div>{" "}
-                        // post-login-content
                       </div>
                     </>
                   )}
@@ -147,7 +146,6 @@ class HomePage extends Component {
                 </Paper>
               </Container>
             </div>{" "}
-            // Home Page main content
             <br />
             <br />
             <img

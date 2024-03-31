@@ -57,94 +57,99 @@ class HomePage extends Component {
                 className="madliberationLogo"
               />
             </div>
-            <div id="home-page-main-content">
-              <Container maxWidth="xs">
-                <Paper style={{ padding: "8px" }}>
-                  <div>
-                    <Button
-                      madliberationid="plan-seder-button"
-                      variant="contained"
-                      color="primary"
-                      href={createHaggadahHref}
-                      disabled={!user}
-                    >
-                      {createHaggadahLinkText}
-                    </Button>
-                  </div>
-                  <br />
-                  {!user && (
-                    <div id="login-container">
-                      <a href={Configs.loginUrl()} className="loginLink">
-                        <Button
-                          madliberationid="login-button"
-                          title="Log in"
-                          variant="contained"
-                          color="secondary"
-                        >
-                          Log in
-                        </Button>
-                      </a>
-                    </div>
-                  )}
-                  <br />
-
-                  {user && (
-                    <>
-                      <div
-                        style={{
-                          display: "flex",
-                          justifyContent: "center",
-                        }}
-                        id="logout-container"
+            <div
+              id="home-page-main-content"
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <Paper style={{ padding: "8px", maxWidth: "fit-content" }}>
+                <div>
+                  <Button
+                    madliberationid="plan-seder-button"
+                    variant="contained"
+                    color="primary"
+                    href={createHaggadahHref}
+                    disabled={!user}
+                  >
+                    {createHaggadahLinkText}
+                  </Button>
+                </div>
+                <br />
+                {!user && (
+                  <div id="login-container">
+                    <a href={Configs.loginUrl()} className="loginLink">
+                      <Button
+                        madliberationid="login-button"
+                        title="Log in"
+                        variant="contained"
+                        color="secondary"
                       >
-                        <br />
-                        <div id="post-login-content">
-                          <Typography component="p">
-                            Logged in as {user.nickname}
-                          </Typography>
-                          <div>
-                            <Typography component="p">
-                              <Button
-                                component={Link}
-                                to="/seders"
-                                title="see-your-seders-button"
-                                madliberationid="see-your-seders-button"
-                              >
-                                See your seders
-                              </Button>
-                            </Typography>
-                          </div>
-                          <div>
-                            <Typography component="p">
-                              <Button
-                                disabled={this.state.logoutClicked}
-                                onClick={() => {
-                                  this.setState({ logoutClicked: true });
-                                  fetch(Configs.apiRelativeUrl("logout"), {
-                                    credentials: "include",
-                                  }).then((r) => {
-                                    setUser(false);
-                                    storage.removeItem("user-nickname");
-                                    storage.removeItem("user-email");
-                                  });
-                                }}
-                                madliberationid="logout-button"
-                              >
-                                Log out
-                              </Button>
-                            </Typography>
-                          </div>
-                        </div>{" "}
-                      </div>
-                    </>
-                  )}
-                  <div>
-                    <Typography component="p">
-                      <a href="#/about">About</a>
-                    </Typography>
+                        Log in
+                      </Button>
+                    </a>
                   </div>
-                </Paper>
-              </Container>
+                )}
+                <br />
+
+                {user && (
+                  <>
+                    <div
+                      style={{
+                        display: "flex",
+                        justifyContent: "center",
+                      }}
+                      id="logout-container"
+                    >
+                      <br />
+                      <div id="post-login-content">
+                        <Typography component="p">
+                          Logged in as {user.nickname}
+                        </Typography>
+                        <div>
+                          <Typography component="p">
+                            <Button
+                              component={Link}
+                              to="/seders"
+                              title="see-your-seders-button"
+                              madliberationid="see-your-seders-button"
+                            >
+                              See your seders
+                            </Button>
+                          </Typography>
+                        </div>
+                        <div>
+                          <Typography component="p">
+                            <Button
+                              disabled={this.state.logoutClicked}
+                              onClick={() => {
+                                this.setState({ logoutClicked: true });
+                                fetch(Configs.apiRelativeUrl("logout"), {
+                                  credentials: "include",
+                                }).then((r) => {
+                                  setUser(false);
+                                  storage.removeItem("user-nickname");
+                                  storage.removeItem("user-email");
+                                });
+                              }}
+                              madliberationid="logout-button"
+                            >
+                              Log out
+                            </Button>
+                          </Typography>
+                        </div>
+                      </div>{" "}
+                    </div>
+                  </>
+                )}
+                <div>
+                  <Typography component="p">
+                    <a href="#/about">About</a>
+                  </Typography>
+                </div>
+              </Paper>
             </div>{" "}
             <br />
             <br />

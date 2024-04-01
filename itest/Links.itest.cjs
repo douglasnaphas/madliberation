@@ -149,8 +149,7 @@ const waitOptions = { timeout /*, visible: true */ };
   const leaderPassword = randString({ numLetters: leaderPasswordLength });
   await createUser(leaderUserName, leaderTempPassword);
 
-  // TODO: Expect the Plan a Seder button to be disabled before login
-  // Get the disabled status of the plan seder button
+  // Expect the Plan a Seder button to be disabled before login
   const planSederButtonSelector = '[madliberationid="plan-seder-button"]';
   await page.waitForSelector(planSederButtonSelector);
   const disabledStatusOfPlanSederButtonPreLogin = await page.$eval(

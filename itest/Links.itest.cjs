@@ -96,7 +96,6 @@ const waitOptions = { timeout /*, visible: true */ };
     }
     return str;
   };
-
   // create user
   const {
     CognitoIdentityProviderClient,
@@ -151,6 +150,24 @@ const waitOptions = { timeout /*, visible: true */ };
   await createUser(leaderUserName, leaderTempPassword);
 
   // TODO: Expect the Plan a Seder button to be disabled before login
+  // Get the disabled status of the plan seder button
+  const planSederButtonSelector = '[madliberationid="plan-seder-button"]';
+  await page.waitForSelector(planSederButtonSelector);
+  const disabledStatusOfPlanSederButtonPreLogin = await page.$eval(
+    planSederButtonSelector,
+    (link) =>
+      link.getAttribute("aria-disabled") === "true" ||
+      link.hasAttribute("disabled")
+  );
+  if (!disabledStatusOfPlanSederButtonPreLogin) {
+    failTest(
+      new Error(
+        "Plan Seder should be disabled before login",
+        "Plan Seder button (link) not disabled",
+        browsers
+      )
+    );
+  }
 
   // Log in (leader)
   const loginButtonSelector = '[madliberationid="login-button"]';
@@ -191,7 +208,7 @@ const waitOptions = { timeout /*, visible: true */ };
     .catch(async (e) => {
       failTest(e, "Plan a seder button not found", browsers);
     });
-  await page.click('[madliberationid="plan-seder-button"]');
+  await page.click(planSederButtonSelector);
 
   //////////////////////////////////////////////////////////////////////////////
   ////////////////// Create Haggadah Home Page /////////////////////////////////

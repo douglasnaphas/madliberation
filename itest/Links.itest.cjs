@@ -213,6 +213,11 @@ const waitOptions = { timeout /*, visible: true */ };
   ////////////////// Create Haggadah Home Page /////////////////////////////////
   //////////////////////////////////////////////////////////////////////////////
 
+  // The logged-in leader's email and nickname should be displayed
+  const leaderNickname = `nn-${leaderEmailAddress}`;
+  const leaderNicknameXPath = `//*[contains(text(), "${leaderNickname}")]`;
+  await page.waitForXPath(leaderNicknameXPath);
+
   const pickScriptAccordionTextXPath = '//*[text()="Pick script"]';
   await page
     .waitForXPath(pickScriptAccordionTextXPath, waitOptions)

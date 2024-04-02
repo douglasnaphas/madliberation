@@ -66,6 +66,9 @@ class HomePage extends Component {
               }}
             >
               <Paper style={{ padding: "8px", maxWidth: "fit-content" }}>
+                <div id="site-description">
+                  <h1>Mad lib Haggadahs for your Passover Seder</h1>
+                </div>
                 <div>
                   <Button
                     madliberationid="plan-seder-button"

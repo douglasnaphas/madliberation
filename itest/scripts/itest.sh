@@ -74,7 +74,18 @@ then
 else
   SLOW_ARG=
 fi
+
+# SETUP_ONLY just creates a user
+if [[ "${SETUP_ONLY}" == "y" ]]
+then
+  SETUP_ONLY_ARG="--setup-only"
+else
+  SETUP_ONLY_ARG=
+fi
+
 node App.itest.cjs \
   --site ${APP_URL} \
   --idp-url "${IDP_URL}" \
-  --user-pool-id ${USER_POOL_ID} ${SLOW_ARG}
+  --user-pool-id ${USER_POOL_ID} \
+  ${SLOW_ARG} \
+  ${SETUP_ONLY_ARG}

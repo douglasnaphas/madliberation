@@ -28,7 +28,6 @@ const getLoginCookies = [
   exchangeCodeForTokens(axios, Configs),
   getMadLnJwksFromAws(axios),
   checkJwt({ jwk2Pem, jwt, tokenType: "id", verifyJwt, refreshAccessToken }),
-  setJwtCookies(),
   getUserInfo(jwt),
   getPostLoginURI(),
   generateOpaqueCookie({ randomCapGenerator }),

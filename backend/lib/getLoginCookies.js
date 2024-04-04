@@ -8,7 +8,6 @@ const getMadLnJwksFromAws = require("./getMadLnJwksFromAws");
 const jwk2Pem = require("jwk-to-pem");
 const checkJwt = require("./checkJwt");
 const jwt = require("jsonwebtoken");
-const setJwtCookies = require("./setJwtCookies");
 const getUserInfo = require("./getUserInfo");
 const getPostLoginURI = require("./getPostLoginURI");
 const Configs = require("../Configs");

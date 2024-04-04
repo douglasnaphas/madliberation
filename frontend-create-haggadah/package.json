@@ -15,7 +15,8 @@
     "lint": "next lint",
     "test": "echo 'no tests yet'",
     "post-update": "echo \"codesandbox preview only, need an update\" && yarn upgrade --latest",
-    "install-build-test-deploy": "bash scripts/install-build-test-deploy.sh"
+    "install-build-test-deploy": "bash scripts/install-build-test-deploy.sh",
+    "always-install-build-test-deploy": "bash scripts/always-install-build-test-deploy.sh"
   },
   "dependencies": {
     "@emotion/cache": "latest",
@@ -25,6 +26,7 @@
     "@mui/icons-material": "^5.11.11",
     "@mui/material": "latest",
     "@next/font": "latest",
+    "@tanstack/react-query": "^5.28.9",
     "email-validator": "^2.0.4",
     "next": "latest",
     "react": "latest",

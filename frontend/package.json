@@ -19,7 +19,8 @@
     "test": "react-scripts test --env=jsdom",
     "build": "react-scripts build",
     "audit-prod": "npm audit --production",
-    "install-build-test-deploy": "bash scripts/install-build-test-deploy.sh"
+    "install-build-test-deploy": "bash scripts/install-build-test-deploy.sh",
+    "always-install-build-test-deploy": "bash scripts/always-install-build-test-deploy.sh"
   },
   "dependencies": {
     "@emotion/react": "^11.9.3",

@@ -60,9 +60,9 @@ const sedersTable: (construct: Construct) => dynamodb.Table = (
     projectionType: dynamodb.ProjectionType.ALL,
   });
   table.addGlobalSecondaryIndex({
-    indexName: schema.OPAQUE_COOKIE_INDEX,
+    indexName: schemaV2.OPAQUE_COOKIE_INDEX,
     partitionKey: {
-      name: schema.OPAQUE_COOKIE,
+      name: schemaV2.OPAQUE_COOKIE,
       type: dynamodb.AttributeType.STRING,
     },
     projectionType: dynamodb.ProjectionType.ALL,

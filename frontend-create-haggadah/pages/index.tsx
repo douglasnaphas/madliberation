@@ -61,11 +61,6 @@ export default function Home() {
     padding: theme.spacing(2),
     borderTop: "1px solid rgba(0, 0, 0, .125)",
   }));
-  const { isPending, error, data } = useQuery({
-    queryKey: ["user"],
-    queryFn: () =>
-      fetch("../v2/user", { credentials: "include" }).then((res) => res.json()),
-  });
   const [selectedScript, setSelectedScript] = React.useState("");
   const [yourEmail, setYourEmail] = React.useState("");
   const [yourName, setYourName] = React.useState("");

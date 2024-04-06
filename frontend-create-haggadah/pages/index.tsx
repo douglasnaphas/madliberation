@@ -207,7 +207,11 @@ function LoggedInAsSection() {
   const { isPending, error, data } = useQuery({
     queryKey: ["user"],
     queryFn: () => fetch("./v2/user").then((res) => res.json()),
-    staleTime: Infinity
+    staleTime: Infinity,
+    refetchInterval: false,
+    refetchOnMount: false,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
   });
   if (isPending) {
     return (

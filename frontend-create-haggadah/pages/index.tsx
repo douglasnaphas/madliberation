@@ -134,8 +134,7 @@ export default function Home() {
       return (
         <Paper>
           <div id="problem-getting-user">
-            There is a problem with your login. Please go back to the{" "}
-            <a href="./">home page</a> and log in again.
+            There is a problem with your login. Please go back to the home page and log in again.
           </div>
         </Paper>
       );

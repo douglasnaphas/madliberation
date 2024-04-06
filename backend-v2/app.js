@@ -88,7 +88,7 @@ router.get("/scripts", async function (req, res) {
 
 router.use(cookieParser());
 
-router.get("/user", user);
+router.get("/user", user());
 
 router.get("/", function (req, res) {
   res.send({

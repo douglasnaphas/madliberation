@@ -63,7 +63,7 @@ export default function Home() {
   }));
   const { isPending, error, data } = useQuery({
     queryKey: ["user"],
-    queryFn: () => fetch("./backend/user").then((res) => res.json()),
+    queryFn: () => fetch("../v2/user").then((res) => res.json()),
   });
   const [selectedScript, setSelectedScript] = React.useState("");
   const [yourEmail, setYourEmail] = React.useState("");

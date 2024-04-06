@@ -116,37 +116,6 @@ export default function Home() {
     })
   );
 
-  function LoggedInAsSection() {
-    const { isPending, error, data } = useQuery({
-      queryKey: ["user"],
-      queryFn: () => fetch("./v2/user").then((res) => res.json()),
-    });
-    if (isPending) {
-      return (
-        <Paper>
-          <div id="getting-user-progress">
-            <CircularProgress></CircularProgress>
-          </div>
-        </Paper>
-      );
-    }
-    if (error) {
-      return (
-        <Paper>
-          <div id="problem-getting-user">
-            There is a problem with your login. Please go back to the home page
-            and log in again.
-          </div>
-        </Paper>
-      );
-    }
-    return (
-      <Paper>
-        <div id="logged-in-as-section">Logged in as {data.user_nickname}</div>
-      </Paper>
-    );
-  }
-
   return (
     <QueryClientProvider client={queryClient}>
       <div>
@@ -240,4 +209,35 @@ export default function Home() {
       </div>
     </QueryClientProvider>
   );
+
+  function LoggedInAsSection() {
+    const { isPending, error, data } = useQuery({
+      queryKey: ["user"],
+      queryFn: () => fetch("./v2/user").then((res) => res.json()),
+    });
+    if (isPending) {
+      return (
+        <Paper>
+          <div id="getting-user-progress">
+            <CircularProgress></CircularProgress>
+          </div>
+        </Paper>
+      );
+    }
+    if (error) {
+      return (
+        <Paper>
+          <div id="problem-getting-user">
+            There is a problem with your login. Please go back to the home page
+            and log in again.
+          </div>
+        </Paper>
+      );
+    }
+    return (
+      <Paper>
+        <div id="logged-in-as-section">Logged in as {data.user_nickname}</div>
+      </Paper>
+    );
+  }
 }

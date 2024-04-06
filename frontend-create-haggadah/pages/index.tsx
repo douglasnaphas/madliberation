@@ -134,7 +134,8 @@ export default function Home() {
       return (
         <Paper>
           <div id="problem-getting-user">
-            There is a problem with your login. Please go back to the home page and log in again.
+            There is a problem with your login. Please go back to the home page
+            and log in again.
           </div>
         </Paper>
       );
@@ -171,7 +172,9 @@ export default function Home() {
         </div>
 
         <Container maxWidth="md">
-          <QueryClientProvider client={queryClient}></QueryClientProvider>
+          <QueryClientProvider client={queryClient}>
+            <LoggedInAsSection></LoggedInAsSection>
+          </QueryClientProvider>
           <Paper>
             <div>
               {" "}

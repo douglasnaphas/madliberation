@@ -141,6 +141,7 @@ const waitOptions = { timeout /*, visible: true */ };
   const leaderUserNameLength = 8;
   const leaderUserName =
     randString({ numLetters: leaderUserNameLength }) + "@example.com";
+  const leaderEmailAddress = leaderUserName;
   const leaderTempPasswordLength = 10;
   const leaderTempPassword = randString({
     numLetters: leaderTempPasswordLength,
@@ -237,7 +238,6 @@ const waitOptions = { timeout /*, visible: true */ };
   const leaderName = "L";
   await page.type(yourNameTextBoxSelector, leaderName);
   const yourEmailAddressTextBoxSelector = "#your-email-address";
-  const leaderEmailAddress = "el@y.co";
   await page.type(yourEmailAddressTextBoxSelector, leaderEmailAddress);
   const planSederSubmitButtonSelector = "button:not([disabled])";
   await page.waitForSelector(planSederSubmitButtonSelector);

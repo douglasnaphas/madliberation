@@ -24,14 +24,18 @@ const user = () => [
       ExpressionAttributeValues: { ":oc": req.cookies.login },
     });
     const getCookieQueryResponse = await docClient.send(getCookieQueryCommand);
-    const { user_nickname, user_email } = getCookieQueryResponse;
-    if (!user_nickname || !user_email) {
+    if (
+      !getCookieQueryResponse ||
+      !getCookieQueryResponse.Items ||
+      !getCookieQueryResponse.Items[0]
+    ) {
       console.log(
         "problem getting user nickname and email, getCookieQueryResponse",
         getCookieQueryResponse
       );
       return res.status(401).send({ err: "unauthenticated" });
     }
+    const { user_nickname, user_email } = getCookieQueryResponse.Items[0];
     return res.send({ user: user_nickname, user_email });
   },
 ];

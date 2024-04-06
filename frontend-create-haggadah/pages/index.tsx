@@ -22,52 +22,45 @@ import { getEditLink } from "../src/getEditLink";
 import YourInfoSection from "../src/YourInfoSection";
 import SubmitSection from "../src/SubmitSection";
 import Head from "next/head";
-import {
-  QueryClient,
-  QueryClientProvider,
-  useQuery,
-} from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import CircularProgress from "@mui/material/CircularProgress";
 
-const queryClient = new QueryClient();
-
-const Accordion = styled((props: AccordionProps) => (
-  <MuiAccordion disableGutters elevation={0} square {...props} />
-))(({ theme }) => ({
-  border: `1px solid ${theme.palette.divider}`,
-  "&:not(:last-child)": {
-    borderBottom: 0,
-  },
-  "&:before": {
-    display: "none",
-  },
-}));
-
-const AccordionSummary = styled((props: AccordionSummaryProps) => (
-  <MuiAccordionSummary
-    expandIcon={<ArrowForwardIosSharpIcon sx={{ fontSize: "0.9rem" }} />}
-    {...props}
-  />
-))(({ theme }) => ({
-  backgroundColor:
-    theme.palette.mode === "dark"
-      ? "rgba(255, 255, 255, .05)"
-      : "rgba(0, 0, 0, .03)",
-  flexDirection: "row-reverse",
-  "& .MuiAccordionSummary-expandIconWrapper.Mui-expanded": {
-    transform: "rotate(90deg)",
-  },
-  "& .MuiAccordionSummary-content": {
-    marginLeft: theme.spacing(1),
-  },
-}));
-
-const AccordionDetails = styled(MuiAccordionDetails)(({ theme }) => ({
-  padding: theme.spacing(2),
-  borderTop: "1px solid rgba(0, 0, 0, .125)",
-}));
-
 export default function Home() {
+  const Accordion = styled((props: AccordionProps) => (
+    <MuiAccordion disableGutters elevation={0} square {...props} />
+  ))(({ theme }) => ({
+    border: `1px solid ${theme.palette.divider}`,
+    "&:not(:last-child)": {
+      borderBottom: 0,
+    },
+    "&:before": {
+      display: "none",
+    },
+  }));
+
+  const AccordionSummary = styled((props: AccordionSummaryProps) => (
+    <MuiAccordionSummary
+      expandIcon={<ArrowForwardIosSharpIcon sx={{ fontSize: "0.9rem" }} />}
+      {...props}
+    />
+  ))(({ theme }) => ({
+    backgroundColor:
+      theme.palette.mode === "dark"
+        ? "rgba(255, 255, 255, .05)"
+        : "rgba(0, 0, 0, .03)",
+    flexDirection: "row-reverse",
+    "& .MuiAccordionSummary-expandIconWrapper.Mui-expanded": {
+      transform: "rotate(90deg)",
+    },
+    "& .MuiAccordionSummary-content": {
+      marginLeft: theme.spacing(1),
+    },
+  }));
+
+  const AccordionDetails = styled(MuiAccordionDetails)(({ theme }) => ({
+    padding: theme.spacing(2),
+    borderTop: "1px solid rgba(0, 0, 0, .125)",
+  }));
   const { isPending, error, data } = useQuery({
     queryKey: ["user"],
     queryFn: () => fetch("./backend/user").then((res) => res.json()),
@@ -117,99 +110,98 @@ export default function Home() {
   );
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <div>
-        <Head>
-          <title>Plan a Seder</title>
-        </Head>
-        <div
-          style={{
-            backgroundColor: "#81181f",
-            height: "100%",
-            minHeight: "100%",
-          }}
-        >
-          <div>
-            <img
-              css={{
-                height: "200px",
-                display: "block",
-                marginLeft: "auto",
-                marginRight: "auto",
-              }}
-              src={`${MadLiberationLogo.src}`}
-            ></img>
-          </div>
-
-          <Container maxWidth="md">
-            <LoggedInAsSection></LoggedInAsSection>
-            <Paper>
-              <div>
-                {" "}
-                {/* accordions from steps */}
-                {steps.map((step, index) => {
-                  return (
-                    <div>
-                      <Accordion
-                        expanded={accordionExpanded[index]}
-                        onChange={(event) => {
-                          setAccordionExpanded((oldAccordionExpanded) => {
-                            return oldAccordionExpanded.map((a, i) => {
-                              if (i === index) {
-                                return !a;
-                              }
-                              return a;
-                            });
-                          });
-                        }}
-                      >
-                        <AccordionSummary>{step.label}</AccordionSummary>
-                        <AccordionDetails>{step.body}</AccordionDetails>
-                      </Accordion>
-                    </div>
-                  );
-                })}
-              </div>
-              <div>
-                {createHaggadahError ? (
-                  <Typography
-                    component="p"
-                    paragraph
-                    gutterBottom
-                    style={{ color: "red" }}
-                  >
-                    Unable to create your Haggadah, sorry. Please try again in a
-                    new tab or different browser.
-                  </Typography>
-                ) : (
-                  <SubmitSection
-                    getEditLink={getEditLink}
-                    setEditLink={setEditLink}
-                    leaderEmail={yourEmail}
-                    leaderName={yourName}
-                    path={selectedScript}
-                    setCreateHaggadahError={setCreateHaggadahError}
-                  ></SubmitSection>
-                )}
-              </div>
-            </Paper>
-          </Container>
-
-          <br />
+    <div>
+      <Head>
+        <title>Plan a Seder</title>
+      </Head>
+      <div
+        style={{
+          backgroundColor: "#81181f",
+          height: "100%",
+          minHeight: "100%",
+        }}
+      >
+        <div>
           <img
             css={{
-              height: "70px",
+              height: "200px",
               display: "block",
               marginLeft: "auto",
               marginRight: "auto",
             }}
-            src={`${VeryAwesomePassoverLogo.src}`}
+            src={`${MadLiberationLogo.src}`}
           ></img>
         </div>
+
+        <Container maxWidth="md">
+          <LoggedInAsSection></LoggedInAsSection>
+          <Paper>
+            <div>
+              {" "}
+              {/* accordions from steps */}
+              {steps.map((step, index) => {
+                return (
+                  <div>
+                    <Accordion
+                      expanded={accordionExpanded[index]}
+                      onChange={(event) => {
+                        setAccordionExpanded((oldAccordionExpanded) => {
+                          return oldAccordionExpanded.map((a, i) => {
+                            if (i === index) {
+                              return !a;
+                            }
+                            return a;
+                          });
+                        });
+                      }}
+                    >
+                      <AccordionSummary>{step.label}</AccordionSummary>
+                      <AccordionDetails>{step.body}</AccordionDetails>
+                    </Accordion>
+                  </div>
+                );
+              })}
+            </div>
+            <div>
+              {createHaggadahError ? (
+                <Typography
+                  component="p"
+                  paragraph
+                  gutterBottom
+                  style={{ color: "red" }}
+                >
+                  Unable to create your Haggadah, sorry. Please try again in a
+                  new tab or different browser.
+                </Typography>
+              ) : (
+                <SubmitSection
+                  getEditLink={getEditLink}
+                  setEditLink={setEditLink}
+                  leaderEmail={yourEmail}
+                  leaderName={yourName}
+                  path={selectedScript}
+                  setCreateHaggadahError={setCreateHaggadahError}
+                ></SubmitSection>
+              )}
+            </div>
+          </Paper>
+        </Container>
+
+        <br />
+        <img
+          css={{
+            height: "70px",
+            display: "block",
+            marginLeft: "auto",
+            marginRight: "auto",
+          }}
+          src={`${VeryAwesomePassoverLogo.src}`}
+        ></img>
       </div>
-    </QueryClientProvider>
+    </div>
   );
 }
+
 function LoggedInAsSection() {
   const { isPending, error, data } = useQuery({
     queryKey: ["user"],

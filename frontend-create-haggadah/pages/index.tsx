@@ -22,6 +22,14 @@ import { getEditLink } from "../src/getEditLink";
 import YourInfoSection from "../src/YourInfoSection";
 import SubmitSection from "../src/SubmitSection";
 import Head from "next/head";
+import {
+  QueryClient,
+  QueryClientProvider,
+  useQuery,
+} from "@tanstack/react-query";
+import CircularProgress from "@mui/material/CircularProgress";
+
+const queryClient = new QueryClient();
 
 const Accordion = styled((props: AccordionProps) => (
   <MuiAccordion disableGutters elevation={0} square {...props} />
@@ -60,6 +68,10 @@ const AccordionDetails = styled(MuiAccordionDetails)(({ theme }) => ({
 }));
 
 export default function Home() {
+  const { isPending, error, data } = useQuery({
+    queryKey: ["user"],
+    queryFn: () => fetch("./backend/user").then((res) => res.json()),
+  });
   const [selectedScript, setSelectedScript] = React.useState("");
   const [yourEmail, setYourEmail] = React.useState("");
   const [yourName, setYourName] = React.useState("");
@@ -104,6 +116,37 @@ export default function Home() {
     })
   );
 
+  function LoggedInAsSection() {
+    const { isPending, error, data } = useQuery({
+      queryKey: ["user"],
+      queryFn: () => fetch("./v2/user").then((res) => res.json()),
+    });
+    if (isPending) {
+      return (
+        <Paper>
+          <div id="getting-user-progress">
+            <CircularProgress></CircularProgress>
+          </div>
+        </Paper>
+      );
+    }
+    if (error) {
+      return (
+        <Paper>
+          <div id="problem-getting-user">
+            There is a problem with your login. Please go back to the{" "}
+            <a href="./">home page</a> and log in again.
+          </div>
+        </Paper>
+      );
+    }
+    return (
+      <Paper>
+        <div id="logged-in-as-section">Logged in as {data.user_nickname}</div>
+      </Paper>
+    );
+  }
+
   return (
     <div>
       <Head>
@@ -127,7 +170,9 @@ export default function Home() {
             src={`${MadLiberationLogo.src}`}
           ></img>
         </div>
+
         <Container maxWidth="md">
+          <QueryClientProvider client={queryClient}></QueryClientProvider>
           <Paper>
             <div>
               {" "}
@@ -179,6 +224,7 @@ export default function Home() {
             </div>
           </Paper>
         </Container>
+
         <br />
         <img
           css={{

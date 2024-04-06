@@ -1,0 +1,38 @@
+const {
+  DynamoDBDocumentClient,
+  QueryCommand,
+} = require("@aws-sdk/lib-dynamodb");
+import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
+const schema = require("../schema");
+const dynamoDBClient = new DynamoDBClient({});
+const docClient = DynamoDBDocumentClient.from(dynamoDBClient);
+const user = () => [
+  // 401 if no login cookie
+  (req, res, next) => {
+    if (!req.cookies.login) {
+      return res.status(401).send({ err: "unauthenticated" });
+    }
+    return next();
+  },
+  // Get the cookie from the db
+  async (req, res, next) => {
+    const getCookieQueryCommand = new QueryCommand({
+      TableName: schema.TABLE_NAME,
+      IndexName: schema.OPAQUE_COOKIE_INDEX,
+      KeyConditionExpression: `#OC = :oc`,
+      ExpressionAttributeNames: { "#OC": schema.OPAQUE_COOKIE },
+      ExpressionAttributeValues: { ":oc": req.cookies.login },
+    });
+    const getCookieQueryResponse = await docClient.send(getCookieQueryCommand);
+    const { user_nickname, user_email } = getCookieQueryResponse;
+    if (!user_nickname || !user_email) {
+      console.log(
+        "problem getting user nickname and email, getCookieQueryResponse",
+        getCookieQueryResponse
+      );
+      return res.status(401).send({ err: "unauthenticated" });
+    }
+    return res.send({ user: user_nickname, user_email });
+  },
+];
+module.exports = user;

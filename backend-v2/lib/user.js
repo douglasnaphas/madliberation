@@ -36,7 +36,7 @@ const user = () => [
       return res.status(401).send({ err: "unauthenticated" });
     }
     const { user_nickname, user_email } = getCookieQueryResponse.Items[0];
-    return res.send({ user: user_nickname, user_email });
+    return res.send({ user_nickname, user_email });
   },
 ];
 module.exports = user;

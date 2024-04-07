@@ -6,16 +6,12 @@
  * calls next otherwise.
  */
 function blackListPostParams(req, res, next) {
-  const Configs = require('../Configs');
-  const responses = require('../responses');
-  if(
-    (req.body.roomCode && req.body.roomCode.match(Configs.roomCodeBlacklist()))
-    ||
-    (req.body.gameName && req.body.gameName.match(Configs.gameNameBlacklist()))
-    ||
-    (req.body.libAnswer && req.body.libAnswer.match(Configs.libBlacklist()))
-  )
-  {
+  const Configs = require("../Configs");
+  const responses = require("../responses");
+  if (
+    req.body.roomCode &&
+    req.body.roomCode.match(Configs.roomCodeBlacklist())
+  ) {
     console.log("bad post param(s)");
     console.log("req.body", req.body);
     return res.status(400).send(responses.BAD_REQUEST);

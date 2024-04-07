@@ -65,7 +65,6 @@ export default function Home() {
   const [yourEmail, setYourEmail] = React.useState("");
   const [yourName, setYourName] = React.useState("");
   const [editLink, setEditLink] = React.useState("");
-  const [user_nickname, setUserNickname] = React.useState("");
   const [createHaggadahError, setCreateHaggadahError] = React.useState(false);
   React.useEffect(() => {
     fetch("../v2/user", { credentials: "include" })
@@ -73,7 +72,10 @@ export default function Home() {
       .then((j) => {
         console.log("j is", j);
         if (j.user_nickname) {
-          setUserNickname(j.user_nickname);
+          setYourName(j.user_nickname);
+        }
+        if (j.user_email) {
+          setYourEmail(j.user_email);
         }
       });
   }, []);
@@ -92,19 +94,6 @@ export default function Home() {
         </div>
       ),
     },
-    {
-      order: 2,
-      label: "Your info",
-      body: (
-        <div>
-          <YourInfoSection
-            disabled={editLink !== ""}
-            setYourEmail={setYourEmail}
-            setYourName={setYourName}
-          ></YourInfoSection>
-        </div>
-      ),
-    },
   ].sort((a: any, b: any) => {
     if (a.order === b.order) return 0;
     if (a.order < b.order) return -1;
@@ -118,17 +107,21 @@ export default function Home() {
 
   interface LoggedInAsSectionProps {
     user_nickname: string;
+    user_email: string;
   }
 
   const LoggedInAsSection: React.FC<LoggedInAsSectionProps> = ({
     user_nickname,
+    user_email,
   }) => {
-    if (!user_nickname) {
+    if (!user_nickname || !user_email) {
       return <></>;
     }
     return (
       <Paper>
-        <div id="logged-in-as-section">Logged in as {user_nickname}</div>
+        <div id="logged-in-as-section">
+          Logged in as <b>{user_nickname}</b>, email <b>{user_email}</b>
+        </div>
       </Paper>
     );
   };
@@ -158,7 +151,10 @@ export default function Home() {
         </div>
 
         <Container maxWidth="md">
-          <LoggedInAsSection user_nickname={user_nickname}></LoggedInAsSection>
+          <LoggedInAsSection
+            user_nickname={yourName}
+            user_email={yourEmail}
+          ></LoggedInAsSection>
           <Paper>
             <div>
               {" "}

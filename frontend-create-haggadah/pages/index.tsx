@@ -23,7 +23,10 @@ import YourInfoSection from "../src/YourInfoSection";
 import SubmitSection from "../src/SubmitSection";
 import Head from "next/head";
 import { useQuery } from "@tanstack/react-query";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import CircularProgress from "@mui/material/CircularProgress";
+
+const queryClient = new QueryClient();
 
 export default function Home() {
   const Accordion = styled((props: AccordionProps) => (
@@ -130,7 +133,9 @@ export default function Home() {
         </div>
 
         <Container maxWidth="md">
-          <LoggedInAsSection></LoggedInAsSection>
+          <QueryClientProvider client={queryClient}>
+            <LoggedInAsSection></LoggedInAsSection>
+          </QueryClientProvider>
           <Paper>
             <div>
               {" "}

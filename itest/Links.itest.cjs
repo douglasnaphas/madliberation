@@ -216,7 +216,7 @@ const waitOptions = { timeout /*, visible: true */ };
 
   // The logged-in leader's email and nickname should be displayed
   const leaderNickname = `nn-${leaderEmailAddress}`;
-  const leaderNicknameXPath = `//*[contains(text(), "${leaderNickname}")]`;
+  const leaderNicknameXPath = `//*[contains(., "${leaderNickname}")]`;
   await page.waitForXPath(leaderNicknameXPath);
 
   const pickScriptAccordionTextXPath = '//*[text()="Pick script"]';

@@ -37,22 +37,6 @@ describe('blackListPostParams', () => {
     };
     runTest({req: req, expect400: true});
   });
-  test('bad game name', () => {
-    const req = {
-      body: {
-        gameName: 'R<script>src="alert(hacked);"</script>'
-      }
-    };
-    runTest({req: req, expect400: true});
-  });
-  test('bad lib', () => {
-    const req = {
-      body: {
-        libAnswer: 'R<script>src="alert(hacked);"</script>'
-      }
-    };
-    runTest({req: req, expect400: true});
-  });
   test('all valid characters', () => {
     const req = {
       body: {

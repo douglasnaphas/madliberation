@@ -22,11 +22,7 @@ import { getEditLink } from "../src/getEditLink";
 import YourInfoSection from "../src/YourInfoSection";
 import SubmitSection from "../src/SubmitSection";
 import Head from "next/head";
-import { useQuery } from "@tanstack/react-query";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import CircularProgress from "@mui/material/CircularProgress";
-
-const queryClient = new QueryClient();
 
 export default function Home() {
   const Accordion = styled((props: AccordionProps) => (
@@ -68,7 +64,18 @@ export default function Home() {
   const [yourEmail, setYourEmail] = React.useState("");
   const [yourName, setYourName] = React.useState("");
   const [editLink, setEditLink] = React.useState("");
+  const [user_nickname, setUserNickname] = React.useState("");
   const [createHaggadahError, setCreateHaggadahError] = React.useState(false);
+  React.useEffect(() => {
+    fetch("../v2/user", { credentials: "include" })
+      .then((r) => r.json())
+      .then((j) => {
+        console.log("j is", j);
+        if (j.user_nickname) {
+          setUserNickname(j.user_nickname);
+        }
+      });
+  }, []);
   const steps = [
     {
       order: 1,
@@ -108,6 +115,23 @@ export default function Home() {
     })
   );
 
+  interface LoggedInAsSectionProps {
+    user_nickname: string;
+  }
+
+  const LoggedInAsSection: React.FC<LoggedInAsSectionProps> = ({
+    user_nickname,
+  }) => {
+    if (!user_nickname) {
+      return <></>;
+    }
+    return (
+      <Paper>
+        <div id="logged-in-as-section">Logged in as {user_nickname}</div>
+      </Paper>
+    );
+  };
+
   return (
     <div>
       <Head>
@@ -133,9 +157,7 @@ export default function Home() {
         </div>
 
         <Container maxWidth="md">
-          <QueryClientProvider client={queryClient}>
-            <LoggedInAsSection></LoggedInAsSection>
-          </QueryClientProvider>
+          <LoggedInAsSection user_nickname={user_nickname}></LoggedInAsSection>
           <Paper>
             <div>
               {" "}
@@ -200,41 +222,5 @@ export default function Home() {
         ></img>
       </div>
     </div>
-  );
-}
-
-function LoggedInAsSection() {
-  const { isPending, error, data } = useQuery({
-    queryKey: ["user"],
-    queryFn: () => fetch("../v2/user").then((res) => res.json()),
-    staleTime: Infinity,
-    refetchInterval: false,
-    refetchOnMount: false,
-    refetchOnWindowFocus: false,
-    refetchOnReconnect: false,
-  });
-  if (isPending) {
-    return (
-      <Paper>
-        <div id="getting-user-progress">
-          <CircularProgress></CircularProgress>
-        </div>
-      </Paper>
-    );
-  }
-  if (error) {
-    return (
-      <Paper>
-        <div id="problem-getting-user">
-          There is a problem with your login. Please go back to the home page
-          and log in again.
-        </div>
-      </Paper>
-    );
-  }
-  return (
-    <Paper>
-      <div id="logged-in-as-section">Logged in as {data.user_nickname}</div>
-    </Paper>
   );
 }

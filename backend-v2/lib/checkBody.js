@@ -15,6 +15,7 @@ function checkBody(expectedBodyParams) {
     }
     expectedBodyParams.forEach(e => {
       if(!req.body.hasOwnProperty(e) && !req.body[`${e}`]) {
+        console.log("missing property", e);
         return res.status(400).send(responses.BAD_REQUEST);
       }
     });

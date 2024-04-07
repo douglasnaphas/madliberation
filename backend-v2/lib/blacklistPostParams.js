@@ -16,6 +16,8 @@ function blackListPostParams(req, res, next) {
     (req.body.libAnswer && req.body.libAnswer.match(Configs.libBlacklist()))
   )
   {
+    console.log("bad post param(s)");
+    console.log("req.body", req.body);
     return res.status(400).send(responses.BAD_REQUEST);
   }
   return next();

@@ -897,6 +897,29 @@ const waitOptions = { timeout /*, visible: true */ };
 
   // Page through the script, look for the right answers in situ
 
+  //////////////////////////////////////////////////////////////////////////////
+  //////////// Someone lost their link
+  //////////// Test the leader getting it for them
+  //////////////////////////////////////////////////////////////////////////////
+  // Log in, new browser
+  const retrieveLinkBrowser = await puppeteer.launch(browserOptions);
+  browsers.push(retrieveLinkBrowser);
+  const retrieveLinkPage = await retrieveLinkBrowser.newPage();
+  await retrieveLinkPage.goto(site);
+  await retrieveLinkPage.waitForSelector(loginButtonSelector);
+  await Promise.all([
+    retrieveLinkPage.click(loginButtonSelector),
+    retrieveLinkPage.waitForNavigation(),
+  ]);
+  await retrieveLinkPage.waitForSelector(usernameSelector);
+  await retrieveLinkPage.type(usernameSelector, leaderEmailAddress);
+  await retrieveLinkPage.type(passwordSelector, leaderPassword);
+  await retrieveLinkPage.click(submitButtonSelector);
+
+  // See my Seders
+  const sedersXPath = `//a[@href="/create-haggadah/seders.html"]`;
+  await retrieveLinkPage.waitForXPath(sedersXPath);
+
   ////////////////////////////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////////////////////////
   // Clean up

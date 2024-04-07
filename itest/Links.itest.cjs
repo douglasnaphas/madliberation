@@ -84,7 +84,9 @@ const waitOptions = { timeout /*, visible: true */ };
   const randString = (options) => {
     const { numLetters } = options;
     const alphabet = (
-      "ABCDEFGHIJKLMNOPQRSTUVWXYZ" + "abcdefghijklmnopqrstuvwxyz"
+      "ABCDEFGHIJKLMNOPQRSTUVWXYZ" +
+      "abcdefghijklmnopqrstuvwxyz" +
+      "0123456789"
     ).split("");
     let str = "";
     for (let i = 0; i < numLetters; i++) {
@@ -101,7 +103,7 @@ const waitOptions = { timeout /*, visible: true */ };
     CognitoIdentityProviderClient,
     AdminCreateUserCommand,
   } = require("@aws-sdk/client-cognito-identity-provider");
-  const createUser = async (userName, tempPassword) => {
+  const createUser = async (userName, nickname, tempPassword) => {
     const cognitoIdentityProviderClient = new CognitoIdentityProviderClient();
     const adminCreateUserInput = {
       // AdminCreateUserRequest
@@ -114,7 +116,7 @@ const waitOptions = { timeout /*, visible: true */ };
         {
           // AttributeType
           Name: "nickname", // required
-          Value: `nn-${userName}`,
+          Value: nickname,
         },
       ],
       ValidationData: [
@@ -138,17 +140,16 @@ const waitOptions = { timeout /*, visible: true */ };
     }
     console.log(`created user with username ${userName}`);
   };
-  const leaderUserNameLength = 8;
-  const leaderUserName =
-    randString({ numLetters: leaderUserNameLength }) + "@example.com";
-  const leaderEmailAddress = leaderUserName;
+  const leaderNicknameLength = 8;
+  const leaderNickname = randString({ numLetters: leaderNicknameLength });
+  const leaderEmailAddress = leaderNickname + "@example.com";
   const leaderTempPasswordLength = 10;
   const leaderTempPassword = randString({
     numLetters: leaderTempPasswordLength,
   });
   const leaderPasswordLength = 12;
   const leaderPassword = randString({ numLetters: leaderPasswordLength });
-  await createUser(leaderUserName, leaderTempPassword);
+  await createUser(leaderEmailAddress, leaderNickname, leaderTempPassword);
 
   // Expect the Plan a Seder button to be disabled before login
   const planSederButtonSelector = '[madliberationid="plan-seder-button"]';
@@ -186,7 +187,7 @@ const waitOptions = { timeout /*, visible: true */ };
   // Enter username
   const usernameSelector = `input#signInFormUsername[type='text']`;
   await page.waitForSelector(usernameSelector);
-  await page.type(usernameSelector, leaderUserName);
+  await page.type(usernameSelector, leaderEmailAddress);
   // Enter temp password
   const passwordSelector = `input#signInFormPassword[type='password']`;
   await page.type(passwordSelector, leaderTempPassword);
@@ -215,7 +216,6 @@ const waitOptions = { timeout /*, visible: true */ };
   //////////////////////////////////////////////////////////////////////////////
 
   // The logged-in leader's email and nickname should be displayed
-  const leaderNickname = `nn-${leaderEmailAddress}`;
   const leaderNicknameXPath = `//*[contains(., "${leaderNickname}")]`;
   await page.waitForXPath(leaderNicknameXPath);
 
@@ -230,15 +230,6 @@ const waitOptions = { timeout /*, visible: true */ };
   const desiredScriptRadioButtonXPath = `//input[contains(@value,"${scriptTerm}")]`;
   await page.waitForXPath(desiredScriptRadioButtonXPath, waitOptions);
   await page.click("xpath/" + desiredScriptRadioButtonXPath);
-  const yourInfoAccordionXPath = '//*[text()="Your info"]';
-  await page.waitForXPath(yourInfoAccordionXPath, waitOptions);
-  await page.click("xpath/" + yourInfoAccordionXPath);
-  const yourNameTextBoxSelector = "#your-name";
-  await page.waitForSelector(yourNameTextBoxSelector, waitOptions);
-  const leaderName = "L";
-  await page.type(yourNameTextBoxSelector, leaderName);
-  const yourEmailAddressTextBoxSelector = "#your-email-address";
-  await page.type(yourEmailAddressTextBoxSelector, leaderEmailAddress);
   const planSederSubmitButtonSelector = "button:not([disabled])";
   await page.waitForSelector(planSederSubmitButtonSelector);
   await page.click(planSederSubmitButtonSelector);
@@ -260,7 +251,9 @@ const waitOptions = { timeout /*, visible: true */ };
   };
   // TODO: Make sure the link that the leader is prompted to save matches what's
   // currently in the address bar
-  const participants = [{ gameName: leaderName, email: leaderEmailAddress }];
+  const participants = [
+    { gameName: leaderNickname, email: leaderEmailAddress },
+  ];
   for (let p = 1; p < numberOfParticipants; p++) {
     const participant = {
       gameName: "p" + lowercaseAlphabet[p],

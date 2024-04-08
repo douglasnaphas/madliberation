@@ -1,6 +1,5 @@
 /** @jsxImportSource @emotion/react */
 import React, { Component } from "react";
-import { Link } from "react-router-dom";
 import { Button, Typography } from "@mui/material";
 import { Global, css } from "@emotion/react";
 import RedSeaImage from "../background-red-sea.jpg";
@@ -126,8 +125,7 @@ class HomePage extends Component {
                           <div>
                             <Typography component="p">
                               <Button
-                                component={Link}
-                                to="/seders"
+                                href="/create-haggadah/seders.html"
                                 title="see-your-seders-button"
                                 madliberationid="see-your-seders-button"
                               >

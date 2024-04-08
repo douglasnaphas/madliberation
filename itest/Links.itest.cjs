@@ -926,7 +926,13 @@ const waitOptions = { timeout /*, visible: true */ };
     /&pw=[^&]+$/,
     "&pw=" // so it doesn't show up in failing test log output
   )}"]`;
-  retrieveLinkPage.waitForSelector(linksLinkSelector);
+  await retrieveLinkPage.waitForSelector(linksLinkSelector).catch((reason) => {
+    failTest(
+      reason,
+      `did not find links link on login in new browser`,
+      browsers
+    );
+  });
 
   ////////////////////////////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////////////////////////

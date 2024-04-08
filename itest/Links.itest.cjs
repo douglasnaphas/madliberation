@@ -922,7 +922,10 @@ const waitOptions = { timeout /*, visible: true */ };
   await retrieveLinkPage.click(sedersSelector);
 
   // Expect to see a link to the links page for this Seder
-  const linksLinkSelector = `a[href="${yourLinksPageHref}"]`;
+  const linksLinkSelector = `a[href="${yourLinksPageHref.replace(
+    /&pw=[^&]+$/,
+    "&pw=" // so it doesn't show up in failing test log output
+  )}"]`;
   retrieveLinkPage.waitForSelector(linksLinkSelector);
 
   ////////////////////////////////////////////////////////////////////////////////

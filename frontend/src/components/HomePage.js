@@ -106,8 +106,6 @@ class HomePage extends Component {
                       </a>
                     </div>
                   )}
-                  <br />
-
                   {user && (
                     <>
                       <div

@@ -917,8 +917,13 @@ const waitOptions = { timeout /*, visible: true */ };
   await retrieveLinkPage.click(submitButtonSelector);
 
   // See my Seders
-  const sedersXPath = `//a[@href="/create-haggadah/seders.html"]`;
-  await retrieveLinkPage.waitForXPath(sedersXPath);
+  const sedersSelector = `a[href="/create-haggadah/seders.html"]`;
+  retrieveLinkPage.waitForSelector(sedersSelector);
+  await retrieveLinkPage.click(sedersSelector);
+
+  // Expect to see a link to the links page for this Seder
+  const linksLinkSelector = `a[href="${yourLinksPageHref}"]`;
+  retrieveLinkPage.waitForSelector(linksLinkSelector);
 
   ////////////////////////////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////////////////////////

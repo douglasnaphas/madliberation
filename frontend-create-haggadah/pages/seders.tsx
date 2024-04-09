@@ -16,7 +16,10 @@ import CircularProgress from "@mui/material/CircularProgress";
 export default function Seders() {
   const { isPending, error, data } = useQuery({
     queryKey: ["mySeders"],
-    queryFn: () => fetch("../v2/my-seders").then((res) => res.json()),
+    queryFn: () =>
+      fetch("../v2/my-seders", { credentials: "include" }).then((res) =>
+        res.json()
+      ),
   });
 
   return (

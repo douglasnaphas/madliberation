@@ -41,26 +41,26 @@ export default function Seders() {
         </div>
         <Container maxWidth="md">
           <Paper>
-            {data && !isPending && !error && (
+            {data && data.map && !isPending && !error && (
               <div>
                 You started the following Seders. Click a link to proceed with
                 one.
+                {data.map((seder: any) => (
+                  <div key={seder.room_code}>
+                    <a
+                      href={
+                        `${window.location.origin}/create-haggadah/links.html` +
+                        `?sederCode=${seder.room_code}&` +
+                        `pw=${seder.pw}`
+                      }
+                    >
+                      Seder {seder.room_code.substring(0, 3)}, started{" "}
+                      {seder.timestamp}
+                    </a>
+                  </div>
+                ))}
               </div>
             )}
-            {data.map((seder: any) => (
-              <div key={seder.room_code}>
-                <a
-                  href={
-                    `${window.location.origin}/create-haggadah/links.html` +
-                    `?sederCode=${seder.room_code}&` +
-                    `pw=${seder.pw}`
-                  }
-                >
-                  Seder {seder.room_code.substring(0, 3)}, started{" "}
-                  {seder.timestamp}
-                </a>
-              </div>
-            ))}
           </Paper>
         </Container>
         <br></br>

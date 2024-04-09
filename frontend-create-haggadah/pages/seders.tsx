@@ -11,9 +11,14 @@ import { Button, NativeSelect, Paper } from "@mui/material";
 import SederSummary from "../src/SederSummary";
 import Head from "next/head";
 import { useQuery } from "@tanstack/react-query";
+import CircularProgress from "@mui/material/CircularProgress";
 
 export default function Seders() {
-  
+  const { isPending, error, data } = useQuery({
+    queryKey: ["mySeders"],
+    queryFn: () => fetch("../v2/my-seders").then((res) => res.json()),
+  });
+
   return (
     <div>
       <div
@@ -36,6 +41,26 @@ export default function Seders() {
         </div>
         <Container maxWidth="md">
           <Paper>
+            {data && !isPending && !error && (
+              <div>
+                You started the following Seders. Click a link to proceed with
+                one.
+              </div>
+            )}
+            {data.map((seder: any) => (
+              <div key={seder.room_code}>
+                <a
+                  href={
+                    `${window.location.origin}/create-haggadah/links.html` +
+                    `?sederCode=${seder.room_code}&` +
+                    `pw=${seder.pw}`
+                  }
+                >
+                  Seder {seder.room_code.substring(0, 3)}, started{" "}
+                  {seder.timestamp}
+                </a>
+              </div>
+            ))}
           </Paper>
         </Container>
         <br></br>

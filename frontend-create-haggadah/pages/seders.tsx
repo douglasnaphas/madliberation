@@ -20,6 +20,11 @@ export default function Seders() {
       fetch("../v2/my-seders", { credentials: "include" }).then((res) =>
         res.json()
       ),
+    staleTime: Infinity,
+    refetchInterval: false,
+    refetchOnMount: false,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
   });
 
   return (

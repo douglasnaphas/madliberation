@@ -25,7 +25,7 @@ describe("<HomePage />", () => {
     );
     const loginButton = screen.getByText(loginText).closest("a");
     expect(loginButton).toHaveTextContent(loginText);
-    expect(loginButton).toHaveAttribute("href", "/prod/login");
+    expect(loginButton).toHaveAttribute("href", "/v2/login");
     expect(screen.queryByText(logoutText)).toBeNull();
   });
   test("There should be no Log Out button with an undefined user", () => {});

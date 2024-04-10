@@ -414,15 +414,11 @@ export class MadliberationWebapp extends Stack {
       },
     });
     const wsReadRosterStageName = "ws-read-roster";
-    const wsReadRosterStage = new WebSocketStage(
-      this,
-      "WSReadRosterStage",
-      {
-        stageName: wsReadRosterStageName,
-        webSocketApi: wsReadRosterApi,
-        autoDeploy: true,
-      }
-    );
+    const wsReadRosterStage = new WebSocketStage(this, "WSReadRosterStage", {
+      stageName: wsReadRosterStageName,
+      webSocketApi: wsReadRosterApi,
+      autoDeploy: true,
+    });
 
     // for all WebSocket behaviors
     const wsOrp = new cloudfront.OriginRequestPolicy(

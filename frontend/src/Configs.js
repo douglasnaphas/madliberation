@@ -2,7 +2,7 @@ const apiStage = `/prod`;
 
 class Configs {
   static loginUrl() {
-    return "/prod/login";
+    return "/v2/login";
   }
 
   static apiRelativeUrl(resource) {

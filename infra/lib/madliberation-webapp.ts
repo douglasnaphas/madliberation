@@ -224,7 +224,28 @@ export class MadliberationWebapp extends Stack {
       environment: {
         NODE_ENV: "production",
         TABLE_NAME: sedersTable.tableName,
+        JWKS_URL:
+          "https://cognito-idp." +
+          this.region +
+          ".amazonaws.com/" +
+          userPool.userPoolId +
+          "/.well-known/jwks.json",
+        USER_POOL_CLIENT_ID: userPoolClient.userPoolClientId,
+        USER_POOL_ID: userPool.userPoolId,
+        USER_POOL_DOMAIN: userPoolDomain.domainName,
+        REDIRECT_URI: "https://" + webappDomainName + "/prod/get-cookies",
         REGION: this.region,
+        IDP_URL:
+          "https://" +
+          userPoolDomain.domainName +
+          ".auth." +
+          this.region +
+          ".amazoncognito.com/login?response_type=code&client_id=" +
+          userPoolClient.userPoolClientId +
+          "&redirect_uri=" +
+          "https://" +
+          webappDomainName +
+          "/prod/get-cookies",
       },
       timeout: Duration.seconds(20),
     });

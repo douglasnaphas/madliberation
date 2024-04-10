@@ -35,6 +35,8 @@ const getRpw = require("./lib/getRpw");
 const validateReadLink = require("./lib/validateReadLink");
 const getSederSummary = require("./lib/getSederSummary");
 const getGameName = require("./lib/getGameName");
+const user = require("./lib/user");
+const mySeders = require("./lib/my-seders");
 
 const router = express.Router();
 
@@ -86,6 +88,10 @@ router.get("/scripts", async function (req, res) {
 });
 
 router.use(cookieParser());
+
+router.get("/user", user());
+
+router.get("/my-seders", mySeders());
 
 router.get("/", function (req, res) {
   res.send({

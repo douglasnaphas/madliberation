@@ -16,6 +16,11 @@ const succeed = require("./succeed");
 const logger = require("../../logger");
 
 const joinSederMiddleware = [
+  (req, res, next) => {
+    console.log("in joinSederMiddleware...");
+    console.log("req.body", req.body);
+    return next();
+  },
   // check for required body params
   checkBody(["sederCode", "pw", "email", "gameName"]),
   // make sure email is ok
@@ -23,6 +28,7 @@ const joinSederMiddleware = [
     if (validator.validate(req.body.email)) {
       return next();
     }
+    console.log("bad email", req.body.email);
     return res.status(400).send({ err: "email should be an email address" });
   },
   // save pwHash
@@ -66,6 +72,7 @@ const joinSederMiddleware = [
   // check pwHash, return or reject
   (req, res, next) => {
     if (res.locals.pwHash !== res.locals.correctPwHash) {
+      console.log("v2/joinSederMiddleware: wrong hash...");
       logger.log(
         `v2/joinSederMiddleware: wrong hash ${res.locals.pwHash.substring(
           0,

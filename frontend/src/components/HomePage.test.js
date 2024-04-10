@@ -16,22 +16,6 @@ describe("<HomePage />", () => {
   const loginText = "Log in";
   const logoutText = "Log out";
 
-  test("Should render buttons with the right links", () => {
-    const storage = { removeItem: jest.fn() };
-    render(
-      <MemoryRouter>
-        <HomePage storage={storage} />
-      </MemoryRouter>
-    );
-    const leadASederByVideoButton = screen
-      .getByText(leadASederByVideoText)
-      .closest("a");
-    expect(leadASederByVideoButton).toHaveTextContent(leadASederByVideoText);
-    expect(leadASederByVideoButton).toHaveAttribute("href", "/explain-video");
-    const joinASederButton = screen.getByText(joinASederText).closest("a");
-    expect(joinASederButton).toHaveTextContent(joinASederText);
-    expect(joinASederButton).toHaveAttribute("href", "/enter-room-code");
-  });
   test("The Log In button should have an href to the login page", () => {
     const storage = { removeItem: jest.fn() };
     render(

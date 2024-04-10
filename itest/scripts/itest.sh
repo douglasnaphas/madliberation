@@ -4,8 +4,6 @@ set -e
 
 # check for necessary env vars
 for required_env_var in \
-  AWS_ACCESS_KEY_ID \
-  AWS_SECRET_ACCESS_KEY \
   AWS_DEFAULT_REGION \
   AWS_REGION \
   GITHUB_REPOSITORY \
@@ -70,19 +68,24 @@ USER_POOL_DOMAIN=$(aws cognito-idp describe-user-pool \
   tr -d \")
 REDIRECT_URI=${APP_URL}/prod/get-cookies
 IDP_URL="https://${USER_POOL_DOMAIN}.auth.${AWS_DEFAULT_REGION}.amazoncognito.com/login?response_type=code&client_id=${USER_POOL_CLIENT_ID}&redirect_uri=${REDIRECT_URI}"
-echo "APP_URL:"
-echo ${APP_URL}
-echo "IDP_URL:"
-echo ${IDP_URL}
-echo "USER_POOL_ID:"
-echo ${USER_POOL_ID}
 if [[ "${SLOW}" == "y" ]]
 then
   SLOW_ARG="--slow"
 else
   SLOW_ARG=
 fi
+
+# SETUP_ONLY just creates a user
+if [[ "${SETUP_ONLY}" == "y" ]]
+then
+  SETUP_ONLY_ARG="--setup-only"
+else
+  SETUP_ONLY_ARG=
+fi
+
 node App.itest.cjs \
   --site ${APP_URL} \
   --idp-url "${IDP_URL}" \
-  --user-pool-id ${USER_POOL_ID} ${SLOW_ARG}
+  --user-pool-id ${USER_POOL_ID} \
+  ${SLOW_ARG} \
+  ${SETUP_ONLY_ARG}

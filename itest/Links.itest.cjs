@@ -3,6 +3,7 @@
 const puppeteer = require("puppeteer");
 const commander = require("commander");
 const { GetObjectCommand, S3Client } = require("@aws-sdk/client-s3");
+const crypto = require("crypto");
 
 commander
   .version("1.0.0")
@@ -11,6 +12,8 @@ commander
     "Site to run against, default https://passover.lol"
   )
   .option("-L, --slow", "Run headfully in slow mode")
+  .option("-I, --idp-url <URL>", "The URL expected after clicking 'Log in'")
+  .option("--user-pool-id <ID>", "The User Pool Id for the web app")
   .option(
     "-p --participants <PARTICIPANTS>",
     "Number of participants, including the leader, default 22"
@@ -21,9 +24,11 @@ commander
   )
   .parse(process.argv);
 const slowDown = 90;
-const timeoutMs = 10000 + (commander.opts().slow ? slowDown + 2000 : 0);
+const timeout = 10000 + (commander.opts().slow ? slowDown + 2000 : 0); // ms
 const defaultUrl = "https://passover.lol";
 const site = commander.opts().site || defaultUrl;
+const idpUrl = commander.opts().idpUrl;
+const userPoolId = commander.opts().userPoolId;
 const DEFAULT_NUMBER_OF_PARTICIPANTS = 22; // Two+ groups of 10
 // trouble can start at 10, because of DynamoDB transactions
 // and seders often have about 20+ people
@@ -57,7 +62,7 @@ const failTest = async (err, msg, browsers) => {
   process.exit(1);
 };
 
-const waitOptions = { timeout: timeoutMs /*, visible: true*/ };
+const waitOptions = { timeout /*, visible: true */ };
 
 (async () => {
   //////////////////////////////////////////////////////////////////////////////
@@ -74,6 +79,129 @@ const waitOptions = { timeout: timeoutMs /*, visible: true*/ };
   /////////////// Mad Liberation Home Page /////////////////////////////////////
   //////////////////////////////////////////////////////////////////////////////
 
+  // Create a user, so we can log in
+  // helper for generating random creds
+  const randString = (options) => {
+    const { numLetters } = options;
+    const alphabet = (
+      "ABCDEFGHIJKLMNOPQRSTUVWXYZ" +
+      "abcdefghijklmnopqrstuvwxyz" +
+      "0123456789"
+    ).split("");
+    let str = "";
+    for (let i = 0; i < numLetters; i++) {
+      str =
+        str +
+        alphabet[
+          parseInt(crypto.randomBytes(3).toString("hex"), 16) % alphabet.length
+        ];
+    }
+    return str;
+  };
+  // create user
+  const {
+    CognitoIdentityProviderClient,
+    AdminCreateUserCommand,
+  } = require("@aws-sdk/client-cognito-identity-provider");
+  const createUser = async (userName, nickname, tempPassword) => {
+    const cognitoIdentityProviderClient = new CognitoIdentityProviderClient();
+    const adminCreateUserInput = {
+      // AdminCreateUserRequest
+      UserPoolId: userPoolId, // required
+      Username: userName, // required
+      MessageAction: "SUPPRESS",
+      TemporaryPassword: tempPassword,
+      UserAttributes: [
+        // AttributeListType
+        {
+          // AttributeType
+          Name: "nickname", // required
+          Value: nickname,
+        },
+      ],
+      ValidationData: [
+        {
+          Name: "email_verified", // required
+          Value: "True",
+        },
+      ],
+    };
+    const adminCreateUserCommand = new AdminCreateUserCommand(
+      adminCreateUserInput
+    );
+    const adminCreateUserResponse = await cognitoIdentityProviderClient.send(
+      adminCreateUserCommand
+    );
+    if (!adminCreateUserResponse || !adminCreateUserResponse.User) {
+      failTest(
+        adminCreateUserResponse,
+        "Failed to create a user in AWS SDK v3 setup"
+      );
+    }
+    console.log(`created user with username ${userName}`);
+  };
+  const leaderNicknameLength = 8;
+  const leaderNickname = randString({ numLetters: leaderNicknameLength });
+  const leaderEmailAddress = leaderNickname + "@example.com";
+  const leaderTempPasswordLength = 10;
+  const leaderTempPassword = randString({
+    numLetters: leaderTempPasswordLength,
+  });
+  const leaderPasswordLength = 12;
+  const leaderPassword = randString({ numLetters: leaderPasswordLength });
+  await createUser(leaderEmailAddress, leaderNickname, leaderTempPassword);
+
+  // Expect the Plan a Seder button to be disabled before login
+  const planSederButtonSelector = '[madliberationid="plan-seder-button"]';
+  await page.waitForSelector(planSederButtonSelector);
+  const disabledStatusOfPlanSederButtonPreLogin = await page.$eval(
+    planSederButtonSelector,
+    (link) =>
+      link.getAttribute("aria-disabled") === "true" ||
+      link.hasAttribute("disabled")
+  );
+  if (!disabledStatusOfPlanSederButtonPreLogin) {
+    failTest(
+      new Error(
+        "Plan Seder should be disabled before login",
+        "Plan Seder button (link) not disabled",
+        browsers
+      )
+    );
+  }
+
+  // Log in (leader)
+  const loginButtonSelector = '[madliberationid="login-button"]';
+  await page.waitForSelector(loginButtonSelector);
+  await Promise.all([
+    page.click(loginButtonSelector),
+    page.waitForNavigation(),
+  ]);
+  if (page.url() !== idpUrl) {
+    failTest(
+      new Error("wrong IDP URL"),
+      `expected IDP URL ${idpUrl}, got ${page.url()}`,
+      browsers
+    );
+  }
+  // Enter username
+  const usernameSelector = `input#signInFormUsername[type='text']`;
+  await page.waitForSelector(usernameSelector);
+  await page.type(usernameSelector, leaderEmailAddress);
+  // Enter temp password
+  const passwordSelector = `input#signInFormPassword[type='password']`;
+  await page.type(passwordSelector, leaderTempPassword);
+  const submitButtonSelector = `input[name='signInSubmitButton'][type='Submit']`;
+  await page.click(submitButtonSelector);
+  // Change the password
+  const newPasswordSelector = `input#new_password[type='password']`;
+  await page.waitForSelector(newPasswordSelector);
+  await page.type(newPasswordSelector, leaderPassword);
+  const confirmPasswordSelector = `input#confirm_password[type='password']`;
+  await page.type(confirmPasswordSelector, leaderPassword);
+  const resetPassWordButtonSelector = `button[name="reset_password"][type='submit']`;
+  await page.click(resetPassWordButtonSelector);
+
   // go to /create-haggadah
   const createHaggadahLinkText = "Plan a seder";
   await page
@@ -81,11 +209,15 @@ const waitOptions = { timeout: timeoutMs /*, visible: true*/ };
     .catch(async (e) => {
       failTest(e, "Plan a seder button not found", browsers);
     });
-  await page.click('[madliberationid="plan-seder-button"]');
+  await page.click(planSederButtonSelector);
 
   //////////////////////////////////////////////////////////////////////////////
   ////////////////// Create Haggadah Home Page /////////////////////////////////
   //////////////////////////////////////////////////////////////////////////////
+
+  // The logged-in leader's email and nickname should be displayed
+  const leaderNicknameXPath = `//*[contains(., "${leaderNickname}")]`;
+  await page.waitForXPath(leaderNicknameXPath);
 
   const pickScriptAccordionTextXPath = '//*[text()="Pick script"]';
   await page
@@ -98,16 +230,6 @@ const waitOptions = { timeout: timeoutMs /*, visible: true*/ };
   const desiredScriptRadioButtonXPath = `//input[contains(@value,"${scriptTerm}")]`;
   await page.waitForXPath(desiredScriptRadioButtonXPath, waitOptions);
   await page.click("xpath/" + desiredScriptRadioButtonXPath);
-  const yourInfoAccordionXPath = '//*[text()="Your info"]';
-  await page.waitForXPath(yourInfoAccordionXPath, waitOptions);
-  await page.click("xpath/" + yourInfoAccordionXPath);
-  const yourNameTextBoxSelector = "#your-name";
-  await page.waitForSelector(yourNameTextBoxSelector, waitOptions);
-  const leaderName = "L";
-  await page.type(yourNameTextBoxSelector, leaderName);
-  const yourEmailAddressTextBoxSelector = "#your-email-address";
-  const leaderEmailAddress = "el@y.co";
-  await page.type(yourEmailAddressTextBoxSelector, leaderEmailAddress);
   const planSederSubmitButtonSelector = "button:not([disabled])";
   await page.waitForSelector(planSederSubmitButtonSelector);
   await page.click(planSederSubmitButtonSelector);
@@ -129,7 +251,9 @@ const waitOptions = { timeout: timeoutMs /*, visible: true*/ };
   };
   // TODO: Make sure the link that the leader is prompted to save matches what's
   // currently in the address bar
-  const participants = [{ gameName: leaderName, email: leaderEmailAddress }];
+  const participants = [
+    { gameName: leaderNickname, email: leaderEmailAddress },
+  ];
   for (let p = 1; p < numberOfParticipants; p++) {
     const participant = {
       gameName: "p" + lowercaseAlphabet[p],
@@ -772,6 +896,42 @@ const waitOptions = { timeout: timeoutMs /*, visible: true*/ };
   // in the expected place in the script
 
   // Page through the script, look for the right answers in situ
+
+  //////////////////////////////////////////////////////////////////////////////
+  //////////// Someone lost their link
+  //////////// Test the leader getting it for them
+  //////////////////////////////////////////////////////////////////////////////
+  // Log in, new browser
+  const retrieveLinkBrowser = await puppeteer.launch(browserOptions);
+  browsers.push(retrieveLinkBrowser);
+  const retrieveLinkPage = await retrieveLinkBrowser.newPage();
+  await retrieveLinkPage.goto(site);
+  await retrieveLinkPage.waitForSelector(loginButtonSelector);
+  await Promise.all([
+    retrieveLinkPage.click(loginButtonSelector),
+    retrieveLinkPage.waitForNavigation(),
+  ]);
+  await retrieveLinkPage.waitForSelector(usernameSelector);
+  await retrieveLinkPage.type(usernameSelector, leaderEmailAddress);
+  await retrieveLinkPage.type(passwordSelector, leaderPassword);
+  await retrieveLinkPage.click(submitButtonSelector);
+
+  // See my Seders
+  const sedersSelector = `a[href="/create-haggadah/seders.html"]`;
+  retrieveLinkPage.waitForSelector(sedersSelector);
+  await retrieveLinkPage.click(sedersSelector);
+
+  // Expect to see a link to the links page for this Seder
+  const linksLinkSelector = `a[href^="${yourLinksPageHref}"]`;
+  await retrieveLinkPage.waitForSelector(linksLinkSelector).catch((reason) => {
+    failTest(
+      `waitForSelector failed, linksLinkSelector`,
+      `did not find links link on login in new browser`,
+      browsers
+    );
+  });
+
+  // TODO: Use the link
 
   ////////////////////////////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////////////////////////

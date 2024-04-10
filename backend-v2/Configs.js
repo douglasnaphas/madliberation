@@ -90,14 +90,6 @@ class Configs {
     return /[^A-Z]/g;
   }
 
-  static gameNameBlacklist() {
-    return /[^-A-Za-z ,0-9]/g;
-  }
-
-  static libBlacklist() {
-    return /[^-A-Za-z ,0-9."'?!/]/g;
-  }
-
   static roomCodeRetries() {
     return 10;
   }

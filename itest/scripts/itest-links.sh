@@ -18,7 +18,6 @@ APP_URL=https://$(aws cloudformation describe-stacks \
   tr -d \")
 echo "APP_URL:"
 echo ${APP_URL}
-echo ${USER_POOL_ID}
 if [[ "${SLOW}" == "y" ]]
 then
   SLOW_ARG="--slow"
@@ -37,8 +36,27 @@ then
 else
   TERM_ARG=
 fi
+
+# Get info needed for login testing
+USER_POOL_CLIENT_ID=$(aws cloudformation describe-stacks \
+  --stack-name ${STACKNAME} | \
+  jq '.Stacks[0].Outputs | map(select(.OutputKey == "UserPoolClientId"))[0].OutputValue' | \
+  tr -d \")
+USER_POOL_ID=$(aws cloudformation describe-stacks \
+  --stack-name ${STACKNAME} | \
+  jq '.Stacks[0].Outputs | map(select(.OutputKey == "UserPoolId"))[0].OutputValue' | \
+  tr -d \")
+USER_POOL_DOMAIN=$(aws cognito-idp describe-user-pool \
+  --user-pool-id ${USER_POOL_ID} | \
+  jq '.UserPool.Domain' | \
+  tr -d \")
+REDIRECT_URI=${APP_URL}/prod/get-cookies
+IDP_URL="https://${USER_POOL_DOMAIN}.auth.${AWS_DEFAULT_REGION}.amazoncognito.com/login?response_type=code&client_id=${USER_POOL_CLIENT_ID}&redirect_uri=${REDIRECT_URI}"
+
 node Links.itest.cjs \
   --site ${APP_URL} \
+  --idp-url "${IDP_URL}" \
+  --user-pool-id ${USER_POOL_ID} \
   ${SLOW_ARG} \
   ${PARTICIPANTS_ARG} \
   ${TERM_ARG}

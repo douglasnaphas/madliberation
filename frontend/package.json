@@ -19,13 +19,14 @@
     "test": "react-scripts test --env=jsdom",
     "build": "react-scripts build",
     "audit-prod": "npm audit --production",
-    "install-build-test-deploy": "bash scripts/install-build-test-deploy.sh"
+    "install-build-test-deploy": "bash scripts/install-build-test-deploy.sh",
+    "always-install-build-test-deploy": "bash scripts/always-install-build-test-deploy.sh"
   },
   "dependencies": {
     "@emotion/react": "^11.9.3",
     "@emotion/styled": "^11.9.3",
-    "@mui/icons-material": "^5.8.4",
-    "@mui/material": "^5.9.0",
+    "@mui/icons-material": "^5.15",
+    "@mui/material": "^5.15",
     "acorn": "^7.4.1",
     "babel-preset-react-app": "^9.1.2",
     "browserslist": "^4.16.6",

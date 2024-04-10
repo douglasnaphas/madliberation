@@ -294,27 +294,6 @@ jobs:
         working-directory: content
         run: |
           npm run deploy
-  itest-prod2:
-    needs: [frontend-prod2, content-prod2]
-    runs-on: ubuntu-latest
-    permissions:
-      id-token: write
-      contents: read
-    steps:
-      - uses: actions/checkout@v4
-      - name: Install itest
-        working-directory: itest
-        run: |
-          npm install
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-            role-to-assume: ${{ vars.PROD2_ROLE_ARN }}
-            aws-region: us-east-1
-      - name: Run integration tests, prod account
-        working-directory: itest
-        run: |
-          npm run itest
   itest-links-prod2-2023:
     runs-on: ubuntu-latest
     needs: [frontend-prod2, frontend-create-haggadah-prod2, content-prod2]

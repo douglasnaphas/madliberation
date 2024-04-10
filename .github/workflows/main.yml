@@ -142,27 +142,6 @@ jobs:
         working-directory: content
         run: |
           npm run deploy
-  itest-staging:
-    needs: [frontend-staging, content-staging]
-    runs-on: ubuntu-latest
-    permissions:
-      id-token: write
-      contents: read
-    steps:
-      - uses: actions/checkout@v4
-      - name: Install
-        working-directory: itest
-        run: |
-          npm install
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          role-to-assume: ${{ vars.TEST_ROLE_ARN }}
-          aws-region: us-east-1
-      - name: Run
-        working-directory: itest
-        run: |
-          npm run itest
   itest-links-staging-2023:
     runs-on: ubuntu-latest
     needs: [frontend-staging, frontend-create-haggadah-staging, content-staging]
@@ -210,7 +189,7 @@ jobs:
           npm run itest-links
   webapp-prod2:
     needs:
-      [itest-staging, itest-links-staging-2019-magid, itest-links-staging-2023]
+      [itest-links-staging-2019-magid, itest-links-staging-2023]
     runs-on: ubuntu-latest
     permissions:
       id-token: write

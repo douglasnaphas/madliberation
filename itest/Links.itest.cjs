@@ -922,17 +922,16 @@ const waitOptions = { timeout /*, visible: true */ };
   await retrieveLinkPage.click(sedersSelector);
 
   // Expect to see a link to the links page for this Seder
-  const linksLinkSelector = `a[href^="${yourLinksPageHref.replace(
-    /&pw=[^&]+$/,
-    "&pw=" // so it doesn't show up in failing test log output
-  )}"]`;
+  const linksLinkSelector = `a[href^="${yourLinksPageHref}"]`;
   await retrieveLinkPage.waitForSelector(linksLinkSelector).catch((reason) => {
     failTest(
-      reason,
+      `waitForSelector failed, linksLinkSelector`,
       `did not find links link on login in new browser`,
       browsers
     );
   });
+
+  // TODO: Use the link
 
   ////////////////////////////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////////////////////////

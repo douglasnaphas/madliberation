@@ -92,9 +92,11 @@ class HomePage extends Component {
                         {createHaggadahLinkText}
                       </Button>
                     </div>
-                    <div id="plan-seder-requires-login-explanation">
-                      <em>Requires login</em>
-                    </div>
+                    {!user && (
+                      <div id="plan-seder-requires-login-explanation">
+                        <em>Requires login</em>
+                      </div>
+                    )}
                   </div>
                   <br />
                   {!user && (

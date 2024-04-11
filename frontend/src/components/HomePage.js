@@ -80,16 +80,21 @@ class HomePage extends Component {
             >
               <div>
                 <Paper style={{ padding: "8px", maxWidth: "fit-content" }}>
-                  <div>
-                    <Button
-                      madliberationid="plan-seder-button"
-                      variant="contained"
-                      color="primary"
-                      href={createHaggadahHref}
-                      disabled={!user}
-                    >
-                      {createHaggadahLinkText}
-                    </Button>
+                  <div id="plan-seder-button-section">
+                    <div>
+                      <Button
+                        madliberationid="plan-seder-button"
+                        variant="contained"
+                        color="primary"
+                        href={createHaggadahHref}
+                        disabled={!user}
+                      >
+                        {createHaggadahLinkText}
+                      </Button>
+                    </div>
+                    <div id="plan-seder-requires-login-explanation">
+                      <em>Requires login</em>
+                    </div>
                   </div>
                   <br />
                   {!user && (

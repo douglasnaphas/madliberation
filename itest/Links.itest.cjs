@@ -944,6 +944,8 @@ const waitOptions = { timeout /*, visible: true */ };
   // Figure out the page we want to go to, and the lib we'll check
   let liveReadPageIndex;
   let liveReadLibId;
+  let liveReadLib;
+  let libCount = 0;
   for (
     let pageIndex = 0;
     pageIndex < populatedScript.pages.length &&
@@ -969,9 +971,18 @@ const waitOptions = { timeout /*, visible: true */ };
         if (segment.type !== "lib") {
           continue;
         }
+        libCount++;
+        if (pageIndex > 0) {
+          liveReadLibId = libCount; // the 1st lib has id 1, not 0
+          liveReadLib = segment;
+          liveReadPageIndex = pageIndex;
+        }
       }
     }
   }
+  const liveReadPageNumber = liveReadPageIndex + 1;
+  console.log(`found lib ${liveReadLibId} on page ${liveReadPageNumber}`);
+  console.log(liveReadLib);
 
   await liveReadPage.waitForXPath(nextPageXPath);
   await liveReadPage.click(nextPageXPath);

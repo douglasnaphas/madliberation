@@ -931,7 +931,56 @@ const waitOptions = { timeout /*, visible: true */ };
     );
   });
 
-  // TODO: Use the link
+  //////////////////////////////////////////////////////////////////////////////
+  ///////////////////////////// Read Page Live Update //////////////////////////
+  //////////////////////////////////////////////////////////////////////////////
+
+  // Open the read page and grab a lib, noting its value
+  const liveReadBrowser = await puppeteer.launch(browserOptions);
+  browsers.push(liveReadBrowser);
+  const liveReadPage = await liveReadBrowser.newPage();
+  await liveReadPage.goto(readLinkHref);
+  // Go to the first page after the first that has at least one lib
+  // Figure out the page we want to go to, and the lib we'll check
+  let liveReadPageIndex;
+  let liveReadLibId;
+  for (
+    let pageIndex = 0;
+    pageIndex < populatedScript.pages.length &&
+    !liveReadPageIndex &&
+    !liveReadLibId &&
+    liveReadLibId !== 0;
+    pageIndex++
+  ) {
+    const page = populatedScript.pages[pageIndex];
+    if (!Array.isArray(page.lines)) {
+      continue;
+    }
+    for (let l = 0; l < page.lines.length; l++) {
+      const line = page.lines[l];
+      if (line.type !== "p") {
+        continue;
+      }
+      if (!Array.isArray(line.segments)) {
+        continue;
+      }
+      for (let s = 0; s < line.segments.length; s++) {
+        const segment = line.segments[s];
+        if (segment.type !== "lib") {
+          continue;
+        }
+      }
+    }
+  }
+
+  await liveReadPage.waitForXPath(nextPageXPath);
+  await liveReadPage.click(nextPageXPath);
+
+  await liveReadPage.waitForFunction(() => {});
+
+  // Update the lib (backend) with a new value not equal to the old value
+
+  // Look for the updated value
 
   ////////////////////////////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////////////////////////

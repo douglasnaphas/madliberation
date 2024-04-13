@@ -942,6 +942,7 @@ const waitOptions = { timeout /*, visible: true */ };
   await liveReadPage.goto(readLinkHref);
   // Go to the first page after the first that has at least one lib
   // Figure out the page we want to go to, and the lib we'll check
+  // Grab the last lib on the page (arbitrary)
   let liveReadPageIndex;
   let liveReadLibId;
   let liveReadLib;
@@ -983,15 +984,27 @@ const waitOptions = { timeout /*, visible: true */ };
   const liveReadPageNumber = liveReadPageIndex + 1;
   console.log(`found lib ${liveReadLibId} on page ${liveReadPageNumber}`);
   console.log(liveReadLib);
-
-  await liveReadPage.waitForXPath(nextPageXPath);
-  await liveReadPage.click(nextPageXPath);
-
-  await liveReadPage.waitForFunction(() => {});
+  const currentPageNumber = async (pg) => {
+    return await pg.evaluate(() => window.location.href.split("#")[1]);
+  };
+  // page to the lib we're checking
+  while (currentPageNumber(liveReadPage) < liveReadPageNumber) {
+    await liveReadPage.waitForXPath(nextPageXPath);
+    await liveReadPage.click("xpath/" + nextPageXPath);
+  }
+  // check its value
+  const liveReadLibXPathPre = `//span[text()="${liveReadLib.answer}"]`
+  await liveReadPage.waitForXPath(liveReadLibXPathPre);
+  // check its prompt
+  await liveReadPage.click(liveReadLibXPathPre);
+  const liveReadLibPromptXPath = `//p[text()="${liveReadLib.prompt}"]`;
+  await liveReadPage.waitForXPath(liveReadLibPromptXPath);
+  await liveReadPage.keyboard.press("Escape");
 
   // Update the lib (backend) with a new value not equal to the old value
+  
 
-  // Look for the updated value
+  // Look for the updated value without refreshing the page
 
   ////////////////////////////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////////////////////////

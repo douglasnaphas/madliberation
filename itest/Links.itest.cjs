@@ -988,21 +988,20 @@ const waitOptions = { timeout /*, visible: true */ };
     return await pg.evaluate(() => window.location.href.split("#")[1]);
   };
   // page to the lib we're checking
-  while (currentPageNumber(liveReadPage) < liveReadPageNumber) {
+  while ((await currentPageNumber(liveReadPage)) < liveReadPageNumber) {
     await liveReadPage.waitForXPath(nextPageXPath);
     await liveReadPage.click("xpath/" + nextPageXPath);
   }
   // check its value
-  const liveReadLibXPathPre = `//span[text()="${liveReadLib.answer}"]`
+  const liveReadLibXPathPre = `//span[text()="${liveReadLib.answer}"]`;
   await liveReadPage.waitForXPath(liveReadLibXPathPre);
   // check its prompt
-  await liveReadPage.click(liveReadLibXPathPre);
+  await liveReadPage.click("xpath/" + liveReadLibXPathPre);
   const liveReadLibPromptXPath = `//p[text()="${liveReadLib.prompt}"]`;
   await liveReadPage.waitForXPath(liveReadLibPromptXPath);
   await liveReadPage.keyboard.press("Escape");
 
   // Update the lib (backend) with a new value not equal to the old value
-  
 
   // Look for the updated value without refreshing the page
 

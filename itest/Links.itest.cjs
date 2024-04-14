@@ -1004,7 +1004,7 @@ const waitOptions = { timeout /*, visible: true */ };
     await liveReadPage.click("xpath/" + nextPageXPath);
   }
   // check its value
-  const liveReadLibXPathPre = `//span[text()="${liveReadLib.answer}"]`;
+  const liveReadLibXPathPre = `//span[text()="${liveReadLib.default}"]`;
   await liveReadPage.waitForXPath(liveReadLibXPathPre);
   // check its prompt
   await liveReadPage.click("xpath/" + liveReadLibXPathPre);

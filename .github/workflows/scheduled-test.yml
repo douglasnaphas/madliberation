@@ -34,29 +34,6 @@ jobs:
         run: |
           aws sts get-caller-identity
           echo ${AWS_DEFAULT_REGION} | sed 's/-/+/g'
-  itest-prod2:
-    runs-on: ubuntu-latest
-    permissions:
-      id-token: write
-      contents: read
-    steps:
-      - uses: actions/checkout@v4
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          role-to-assume: ${{ vars.PROD2_ROLE_ARN }}
-          aws-region: us-east-1
-      - name: Install itest
-        working-directory: itest
-        run: |
-          npm install
-      - name: Run integration tests, prod account
-        working-directory: itest
-        env:
-          AWS_DEFAULT_REGION: "us-east-1"
-          AWS_REGION: "us-east-1"
-        run: |
-          npm run itest
   itest-links-prod2-2023:
     runs-on: ubuntu-latest
     permissions:

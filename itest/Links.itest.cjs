@@ -365,6 +365,60 @@ const waitOptions = { timeout /*, visible: true */ };
     });
   });
 
+  /////////// Quick interlude to support live-update read testing //////////////
+  // Get the unpopulated script;
+  // so we can figure out our "liveReadLib," the lib we'll use to test live
+  // updating of the read page.
+  // We have to figure it out before we start submitting, so we can note who
+  // it's assigned to, so we can re-submit it and check that the read page
+  // updated without refresh.
+  // Go to the first page after the first that has at least one lib
+  // Figure out the page we want to go to, and the lib we'll check
+  // Grab the last lib on the page (arbitrary)
+  let liveReadPageIndex;
+  let liveReadLibId;
+  let liveReadLib;
+  let libCount = 0;
+  for (
+    let pageIndex = 0;
+    pageIndex < script.pages.length &&
+    !liveReadPageIndex &&
+    !liveReadLibId &&
+    liveReadLibId !== 0;
+    pageIndex++
+  ) {
+    const page = script.pages[pageIndex];
+    if (!Array.isArray(page.lines)) {
+      continue;
+    }
+    for (let l = 0; l < page.lines.length; l++) {
+      const line = page.lines[l];
+      if (line.type !== "p") {
+        continue;
+      }
+      if (!Array.isArray(line.segments)) {
+        continue;
+      }
+      for (let s = 0; s < line.segments.length; s++) {
+        const segment = line.segments[s];
+        if (segment.type !== "lib") {
+          continue;
+        }
+        libCount++;
+        if (pageIndex > 0) {
+          liveReadLibId = libCount; // the 1st lib has id 1, not 0
+          liveReadLib = segment;
+          liveReadPageIndex = pageIndex;
+        }
+      }
+    }
+  }
+  const liveReadPageNumber = liveReadPageIndex + 1;
+  console.log(`found lib ${liveReadLibId} on page ${liveReadPageNumber}`);
+  console.log(liveReadLib);
+
+  //////////////////////////////////////////////////////////////////////////////
+
   // grab everyone's assisgnments
   for (let p = participants.length - 1; p >= 0; p--) {
     const assignmentsResponse = await fetch(
@@ -940,50 +994,7 @@ const waitOptions = { timeout /*, visible: true */ };
   browsers.push(liveReadBrowser);
   const liveReadPage = await liveReadBrowser.newPage();
   await liveReadPage.goto(readLinkHref);
-  // Go to the first page after the first that has at least one lib
-  // Figure out the page we want to go to, and the lib we'll check
-  // Grab the last lib on the page (arbitrary)
-  let liveReadPageIndex;
-  let liveReadLibId;
-  let liveReadLib;
-  let libCount = 0;
-  for (
-    let pageIndex = 0;
-    pageIndex < populatedScript.pages.length &&
-    !liveReadPageIndex &&
-    !liveReadLibId &&
-    liveReadLibId !== 0;
-    pageIndex++
-  ) {
-    const page = populatedScript.pages[pageIndex];
-    if (!Array.isArray(page.lines)) {
-      continue;
-    }
-    for (let l = 0; l < page.lines.length; l++) {
-      const line = page.lines[l];
-      if (line.type !== "p") {
-        continue;
-      }
-      if (!Array.isArray(line.segments)) {
-        continue;
-      }
-      for (let s = 0; s < line.segments.length; s++) {
-        const segment = line.segments[s];
-        if (segment.type !== "lib") {
-          continue;
-        }
-        libCount++;
-        if (pageIndex > 0) {
-          liveReadLibId = libCount; // the 1st lib has id 1, not 0
-          liveReadLib = segment;
-          liveReadPageIndex = pageIndex;
-        }
-      }
-    }
-  }
-  const liveReadPageNumber = liveReadPageIndex + 1;
-  console.log(`found lib ${liveReadLibId} on page ${liveReadPageNumber}`);
-  console.log(liveReadLib);
+
   const currentPageNumber = async (pg) => {
     return await pg.evaluate(() => window.location.href.split("#")[1]);
   };

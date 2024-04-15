@@ -417,6 +417,33 @@ const waitOptions = { timeout /*, visible: true */ };
   console.log(`found lib ${liveReadLibId} on page ${liveReadPageNumber}`);
   console.log(liveReadLib);
 
+  // Open the read page and grab a lib, noting its value
+  const liveReadBrowser = await puppeteer.launch(browserOptions);
+  browsers.push(liveReadBrowser);
+  const liveReadPage = await liveReadBrowser.newPage();
+  await liveReadPage.goto(readLinkHref);
+
+  const currentPageNumber = async (pg) => {
+    return await pg.evaluate(() => window.location.href.split("#")[1]);
+  };
+  // page to the lib we're checking
+  while ((await currentPageNumber(liveReadPage)) < liveReadPageNumber) {
+    await liveReadPage.waitForXPath(nextPageXPath);
+    await liveReadPage.click("xpath/" + nextPageXPath);
+  }
+  // check its value
+  const liveReadLibXPathPre = `//span[text()="${liveReadLib.default}"]`;
+  await liveReadPage.waitForXPath(liveReadLibXPathPre);
+  // check its prompt
+  await liveReadPage.click("xpath/" + liveReadLibXPathPre);
+  const liveReadLibPromptXPath = `//p[text()="${liveReadLib.prompt}"]`;
+  await liveReadPage.waitForXPath(liveReadLibPromptXPath);
+  await liveReadPage.keyboard.press("Escape");
+
+  // We just opened liveReadBrowser and saw some lib.
+  // We'll do all our submitting, and, if we answered it, expect it to change
+  // without refresh.
+
   //////////////////////////////////////////////////////////////////////////////
 
   // grab everyone's assisgnments
@@ -988,29 +1015,6 @@ const waitOptions = { timeout /*, visible: true */ };
   //////////////////////////////////////////////////////////////////////////////
   ///////////////////////////// Read Page Live Update //////////////////////////
   //////////////////////////////////////////////////////////////////////////////
-
-  // Open the read page and grab a lib, noting its value
-  const liveReadBrowser = await puppeteer.launch(browserOptions);
-  browsers.push(liveReadBrowser);
-  const liveReadPage = await liveReadBrowser.newPage();
-  await liveReadPage.goto(readLinkHref);
-
-  const currentPageNumber = async (pg) => {
-    return await pg.evaluate(() => window.location.href.split("#")[1]);
-  };
-  // page to the lib we're checking
-  while ((await currentPageNumber(liveReadPage)) < liveReadPageNumber) {
-    await liveReadPage.waitForXPath(nextPageXPath);
-    await liveReadPage.click("xpath/" + nextPageXPath);
-  }
-  // check its value
-  const liveReadLibXPathPre = `//span[text()="${liveReadLib.default}"]`;
-  await liveReadPage.waitForXPath(liveReadLibXPathPre);
-  // check its prompt
-  await liveReadPage.click("xpath/" + liveReadLibXPathPre);
-  const liveReadLibPromptXPath = `//p[text()="${liveReadLib.prompt}"]`;
-  await liveReadPage.waitForXPath(liveReadLibPromptXPath);
-  await liveReadPage.keyboard.press("Escape");
 
   // Update the lib (backend) with a new value not equal to the old value
 

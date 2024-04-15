@@ -432,6 +432,7 @@ const waitOptions = { timeout /*, visible: true */ };
     return await pg.evaluate(() => window.location.href.split("#")[1]);
   };
   // page to the lib we're checking
+  const nextPageXPath = `//button[text()="Next page"]`;
   while ((await currentPageNumber(liveReadPage)) < liveReadPageNumber) {
     await liveReadPage.waitForXPath(nextPageXPath);
     await liveReadPage.click("xpath/" + nextPageXPath);
@@ -933,7 +934,6 @@ const waitOptions = { timeout /*, visible: true */ };
   await page.goto(readLinkHref);
   const readThisPageAloudXPath = `//*[text()="Read aloud. Have a new person read each page, going around the Seder. Click a gray box to see the prompt."]`;
   await page.waitForXPath(readThisPageAloudXPath);
-  const nextPageXPath = `//button[text()="Next page"]`;
   await page.waitForXPath(nextPageXPath);
   const populatedScriptHref = (() => {
     const readLinkUrl = new URL(readLinkHref);

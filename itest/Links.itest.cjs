@@ -418,6 +418,11 @@ const waitOptions = { timeout /*, visible: true */ };
   console.log(liveReadLib);
 
   // Open the read page and grab a lib, noting its value
+  // We'll need the read link.
+  const readLinkSelector = `#read-link`;
+  await page.waitForSelector(readLinkSelector, waitOptions);
+  const readLinkHref = await page.$eval(readLinkSelector, (el) => el.href);
+  console.log("readLinkHref:", readLinkHref);
   const liveReadBrowser = await puppeteer.launch(browserOptions);
   browsers.push(liveReadBrowser);
   const liveReadPage = await liveReadBrowser.newPage();
@@ -836,12 +841,6 @@ const waitOptions = { timeout /*, visible: true */ };
     }
   }
 
-  // check the script
-  // get the read link, log it
-  const readLinkSelector = `#read-link`;
-  await page.waitForSelector(readLinkSelector, waitOptions);
-  const readLinkHref = await page.$eval(readLinkSelector, (el) => el.href);
-  console.log("readLinkHref:", readLinkHref);
   // get the read roster link, log it
   const readRosterLinkSelector = `#read-roster-link`;
   await page.waitForSelector(readRosterLinkSelector, waitOptions);
@@ -947,7 +946,7 @@ const waitOptions = { timeout /*, visible: true */ };
 
   // loop through the libs in the populatedScript, making sure the provided answer
   // matches the expected answer
-  const receivedAnswers = {};
+  const receivedAnswers = {}; // lib id -> answer text
   populatedScript.pages.forEach((page) => {
     page.lines.forEach((line) => {
       line.segments.forEach((segment) => {

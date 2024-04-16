@@ -852,6 +852,23 @@ const waitOptions = { timeout /*, visible: true */ };
   console.log("readRosterLinkHref:", readRosterLinkHref);
 
   //////////////////////////////////////////////////////////////////////////////
+  ///////////////////////////// Read Page Live Update //////////////////////////
+  //////////////////////////////////////////////////////////////////////////////
+
+  // Earlier we opened liveReadBrowser and paged to liveReadLib
+  // Look for its updated value without refreshing the page
+  if (expectedAnswers[liveReadLibId]) {
+    liveReadLib.expectedAnswer = expectedAnswers[liveReadLibId];
+    console.log(`liveReadLib was answered with ${liveReadLib.expectedAnswer}`);
+    const liveReadLibUpdatedXPath = `//span[text()="${liveReadLib.expectedAnswer}"]`;
+    await liveReadPage.waitForXPath(liveReadLibUpdatedXPath).catch((reason) => {
+      failTest(reason, `live read test: lib not updated`, browsers);
+    });
+  } else {
+    console.log("live read lib not updated, not doing live read test");
+  }
+
+  //////////////////////////////////////////////////////////////////////////////
   //////////////////////////// Read Roster /////////////////////////////////////
 
   const readRosterBrowser = await puppeteer.launch(browserOptions);
@@ -1010,14 +1027,6 @@ const waitOptions = { timeout /*, visible: true */ };
       browsers
     );
   });
-
-  //////////////////////////////////////////////////////////////////////////////
-  ///////////////////////////// Read Page Live Update //////////////////////////
-  //////////////////////////////////////////////////////////////////////////////
-
-  // Update the lib (backend) with a new value not equal to the old value
-
-  // Look for the updated value without refreshing the page
 
   ////////////////////////////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////////////////////////

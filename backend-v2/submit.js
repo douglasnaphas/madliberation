@@ -59,9 +59,13 @@ exports.handler = async function (event) {
         const postToConnectionCommand = new PostToConnectionCommand(
           postToConnectionRequest
         );
-        const postToConnectionResponse =
-          await apiGatewayManagementApiClient.send(postToConnectionCommand);
-        console.log(postToConnectionResponse);
+        try {
+          const postToConnectionResponse =
+            await apiGatewayManagementApiClient.send(postToConnectionCommand);
+          console.log(postToConnectionResponse);
+        } catch (postToConnectionError) {
+          console.log("postToConnectionError", postToConnectionError);
+        }
       }
     }
   }

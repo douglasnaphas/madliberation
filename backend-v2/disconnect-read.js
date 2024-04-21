@@ -15,6 +15,7 @@ exports.handler = async function (event, context, callback) {
     console.log("no event.requestContext.connectionId");
     return { statusCode: 500, body: "error getting connection id" };
   }
+  const region = process.env.AWS_REGION || process.env.AWS_DEFAULT_REGION;
   const ddbClient = new DynamoDBClient({ region });
   const ddbDocClient = DynamoDBDocumentClient.from(ddbClient);
   const deleteReadConnectionCommand = new DeleteCommand({

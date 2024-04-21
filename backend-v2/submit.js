@@ -11,6 +11,8 @@ const schema = require("./schema");
 
 exports.handler = async function (record) {
   console.log("record", record);
+  console.log(JSON.stringify(record));
+  console.log("dynamodb", JSON.stringify(record.dynamodb));
   const sederCode = record.dynamodb.NewImage[schema.PARTITION_KEY].S;
   const region = process.env.AWS_REGION || process.env.AWS_DEFAULT_REGION;
   const ddbClient = new DynamoDBClient({ region });
@@ -50,9 +52,13 @@ exports.handler = async function (record) {
         Data: Buffer.from("answer submitted"),
         ConnectionId,
       };
-      const postToConnectionCommand = new PostToConnectionCommand(postToConnectionRequest);
-      const postToConnectionResponse = await client.send(postToConnectionCommand);
-      console.log(postToConnectionResponse)
+      const postToConnectionCommand = new PostToConnectionCommand(
+        postToConnectionRequest
+      );
+      const postToConnectionResponse = await client.send(
+        postToConnectionCommand
+      );
+      console.log(postToConnectionResponse);
     }
   }
 };

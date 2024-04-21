@@ -10,7 +10,7 @@ const {
 const schema = require("./schema");
 
 exports.handler = async function (record) {
-  const sederCode = record.NewImage[schema.PARTITION_KEY].S;
+  const sederCode = record.dynamodb.NewImage[schema.PARTITION_KEY].S;
   const region = process.env.AWS_REGION || process.env.AWS_DEFAULT_REGION;
   const ddbClient = new DynamoDBClient({ region });
   const ddbDocClient = DynamoDBDocumentClient.from(ddbClient);

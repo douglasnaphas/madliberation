@@ -20,7 +20,7 @@ exports.handler = async function (event, context, callback) {
   const ddbDocClient = DynamoDBDocumentClient.from(ddbClient);
   const deleteReadConnectionCommand = new DeleteCommand({
     TableName: schema.TABLE_NAME,
-    Item: {
+    Key: {
       [schema.PARTITION_KEY]: `${schema.READ_CONNECTION_ID}${schema.SEPARATOR}${event.requestContext.connectionId}`,
       [schema.SORT_KEY]: schema.READ_PAGE_SOCKET_CONNECTION,
     },

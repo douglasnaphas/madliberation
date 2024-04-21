@@ -28,11 +28,13 @@
     "@next/font": "latest",
     "@tanstack/react-query": "^5.28.9",
     "email-validator": "^2.0.4",
+    "lodash": "^4.17.21",
     "next": "latest",
     "react": "latest",
     "react-dom": "latest"
   },
   "devDependencies": {
+    "@types/lodash": "^4.17.0",
     "@types/node": "latest",
     "@types/react": "latest",
     "eslint": "latest",

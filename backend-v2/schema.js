@@ -76,6 +76,10 @@ const schema = {
   READ_PW: "rpw",
   PARTICIPANT_EMAIL_INDEX: "participant_email_index",
   LEADER_EMAIL_INDEX: "leader_email_index",
+  SEDER_CODE: "seder_code",
+  // read socket
+  READ_CONNECTION_ID: "read-connection-id",
+  READ_PAGE_SOCKET_CONNECTION: "read-page-socket-connection" // item type
 };
 
 module.exports = schema;

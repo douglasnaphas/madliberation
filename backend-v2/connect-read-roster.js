@@ -1,11 +1,14 @@
-const DynamoDB = require("aws-sdk/clients/dynamodb");
-const schema = require("./schema");
-const db = new DynamoDB.DocumentClient();
-const crypto = require("crypto");
+const {
+  DynamoDBDocumentClient,
+  GetCommand,
+  PutCommand
+} = require("@aws-sdk/lib-dynamodb");
+const { DynamoDBClient } = require("@aws-sdk/client-dynamodb");
 const logger = require("./logger");
+const schema = require("./schema")
 
 exports.handler = async function (event, context, callback) {
-  logger.log("connect handler called");
+  logger.log("connect-read handler called");
   logger.log("event:");
   logger.log(JSON.stringify(event));
   logger.log("context:");
@@ -15,90 +18,43 @@ exports.handler = async function (event, context, callback) {
   if (
     !event ||
     !event.queryStringParameters ||
-    !event.queryStringParameters.roomcode ||
-    !event.queryStringParameters.gamename
+    !event.queryStringParameters.sederCode ||
+    !event.queryStringParameters.rpw
   ) {
     logger.log("missing queryStringParameters");
     return { statusCode: 400, body: "Bad request" };
   }
-
-  const roomCode = event.queryStringParameters.roomcode;
-  const gameName = decodeURIComponent(event.queryStringParameters.gamename);
-  const hash = crypto.createHash("sha256");
-  hash.update(gameName);
-  const GAME_NAME_HASH_LENGTH = 64;
-  const gameNameHash = hash
-    .digest("hex")
-    .substring(0, GAME_NAME_HASH_LENGTH)
-    .toLowerCase();
-  if (!event.multiValueHeaders || !event.multiValueHeaders.Cookie) {
-    logger.log("no cookies");
-    return { statusCode: 400, body: "Bad request" };
-  }
-  logger.log("gameNameHash:");
-  logger.log(gameNameHash);
-  const gameCookie = event.headers.Cookie.split(";")
-    .map((cookie) => cookie.trim())
-    .find((cookie) => new RegExp(`^${gameNameHash}=.`).test(cookie));
-  const RIGHT_HAND_SIDE = 1;
-  const cookieSessionKey = gameCookie.split("=")[RIGHT_HAND_SIDE];
-  if (!gameCookie || !cookieSessionKey) {
-    logger.log("no cookie with the right name, looking for " + gameNameHash);
-    return { statusCode: 400, body: "Bad request" };
-  }
-  const getParticipantParams = {
-    TableName: process.env.TABLE_NAME,
+  const sederCode = event.queryStringParameters.sederCode;
+  const rpw = event.queryStringParameters.rpw;
+  const region = process.env.AWS_REGION || process.env.AWS_DEFAULT_REGION;
+  const ddbClient = new DynamoDBClient({ region });
+  const ddbDocClient = DynamoDBDocumentClient.from(ddbClient);
+  const getRPWCommand = new GetCommand({
+    TableName: schema.TABLE_NAME,
     Key: {
-      [schema.PARTITION_KEY]: roomCode,
-      [schema.SORT_KEY]:
-        `${schema.PARTICIPANT_PREFIX}` +
-        `${schema.SEPARATOR}` +
-        `${gameNameHash}`,
-    },
-  };
-  try {
-    const participantData = await db.get(getParticipantParams).promise();
-    if (participantData.Item[schema.SESSION_KEY] != cookieSessionKey) {
-      logger.log("session key mismatch");
-      return { statusCode: 400, body: "Bad request" };
+      [schema.PARTITION_KEY]: sederCode,
+      [schema.SORT_KEY]: schema.READ_PW_PREFIX
     }
-  } catch (e) {
-    logger.log("error getting participant data");
-    logger.log(e);
-    return { statusCode: 500, body: "Server error" };
+  });
+  const getRPWResponse = await ddbDocClient.send(getRPWCommand);
+  if(!getRPWResponse || !getRPWResponse.Item || !getRPWResponse.Item[schema.READ_PW]) {
+    logger.log("returning 422, no rpw for this seder code")
+    logger.log(getRPWResponse)
+    return {statusCode: 422, body: "Cannot process seder code"}
   }
-
-  const now = new Date();
-  var putParams = {
-    TableName: process.env.TABLE_NAME,
+  const correctRPW = getRPWResponse.Item[schema.READ_PW];
+  if(rpw !== correctRPW) {
+    logger.log("wrong rpw");
+    return {statusCode: 400, body: "bad seder code or rpw"}
+  }
+  const putConnectionIdCommand = new PutCommand({
+    TableName: schema.TABLE_NAME,
     Item: {
-      [schema.PARTITION_KEY]: `${roomCode}`,
-      [schema.SORT_KEY]:
-        `${schema.CONNECT}` +
-        `${schema.SEPARATOR}` +
-        schema.READ_ROSTER +
-        schema.SEPARATOR +
-        gameName +
-        schema.SEPARATOR +
-        `${event.requestContext.connectionId}`,
-      [schema.CONNECTION_ID]: event.requestContext.connectionId,
-      [schema.DATE]: now.toISOString(),
-      [schema.MS]: now.getTime(),
-    },
-  };
+      [schema.PARTITION_KEY]: sederCode,
+      [schema.SORT_KEY]: `read-connection-id#${event.requestContext.connectionId}`
+    }
+  });
+  
 
-  try {
-    await db.put(putParams).promise();
-    return {
-      statusCode: 200,
-      body: "Connected",
-    };
-  } catch (e) {
-    logger.log("error on put");
-    logger.log(e);
-    return {
-      statusCode: 500,
-      body: "Server error",
-    };
-  }
+
 };

@@ -4,15 +4,14 @@ const {
   PutCommand,
 } = require("@aws-sdk/lib-dynamodb");
 const { DynamoDBClient } = require("@aws-sdk/client-dynamodb");
-const logger = require("./logger");
 const schema = require("./schema");
 
 exports.handler = async function (event, context, callback) {
-  logger.log("connect-read handler called");
-  logger.log("event:");
-  logger.log(JSON.stringify(event));
-  logger.log("context:");
-  logger.log(JSON.stringify(context));
+  console.log("connect-read handler called");
+  console.log("event:");
+  console.log(JSON.stringify(event));
+  console.log("context:");
+  console.log(JSON.stringify(context));
 
   // validate
   if (
@@ -21,11 +20,11 @@ exports.handler = async function (event, context, callback) {
     !event.queryStringParameters.sederCode ||
     !event.queryStringParameters.rpw
   ) {
-    logger.log("missing queryStringParameters");
+    console.log("missing queryStringParameters");
     return { statusCode: 400, body: "Bad request" };
   }
   if (!event.requestContext || !event.requestContext.connectionId) {
-    logger.log("no event.requestContext.connectionId");
+    console.log("no event.requestContext.connectionId");
     return { statusCode: 500, body: "error getting connection id" };
   }
 
@@ -47,21 +46,22 @@ exports.handler = async function (event, context, callback) {
     !getRPWResponse.Item ||
     !getRPWResponse.Item[schema.READ_PW]
   ) {
-    logger.log("returning 422, no rpw for this seder code");
-    logger.log(getRPWResponse);
+    console.log("returning 422, no rpw for this seder code");
+    console.log(getRPWResponse);
     return { statusCode: 422, body: "Cannot process seder code" };
   }
   const correctRPW = getRPWResponse.Item[schema.READ_PW];
   if (rpw !== correctRPW) {
-    logger.log("wrong rpw");
+    console.log("wrong rpw");
     return { statusCode: 400, body: "bad seder code or rpw" };
   }
   const putConnectionIdCommand = new PutCommand({
     TableName: schema.TABLE_NAME,
     Item: {
-      [schema.PARTITION_KEY]: sederCode,
-      [schema.SORT_KEY]: `read-connection-id#${event.requestContext.connectionId}`,
-      GSI1PK: `read-connection-id#${event.requestContext.connectionId}`,
+      [schema.PARTITION_KEY]: `${schema.READ_CONNECTION_ID}${schema.SEPARATOR}${event.requestContext.connectionId}`,
+      [schema.SORT_KEY]: schema.READ_PAGE_SOCKET_CONNECTION,
+      ConnectionId: event.requestContext.connectionId,
+      GSI1PK: `${schema.SEDER_CODE}${schema.SEPARATOR}${sederCode}`,
       GSI1SK: (new Date()).toISOString()
     },
   });
@@ -70,8 +70,8 @@ exports.handler = async function (event, context, callback) {
   );
 
   if (!putConnectionIdResponse) {
-    logger.log("failed to save read connection id", putConnectionIdResponse);
+    console.log("failed to save read connection id", putConnectionIdResponse);
     return { statusCode: 500, body: "failed to save read connection id" };
   }
-  logger.log(`saved read connection id ${event.requestContext.connectionId}`);
+  console.log(`saved read connection id ${event.requestContext.connectionId}`);
 };

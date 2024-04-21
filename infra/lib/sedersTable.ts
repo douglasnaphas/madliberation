@@ -91,6 +91,18 @@ const sedersTable: (construct: Construct) => dynamodb.Table = (
     },
     projectionType: dynamodb.ProjectionType.ALL,
   });
+  table.addGlobalSecondaryIndex({
+    indexName: "GSI1",
+    partitionKey: {
+      name: "GSI1PK",
+      type: dynamodb.AttributeType.STRING,
+    },
+    sortKey: {
+      name: "GSI1SK",
+      type: dynamodb.AttributeType.STRING,
+    },
+    projectionType: dynamodb.ProjectionType.ALL,
+  });
   return table;
 };
 module.exports = sedersTable;

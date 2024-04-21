@@ -1,82 +1,57 @@
-/**
- * Let participants know when new participants join the seder.
- */
+const {
+  DynamoDBDocumentClient,
+  QueryCommand,
+} = require("@aws-sdk/lib-dynamodb");
+const { DynamoDBClient } = require("@aws-sdk/client-dynamodb");
+const {
+  ApiGatewayManagementApiClient,
+  PostToConnectionCommand,
+} = require("@aws-sdk/client-apigatewaymanagementapi");
 const schema = require("./schema");
-const logger = require("./logger");
-const ApiGatewayManagementApi = require("aws-sdk/clients/apigatewaymanagementapi");
-const DynamoDB = require("aws-sdk/clients/dynamodb");
-const db = new DynamoDB.DocumentClient();
-const api = new ApiGatewayManagementApi({
-  endpoint: process.env.WS_ENDPOINT,
-});
 
-const handleSubmit = async (record) => {
-  const dbQueryParams = {
-    TableName: process.env.TABLE_NAME,
-    KeyConditionExpression: `room_code = :rc and begins_with(lib_id, :prefix)`,
+exports.handler = async function (record) {
+  const sederCode = record.NewImage[schema.PARTITION_KEY].S;
+  const region = process.env.AWS_REGION || process.env.AWS_DEFAULT_REGION;
+  const ddbClient = new DynamoDBClient({ region });
+  const ddbDocClient = DynamoDBDocumentClient.from(ddbClient);
+  const apiGwClient = new ApiGatewayManagementApiClient({ region });
+
+  // get all the read connections
+  const queryForReadConnectionsCommand = new QueryCommand({
+    TableName: schema.TABLE_NAME,
+    IndexName: "GSI1",
+    KeyConditionExpression: `GSI1PK = :pk`,
     ExpressionAttributeValues: {
-      ":rc": record.dynamodb.NewImage[schema.PARTITION_KEY].S,
-      ":prefix":
-        `${schema.CONNECT}${schema.SEPARATOR}${schema.READ_ROSTER}` +
-        `${schema.SEPARATOR}`,
+      ":pk": `${schema.SEDER_CODE}${schema.SEPARATOR}${sederCode}`,
     },
-  };
-  logger.log("dbQueryParams:");
-  logger.log(JSON.stringify(dbQueryParams));
-  let queryData;
-  try {
-    queryData = await db.query(dbQueryParams).promise();
-  } catch (e) {
-    logger.log("error querying for connections");
-    logger.log(e);
-    logger.log(JSON.stringify(dbQueryParams));
-    return;
-  }
-  if (!queryData) {
-    logger.log("no query data");
-    return;
-  }
-  logger.log("queryData:");
-  logger.log(JSON.stringify(queryData));
-  if (!Array.isArray(queryData.Items)) {
-    logger.log("non-array Items, or missing Items");
-    return;
-  }
-  const connectionIds = queryData.Items.map(
-    (item) => item[schema.CONNECTION_ID]
+  });
+  const queryForReadConnectionsResponse = await ddbDocClient.send(
+    queryForReadConnectionsCommand
   );
-  logger.log("connectionIds:");
-  logger.log(JSON.stringify(connectionIds));
-  for (let i = 0; i < connectionIds.length; i++) {
-    const postToConnectionParams = {
-      ConnectionId: connectionIds[i],
-      Data: Buffer.from("read_roster_update"),
-    };
-    logger.log("postToConnectionParams:");
-    logger.log(JSON.stringify(postToConnectionParams));
-    try {
-      await api.postToConnection(postToConnectionParams).promise();
-    } catch (e) {
-      logger.log("failed to postToConnection");
-      logger.log(e);
+  if (!queryForReadConnectionsResponse) {
+    console.log("failed to query for read connections");
+    console.log(queryForReadConnectionsResponse);
+  }
+  if (!queryForReadConnectionsResponse.Items) {
+    console.log("No Items");
+  }
+
+  // for each one, let them know to re-fetch the script
+  if (
+    queryForReadConnectionsResponse &&
+    Array.isArray(queryForReadConnectionsResponse.Items)
+  ) {
+    const readConnections = queryForReadConnectionsResponse.Items;
+    for (let c = 0; c < readConnections.length; c++) {
+      const { ConnectionId } = readConnections[c];
+      console.log(`notifying ${ConnectionId}`);
+      const postToConnectionRequest = {
+        Data: Buffer.from("answer submitted"),
+        ConnectionId,
+      };
+      const postToConnectionCommand = new PostToConnectionCommand(postToConnectionRequest);
+      const postToConnectionResponse = await client.send(postToConnectionCommand);
+      console.log(postToConnectionResponse)
     }
   }
-};
-
-exports.handler = async function (event, context, callback) {
-  logger.log("event:");
-  logger.log(JSON.stringify(event));
-  logger.log("context:");
-  logger.log(JSON.stringify(context));
-
-  logger.log("event.Records.length:");
-  logger.log(event.Records.length);
-
-  for (let r = 0; r < event.Records.length; r++) {
-    logger.log("checking record...");
-    const record = event.Records[r];
-    await handleSubmit(record);
-  }
-
-  return { statusCode: 200, body: "Event sent." };
 };

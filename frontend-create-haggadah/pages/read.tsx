@@ -95,7 +95,7 @@ export default function Read() {
         };
         const debouncedFetchUpdatedScript = debounce(async () => {
           await fetchUpdatedScript();
-        }, 1000);
+        }, 3000);
         const messageHandler = async (event: any) => {
           if (!event) {
             return;
@@ -106,8 +106,11 @@ export default function Read() {
           if (event.data !== "answer submitted") {
             return;
           }
-          console.log("got updated script");
-          await debouncedFetchUpdatedScript();
+          try {
+            await debouncedFetchUpdatedScript();
+          } catch (fetchUpdatedScriptError) {
+            console.error(fetchUpdatedScriptError);
+          }
         };
         const webSocket = new WebSocket(
           `wss://${window.location.hostname}/ws-read/` +

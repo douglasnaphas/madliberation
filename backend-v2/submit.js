@@ -45,7 +45,7 @@ exports.handler = async function (event) {
       Array.isArray(queryForReadConnectionsResponse.Items)
     ) {
       const readConnections = queryForReadConnectionsResponse.Items;
-      const endpoint = `wss://${process.env.READ_ENDPOINT}`;
+      const endpoint = `https://${process.env.READ_ENDPOINT}`;
       const apiGatewayManagementApiClient = new ApiGatewayManagementApiClient({
         region,
         endpoint,

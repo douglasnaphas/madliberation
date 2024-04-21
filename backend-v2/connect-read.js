@@ -62,7 +62,7 @@ exports.handler = async function (event, context, callback) {
       [schema.SORT_KEY]: schema.READ_PAGE_SOCKET_CONNECTION,
       ConnectionId: event.requestContext.connectionId,
       GSI1PK: `${schema.SEDER_CODE}${schema.SEPARATOR}${sederCode}`,
-      GSI1SK: (new Date()).toISOString()
+      GSI1SK: new Date().toISOString(),
     },
   });
   const putConnectionIdResponse = await ddbDocClient.send(
@@ -74,4 +74,8 @@ exports.handler = async function (event, context, callback) {
     return { statusCode: 500, body: "failed to save read connection id" };
   }
   console.log(`saved read connection id ${event.requestContext.connectionId}`);
+  return {
+    statusCode: 200,
+    body: "Connected",
+  };
 };

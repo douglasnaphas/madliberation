@@ -480,6 +480,10 @@ export class MadliberationWebapp extends Stack {
         },
       ],
     });
+    sedersTable.grantStreamRead(submitHandler);
+    sedersTable.grantReadData(submitHandler);
+    wsReadStage.grantManagementApiAccess(submitHandler);
+    wsReadRosterStage.grantManagementApiAccess(submitHandler);
 
     const scriptsBucket = appBucket(this, "ScriptsBucket", {
       versioned: true,

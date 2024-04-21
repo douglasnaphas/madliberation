@@ -473,7 +473,7 @@ export class MadliberationWebapp extends Stack {
               NewImage: {
                 game_name: { S: [{ exists: true }] },
                 lib_id: { S: [{ prefix: "participant#" }] },
-                answers_map: { M: [{ exists: true }] },
+                // answers_map: { M: [{ exists: true }] },
               },
             },
           }),

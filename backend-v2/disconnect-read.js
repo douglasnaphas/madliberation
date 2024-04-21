@@ -24,16 +24,15 @@ exports.handler = async function (event, context, callback) {
       [schema.SORT_KEY]: schema.READ_PAGE_SOCKET_CONNECTION,
     },
   });
-  const deleteReadConnectionResponse = await ddbDocClient.send(
-    deleteReadConnectionCommand
-  );
-
-  if (!deleteReadConnectionResponse) {
-    console.log(
-      "failed to delete read connection",
-      deleteReadConnectionResponse
-    );
+  try {
+    await ddbDocClient.send(deleteReadConnectionCommand);
+    console.log(`deleted read connection ${event.requestContext.connectionId}`);
+    return {
+      statusCode: 200,
+      body: "Disconnected",
+    };
+  } catch (deleteReadConnectionError) {
+    console.log("deleteReadConnectionError", deleteReadConnectionError);
     return { statusCode: 500, body: "failed to delete read connection" };
   }
-  console.log(`deleted read connection ${event.requestContext.connectionId}`);
 };

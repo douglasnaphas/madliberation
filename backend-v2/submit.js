@@ -45,6 +45,10 @@ exports.handler = async function (event) {
       Array.isArray(queryForReadConnectionsResponse.Items)
     ) {
       const readConnections = queryForReadConnectionsResponse.Items;
+      const apiGatewayManagementApiClient = new ApiGatewayManagementApiClient({
+        region,
+      });
+
       for (let c = 0; c < readConnections.length; c++) {
         const { ConnectionId } = readConnections[c];
         console.log(`notifying ${ConnectionId}`);
@@ -55,9 +59,8 @@ exports.handler = async function (event) {
         const postToConnectionCommand = new PostToConnectionCommand(
           postToConnectionRequest
         );
-        const postToConnectionResponse = await client.send(
-          postToConnectionCommand
-        );
+        const postToConnectionResponse =
+          await apiGatewayManagementApiClient.send(postToConnectionCommand);
         console.log(postToConnectionResponse);
       }
     }

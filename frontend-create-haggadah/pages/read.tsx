@@ -13,6 +13,7 @@ import FormControl from "@mui/material/FormControl";
 import Page from "../src/Page";
 import SederSummary from "../src/SederSummary";
 import Head from "next/head";
+import { debounce } from "lodash";
 
 const enum PageState {
   LOADING = 0,
@@ -39,6 +40,11 @@ export default function Read() {
 
   React.useEffect(() => {
     (async () => {
+      // Things to do in this function:
+      // (1) get the script once on intial load
+      // (2) register the hash change handler, so the URL and page stay synced
+      // (3) open the read socket, for when people submit after we load
+
       if (sederCode && rpw) {
         const fetchScriptResponse = await fetch(
           `../v2/script?sederCode=${sederCode}&rpw=${rpw}&roomcode=${sederCode}`
@@ -73,8 +79,52 @@ export default function Read() {
           }
         };
         window.addEventListener("hashchange", hashChangeHandler);
+
+        // read socket
+        const fetchUpdatedScript = async () => {
+          const fetchUpdatedScriptResponse = await fetch(
+            `../v2/script?sederCode=${sederCode}&rpw=${rpw}&roomcode=${sederCode}`
+          );
+          if (fetchUpdatedScriptResponse.status !== 200) {
+            return;
+          }
+          const updatedScriptData = await fetchUpdatedScriptResponse.json();
+          if (updatedScriptData && Array.isArray(updatedScriptData.pages)) {
+            setScript(updatedScriptData);
+          }
+        };
+        const debouncedFetchUpdatedScript = debounce(async () => {
+          await fetchUpdatedScript();
+        }, 3000);
+        const messageHandler = async (event: any) => {
+          if (!event) {
+            return;
+          }
+          if (!event.data) {
+            return;
+          }
+          if (event.data !== "answer submitted") {
+            return;
+          }
+          try {
+            await debouncedFetchUpdatedScript();
+          } catch (fetchUpdatedScriptError) {
+            console.error(fetchUpdatedScriptError);
+          }
+        };
+        const webSocket = new WebSocket(
+          `wss://${window.location.hostname}/ws-read/` +
+            `?sederCode=${sederCode}` +
+            `&rpw=${rpw}`
+        );
+        webSocket.addEventListener("message", messageHandler);
+
         return () => {
           window.removeEventListener("hashchange", hashChangeHandler);
+          if (webSocket) {
+            webSocket.removeEventListener("message", messageHandler);
+            webSocket.close();
+          }
         };
       }
     })();

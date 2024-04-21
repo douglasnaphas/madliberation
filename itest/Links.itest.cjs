@@ -365,6 +365,93 @@ const waitOptions = { timeout /*, visible: true */ };
     });
   });
 
+  /////////// Quick interlude to support live-update read testing //////////////
+  // Get the unpopulated script;
+  // so we can figure out our "liveReadLib," the lib we'll use to test live
+  // updating of the read page.
+  // We have to figure it out before we start submitting, so we can note who
+  // it's assigned to, so we can re-submit it and check that the read page
+  // updated without refresh.
+  // Go to the first page after the first that has at least one lib
+  // Figure out the page we want to go to, and the lib we'll check
+  // Grab the last lib on the page (arbitrary)
+  let liveReadPageIndex;
+  let liveReadLibId;
+  let liveReadLib;
+  let libCount = 0;
+  for (
+    let pageIndex = 0;
+    pageIndex < script.pages.length &&
+    !liveReadPageIndex &&
+    !liveReadLibId &&
+    liveReadLibId !== 0;
+    pageIndex++
+  ) {
+    const page = script.pages[pageIndex];
+    if (!Array.isArray(page.lines)) {
+      continue;
+    }
+    for (let l = 0; l < page.lines.length; l++) {
+      const line = page.lines[l];
+      if (line.type !== "p") {
+        continue;
+      }
+      if (!Array.isArray(line.segments)) {
+        continue;
+      }
+      for (let s = 0; s < line.segments.length; s++) {
+        const segment = line.segments[s];
+        if (segment.type !== "lib") {
+          continue;
+        }
+        libCount++;
+        if (pageIndex > 0) {
+          liveReadLibId = libCount; // the 1st lib has id 1, not 0
+          liveReadLib = segment;
+          liveReadPageIndex = pageIndex;
+        }
+      }
+    }
+  }
+  const liveReadPageNumber = liveReadPageIndex + 1;
+  console.log(`found lib ${liveReadLibId} on page ${liveReadPageNumber}`);
+  console.log(liveReadLib);
+
+  // Open the read page and grab a lib, noting its value
+  // We'll need the read link.
+  const readLinkSelector = `#read-link`;
+  await page.waitForSelector(readLinkSelector, waitOptions);
+  const readLinkHref = await page.$eval(readLinkSelector, (el) => el.href);
+  console.log("readLinkHref:", readLinkHref);
+  const liveReadBrowser = await puppeteer.launch(browserOptions);
+  browsers.push(liveReadBrowser);
+  const liveReadPage = await liveReadBrowser.newPage();
+  await liveReadPage.goto(readLinkHref);
+
+  const currentPageNumber = async (pg) => {
+    return await pg.evaluate(() => window.location.href.split("#")[1]);
+  };
+  // page to the lib we're checking
+  const nextPageXPath = `//button[text()="Next page"]`;
+  while ((await currentPageNumber(liveReadPage)) < liveReadPageNumber) {
+    await liveReadPage.waitForXPath(nextPageXPath);
+    await liveReadPage.click("xpath/" + nextPageXPath);
+  }
+  // check its value
+  const liveReadLibXPathPre = `//span[text()="${liveReadLib.default}"]`;
+  await liveReadPage.waitForXPath(liveReadLibXPathPre);
+  // check its prompt
+  await liveReadPage.click("xpath/" + liveReadLibXPathPre);
+  const liveReadLibPromptXPath = `//p[text()="${liveReadLib.prompt}"]`;
+  await liveReadPage.waitForXPath(liveReadLibPromptXPath);
+  await liveReadPage.keyboard.press("Escape");
+
+  // We just opened liveReadBrowser and saw some lib.
+  // We'll do all our submitting, and, if we answered it, expect it to change
+  // without refresh.
+
+  //////////////////////////////////////////////////////////////////////////////
+
   // grab everyone's assisgnments
   for (let p = participants.length - 1; p >= 0; p--) {
     const assignmentsResponse = await fetch(
@@ -755,12 +842,6 @@ const waitOptions = { timeout /*, visible: true */ };
     }
   }
 
-  // check the script
-  // get the read link, log it
-  const readLinkSelector = `#read-link`;
-  await page.waitForSelector(readLinkSelector, waitOptions);
-  const readLinkHref = await page.$eval(readLinkSelector, (el) => el.href);
-  console.log("readLinkHref:", readLinkHref);
   // get the read roster link, log it
   const readRosterLinkSelector = `#read-roster-link`;
   await page.waitForSelector(readRosterLinkSelector, waitOptions);
@@ -769,6 +850,23 @@ const waitOptions = { timeout /*, visible: true */ };
     (el) => el.href
   );
   console.log("readRosterLinkHref:", readRosterLinkHref);
+
+  //////////////////////////////////////////////////////////////////////////////
+  ///////////////////////////// Read Page Live Update //////////////////////////
+  //////////////////////////////////////////////////////////////////////////////
+
+  // Earlier we opened liveReadBrowser and paged to liveReadLib
+  // Look for its updated value without refreshing the page
+  if (expectedAnswers[liveReadLibId]) {
+    liveReadLib.expectedAnswer = expectedAnswers[liveReadLibId];
+    console.log(`liveReadLib was answered with ${liveReadLib.expectedAnswer}`);
+    const liveReadLibUpdatedXPath = `//span[text()="${liveReadLib.expectedAnswer}"]`;
+    await liveReadPage.waitForXPath(liveReadLibUpdatedXPath).catch((reason) => {
+      failTest(reason, `live read test: lib not updated`, browsers);
+    });
+  } else {
+    console.log("live read lib not updated, not doing live read test");
+  }
 
   //////////////////////////////////////////////////////////////////////////////
   //////////////////////////// Read Roster /////////////////////////////////////
@@ -853,7 +951,6 @@ const waitOptions = { timeout /*, visible: true */ };
   await page.goto(readLinkHref);
   const readThisPageAloudXPath = `//*[text()="Read aloud. Have a new person read each page, going around the Seder. Click a gray box to see the prompt."]`;
   await page.waitForXPath(readThisPageAloudXPath);
-  const nextPageXPath = `//button[text()="Next page"]`;
   await page.waitForXPath(nextPageXPath);
   const populatedScriptHref = (() => {
     const readLinkUrl = new URL(readLinkHref);
@@ -866,7 +963,7 @@ const waitOptions = { timeout /*, visible: true */ };
 
   // loop through the libs in the populatedScript, making sure the provided answer
   // matches the expected answer
-  const receivedAnswers = {};
+  const receivedAnswers = {}; // lib id -> answer text
   populatedScript.pages.forEach((page) => {
     page.lines.forEach((line) => {
       line.segments.forEach((segment) => {
@@ -922,7 +1019,7 @@ const waitOptions = { timeout /*, visible: true */ };
   await retrieveLinkPage.click(sedersSelector);
 
   // Expect to see a link to the links page for this Seder
-  const linksLinkSelector = `a[href^="${yourLinksPageHref}"]`;
+  const linksLinkSelector = `a[href="${yourLinksPageHref}"]`;
   await retrieveLinkPage.waitForSelector(linksLinkSelector).catch((reason) => {
     failTest(
       `waitForSelector failed, linksLinkSelector`,
@@ -930,8 +1027,6 @@ const waitOptions = { timeout /*, visible: true */ };
       browsers
     );
   });
-
-  // TODO: Use the link
 
   ////////////////////////////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////////////////////////

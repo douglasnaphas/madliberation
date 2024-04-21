@@ -32,3 +32,6 @@ itest/screenlog*
 
 # mkcert
 *.pem
+
+# DynamoDB item types
+!/items.js

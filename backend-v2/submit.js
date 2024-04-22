@@ -60,7 +60,7 @@ exports.handler = async function (event) {
 
       for (let c = 0; c < readConnections.length; c++) {
         const { ConnectionId } = readConnections[c];
-        const { GSI1PK: socketType } = readConnections[c];
+        const { GSI1SK: socketType } = readConnections[c];
         console.log(`notifying ${ConnectionId}, type ${socketType}`);
         const postToConnectionRequest = {
           Data: Buffer.from("answer submitted"),

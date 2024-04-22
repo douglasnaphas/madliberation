@@ -79,7 +79,10 @@ const schema = {
   SEDER_CODE: "seder_code",
   // read socket
   READ_CONNECTION_ID: "read-connection-id",
-  READ_PAGE_SOCKET_CONNECTION: "read-page-socket-connection" // item type
+  READ_PAGE_SOCKET_CONNECTION: "read-page-socket-connection", // item type
+  // read roster socket
+  READ_ROSTER_CONNECTION_ID: "read-roster-connection-id",
+  READ_ROSTER_SOCKET_CONNECTION: "read-roster-socket-connection" // item type
 };
 
 module.exports = schema;

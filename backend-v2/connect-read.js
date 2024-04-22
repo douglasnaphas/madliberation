@@ -62,7 +62,7 @@ exports.handler = async function (event, context, callback) {
       [schema.SORT_KEY]: schema.READ_PAGE_SOCKET_CONNECTION,
       ConnectionId: event.requestContext.connectionId,
       GSI1PK: `${schema.SEDER_CODE}${schema.SEPARATOR}${sederCode}`,
-      GSI1SK: new Date().toISOString(),
+      GSI1SK: schema.READ_PAGE_SOCKET_CONNECTION,
     },
   });
   const putConnectionIdResponse = await ddbDocClient.send(

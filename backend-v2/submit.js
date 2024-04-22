@@ -17,43 +17,51 @@ exports.handler = async function (event) {
     const region = process.env.AWS_REGION || process.env.AWS_DEFAULT_REGION;
     const ddbClient = new DynamoDBClient({ region });
     const ddbDocClient = DynamoDBDocumentClient.from(ddbClient);
-    const apiGwClient = new ApiGatewayManagementApiClient({ region });
 
-    // get all the read connections
-    const queryForReadConnectionsCommand = new QueryCommand({
+    // get all the read and read roster connections
+    const queryForConnectionsCommand = new QueryCommand({
       TableName: schema.TABLE_NAME,
       IndexName: "GSI1",
       KeyConditionExpression: `GSI1PK = :pk`,
+      FilterExpression: `${schema.SORT_KEY} IN (:sk1, :sk2)`,
       ExpressionAttributeValues: {
         ":pk": `${schema.SEDER_CODE}${schema.SEPARATOR}${sederCode}`,
+        ":sk1": schema.READ_PAGE_SOCKET_CONNECTION,
+        ":sk2": schema.READ_ROSTER_SOCKET_CONNECTION,
       },
     });
-    const queryForReadConnectionsResponse = await ddbDocClient.send(
-      queryForReadConnectionsCommand
+    const queryForConnectionsResponse = await ddbDocClient.send(
+      queryForConnectionsCommand
     );
-    if (!queryForReadConnectionsResponse) {
+    if (!queryForConnectionsResponse) {
       console.log("failed to query for read connections");
-      console.log(queryForReadConnectionsResponse);
+      console.log(queryForConnectionsResponse);
     }
-    if (!queryForReadConnectionsResponse.Items) {
+    if (!queryForConnectionsResponse.Items) {
       console.log("No Items");
     }
 
-    // for each one, let them know to re-fetch the script
+    // for each one, let them know to re-fetch
     if (
-      queryForReadConnectionsResponse &&
-      Array.isArray(queryForReadConnectionsResponse.Items)
+      queryForConnectionsResponse &&
+      Array.isArray(queryForConnectionsResponse.Items)
     ) {
-      const readConnections = queryForReadConnectionsResponse.Items;
-      const endpoint = `https://${process.env.READ_ENDPOINT}`;
-      const apiGatewayManagementApiClient = new ApiGatewayManagementApiClient({
+      const readConnections = queryForConnectionsResponse.Items;
+      const readEndpoint = `https://${process.env.READ_ENDPOINT}`;
+      const readRosterEndpoint = `https://${process.env.READ_ROSTER_ENDPOINT}`;
+      const readClient = new ApiGatewayManagementApiClient({
         region,
-        endpoint,
+        endpoint: readEndpoint,
+      });
+      const readRosterClient = new ApiGatewayManagementApiClient({
+        region,
+        endpoint: readRosterEndpoint,
       });
 
       for (let c = 0; c < readConnections.length; c++) {
         const { ConnectionId } = readConnections[c];
-        console.log(`notifying ${ConnectionId}`);
+        const { GSI1SK: socketType } = readConnections[c];
+        console.log(`notifying ${ConnectionId}, type ${socketType}`);
         const postToConnectionRequest = {
           Data: Buffer.from("answer submitted"),
           ConnectionId,
@@ -62,9 +70,18 @@ exports.handler = async function (event) {
           postToConnectionRequest
         );
         try {
-          const postToConnectionResponse =
-            await apiGatewayManagementApiClient.send(postToConnectionCommand);
-          console.log(postToConnectionResponse);
+          if (socketType === schema.READ_PAGE_SOCKET_CONNECTION) {
+            const postToConnectionResponse = await readClient.send(
+              postToConnectionCommand
+            );
+            console.log(postToConnectionResponse);
+          }
+          if (socketType === schema.READ_ROSTER_SOCKET_CONNECTION) {
+            const postToConnectionResponse = await readRosterClient.send(
+              postToConnectionCommand
+            );
+            console.log(postToConnectionResponse);
+          }
         } catch (postToConnectionError) {
           console.log("postToConnectionError", postToConnectionError);
         }

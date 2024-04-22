@@ -16,6 +16,7 @@ import {
 } from "@mui/material";
 import { Configs } from "../src/Configs";
 import Head from "next/head";
+import { debounce } from "lodash";
 
 interface Participant {
   gameName: string;
@@ -74,17 +75,70 @@ export default function ReadRoster() {
     rpw = urlSearchParams.get("rpw");
   }
   React.useEffect(() => {
-    if (sederCode && rpw) {
-      fetch(
-        `../v2/seder-summary?sederCode=${sederCode}&rpw=${rpw}&roomcode=${sederCode}`
-      )
-        .then((r) => r.json())
-        .then((j) => {
-          if (j.participants) {
-            setParticipants(j.participants);
+    (async () => {
+      if (sederCode && rpw) {
+        // Get the participant info for the initial page load
+        fetch(
+          `../v2/seder-summary?sederCode=${sederCode}&rpw=${rpw}&roomcode=${sederCode}`
+        )
+          .then((r) => r.json())
+          .then((j) => {
+            if (j.participants) {
+              setParticipants(j.participants);
+            }
+          });
+
+        // Open the read roster socket, for when people submit after we load
+        const fetchUpdatedParticipants = async () => {
+          const fetchUpdatedParticipantsResponse = await fetch(
+            `../v2/seder-summary` +
+              `?sederCode=${sederCode}&rpw=${rpw}&roomcode=${sederCode}`
+          );
+          if (fetchUpdatedParticipantsResponse.status !== 200) {
+            return;
           }
-        });
-    }
+          const updatedSederSummaryData =
+            await fetchUpdatedParticipantsResponse.json();
+          if (
+            updatedSederSummaryData &&
+            Array.isArray(updatedSederSummaryData.participants)
+          ) {
+            setParticipants(updatedSederSummaryData.participants);
+          }
+        };
+        const debouncedFetchUpdatedParticipants = debounce(async () => {
+          await fetchUpdatedParticipants();
+        }, 3000);
+        const messageHandler = async (event: any) => {
+          if (!event) {
+            return;
+          }
+          if (!event.data) {
+            return;
+          }
+          if (event.data !== "answer submitted") {
+            return;
+          }
+          try {
+            await debouncedFetchUpdatedParticipants();
+          } catch (fetchUpdatedParticipantsError) {
+            console.error(fetchUpdatedParticipantsError);
+          }
+        };
+        const webSocket = new WebSocket(
+          `wss://${window.location.hostname}/ws-read-roster/` +
+            `?sederCode=${sederCode}` +
+            `&rpw=${rpw}`
+        );
+        webSocket.addEventListener("message", messageHandler);
+        return () => {
+          if (webSocket) {
+            webSocket.removeEventListener("message", messageHandler);
+            webSocket.close();
+          }
+        };
+      }
+    })();
   }, []);
   let permalink;
   if (typeof window !== "undefined") {

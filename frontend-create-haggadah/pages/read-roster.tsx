@@ -87,25 +87,25 @@ export default function ReadRoster() {
               setParticipants(j.participants);
             }
           });
-      }
 
-      // Open the read roster socket, for when people submit after we load
-      const fetchUpdatedParticipants = async () => {
-        const fetchUpdatedParticipantsResponse = await fetch(
-          `../v2/seder-summary` +
-            `?sederCode=${sederCode}&rpw=${rpw}&roomcode=${sederCode}`
-        );
-        if (fetchUpdatedParticipantsResponse.status !== 200) {
-          return;
-        }
-        const updatedSederSummaryData =
-          await fetchUpdatedParticipantsResponse.json();
-        if (
-          updatedSederSummaryData &&
-          Array.isArray(updatedSederSummaryData.participants)
-        ) {
-          setParticipants(updatedSederSummaryData.participants);
-        }
+        // Open the read roster socket, for when people submit after we load
+        const fetchUpdatedParticipants = async () => {
+          const fetchUpdatedParticipantsResponse = await fetch(
+            `../v2/seder-summary` +
+              `?sederCode=${sederCode}&rpw=${rpw}&roomcode=${sederCode}`
+          );
+          if (fetchUpdatedParticipantsResponse.status !== 200) {
+            return;
+          }
+          const updatedSederSummaryData =
+            await fetchUpdatedParticipantsResponse.json();
+          if (
+            updatedSederSummaryData &&
+            Array.isArray(updatedSederSummaryData.participants)
+          ) {
+            setParticipants(updatedSederSummaryData.participants);
+          }
+        };
         const debouncedFetchUpdatedParticipants = debounce(async () => {
           await fetchUpdatedParticipants();
         }, 3000);
@@ -137,7 +137,7 @@ export default function ReadRoster() {
             webSocket.close();
           }
         };
-      };
+      }
     })();
   }, []);
   let permalink;

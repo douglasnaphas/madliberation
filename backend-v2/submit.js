@@ -22,7 +22,8 @@ exports.handler = async function (event) {
     const queryForConnectionsCommand = new QueryCommand({
       TableName: schema.TABLE_NAME,
       IndexName: "GSI1",
-      KeyConditionExpression: `GSI1PK = :pk AND GSI1SK IN (:sk1, :sk2)`,
+      KeyConditionExpression: `GSI1PK = :pk`,
+      FilterExpression: `${schema.SORT_KEY} IN (:sk1, :sk2)`,
       ExpressionAttributeValues: {
         ":pk": `${schema.SEDER_CODE}${schema.SEPARATOR}${sederCode}`,
         ":sk1": schema.READ_PAGE_SOCKET_CONNECTION,

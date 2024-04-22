@@ -451,6 +451,60 @@ const waitOptions = { timeout /*, visible: true */ };
   // without refresh.
 
   //////////////////////////////////////////////////////////////////////////////
+  ///// Further interlude to support read roster live update testing
+  //////////////////////////////////////////////////////////////////////////////
+
+  // We'll load the read roster and check that it's all 0/X (none submitted).
+  // We'll keep it open in a separate browser so we can check for live updates
+  // from time to time.
+
+  // get the read roster link, log it
+  const readRosterLinkSelector = `#read-roster-link`;
+  await page.waitForSelector(readRosterLinkSelector, waitOptions);
+  const readRosterLinkHref = await page.$eval(
+    readRosterLinkSelector,
+    (el) => el.href
+  );
+  console.log("readRosterLinkHref:", readRosterLinkHref);
+
+  const readRosterBrowser = await puppeteer.launch(browserOptions);
+  browsers.push(readRosterBrowser);
+  const readRosterPage = await readRosterBrowser.newPage();
+  await readRosterPage.goto(readRosterLinkHref);
+  // check the table headers
+  const nameHeaderXPath =
+    `//th[text()="Name" and ` +
+    `following-sibling::th[text()="Answered"] and ` +
+    `following-sibling::th[text()="Assigned"]]`;
+  await readRosterPage.waitForXPath(nameHeaderXPath);
+  const answeredHeaderXPath =
+    `//th[text()="Answered" and ` + `following-sibling::th[text()="Assigned"]]`;
+  await readRosterPage.waitForXPath(answeredHeaderXPath);
+
+  // Loop through participants, expect 0 answered
+  for (let p = 0; p < participants.length; p++) {
+    const participantName = participants[p].gameName;
+    const guestAnswersSelector = `#guest-answers-${participantName}`;
+    const actualNumberAnswered = parseInt(
+      await readRosterPage
+        .$eval(guestAnswersSelector, (el) => el.textContent)
+        .catch(async (reason) => {
+          await failTest(
+            reason,
+            `Unable to get number answered, ${guestAnswersSelector}`,
+            browsers
+          );
+        })
+    );
+    if (actualNumberAnswered !== 0) {
+      await failTest(
+        "expected 0 answered initially",
+        `${actualNumberAnswered} for participant ${p} name ${participants[p].gameName}`
+      );
+    }
+  }
+
+  //////////////////////////////////////////////////////////////////////////////
 
   // grab everyone's assisgnments
   for (let p = participants.length - 1; p >= 0; p--) {
@@ -842,15 +896,6 @@ const waitOptions = { timeout /*, visible: true */ };
     }
   }
 
-  // get the read roster link, log it
-  const readRosterLinkSelector = `#read-roster-link`;
-  await page.waitForSelector(readRosterLinkSelector, waitOptions);
-  const readRosterLinkHref = await page.$eval(
-    readRosterLinkSelector,
-    (el) => el.href
-  );
-  console.log("readRosterLinkHref:", readRosterLinkHref);
-
   //////////////////////////////////////////////////////////////////////////////
   ///////////////////////////// Read Page Live Update //////////////////////////
   //////////////////////////////////////////////////////////////////////////////
@@ -870,20 +915,6 @@ const waitOptions = { timeout /*, visible: true */ };
 
   //////////////////////////////////////////////////////////////////////////////
   //////////////////////////// Read Roster /////////////////////////////////////
-
-  const readRosterBrowser = await puppeteer.launch(browserOptions);
-  browsers.push(readRosterBrowser);
-  const readRosterPage = await readRosterBrowser.newPage();
-  await readRosterPage.goto(readRosterLinkHref);
-  // check the table headers
-  const nameHeaderXPath =
-    `//th[text()="Name" and ` +
-    `following-sibling::th[text()="Answered"] and ` +
-    `following-sibling::th[text()="Assigned"]]`;
-  await readRosterPage.waitForXPath(nameHeaderXPath);
-  const answeredHeaderXPath =
-    `//th[text()="Answered" and ` + `following-sibling::th[text()="Assigned"]]`;
-  await readRosterPage.waitForXPath(answeredHeaderXPath);
 
   // Loop through participants, check their read roster info
   for (let p = 0; p < participants.length; p++) {

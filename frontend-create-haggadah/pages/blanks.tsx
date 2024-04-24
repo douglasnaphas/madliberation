@@ -524,11 +524,9 @@ export default function Blanks() {
                 <ProgSection
                   numAnswers={Object.entries(answers).reduce(
                     (nonBlankCount, [thisLibId, thisAnswer]) =>
-                      thisAnswer === "" ||
-                      thisAnswer === undefined ||
-                      !thisAnswer
-                        ? nonBlankCount
-                        : nonBlankCount + 1,
+                      thisAnswer && thisAnswer !== ""
+                        ? nonBlankCount + 1
+                        : nonBlankCount,
                     0
                   )}
                   numAssignments={assignments.length}

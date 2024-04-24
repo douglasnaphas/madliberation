@@ -522,7 +522,11 @@ export default function Blanks() {
               <br />
               {pageState !== PageState.LOADING && answers && assignments && (
                 <ProgSection
-                  numAnswers={Object.keys(answers).length}
+                  numAnswers={Object.entries(answers).reduce(
+                    (nonBlankCount, [thisLibId, thisAnswer]) =>
+                      thisAnswer === "" ? nonBlankCount : nonBlankCount + 1,
+                    0
+                  )}
                   numAssignments={assignments.length}
                 ></ProgSection>
               )}

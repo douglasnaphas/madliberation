@@ -321,7 +321,7 @@ const waitOptions = { timeout /*, visible: true */ };
   // loop and out of it
   const NUMERIC_PROG_NUMERATOR_SELECTOR = `#numprog-submitted`;
   const NUMERIC_PROG_DENOMINATOR_SELECTOR = `#numprog-assigned`;
-  const DONE_ANSWERING_INDICATOR_SEELCTOR = `#done-answering-indicator`;
+  const DONE_ANSWERING_INDICATOR_SELECTOR = `#done-answering-indicator`;
 
   // start with the last guest and work backwards
   await page.goto(browserUser.plinkHref);
@@ -835,7 +835,7 @@ const waitOptions = { timeout /*, visible: true */ };
         "wrong number answered in numeric progress on blanks",
         `expected ${expectedNumberAnswered}, found ` +
           `${actualNumberAnsweredInProg}, asi ${asi}`,
-          browsers
+        browsers
       );
     }
   } // done testing submission with browser
@@ -897,6 +897,28 @@ const waitOptions = { timeout /*, visible: true */ };
       }
       participants[p].answered++;
     }
+  }
+
+  // Find someone who's submitted all their libs, go to their link, look for
+  // the done symbol.
+  for (let p = 0; p < participants.length; p++) {
+    const participant = participants[p];
+    if (
+      !participant.plinkHref ||
+      !participant.assignments ||
+      !participant.answered ||
+      participant.assignments.length !== participant.answered
+    ) {
+      continue;
+    }
+    // they've answered all they were assigned
+    console.log(`found participant ${p}, done all their libs`);
+    const doneSubmittingBrowser = await puppeteer.launch(browserOptions);
+    browsers.push(doneSubmittingBrowser);
+    const doneSubmittingPage = await doneSubmittingBrowser.newPage();
+    await doneSubmittingPage.goto(participant.plinkHref);
+    await doneSubmittingPage.waitForSelector(DONE_ANSWERING_INDICATOR_SELECTOR);
+    break; // only need to check one
   }
 
   //////////////////////////////////////////////////////////////////////////////

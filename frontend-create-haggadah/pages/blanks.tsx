@@ -251,7 +251,15 @@ const ProgSection = (props: { numAnswers: number; numAssignments: number }) => {
   return (
     <div id="numprog">
       Completed <span id="numprog-submitted">{numAnswers}</span> out of{" "}
-      <span id="numprog-assigned">{numAssignments}</span>.
+      <span id="numprog-assigned">{numAssignments}</span>.{" "}
+      {numAnswers === numAssignments && (
+        <>
+          {" "}
+          <span id="done-answering-indicator" style={{ color: "green" }}>
+            <b>Done.</b>
+          </span>
+        </>
+      )}
     </div>
   );
 };

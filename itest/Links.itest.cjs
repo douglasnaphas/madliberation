@@ -838,6 +838,29 @@ const waitOptions = { timeout /*, visible: true */ };
         browsers
       );
     }
+    const actualNumberAssignedInProg = await page.$eval(
+      NUMERIC_PROG_DENOMINATOR_SELECTOR,
+      (el) => parseInt(el.textContent, 10)
+    );
+    if (expectedNumberAssigned !== actualNumberAssignedInProg) {
+      await failTest(
+        "wrong number assigned in numeric progress on blanks",
+        `expected ${expectedNumberAssigned}, found ` +
+          `${actualNumberAssignedInProg}, asi ${asi}`,
+        browsers
+      );
+      if (actualNumberAnsweredInProg !== actualNumberAssignedInProg) {
+        const doneIndicators = await page.$$(DONE_ANSWERING_INDICATOR_SELECTOR);
+        if (doneIndicators.length !== 0) {
+          await failTest(
+            "showing done indicator on blanks, but not done",
+            `asi ${asi}, ${actualNumberAssignedInProg} assigned, ` +
+              `${actualNumberAnsweredInProg} answered`,
+            browsers
+          );
+        }
+      }
+    }
   } // done testing submission with browser
 
   // submit the rest of the libs with the backend directly

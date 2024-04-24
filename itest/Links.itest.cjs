@@ -834,7 +834,8 @@ const waitOptions = { timeout /*, visible: true */ };
       failTest(
         "wrong number answered in numeric progress on blanks",
         `expected ${expectedNumberAnswered}, found ` +
-          `${actualNumberAnsweredInProg}, asi ${asi}`
+          `${actualNumberAnsweredInProg}, asi ${asi}`,
+          browsers
       );
     }
   } // done testing submission with browser

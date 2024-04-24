@@ -559,29 +559,6 @@ const waitOptions = { timeout /*, visible: true */ };
 
   const BLANKED_OUT_ANSWER_INDEX = 2; // browserUser (browser user) only
 
-  // Considers non-submitter index, partial submitter index,
-  // BLANKED_OUT_ANSWER_INDEX, and defaults.
-  const expectedAnswer = ({ participantIndex, assignmentId }) => {
-    if (participantIndex === nonSubmitterIndex) {
-      return defaults[assignmentId];
-    }
-    if (
-      participantIndex === partialSubmitterIndex &&
-      participants[participantIndex].assignments[OMITTED_ANSWER_INDEX].id ===
-        assignmentId
-    ) {
-      return defaults[assignmentId];
-    }
-    if (
-      participantIndex === BROWSER_USER_INDEX &&
-      assignmentId ===
-        participants[participantIndex].assignments[BLANKED_OUT_ANSWER_INDEX].id
-    ) {
-      return defaults[assignmentId];
-    }
-    return `${participants[participantIndex].gameName}-${assignmentId}`;
-  };
-
   // submit libs
   const expectedAnswers = {}; // lib id -> expected answer text
 

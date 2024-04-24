@@ -316,6 +316,13 @@ const waitOptions = { timeout /*, visible: true */ };
   const BROWSER_USER_INDEX = participants.length - 1;
   const browserUser = participants[participants.length - 1];
 
+  // for testing numeric progress
+  // defining here, up top, since we'll use it both in the browser submission
+  // loop and out of it
+  const NUMERIC_PROG_NUMERATOR_SELECTOR = `#numprog-submitted`;
+  const NUMERIC_PROG_DENOMINATOR_SELECTOR = `#numprog-assigned`;
+  const DONE_ANSWERING_INDICATOR_SEELCTOR = `#done-answering-indicator`;
+
   // start with the last guest and work backwards
   await page.goto(browserUser.plinkHref);
   const promptIntroXPath = '//*[text()="Enter a word or phrase to replace..."]';
@@ -811,6 +818,24 @@ const waitOptions = { timeout /*, visible: true */ };
         await page.click(nextChipSelector);
         console.log(`clicked nextChipSelector ${nextChipSelector}`);
       }
+    }
+
+    // test numeric progress indicator
+    // figure the expected number completed
+    const expectedNumberAssigned = browserUser.assignments.length;
+    const expectedNumberAnswered = browserUser.answered;
+    // The numbers showing how many are answered on this blanks page are called
+    // the prog.
+    const actualNumberAnsweredInProg = await page.$eval(
+      NUMERIC_PROG_NUMERATOR_SELECTOR,
+      (el) => parseInt(el.textContent, 10)
+    );
+    if (expectedNumberAnswered !== actualNumberAnsweredInProg) {
+      failTest(
+        "wrong number answered in numeric progress on blanks",
+        `expected ${expectedNumberAnswered}, found ` +
+          `${actualNumberAnsweredInProg}, asi ${asi}`
+      );
     }
   } // done testing submission with browser
 

@@ -246,6 +246,15 @@ const PromptSection = (props: {
     </div>
   );
 };
+const ProgSection = (props: { numAnswers: number; numAssignments: number }) => {
+  const { numAnswers, numAssignments } = props;
+  return (
+    <div id="numprog">
+      Completed <span id="numprog-submitted">{numAnswers}</span> out of
+      <span id="numprog-assigned">{numAssignments}</span>.
+    </div>
+  );
+};
 const ChipSection = (props: {
   submitLib: any;
   setSelectedAssignmentIndex: React.Dispatch<React.SetStateAction<number>>;
@@ -509,6 +518,13 @@ export default function Blanks() {
                   pageState={pageState}
                   setPageState={setPageState}
                 ></PromptSection>
+              )}
+              <br />
+              {pageState !== PageState.LOADING && answers && assignments && (
+                <ProgSection
+                  numAnswers={Object.keys(answers).length}
+                  numAssignments={assignments.length}
+                ></ProgSection>
               )}
               <br />
               {pageState !== PageState.LOADING && answers && (

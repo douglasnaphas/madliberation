@@ -250,7 +250,7 @@ const ProgSection = (props: { numAnswers: number; numAssignments: number }) => {
   const { numAnswers, numAssignments } = props;
   return (
     <div id="numprog">
-      Completed <span id="numprog-submitted">{numAnswers}</span> out of
+      Completed <span id="numprog-submitted">{numAnswers}</span> out of{" "}
       <span id="numprog-assigned">{numAssignments}</span>.
     </div>
   );

@@ -50,7 +50,7 @@ export default function Seders() {
         <Container maxWidth="md">
           <Paper>
             {data && data.map && !isPending && !error && (
-              <div>
+              <div style={{ padding: "10px" }}>
                 You started the following Seders. Click a link to proceed with
                 one.
                 {data.map((seder: any) => (

@@ -80,6 +80,7 @@ export default function Seders() {
                   {mySedersData.map((seder: any) => (
                     <div key={seder.room_code}>
                       <a
+                        target={"_blank"}
                         href={
                           `${window.location.origin}/create-haggadah/links.html` +
                           `?sederCode=${seder.room_code}&` +
@@ -107,6 +108,7 @@ export default function Seders() {
                   {myInvitesData.map((invite: any) => (
                     <div key={invite.room_code}>
                       <a
+                        target={"_blank"}
                         href={
                           `${window.location.origin}/create-haggadah/blanks.html` +
                           `?sederCode=${invite.room_code}&` +

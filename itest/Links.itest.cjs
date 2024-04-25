@@ -998,13 +998,18 @@ const waitOptions = { timeout /*, visible: true */ };
     // # assigned - # blanked out and not resubmitted - # never submitted
     const expectedNumberAnswered = participants[p].answered;
     await readRosterPage
-      .waitForFunction(() => {
-        const guestAnswersElement = document.getElementById(guestAnswersId);
-        return (
-          guestAnswersElement &&
-          parseInt(guestAnswersElement.textContent) === expectedNumberAnswered
-        );
-      })
+      .waitForFunction(
+        (guestAnswersId, expectedNumberAnswered) => {
+          const guestAnswersElement = document.getElementById(guestAnswersId);
+          return (
+            guestAnswersElement &&
+            parseInt(guestAnswersElement.textContent) === expectedNumberAnswered
+          );
+        },
+        {},
+        guestAnswersId,
+        expectedNumberAnswered
+      )
       .catch(async (reason) => {
         await failTest(
           reason,

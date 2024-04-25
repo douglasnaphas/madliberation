@@ -41,7 +41,14 @@ const ParticipantList = (props: {
           </TableHead>
           <TableBody>
             {participants.map((g) => (
-              <TableRow key={`guest-row-${g.gameName}`}>
+              <TableRow
+                key={`guest-row-${g.gameName}`}
+                style={
+                  g.numberOfAnswers === g.numberOfAssignments
+                    ? { backgroundColor: "palegreen" }
+                    : {}
+                }
+              >
                 <TableCell key={`guest-name-cell-${g.gameName}`}>
                   <span id={`guest-name-cell-${g.gameName}`}>{g.gameName}</span>
                 </TableCell>
@@ -54,6 +61,15 @@ const ParticipantList = (props: {
                   <span id={`guest-assignments-${g.gameName}`}>
                     {g.numberOfAssignments}
                   </span>
+                </TableCell>
+                <TableCell key={`done-indicator-${g.gameName}`}>
+                  {g.numberOfAnswers === g.numberOfAssignments ? (
+                    <span id={`done-span-${g.gameName}`}>
+                      <b>Done</b>
+                    </span>
+                  ) : (
+                    <span></span>
+                  )}
                 </TableCell>
               </TableRow>
             ))}

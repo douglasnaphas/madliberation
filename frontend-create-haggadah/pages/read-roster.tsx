@@ -58,7 +58,7 @@ const ParticipantList = (props: {
           <div id="read-roster-read-link">
             <p>
               <a
-                href={`./read.html?sederCode=${sederCode}&rpw=${rpw}&roomcode=${sederCode}`}
+                href={`./read.html?sederCode=${sederCode}&rpw=${rpw}&roomcode=${sederCode}#1`}
               >
                 Read the Haggadah
               </a>

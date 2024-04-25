@@ -38,12 +38,11 @@ const ParticipantList = (props: {
     0
   );
   const madLibsDone = totalAnswered === totalAssigned;
-  // const h1Text = `Mad lib progress` + madLibsDone ? <span style={{color: "green"}}></span>;
   return (
     <div>
       <div id="participant-list-heading">
         <div>
-          <h1>
+          <h1 style={{ paddingLeft: "10px" }}>
             Mad lib progress
             {madLibsDone ? (
               <>

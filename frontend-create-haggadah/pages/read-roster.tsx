@@ -26,10 +26,48 @@ interface Participant {
 const ParticipantList = (props: {
   participants: Array<Participant>;
   sederCode: string;
+  rpw: string;
 }) => {
-  const { participants, sederCode } = props;
+  const { participants, sederCode, rpw } = props;
+  const totalAnswered = participants.reduce(
+    (answered, participant) => answered + participant.numberOfAnswers,
+    0
+  );
+  const totalAssigned = participants.reduce(
+    (assigned, participant) => assigned + participant.numberOfAssignments,
+    0
+  );
+  const madLibsDone = totalAnswered === totalAssigned;
+  // const h1Text = `Mad lib progress` + madLibsDone ? <span style={{color: "green"}}></span>;
   return (
     <div>
+      <div id="participant-list-heading">
+        <div>
+          <h1>
+            Mad lib progress
+            {madLibsDone ? (
+              <>
+                {": "}
+                <span style={{ color: "green" }}>all answers submitted</span>
+              </>
+            ) : (
+              ""
+            )}
+          </h1>
+        </div>
+        {madLibsDone && sederCode && rpw && (
+          <div id="read-roster-read-link">
+            <p>
+              <a
+                href={`./read.html?sederCode=${sederCode}&rpw=${rpw}&roomcode=${sederCode}`}
+              >
+                Read the Haggadah
+              </a>
+              .
+            </p>
+          </div>
+        )}
+      </div>
       <div>
         <Table>
           <TableHead>
@@ -193,6 +231,7 @@ export default function ReadRoster() {
               <ParticipantList
                 participants={participants}
                 sederCode={sederCode}
+                rpw={rpw}
               ></ParticipantList>
             </div>
           </Paper>

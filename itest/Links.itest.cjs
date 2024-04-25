@@ -1018,11 +1018,40 @@ const waitOptions = { timeout /*, visible: true */ };
           browsers
         );
       });
+    const actualNumberAnswered = expectedNumberAnswered; // we just verified this
     console.log(
       `read roster: found ` +
-        `${expectedNumberAnswered} / ${actualNumberAssigned} for ` +
+        `${actualNumberAnswered} / ${actualNumberAssigned} for ` +
         `${participants[p].gameName}, as expected`
     );
+
+    // Verify the correct display/non-display of "Done" for this participant
+    // TODO: check this with an XPath for "tr with participantName followed
+    // by Done," in case the done-span ID is a lie.
+    const doneSpanId = `done-span-${participantName}`;
+    const doneSpanSelector = `#${doneSpanId}`;
+    if (actualNumberAnswered === actualNumberAssigned) {
+      await readRosterPage.waitForSelector(doneSpanSelector);
+      await readRosterPage.waitForFunction(
+        (doneSpanId) => {
+          const doneSpan = document.getElementById(doneSpanId);
+          return doneSpan.textContent === "Done";
+        },
+        {},
+        doneSpanId
+      );
+    } else {
+      const doneSpansForThisParticipant = await readRosterPage.$$(
+        doneSpanSelector
+      );
+      if (doneSpansForThisParticipant.length !== 0) {
+        await failTest(
+          "read roster: Done printed when it should not be",
+          `participant ${participantName}`,
+          browsers
+        );
+      }
+    }
   }
 
   //////////////////////////////////////////////////////////////////////////////

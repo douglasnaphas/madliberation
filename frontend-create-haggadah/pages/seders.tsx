@@ -12,12 +12,33 @@ import SederSummary from "../src/SederSummary";
 import Head from "next/head";
 import { useQuery } from "@tanstack/react-query";
 import CircularProgress from "@mui/material/CircularProgress";
+import { Configs } from "../src/Configs";
 
 export default function Seders() {
-  const { isPending, error, data } = useQuery({
+  const {
+    isPending: mySedersPending,
+    error: mySedersError,
+    data: mySedersData,
+  } = useQuery({
     queryKey: ["mySeders"],
     queryFn: () =>
       fetch("../v2/my-seders", { credentials: "include" }).then((res) =>
+        res.json()
+      ),
+    staleTime: Infinity,
+    refetchInterval: false,
+    refetchOnMount: false,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+  });
+  const {
+    isPending: myInvitesPending,
+    error: myInvitesError,
+    data: myInvitesData,
+  } = useQuery({
+    queryKey: ["myInvites"],
+    queryFn: () =>
+      fetch("../v2/my-invites", { credentials: "include" }).then((res) =>
         res.json()
       ),
     staleTime: Infinity,
@@ -48,27 +69,57 @@ export default function Seders() {
           ></img>
         </div>
         <Container maxWidth="md">
-          <Paper>
-            {data && data.map && !isPending && !error && (
-              <div style={{ padding: "10px" }}>
-                You started the following Seders. Click a link to proceed with
-                one.
-                {data.map((seder: any) => (
-                  <div key={seder.room_code}>
-                    <a
-                      href={
-                        `${window.location.origin}/create-haggadah/links.html` +
-                        `?sederCode=${seder.room_code}&` +
-                        `pw=${seder.pw}`
-                      }
-                    >
-                      Seder {seder.room_code.substring(0, 3)}, started{" "}
-                      {seder.timestamp}
-                    </a>
-                  </div>
-                ))}
-              </div>
-            )}
+          <Paper id="my-seders-paper">
+            {mySedersData &&
+              mySedersData.map &&
+              !mySedersPending &&
+              !mySedersError && (
+                <div style={{ padding: "10px" }}>
+                  You started the following Seders. Click a link to proceed with
+                  one. Anyone with the link can fully access the Seder.
+                  {mySedersData.map((seder: any) => (
+                    <div key={seder.room_code}>
+                      <a
+                        href={
+                          `${window.location.origin}/create-haggadah/links.html` +
+                          `?sederCode=${seder.room_code}&` +
+                          `pw=${seder.pw}`
+                        }
+                      >
+                        Seder {seder.room_code.substring(0, 3)}, started{" "}
+                        {seder.timestamp}
+                      </a>
+                    </div>
+                  ))}
+                </div>
+              )}
+          </Paper>
+          <br />
+          <Paper id="my-invites-paper">
+            {myInvitesData &&
+              myInvitesData.map &&
+              !myInvitesPending &&
+              !myInvitesError && (
+                <div style={{ padding: "10px" }}>
+                  You were invited to the following Seders. Click a link to see
+                  its details and proceed with it. Anyone with the link can
+                  submit answers as you.
+                  {myInvitesData.map((invite: any) => (
+                    <div key={invite.room_code}>
+                      <a
+                        href={
+                          `${window.location.origin}/create-haggadah/blanks.html` +
+                          `?sederCode=${invite.room_code}&` +
+                          `pw=${invite.participant_pw}&` +
+                          `ph=${invite.ph.substring(0, Configs.PH_LENGTH)}`
+                        }
+                      >
+                        Seder {invite.room_code.substring(0, 3)}
+                      </a>
+                    </div>
+                  ))}
+                </div>
+              )}
           </Paper>
         </Container>
         <br></br>

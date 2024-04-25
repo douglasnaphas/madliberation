@@ -506,7 +506,10 @@ export default function Blanks() {
               <Paper>
                 <div style={{ padding: "8px" }}>
                   <h1>
-                    Submitting answers as <strong>{gameName}</strong>
+                    Submitting answers as{" "}
+                    <strong>
+                      <span style={{ color: "#556cd6" }}>{gameName}</span>
+                    </strong>
                   </h1>
                 </div>
               </Paper>

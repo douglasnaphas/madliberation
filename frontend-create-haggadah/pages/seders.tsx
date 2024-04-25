@@ -82,7 +82,7 @@ export default function Seders() {
                       <a
                         target={"_blank"}
                         href={
-                          `${window.location.origin}/create-haggadah/links.html` +
+                          `${window.location.origin}/create-haggadah/edit.html` +
                           `?sederCode=${seder.room_code}&` +
                           `pw=${seder.pw}`
                         }

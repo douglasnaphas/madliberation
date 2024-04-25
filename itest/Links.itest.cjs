@@ -1128,12 +1128,12 @@ const waitOptions = { timeout /*, visible: true */ };
   retrieveLinkPage.waitForSelector(sedersSelector);
   await retrieveLinkPage.click(sedersSelector);
 
-  // Expect to see a link to the links page for this Seder
-  const linksLinkSelector = `a[href="${yourLinksPageHref}"]`;
-  await retrieveLinkPage.waitForSelector(linksLinkSelector).catch((reason) => {
+  // Expect to see a link to the edit page for this Seder
+  const editLinkSelector = `a[href="${editHref}"]`;
+  await retrieveLinkPage.waitForSelector(editLinkSelector).catch((reason) => {
     failTest(
-      `waitForSelector failed, linksLinkSelector`,
-      `did not find links link on login in new browser`,
+      `waitForSelector failed, editLinkSelector`,
+      `did not find edit link on login in new browser`,
       browsers
     );
   });

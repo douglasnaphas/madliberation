@@ -996,31 +996,18 @@ const waitOptions = { timeout /*, visible: true */ };
     // How many were answered?
     // # assigned - # blanked out and not resubmitted - # never submitted
     const expectedNumberAnswered = participants[p].answered;
-    const actualNumberAnswered = parseInt(
-      await readRosterPage
-        .$eval(guestAnswersSelector, (el) => el.textContent)
-        .catch(async (reason) => {
-          await failTest(
-            reason,
-            `Unable to get number answered, ${guestAnswersSelector}`,
-            browsers
-          );
-        })
+    await readRosterPage.waitForFunction(() => {
+      const guestAnswersElement = document.getElementById(guestAnswersSelector);
+      return (
+        guestAnswersElement &&
+        parseInt(guestAnswersElement.textContent) === expectedNumberAnswered
+      );
+    });
+    console.log(
+      `read roster: found ` +
+        `${expectedNumberAnswered} / ${actualNumberAssigned} for ` +
+        `${participants[p].gameName}, as expected`
     );
-    if (expectedNumberAnswered !== actualNumberAnswered) {
-      await failTest(
-        "wrong number answered on read roster",
-        `expected ${expectedNumberAnswered}, got ` +
-          `${actualNumberAnswered}, participant ${p} name ${participants[p].gameName}`,
-        browsers
-      );
-    } else {
-      console.log(
-        `read roster: found ` +
-          `${actualNumberAnswered} / ${actualNumberAnswered} for ` +
-          `${participants[p].gameName}, as expected`
-      );
-    }
   }
 
   //////////////////////////////////////////////////////////////////////////////

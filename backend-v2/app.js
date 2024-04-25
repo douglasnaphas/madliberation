@@ -37,6 +37,7 @@ const getSederSummary = require("./lib/getSederSummary");
 const getGameName = require("./lib/getGameName");
 const user = require("./lib/user");
 const mySeders = require("./lib/my-seders");
+const myInvites = require("./lib/my-invites");
 
 const router = express.Router();
 
@@ -92,6 +93,7 @@ router.use(cookieParser());
 router.get("/user", user());
 
 router.get("/my-seders", mySeders());
+router.get("/my-invites", myInvites());
 
 router.get("/", function (req, res) {
   res.send({

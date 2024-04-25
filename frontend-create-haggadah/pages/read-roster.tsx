@@ -37,7 +37,7 @@ const ParticipantList = (props: {
     (assigned, participant) => assigned + participant.numberOfAssignments,
     0
   );
-  const madLibsDone = totalAnswered === totalAssigned;
+  const madLibsDone = totalAnswered > 0 && totalAnswered === totalAssigned;
   return (
     <div>
       <div id="participant-list-heading" style={{ paddingLeft: "10px" }}>

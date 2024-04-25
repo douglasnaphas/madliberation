@@ -968,7 +968,8 @@ const waitOptions = { timeout /*, visible: true */ };
   for (let p = 0; p < participants.length; p++) {
     const participantName = participants[p].gameName;
     const guestNameCellSelector = `#guest-name-cell-${participantName}`;
-    const guestAnswersSelector = `#guest-answers-${participantName}`;
+    const guestAnswersId = `guest-answers-${participantName}`;
+    const guestAnswersSelector = `#${guestAnswersId}`;
     const guestAssignmentsSelector = `#guest-assignments-${participantName}`;
 
     // How many were assigned?
@@ -996,13 +997,22 @@ const waitOptions = { timeout /*, visible: true */ };
     // How many were answered?
     // # assigned - # blanked out and not resubmitted - # never submitted
     const expectedNumberAnswered = participants[p].answered;
-    await readRosterPage.waitForFunction(() => {
-      const guestAnswersElement = document.getElementById(guestAnswersSelector);
-      return (
-        guestAnswersElement &&
-        parseInt(guestAnswersElement.textContent) === expectedNumberAnswered
-      );
-    });
+    await readRosterPage
+      .waitForFunction(() => {
+        const guestAnswersElement = document.getElementById(guestAnswersId);
+        return (
+          guestAnswersElement &&
+          parseInt(guestAnswersElement.textContent) === expectedNumberAnswered
+        );
+      })
+      .catch(async (reason) => {
+        await failTest(
+          reason,
+          `read roster: did not find ${expectedNumberAnswered} answered, ` +
+            `guestAnswersId ${guestAnswersId}`,
+          browsers
+        );
+      });
     console.log(
       `read roster: found ` +
         `${expectedNumberAnswered} / ${actualNumberAssigned} for ` +

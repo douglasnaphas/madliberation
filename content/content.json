@@ -184,7 +184,7 @@
     },
     {
       "haggadah_description": {
-        "S": "The latest Haggadah, from 2023. VERY similar to the 2022 script."
+        "S": "VERY similar to the 2022 script."
       },
       "lib_id": {
         "S": "script#012"
@@ -207,9 +207,35 @@
       "script_number": {
         "N": "7"
       }
+    },
+    {
+      "haggadah_description": {
+        "S": "Light edits to the 2023 script."
+      },
+      "lib_id": {
+        "S": "script#013"
+      },
+      "haggadah_short_desc": {
+        "S": "2025 Script"
+      },
+      "room_code": {
+        "S": "script#AAAAAM"
+      },
+      "path": {
+        "S": "013-2025_Script"
+      },
+      "is_script": {
+        "N": "1"
+      },
+      "haggadah_name": {
+        "S": "0013 - 2025 Script"
+      },
+      "script_number": {
+        "N": "10"
+      }
     }
   ],
-  "Count": 8,
-  "ScannedCount": 8,
+  "Count": 9,
+  "ScannedCount": 9,
   "ConsumedCapacity": null
 }

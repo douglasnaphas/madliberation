@@ -60,7 +60,7 @@ npm run build
 npm test
 ```
 
-in the `frontend/` directory first.
+in the `frontend-create-haggadah/` directory first.
 
 ### Content (the Haggadah scripts)
 

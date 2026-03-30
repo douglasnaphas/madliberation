@@ -1,6 +1,0 @@
-node_modules
-exclude
-build
-template-export.yml
-.vscode/
-.eslintcache

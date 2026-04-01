@@ -1,5 +1,3 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
 import * as React from "react";
 import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
@@ -301,7 +299,7 @@ export default function Edit() {
                 ></GuestsForm>
               </div>
             )}
-            {joinError && PageState.OPEN && (
+            {joinError && pageState === PageState.OPEN && (
               <div>
                 <Typography
                   component="p"

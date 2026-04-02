@@ -158,6 +158,32 @@ jobs:
           PARTICIPANTS_ARG: "12"
         run: |
           npm run itest-links
+  itest-links-2026:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    needs: [frontend, frontend-create-haggadah, content]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ vars.DEV_ROLE_ARN }}
+          aws-region: us-east-1
+      - name: Install itest
+        working-directory: itest
+        run: |
+          npm install
+      - name: Run itest on the v2 link-based flow, 2026 (dev account)
+        working-directory: itest
+        env:
+          AWS_DEFAULT_REGION: "us-east-1"
+          AWS_REGION: "us-east-1"
+          SCRIPT_TERM: "2026_Script"
+          PARTICIPANTS_ARG: "12"
+        run: |
+          npm run itest-links
   itest-links-2023:
     runs-on: ubuntu-latest
     permissions:

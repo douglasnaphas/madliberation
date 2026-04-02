@@ -49,7 +49,6 @@ export class MadliberationWebapp extends Stack {
     const { fromAddress, domainName, zoneId } = props;
 
     const sedersTable = require("./sedersTable")(this);
-    const frontendBucket = appBucket(this, "FrontendBucket");
     const frontendCreateHaggadahBucket = appBucket(
       this,
       "FrontendCreateHaggadahBucket"
@@ -76,7 +75,9 @@ export class MadliberationWebapp extends Stack {
       logFilePrefix: "distribution-access-logs/",
       logIncludesCookies: true,
       defaultBehavior: {
-        origin: new origins.S3Origin(frontendBucket),
+        origin: new origins.S3Origin(frontendCreateHaggadahBucket, {
+          originPath: "/create-haggadah/root-site",
+        }),
         viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
         cachePolicy: cloudfront.CachePolicy.CACHING_DISABLED,
       },

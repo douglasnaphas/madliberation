@@ -64,25 +64,6 @@ jobs:
         working-directory: infra
         run: |
           npm run deploy-webapp
-  frontend:
-    runs-on: ubuntu-latest
-    permissions:
-      id-token: write
-      contents: read
-    needs: webapp
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          role-to-assume: ${{ vars.DEV_ROLE_ARN }}
-          aws-region: us-east-1
-      - name: Deploy to the frontend bucket (dev account)
-        working-directory: frontend
-        run: |
-          npm run install-build-test-deploy
   frontend-create-haggadah:
     runs-on: ubuntu-latest
     permissions:
@@ -137,7 +118,7 @@ jobs:
     permissions:
       id-token: write
       contents: read
-    needs: [frontend, frontend-create-haggadah, content]
+    needs: [frontend-create-haggadah, content]
     steps:
       - uses: actions/checkout@v4
       - name: Configure AWS Credentials
@@ -163,7 +144,7 @@ jobs:
     permissions:
       id-token: write
       contents: read
-    needs: [frontend, frontend-create-haggadah, content]
+    needs: [frontend-create-haggadah, content]
     steps:
       - uses: actions/checkout@v4
       - name: Configure AWS Credentials
@@ -187,7 +168,7 @@ jobs:
     permissions:
       id-token: write
       contents: read
-    needs: [frontend, frontend-create-haggadah, content]
+    needs: [frontend-create-haggadah, content]
     steps:
       - uses: actions/checkout@v4
       - name: Configure AWS Credentials

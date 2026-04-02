@@ -230,9 +230,13 @@ const waitOptions = { timeout /*, visible: true */ };
   const desiredScriptRadioButtonXPath = `//input[contains(@value,"${scriptTerm}")]`;
   await page.waitForXPath(desiredScriptRadioButtonXPath, waitOptions);
   await page.click("xpath/" + desiredScriptRadioButtonXPath);
-  const planSederSubmitButtonSelector = "button:not([disabled])";
-  await page.waitForSelector(planSederSubmitButtonSelector);
-  await page.click(planSederSubmitButtonSelector);
+  // Look for the Submit button specifically (button with text "Submit" that's not disabled)
+  const planSederSubmitButtonXPath = `//button[text()="Submit" and not(@disabled)]`;
+  await page.waitForXPath(planSederSubmitButtonXPath, waitOptions);
+  await Promise.all([
+    page.click("xpath/" + planSederSubmitButtonXPath),
+    page.waitForNavigation(waitOptions),
+  ]);
 
   //////////////////////////////////////////////////////////////////////////////
   ///////////////////////// Edit Page //////////////////////////////////////////

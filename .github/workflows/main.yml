@@ -142,7 +142,7 @@ jobs:
         working-directory: content
         run: |
           npm run deploy
-  itest-links-staging-2023:
+  itest-links-staging-2026:
     runs-on: ubuntu-latest
     needs: [frontend-staging, frontend-create-haggadah-staging, content-staging]
     permissions:
@@ -159,8 +159,11 @@ jobs:
         with:
           role-to-assume: ${{ vars.TEST_ROLE_ARN }}
           aws-region: us-east-1
-      - name: Run itest on the v2 link-based flow (staging account)
+      - name: Run itest on the v2 link-based flow (staging account), 2026 script
         working-directory: itest
+        env:
+          PARTICIPANTS: "12"
+          SCRIPT_TERM: "2026_Script"
         run: |
           npm run itest-links
   itest-links-staging-2025:
@@ -183,13 +186,13 @@ jobs:
       - name: Run itest on the v2 link-based flow, 2025 script (staging account)
         working-directory: itest
         env:
-          PARTICIPANTS_ARG: "13"
+          PARTICIPANTS: "23"
           SCRIPT_TERM: "2025_Script"
         run: |
           npm run itest-links
   webapp-prod2:
     needs:
-      [itest-links-staging-2025, itest-links-staging-2023]
+      [itest-links-staging-2025, itest-links-staging-2026]
     runs-on: ubuntu-latest
     permissions:
       id-token: write
@@ -294,7 +297,7 @@ jobs:
         working-directory: content
         run: |
           npm run deploy
-  itest-links-prod2-2023:
+  itest-links-prod2-2026:
     runs-on: ubuntu-latest
     needs: [frontend-prod2, frontend-create-haggadah-prod2, content-prod2]
     permissions:
@@ -311,8 +314,11 @@ jobs:
         with:
             role-to-assume: ${{ vars.PROD2_ROLE_ARN }}
             aws-region: us-east-1
-      - name: Run itest on the v2 link-based flow (prod2 account)
+      - name: Run itest on the v2 link-based flow (prod2 account), 2026 script
         working-directory: itest
+        env:
+          PARTICIPANTS: "12"
+          SCRIPT_TERM: "2026_Script"
         run: |
           npm run itest-links
   itest-links-prod2-2025:

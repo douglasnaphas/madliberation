@@ -155,7 +155,7 @@ jobs:
           AWS_DEFAULT_REGION: "us-east-1"
           AWS_REGION: "us-east-1"
           SCRIPT_TERM: "2025_Script"
-          PARTICIPANTS_ARG: "12"
+          PARTICIPANTS: "12"
         run: |
           npm run itest-links
   itest-links-2026:
@@ -181,7 +181,7 @@ jobs:
           AWS_DEFAULT_REGION: "us-east-1"
           AWS_REGION: "us-east-1"
           SCRIPT_TERM: "2026_Script"
-          PARTICIPANTS_ARG: "12"
+          PARTICIPANTS: "12"
         run: |
           npm run itest-links
   itest-links-2023:
